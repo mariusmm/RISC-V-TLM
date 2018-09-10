@@ -1,0 +1,18 @@
+# Simple example
+# JAL +2048
+#0010006F
+# JAL +256
+#1000006F
+# JAL +4
+0040006F
+# ADD rd = R1, rs1 = R1, rs2 = R2
+002080B3
+# SUB rd = R3, rs1 = R1, rs2 = R2
+402081B3
+# ADD rd = R1, rs1 = R1, rs2 = R2
+002080B3
+# JAL -8
+# FF9FF06F
+# JAL -12
+FF1FF06F
+# END
