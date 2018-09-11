@@ -12,6 +12,8 @@ Brief description of the modules:
 * RISC_V_execute: Executes every ISA instruction
 * Instruction: Decodes instruction and acces to any instruction field
 
+Current performance is about 166000 instructions / sec in a Core-i5@2.2Ghz
+
 Helper classes:
 * Performance: Performance indicators stores here (singleton class)
 * Log: Log class to log them all (singleton class)
