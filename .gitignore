@@ -33,3 +33,5 @@
 
 Log.txt
 helper.ods
+*.swp
+RISCV_TLM
