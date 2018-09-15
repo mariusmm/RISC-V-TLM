@@ -5,7 +5,7 @@ TARGET_ARCH=linux64
 
 CC       = g++
 # compiling flags here
-CFLAGS   = -Wall -I.
+CFLAGS   = -Wall -I. -O3
 
 LINKER   = g++
 # linking flags here

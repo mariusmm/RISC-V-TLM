@@ -13,11 +13,16 @@ Brief description of the modules:
 * Instruction: Decodes instruction and acces to any instruction field
 * Simulation: Top-level entity that builds & starts the simulation
 
-Current performance is about 166000 instructions / sec in a Core-i5@2.2Ghz
+Current performance is about 284500 instructions / sec in a Core-i5@2.2Ghz
 
 Helper classes:
 * Performance: Performance indicators stores here (singleton class)
 * Log: Log class to log them all (singleton class)
+
+
+### Structure
+
+
 
 
 ## TODO
@@ -80,14 +85,14 @@ There are several ways to contribute to this project:
 Copyright (C) 2018 Màrius Montón ([\@mariusmonton](https://twitter.com/mariusmonton/))
 
 This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
