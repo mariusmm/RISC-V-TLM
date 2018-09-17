@@ -159,6 +159,42 @@ void RISC_V_execute::BGEU(Instruction &inst) {
   log->SC_log(Log::INFO) << "BGEU R" << rs1 << " > R" << rs2  << "? -> PC (" << new_pc << ")" << endl;
 }
 
+void RISC_V_execute::LB(Instruction &inst) {
+  uint32_t mem_addr = 0;
+  int rd, rs1;
+  int32_t imm = 0;
+  int8_t data;
+
+  rd = inst.rd();
+  rs1 = inst.rs1();
+  imm = inst.imm_I();
+
+  mem_addr = imm + regs->getValue(rs1);
+  data = readDataMem(mem_addr, 1);
+  regs->setValue(rd, data);
+
+  log->SC_log(Log::INFO) << "LB: R" << rs1 << " + " << imm << " (@0x"
+          << hex <<mem_addr << dec << ") -> R" << rd << endl;
+}
+
+void RISC_V_execute::LH(Instruction &inst) {
+  uint32_t mem_addr = 0;
+  int rd, rs1;
+  int32_t imm = 0;
+  int16_t data;
+
+  rd = inst.rd();
+  rs1 = inst.rs1();
+  imm = inst.imm_I();
+
+  mem_addr = imm + regs->getValue(rs1);
+  data = readDataMem(mem_addr, 2);
+  regs->setValue(rd, data);
+
+  log->SC_log(Log::INFO) << "LH: R" << rs1 << " + " << imm << " (@0x"
+          << hex <<mem_addr << dec << ") -> R" << rd << endl;
+}
+
 void RISC_V_execute::LW(Instruction &inst) {
   uint32_t mem_addr = 0;
   int rd, rs1;
@@ -173,11 +209,85 @@ void RISC_V_execute::LW(Instruction &inst) {
   data = readDataMem(mem_addr, 4);
   regs->setValue(rd, data);
 
-  cout << "LW Data: " << data << endl;
   log->SC_log(Log::INFO) << "LW: R" << rs1 << " + " << imm << " (@0x"
           << hex <<mem_addr << dec << ") -> R" << rd << endl;
 }
 
+void RISC_V_execute::LBU(Instruction &inst) {
+  uint32_t mem_addr = 0;
+  int rd, rs1;
+  int32_t imm = 0;
+  uint8_t data;
+
+  rd = inst.rd();
+  rs1 = inst.rs1();
+  imm = inst.imm_I();
+
+  mem_addr = imm + regs->getValue(rs1);
+  data = readDataMem(mem_addr, 1);
+  regs->setValue(rd, data);
+
+  log->SC_log(Log::INFO) << "LBU: R" << rs1 << " + " << imm << " (@0x"
+          << hex <<mem_addr << dec << ") -> R" << rd << endl;
+}
+
+void RISC_V_execute::LHU(Instruction &inst) {
+  uint32_t mem_addr = 0;
+  int rd, rs1;
+  int32_t imm = 0;
+  uint16_t data;
+
+  rd = inst.rd();
+  rs1 = inst.rs1();
+  imm = inst.imm_I();
+
+  mem_addr = imm + regs->getValue(rs1);
+  data = readDataMem(mem_addr, 2);
+  regs->setValue(rd, data);
+
+  log->SC_log(Log::INFO) << "LHU: R" << rs1 << " + " << imm << " (@0x"
+          << hex <<mem_addr << dec << ") -> R" << rd << endl;
+}
+
+
+
+void RISC_V_execute::SB(Instruction &inst) {
+  uint32_t mem_addr = 0;
+  int rs1, rs2;
+  int32_t imm = 0;
+  uint32_t data;
+
+  rs1 = inst.rs1();
+  rs2 = inst.rs2();
+  imm = inst.imm_S();
+
+  mem_addr = imm + regs->getValue(rs1);
+  data = regs->getValue(rs2);
+
+  writeDataMem(mem_addr, data, 1);
+
+  log->SC_log(Log::INFO) << "SB: R" << rs2 << " -> R" << rs1 << " + "
+          << imm << " (@0x" << hex <<mem_addr << dec << ")" <<  endl;
+}
+
+void RISC_V_execute::SH(Instruction &inst) {
+  uint32_t mem_addr = 0;
+  int rs1, rs2;
+  int32_t imm = 0;
+  uint32_t data;
+
+  rs1 = inst.rs1();
+  rs2 = inst.rs2();
+  imm = inst.imm_S();
+
+  mem_addr = imm + regs->getValue(rs1);
+  data = regs->getValue(rs2);
+
+  writeDataMem(mem_addr, data, 2);
+
+  log->SC_log(Log::INFO) << "SH: R" << rs2 << " -> R" << rs1 << " + "
+          << imm << " (@0x" << hex <<mem_addr << dec << ")" <<  endl;
+}
 
 void RISC_V_execute::SW(Instruction &inst) {
   uint32_t mem_addr = 0;
@@ -622,7 +732,6 @@ uint32_t RISC_V_execute::readDataMem(uint32_t addr, int size) {
 
   data_bus->b_transport( trans, delay);
 
-  cout << "RD addr: " << addr << " data: " << data << endl;
   return data;
 }
 
@@ -641,6 +750,4 @@ void RISC_V_execute::writeDataMem(uint32_t addr, uint32_t data, int size) {
   trans.set_address( addr );
 
   data_bus->b_transport( trans, delay);
-
-  cout << "WR addr: " << addr << " data: " << data << endl;
 }
