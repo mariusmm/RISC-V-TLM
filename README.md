@@ -3,13 +3,14 @@
 **This code is suitable to hard refactor at any time**
 
 This is another RISC-V ISA simulator, this is coded in SystemC + TLM-2.
+It partially supports RV32I Instruction set by now.
 
 Brief description of the modules:
 
 * CPU: Top entity that includes all other modules.
 * Memory: Memory highly based on TLM-2 example with read file capability
-* Registers: Implements the register file and PC
-* RISC_V_execute: Executes every ISA instruction
+* Registers: Implements the register file, PC register & CSR registers
+* RISC_V_execute: Executes ISA instructions
 * Instruction: Decodes instruction and acces to any instruction field
 * Simulation: Top-level entity that builds & starts the simulation
 
@@ -30,13 +31,16 @@ This is a preliminar and incomplete version.
 
 Task to do:
 * implement all missing instructions (RISC_V_execute)
-* still unresolved data memory access (need to implement hierarchical socket
-  from CPU to RISC_V_execute)
-* Implement CSRs
+* Implement CSRs (where?)
 * Add full support to .elf and .hex filetypes to memory.h
 (only partial .hex support)
 * Connect some TLM peripherals
+     * Debug module similiar to ARM's ITM
+     * Some standard UART model
+     * ...
 * Test, test, test & test. I'm sure there are a lot of bugs in the code
+* Improve structure and modules hierarchy
+* Add 64 & 128 bits architecture (RV64I, RV128I)
 
 ## compile
 In order to compile the project you need SystemC-2.3.2 installed in your system.
