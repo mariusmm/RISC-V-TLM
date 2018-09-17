@@ -16,6 +16,17 @@ Memory::Memory(sc_module_name name, string filename): sc_module(name)
   SC_THREAD(invalidation_process);
 }
 
+Memory::Memory(sc_module_name name, bool use_file): sc_module(name)
+  ,socket("socket")
+  ,LATENCY(SC_ZERO_TIME) {
+    socket.register_b_transport(       this, &Memory::b_transport);
+    socket.register_get_direct_mem_ptr(this, &Memory::get_direct_mem_ptr);
+    socket.register_transport_dbg(     this, &Memory::transport_dbg);
+
+    memset(mem, 0, SIZE*sizeof(int));
+
+    SC_THREAD(invalidation_process);
+  }
 
 void Memory::b_transport( tlm::tlm_generic_payload& trans, sc_time& delay )
 {

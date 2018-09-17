@@ -4,6 +4,7 @@ SC_HAS_PROCESS(RISC_V_execute);
 RISC_V_execute::RISC_V_execute(sc_module_name name
   , Registers *register_bank)
   : sc_module(name)
+  , data_bus("data_bus")
   , regs(register_bank) {
     perf = Performance::getInstance();
     log = Log::getInstance();
@@ -69,7 +70,7 @@ void RISC_V_execute::JALR(Instruction &inst) {
 
 void RISC_V_execute::BEQ(Instruction &inst) {
   int rs1, rs2;
-  int new_pc;
+  int new_pc = 0;
 
   rs1 = inst.rs1();
   rs2 = inst.rs2();
@@ -85,7 +86,7 @@ void RISC_V_execute::BEQ(Instruction &inst) {
 
 void RISC_V_execute::BNE(Instruction &inst) {
   int rs1, rs2;
-  int new_pc;
+  int new_pc = 0;
 
   rs1 = inst.rs1();
   rs2 = inst.rs2();
@@ -100,7 +101,7 @@ void RISC_V_execute::BNE(Instruction &inst) {
 
 void RISC_V_execute::BLT(Instruction &inst) {
   int rs1, rs2;
-  int new_pc;
+  int new_pc = 0;
 
   rs1 = inst.rs1();
   rs2 = inst.rs2();
@@ -115,7 +116,7 @@ void RISC_V_execute::BLT(Instruction &inst) {
 
 void RISC_V_execute::BGE(Instruction &inst) {
   int rs1, rs2;
-  int new_pc;
+  int new_pc = 0;
 
   rs1 = inst.rs1();
   rs2 = inst.rs2();
@@ -130,7 +131,7 @@ void RISC_V_execute::BGE(Instruction &inst) {
 
 void RISC_V_execute::BLTU(Instruction &inst) {
   int rs1, rs2;
-  int new_pc;
+  int new_pc = 0;
 
   rs1 = inst.rs1();
   rs2 = inst.rs2();
@@ -145,7 +146,7 @@ void RISC_V_execute::BLTU(Instruction &inst) {
 
 void RISC_V_execute::BGEU(Instruction &inst) {
   int rs1, rs2;
-  int new_pc;
+  int new_pc = 0;
 
   rs1 = inst.rs1();
   rs2 = inst.rs2();
@@ -158,19 +159,43 @@ void RISC_V_execute::BGEU(Instruction &inst) {
   log->SC_log(Log::INFO) << "BGEU R" << rs1 << " > R" << rs2  << "? -> PC (" << new_pc << ")" << endl;
 }
 
-void RISC_V_execute::LB(Instruction &inst) {
+void RISC_V_execute::LW(Instruction &inst) {
   uint32_t mem_addr = 0;
   int rd, rs1;
-  uint32_t imm = 0;
+  int32_t imm = 0;
   uint32_t data;
 
   rd = inst.rd();
   rs1 = inst.rs1();
-  imm = inst.imm_U() << 12;
+  imm = inst.imm_I();
 
-  mem_addr = imm + rs1;
-  data = readDataMem(mem_addr);
+  mem_addr = imm + regs->getValue(rs1);
+  data = readDataMem(mem_addr, 4);
   regs->setValue(rd, data);
+
+  cout << "LW Data: " << data << endl;
+  log->SC_log(Log::INFO) << "LW: R" << rs1 << " + " << imm << " (@0x"
+          << hex <<mem_addr << dec << ") -> R" << rd << endl;
+}
+
+
+void RISC_V_execute::SW(Instruction &inst) {
+  uint32_t mem_addr = 0;
+  int rs1, rs2;
+  int32_t imm = 0;
+  uint32_t data;
+
+  rs1 = inst.rs1();
+  rs2 = inst.rs2();
+  imm = inst.imm_S();
+
+  mem_addr = imm + regs->getValue(rs1);
+  data = regs->getValue(rs2);
+
+  writeDataMem(mem_addr, data, 4);
+
+  log->SC_log(Log::INFO) << "SW: R" << rs2 << " -> R" << rs1 << " + "
+          << imm << " (@0x" << hex <<mem_addr << dec << ")" <<  endl;
 }
 
 void RISC_V_execute::ADDI(Instruction &inst) {
@@ -581,12 +606,41 @@ void RISC_V_execute::NOP(Instruction &inst) {
  * @param  addr address to access to
  * @return      data value read
  */
-uint32_t RISC_V_execute::readDataMem(uint32_t addr) {
-  // tlm::tlm_generic_payload* trans = new tlm::tlm_generic_payload;
-  // sc_time delay = SC_ZERO_TIME;
+uint32_t RISC_V_execute::readDataMem(uint32_t addr, int size) {
+  uint32_t data;
+  tlm::tlm_generic_payload trans;
+  sc_time delay = SC_ZERO_TIME;
 
-//  data_bus->b_transport(*trans, delay);
+  trans.set_command( tlm::TLM_READ_COMMAND );
+  trans.set_data_ptr( reinterpret_cast<unsigned char*>(&data) );
+  trans.set_data_length( 4 );
+  trans.set_streaming_width( 4 ); // = data_length to indicate no streaming
+  trans.set_byte_enable_ptr( 0 ); // 0 indicates unused
+  trans.set_dmi_allowed( false ); // Mandatory initial value
+  trans.set_response_status( tlm::TLM_INCOMPLETE_RESPONSE );
+  trans.set_address( addr );
 
-  return 0;
+  data_bus->b_transport( trans, delay);
 
+  cout << "RD addr: " << addr << " data: " << data << endl;
+  return data;
+}
+
+
+void RISC_V_execute::writeDataMem(uint32_t addr, uint32_t data, int size) {
+  tlm::tlm_generic_payload trans;
+  sc_time delay = SC_ZERO_TIME;
+
+  trans.set_command( tlm::TLM_WRITE_COMMAND );
+  trans.set_data_ptr( reinterpret_cast<unsigned char*>(&data) );
+  trans.set_data_length( size );
+  trans.set_streaming_width( 4 ); // = data_length to indicate no streaming
+  trans.set_byte_enable_ptr( 0 ); // 0 indicates unused
+  trans.set_dmi_allowed( false ); // Mandatory initial value
+  trans.set_response_status( tlm::TLM_INCOMPLETE_RESPONSE );
+  trans.set_address( addr );
+
+  data_bus->b_transport( trans, delay);
+
+  cout << "WR addr: " << addr << " data: " << data << endl;
 }

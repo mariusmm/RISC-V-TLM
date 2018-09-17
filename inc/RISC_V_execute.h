@@ -37,6 +37,8 @@ public:
   RISC_V_execute(sc_module_name name,
     Registers *register_bank);
 
+  /* Quick & dirty way to publish a socket though modules */
+  tlm_utils::simple_initiator_socket<RISC_V_execute> data_bus;
 
   void LUI(Instruction &inst);
   void AUIPC(Instruction &inst);
@@ -93,9 +95,10 @@ public:
   void CSRRCI(Instruction &inst);
 
   void NOP(Instruction &inst);
-private:
 
-  uint32_t readDataMem(uint32_t addr);
+private:
+  uint32_t readDataMem(uint32_t addr, int size);
+  void writeDataMem(uint32_t addr, uint32_t data, int size);
   Registers *regs;
   Performance *perf;
   Log *log;

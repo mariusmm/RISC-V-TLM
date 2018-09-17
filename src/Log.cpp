@@ -12,7 +12,7 @@ Log* Log::getInstance()
 
 Log::Log(const char* filename) {
   m_stream.open(filename);
-  currentLogLevel = Log::INFO;
+  currentLogLevel = Log::ERROR;
 }
 
 void Log::SC_log(std::string msg, enum LogLevel level) {

@@ -34,7 +34,7 @@ public:
   const sc_time LATENCY;
 
   Memory(sc_module_name name, string filename);
-
+  Memory(sc_module_name name, bool use_file);
   // TLM-2 blocking transport method
   virtual void b_transport( tlm::tlm_generic_payload& trans, sc_time& delay );
 

@@ -20,23 +20,27 @@ SC_MODULE(Top)
 {
   //Initiator *initiator;
   CPU    *cpu;
-  Memory    *memory;
+  Memory    *InstrMemory;
+  Memory *DataMemory;
 
   sc_signal<bool> IRQ;
 
   SC_CTOR(Top)
   {
     cpu    = new CPU("cpu");
-    memory = new Memory("memory", filename);
+    InstrMemory = new Memory("InstrMemory", filename);
+    DataMemory = new Memory("Datamemory", false);
 
-    cpu->instr_bus.bind(memory->socket);
+    cpu->instr_bus.bind(InstrMemory->socket);
+    cpu->exec->data_bus.bind(DataMemory->socket);
     //cpu->interrupt.bind(IRQ);
   }
 
   ~Top() {
     cout << "Top destructor" << endl;
     delete cpu;
-    delete memory;
+    delete InstrMemory;
+    delete DataMemory;
   }
 };
 

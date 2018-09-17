@@ -4,9 +4,7 @@
 SC_HAS_PROCESS(CPU);
 CPU::CPU(sc_module_name name): sc_module(name)
 , instr_bus("instr_bus")
-//, exec("RISC_V_exec", &register_bank)
-//, data_bus("data_bus")
- {
+{
    register_bank = new Registers();
    exec = new RISC_V_execute("RISC_V_execute", register_bank);
    perf = Performance::getInstance();
@@ -70,6 +68,12 @@ void CPU::CPU_thread(void) {
             break;
           case OP_BNE:
             exec->BNE(inst);
+            break;
+          case OP_LW:
+            exec->LW(inst);
+            break;
+          case OP_SW:
+            exec->SW(inst);
             break;
           case OP_ADDI:
             exec->ADDI(inst);

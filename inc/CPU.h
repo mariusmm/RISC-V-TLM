@@ -40,9 +40,10 @@ public:
   CPU(sc_module_name name);
   ~CPU();
 
+  RISC_V_execute *exec;
+
 private:
   Registers *register_bank;
-  RISC_V_execute *exec;
   Performance *perf;
   Log *log;
 
