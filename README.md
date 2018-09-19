@@ -42,7 +42,7 @@ Task to do:
 * Improve structure and modules hierarchy
 * Add 64 & 128 bits architecture (RV64I, RV128I)
 
-## compile
+## Compile
 In order to compile the project you need SystemC-2.3.2 installed in your system.
 Just change SYSTEMC path in Makefile.
 
@@ -74,6 +74,14 @@ $ cd ..
 $ ./RISCV_SCTLM asm/EternalLoop.hex
 ```
 This example needs that you hit Ctr+C to stop execution.
+
+### C code
+The C directory contains simple examples in C. Each directory contains
+an example, to compile it just:
+```
+$ make
+```
+and then execute the .hex file like the example before.
 
 ## Documentation
 The code is documented using doxygen. In the doc folder there is a Doxygen.cfg
