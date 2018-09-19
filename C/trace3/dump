@@ -1,0 +1,42 @@
+
+trace3.o:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00010074 <main>:
+   10074:	fd010113          	addi	sp,sp,-48
+   10078:	02812623          	sw	s0,44(sp)
+   1007c:	03010413          	addi	s0,sp,48
+   10080:	000107b7          	lui	a5,0x10
+   10084:	1007a603          	lw	a2,256(a5) # 10100 <main+0x8c>
+   10088:	10078713          	addi	a4,a5,256
+   1008c:	00472683          	lw	a3,4(a4)
+   10090:	10078713          	addi	a4,a5,256
+   10094:	00872703          	lw	a4,8(a4)
+   10098:	fcc42e23          	sw	a2,-36(s0)
+   1009c:	fed42023          	sw	a3,-32(s0)
+   100a0:	fee42223          	sw	a4,-28(s0)
+   100a4:	10078793          	addi	a5,a5,256
+   100a8:	00c7c783          	lbu	a5,12(a5)
+   100ac:	fef40423          	sb	a5,-24(s0)
+   100b0:	fe042623          	sw	zero,-20(s0)
+   100b4:	0280006f          	j	100dc <main+0x68>
+   100b8:	400007b7          	lui	a5,0x40000
+   100bc:	fec42703          	lw	a4,-20(s0)
+   100c0:	ff040693          	addi	a3,s0,-16
+   100c4:	00e68733          	add	a4,a3,a4
+   100c8:	fec74703          	lbu	a4,-20(a4)
+   100cc:	00e78023          	sb	a4,0(a5) # 40000000 <__global_pointer$+0x3ffee6f3>
+   100d0:	fec42783          	lw	a5,-20(s0)
+   100d4:	00178793          	addi	a5,a5,1
+   100d8:	fef42623          	sw	a5,-20(s0)
+   100dc:	fec42783          	lw	a5,-20(s0)
+   100e0:	ff040713          	addi	a4,s0,-16
+   100e4:	00f707b3          	add	a5,a4,a5
+   100e8:	fec7c783          	lbu	a5,-20(a5)
+   100ec:	fc0796e3          	bnez	a5,100b8 <main+0x44>
+   100f0:	00000013          	nop
+   100f4:	02c12403          	lw	s0,44(sp)
+   100f8:	03010113          	addi	sp,sp,48
+   100fc:	00008067          	ret

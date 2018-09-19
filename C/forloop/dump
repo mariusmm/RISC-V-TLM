@@ -1,0 +1,25 @@
+
+forloop.o:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00010074 <main>:
+   10074:	fe010113          	addi	sp,sp,-32
+   10078:	00812e23          	sw	s0,28(sp)
+   1007c:	02010413          	addi	s0,sp,32
+   10080:	fe042623          	sw	zero,-20(s0)
+   10084:	01c0006f          	j	100a0 <main+0x2c>
+   10088:	fec42783          	lw	a5,-20(s0)
+   1008c:	00578793          	addi	a5,a5,5
+   10090:	fef42423          	sw	a5,-24(s0)
+   10094:	fec42783          	lw	a5,-20(s0)
+   10098:	00178793          	addi	a5,a5,1
+   1009c:	fef42623          	sw	a5,-20(s0)
+   100a0:	fec42703          	lw	a4,-20(s0)
+   100a4:	00900793          	li	a5,9
+   100a8:	fee7d0e3          	ble	a4,a5,10088 <main+0x14>
+   100ac:	00000013          	nop
+   100b0:	01c12403          	lw	s0,28(sp)
+   100b4:	02010113          	addi	sp,sp,32
+   100b8:	00008067          	ret

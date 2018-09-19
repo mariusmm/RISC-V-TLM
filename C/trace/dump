@@ -1,0 +1,20 @@
+
+trace.o:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00010074 <main>:
+   10074:	ff010113          	addi	sp,sp,-16
+   10078:	00812623          	sw	s0,12(sp)
+   1007c:	01010413          	addi	s0,sp,16
+   10080:	400007b7          	lui	a5,0x40000
+   10084:	04800713          	li	a4,72
+   10088:	00e78023          	sb	a4,0(a5) # 40000000 <__global_pointer$+0x3ffee758>
+   1008c:	400007b7          	lui	a5,0x40000
+   10090:	06500713          	li	a4,101
+   10094:	00e78023          	sb	a4,0(a5) # 40000000 <__global_pointer$+0x3ffee758>
+   10098:	00000013          	nop
+   1009c:	00c12403          	lw	s0,12(sp)
+   100a0:	01010113          	addi	sp,sp,16
+   100a4:	00008067          	ret
