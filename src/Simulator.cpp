@@ -20,10 +20,7 @@ string filename;
 
 SC_MODULE(Top)
 {
-  //Initiator *initiator;
   CPU    *cpu;
-  //Memory    *InstrMemory;
-  //Memory *DataMemory;
   Memory *MainMemory;
   BusCtrl* Bus;
   Trace *trace;
@@ -33,8 +30,6 @@ SC_MODULE(Top)
 
   SC_CTOR(Top)
   {
-
-
     MainMemory = new Memory("Main_Memory", filename);
     start_PC = MainMemory->getPCfromHEX();
 

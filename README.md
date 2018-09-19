@@ -30,12 +30,12 @@ Helper classes:
 This is a preliminar and incomplete version.
 
 Task to do:
-* implement all missing instructions (RISC_V_execute)
+* Implement all missing instructions (RISC_V_execute)
 * Implement CSRs (where?)
-* Add full support to .elf and .hex filetypes to memory.h
+* Add full support to .elf ~~and .hex~~ filetypes to memory.h
 (only partial .hex support)
 * Connect some TLM peripherals
-     * Debug module similiar to ARM's ITM
+     * ~~Debug module similiar to ARM's ITM~~
      * Some standard UART model
      * ...
 * Test, test, test & test. I'm sure there are a lot of bugs in the code
@@ -67,8 +67,9 @@ In the asm directory there are some basic assembly examples.
 I "compile" one file with the follwing command:
 ```
 $ cd asm
-$ riscv32-unknown-linux-gnu-as  EternalLoop.asm
-$ objcopy -O ihex a.out EternalLoop.hex
+$ riscv32-unknown-linux-gnu-as  EternalLoop.asm -o EternalLoop.o
+$ riscv32-unknown-linux-gnu-ld -T ../my_linker_script.ld EternalLoop.o -o EternalLoop.elf
+$ objcopy -O ihex EternalLoop.elf EternalLoop.hex
 $ cd ..
 $ ./RISCV_SCTLM asm/EternalLoop.hex
 ```
