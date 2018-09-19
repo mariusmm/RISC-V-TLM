@@ -1,3 +1,7 @@
+.section .text
+.globl _start
+_start:
+
 li t1, 150
 li t2, 300
 li t3, -250
