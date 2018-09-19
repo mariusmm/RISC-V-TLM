@@ -12,7 +12,7 @@ Log* Log::getInstance()
 
 Log::Log(const char* filename) {
   m_stream.open(filename);
-  currentLogLevel = Log::ERROR;
+  currentLogLevel = Log::INFO;
 }
 
 void Log::SC_log(std::string msg, enum LogLevel level) {
@@ -22,6 +22,7 @@ void Log::SC_log(std::string msg, enum LogLevel level) {
 }
 
 std::ofstream& Log::SC_log(enum LogLevel level) {
+
   if (level >= currentLogLevel) {
     m_stream << "time " << sc_core::sc_time_stamp() << ": ";
   }

@@ -30,11 +30,14 @@ public:
   // TLM-2 socket, defaults to 32-bits wide, base protocol
   tlm_utils::simple_target_socket<Memory> socket;
 
-  enum { SIZE = 1024 };
+  enum { SIZE = 1024 * 1024 };
   const sc_time LATENCY;
 
   Memory(sc_module_name name, string filename);
   Memory(sc_module_name name, bool use_file);
+
+  virtual uint32_t getPCfromHEX();
+
   // TLM-2 blocking transport method
   virtual void b_transport( tlm::tlm_generic_payload& trans, sc_time& delay );
 
@@ -53,8 +56,10 @@ public:
 
   virtual unsigned int transport_dbg(tlm::tlm_generic_payload& trans);
 
+private:
   int mem[SIZE];
 
+  uint32_t program_counter;
   /**
    * Reads file and stores in Code Memory. Uses propietary file format
    * @brief Reads file and stores in Code Memory

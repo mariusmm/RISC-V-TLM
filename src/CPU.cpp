@@ -2,7 +2,7 @@
 #include "CPU.h"
 
 SC_HAS_PROCESS(CPU);
-CPU::CPU(sc_module_name name): sc_module(name)
+CPU::CPU(sc_module_name name, uint32_t PC): sc_module(name)
 , instr_bus("instr_bus")
 {
    register_bank = new Registers();
@@ -10,6 +10,7 @@ CPU::CPU(sc_module_name name): sc_module(name)
    perf = Performance::getInstance();
    log = Log::getInstance();
 
+   register_bank->setPC(PC);
    SC_THREAD(CPU_thread);
 }
 
@@ -20,6 +21,7 @@ CPU::~CPU() {
   perf->dump();
   cout << "*********************************************" << endl;
 }
+
 /**
  * main thread for CPU simulation
  * @brief CPU mai thread
@@ -49,8 +51,8 @@ void CPU::CPU_thread(void) {
       if ( trans->is_response_error() ) {
         SC_REPORT_ERROR("CPU base", "Read memory");
       } else {
-        // cout << "INSTR: " << INSTR << endl;
-        log->SC_log(Log::INFO) << "PC: " << register_bank->getPC() << endl;
+        log->SC_log(Log::INFO) << "PC: " << hex << register_bank->getPC()
+              << dec << endl;
         Instruction inst(INSTR);
 
         switch(inst.decode()) {
@@ -63,14 +65,47 @@ void CPU::CPU_thread(void) {
           case OP_JAL:
             exec->JAL(inst);
             break;
+          case OP_JALR:
+            exec->JALR(inst);
+            break;
           case OP_BEQ:
             exec->BEQ(inst);
             break;
           case OP_BNE:
             exec->BNE(inst);
             break;
+          case OP_BLT:
+            exec->BLT(inst);
+            break;
+          case OP_BGE:
+            exec->BGE(inst);
+            break;
+          case OP_BLTU:
+            exec->BLTU(inst);
+            break;
+          case OP_BGEU:
+            exec->BGEU(inst);
+            break;
+          case OP_LB:
+            exec->LB(inst);
+            break;
+          case OP_LH:
+            exec->LB(inst);
+            break;
           case OP_LW:
             exec->LW(inst);
+            break;
+          case OP_LBU:
+            exec->LBU(inst);
+            break;
+          case OP_LHU:
+            exec->LHU(inst);
+            break;
+          case OP_SB:
+            exec->SB(inst);
+            break;
+          case OP_SH:
+            exec->SH(inst);
             break;
           case OP_SW:
             exec->SW(inst);
@@ -78,30 +113,79 @@ void CPU::CPU_thread(void) {
           case OP_ADDI:
             exec->ADDI(inst);
             break;
+          case OP_SLTI:
+            exec->SLTI(inst);
+            break;
+          case OP_SLTIU:
+            exec->SLTIU(inst);
+            break;
+          case OP_XORI:
+            exec->XORI(inst);
+            break;
+          case OP_ORI:
+            exec->ORI(inst);
+            break;
+          case OP_ANDI:
+            exec->ANDI(inst);
+            break;
+          case OP_SLLI:
+            exec->SLLI(inst);
+            break;
+          case OP_SRLI:
+            exec->SRLI(inst);
+            break;
+          case OP_SRAI:
+            exec->SRAI(inst);
+            break;
           case OP_ADD:
             exec->ADD(inst);
             break;
           case OP_SUB:
             exec->SUB(inst);
             break;
+          case OP_SLL:
+            exec->SLL(inst);
+            break;
+          case OP_SLT:
+            exec->SLT(inst);
+            break;
+          case OP_SLTU:
+            exec->SLTU(inst);
+            break;
+          case OP_XOR:
+            exec->XOR(inst);
+            break;
+          case OP_SRL:
+            exec->SRL(inst);
+            break;
+          case OP_SRA:
+            exec->SRA(inst);
+            break;
+          case OP_OR:
+            exec->OR(inst);
+            break;
+          case OP_AND:
+            exec->AND(inst);
+            break;
+#if 0
+          case OP_CSRRW:
+            exec->CSRRW(inst);
+            break;
+          case OP_CSRRS:
+            exec->CSRRS(inst);
+            break;
+          case OP_CSRRC:
+            exec->CSRRC(inst);
+            break;
+#endif
           default:
+            cout << endl << "Instruction not implemented: ";
+            inst.dump();
             exec->NOP(inst);
         }
         perf->instructionsInc();
 
         register_bank->incPC();
-
-        /* Simulation control, we stop at 10 instructions (if no NOP found)*/
-        if (register_bank->getPC() == 10*4) {
-          cout << "*********************************************" << endl;
-          register_bank->dump();
-          cout << sc_time_stamp() << endl;
-          cout << "*********************************************" << endl;
-
-          perf->dump();
-
-          sc_stop();
-        }
       }
   } // while(1)
 } // CPU_thread

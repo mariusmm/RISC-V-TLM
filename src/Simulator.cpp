@@ -9,6 +9,8 @@
 
 #include "CPU.h"
 #include "Memory.h"
+#include "BusCtrl.h"
+#include "Trace.h"
 
 using namespace sc_core;
 using namespace sc_dt;
@@ -20,27 +22,42 @@ SC_MODULE(Top)
 {
   //Initiator *initiator;
   CPU    *cpu;
-  Memory    *InstrMemory;
-  Memory *DataMemory;
+  //Memory    *InstrMemory;
+  //Memory *DataMemory;
+  Memory *MainMemory;
+  BusCtrl* Bus;
+  Trace *trace;
 
+  uint32_t start_PC;
   sc_signal<bool> IRQ;
 
   SC_CTOR(Top)
   {
-    cpu    = new CPU("cpu");
-    InstrMemory = new Memory("InstrMemory", filename);
-    DataMemory = new Memory("Datamemory", false);
 
-    cpu->instr_bus.bind(InstrMemory->socket);
-    cpu->exec->data_bus.bind(DataMemory->socket);
+
+    MainMemory = new Memory("Main_Memory", filename);
+    start_PC = MainMemory->getPCfromHEX();
+
+    cpu    = new CPU("cpu", start_PC);
+
+    Bus = new BusCtrl("BusCtrl");
+    trace = new Trace("Trace");
+
+    cpu->instr_bus.bind(Bus->cpu_instr_socket);
+    cpu->exec->data_bus.bind(Bus->cpu_data_socket);
+
+    Bus->data_memory_socket.bind(MainMemory->socket);
+    Bus->trace_socket.bind(trace->socket);
+
     //cpu->interrupt.bind(IRQ);
   }
 
   ~Top() {
     cout << "Top destructor" << endl;
     delete cpu;
-    delete InstrMemory;
-    delete DataMemory;
+    delete MainMemory;
+    delete Bus;
+    delete trace;
   }
 };
 

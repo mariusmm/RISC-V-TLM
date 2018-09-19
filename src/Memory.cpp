@@ -28,6 +28,11 @@ Memory::Memory(sc_module_name name, bool use_file): sc_module(name)
     SC_THREAD(invalidation_process);
   }
 
+
+uint32_t Memory::getPCfromHEX() {
+  return program_counter;
+
+}
 void Memory::b_transport( tlm::tlm_generic_payload& trans, sc_time& delay )
 {
   tlm::tlm_command cmd = trans.get_command();
@@ -58,8 +63,8 @@ void Memory::b_transport( tlm::tlm_generic_payload& trans, sc_time& delay )
     return;
   }
 
-  // cout << "MEM: addr=" << adr << endl;
-  // cout << "MEM: data=" << mem[adr] << endl;
+  //cout << "MEM: addr=" << hex << adr << endl << endl;
+  //cout << "MEM: data=" << mem[adr] << endl;
 
   // Obliged to implement read and write commands
   if ( cmd == tlm::TLM_READ_COMMAND )
@@ -158,6 +163,7 @@ void Memory::readHexFile(string filename) {
     int byte_count;
     int address;
     int i = 0;
+    int extended_address = 0;
 
     hexfile.open(filename);
 
@@ -165,12 +171,12 @@ void Memory::readHexFile(string filename) {
       while(getline(hexfile, line) ) {
           /* # is a comentary in the file */
         if (line[0] == ':') {
-
            if (line.substr(7,2) == "00")
           {
             /* Data */
             byte_count = stol(line.substr(1,2), nullptr, 16);
             address = stol(line.substr(3,4), nullptr, 16) / 4;
+            address = address + extended_address;
 
             for (i=0; i < byte_count/4; i++) {
               mem[address+i] = stol(line.substr(9+(i*8), 2), nullptr, 16);
@@ -178,6 +184,15 @@ void Memory::readHexFile(string filename) {
               mem[address+i] |= stol(line.substr(13+(i*8),2), nullptr, 16) << 16;
               mem[address+i] |= stol(line.substr(15+(i*8),2), nullptr, 16) << 24;
               }
+          } else if (line.substr(7,2) == "02") {
+            /* Extended segment address */
+              extended_address = stol(line.substr(9,4), nullptr, 16 ) * 4;
+          } else if (line.substr(7,2) == "03") {
+            /* Start segment address */
+              uint32_t code_segment;
+              code_segment = stol(line.substr(9,4), nullptr, 16) * 16; /* ? */
+              program_counter = stol(line.substr(13,4), nullptr, 16);
+              program_counter = program_counter + code_segment;
           }
         }
       }
@@ -185,4 +200,11 @@ void Memory::readHexFile(string filename) {
     } else {
       SC_REPORT_ERROR("Memory", "Open file error");
     }
+
+#if 0
+    for(int i = 50;i<100; i++) {
+      cout << "Dump address: 0x" << hex << extended_address + i << ": 0x" <<
+      mem[extended_address+i] << dec << endl;
+    }
+#endif
 }

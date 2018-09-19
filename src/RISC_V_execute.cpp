@@ -17,7 +17,7 @@ void RISC_V_execute::LUI(Instruction &inst) {
   rd = inst.rd();
   imm = inst.imm_U() << 12;
   regs->setValue(rd, imm);
-  log->SC_log(Log::INFO) << "LUI R" << rd << " -> " << imm << endl;
+  log->SC_log(Log::INFO) << "LUI R" << rd << " <- " << imm << endl;
 
 }
 
@@ -47,10 +47,10 @@ void RISC_V_execute::JAL(Instruction &inst) {
   new_pc = regs->getPC();
   regs->setValue(rd, new_pc);
 
-  new_pc = new_pc + mem_addr;
+  new_pc = new_pc + mem_addr - 4;
   regs->setPC(new_pc);
 
-  log->SC_log(Log::INFO) << "JAL R" << rd << " PC + " << mem_addr << " -> PC (" << new_pc << ")" << endl;
+  log->SC_log(Log::INFO) << "JAL: R" << rd << " PC + " << mem_addr << " -> PC (" << new_pc << ")" << endl;
 }
 
 void RISC_V_execute::JALR(Instruction &inst) {
@@ -320,7 +320,7 @@ void RISC_V_execute::ADDI(Instruction &inst) {
   calc = regs->getValue(rs1) + imm;
   regs->setValue(rd, calc);
 
-  log->SC_log(Log::INFO) << "ADDI: R" << rs1 << " + " << imm << " -> R" << rd << endl;
+  log->SC_log(Log::INFO) << dec << "ADDI: R" << rs1 << " + " << imm << " -> R" << rd << endl;
 }
 
 void RISC_V_execute::SLTI(Instruction &inst) {
@@ -406,7 +406,7 @@ void RISC_V_execute::ANDI(Instruction &inst) {
   regs->setValue(rd, calc);
 
   log->SC_log(Log::INFO) << "ANDI: R" << rs1 << " AND " << imm
-          << "-> R" << rd << endl;
+          << " -> R" << rd << endl;
 }
 
 void RISC_V_execute::SLLI(Instruction &inst) {

@@ -30,6 +30,8 @@
 *.exe
 *.out
 *.app
+*.elf
+*.hex
 
 Log.txt
 helper.ods

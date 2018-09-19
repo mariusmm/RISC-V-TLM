@@ -2,11 +2,11 @@
 
 Registers::Registers() {
 
-  memset(register_bank, 0, sizeof(int32_t)*32);
+  memset(register_bank, 0, sizeof(int32_t)*32); // 32 registers of 32 bits each
   perf = Performance::getInstance();
 
-
-  register_PC = 0;
+  register_bank[sp] = 1024-1;  // SP points to end of memory
+  register_PC = 0x10000;       // default _start address
 }
 
 void Registers::dump(void) {

@@ -29,10 +29,10 @@ class Log {
 public:
 
   enum LogLevel{
-    INFO=0,
+    ERROR = 0,
     DEBUG,
     WARNING,
-    ERROR
+    INFO
   } currentLogLevel;
 
 

@@ -37,7 +37,7 @@ public:
 
   //sc_in<sc_signal<bool> > interrupt;
 
-  CPU(sc_module_name name);
+  CPU(sc_module_name name, uint32_t PC);
   ~CPU();
 
   RISC_V_execute *exec;

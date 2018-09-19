@@ -3,8 +3,6 @@
 
 Instruction::Instruction(sc_int<32> instr) {
   m_instr = instr;
-
-
 }
 
 opCodes Instruction::decode() {
