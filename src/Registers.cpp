@@ -48,7 +48,7 @@ void Registers::dump(void) {
   }
 #endif
 
-  cout << "PC: " << register_PC << endl;
+  cout << "PC: 0x" << hex << register_PC << endl;
   cout << "************************************" << endl;
 }
 

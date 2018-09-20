@@ -17,7 +17,7 @@ void RISC_V_execute::LUI(Instruction &inst) {
   rd = inst.rd();
   imm = inst.imm_U() << 12;
   regs->setValue(rd, imm);
-  log->SC_log(Log::INFO) << "LUI R" << rd << " <- " << imm << endl;
+  log->SC_log(Log::INFO) << "LUI R" << rd << " <- 0x" << hex << imm << endl;
 
 }
 
@@ -50,7 +50,8 @@ void RISC_V_execute::JAL(Instruction &inst) {
   new_pc = new_pc + mem_addr - 4;
   regs->setPC(new_pc);
 
-  log->SC_log(Log::INFO) << "JAL: R" << rd << " PC + " << mem_addr << " -> PC (" << new_pc << ")" << endl;
+  log->SC_log(Log::INFO) << "JAL: R" << rd << " PC + " << mem_addr
+          << " -> PC (0x" << hex << new_pc << ")" << endl;
 }
 
 void RISC_V_execute::JALR(Instruction &inst) {
@@ -64,8 +65,10 @@ void RISC_V_execute::JALR(Instruction &inst) {
   new_pc = regs->getPC();
   regs->setValue(rd, new_pc);
 
-  new_pc = (new_pc + mem_addr) & 0xFFFFFFFE;
+  new_pc = (new_pc + mem_addr - 4) & 0xFFFFFFFE;
   regs->setPC(new_pc);
+
+  log->SC_log(Log::INFO) << "JALR PC <- 0x" << hex << new_pc << endl;
 }
 
 void RISC_V_execute::BEQ(Instruction &inst) {
@@ -126,7 +129,10 @@ void RISC_V_execute::BGE(Instruction &inst) {
     regs->setPC(new_pc);
   }
 
-  log->SC_log(Log::INFO) << "BGE R" << rs1 << " > R" << rs2  << "? -> PC (" << new_pc << ")" << endl;
+  log->SC_log(Log::INFO) << "BGE R" << rs1 << "(" <<
+          (int32_t)regs->getValue(rs1) << ") > R" <<
+          rs2  << "(" << (int32_t)regs->getValue(rs2)
+          << ")? -> PC (" << new_pc << ")" << endl;
 }
 
 void RISC_V_execute::BLTU(Instruction &inst) {
@@ -249,8 +255,6 @@ void RISC_V_execute::LHU(Instruction &inst) {
           << hex <<mem_addr << dec << ") -> R" << rd << endl;
 }
 
-
-
 void RISC_V_execute::SB(Instruction &inst) {
   uint32_t mem_addr = 0;
   int rs1, rs2;
@@ -304,8 +308,9 @@ void RISC_V_execute::SW(Instruction &inst) {
 
   writeDataMem(mem_addr, data, 4);
 
-  log->SC_log(Log::INFO) << "SW: R" << rs2 << " -> R" << rs1 << " + "
-          << imm << " (@0x" << hex <<mem_addr << dec << ")" <<  endl;
+  log->SC_log(Log::INFO) << "SW: R" << dec << rs2 << "(0x" << hex << data
+          << ") -> R" << dec << rs1 << " + " << imm
+          << " (@0x" << hex << mem_addr << dec << ")" <<  endl;
 }
 
 void RISC_V_execute::ADDI(Instruction &inst) {
@@ -723,7 +728,7 @@ uint32_t RISC_V_execute::readDataMem(uint32_t addr, int size) {
 
   trans.set_command( tlm::TLM_READ_COMMAND );
   trans.set_data_ptr( reinterpret_cast<unsigned char*>(&data) );
-  trans.set_data_length( 4 );
+  trans.set_data_length( size );
   trans.set_streaming_width( 4 ); // = data_length to indicate no streaming
   trans.set_byte_enable_ptr( 0 ); // 0 indicates unused
   trans.set_dmi_allowed( false ); // Mandatory initial value

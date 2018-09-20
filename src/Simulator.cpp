@@ -43,7 +43,6 @@ SC_MODULE(Top)
 
     Bus->data_memory_socket.bind(MainMemory->socket);
     Bus->trace_socket.bind(trace->socket);
-
     //cpu->interrupt.bind(IRQ);
   }
 
