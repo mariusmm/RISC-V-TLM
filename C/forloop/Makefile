@@ -1,4 +1,4 @@
-TARGET   = trace
+TARGET   = forloop
 
 TARGET_ARCH=riscv32
 

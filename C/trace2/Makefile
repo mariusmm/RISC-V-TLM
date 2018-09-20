@@ -4,7 +4,6 @@ TARGET_ARCH=riscv32
 
 CC       = riscv32-unknown-linux-gnu-gcc
 # compiling flags here
-#CFLAGS   = -Wall -I. -O0 -nostartfiles  -march=rv32i -mabi=ilp32
 CFLAGS = -Wall -I. -O0 -nostdlib -march=rv32i -mabi=ilp32
 
 LINKER   = riscv32-unknown-linux-gnu-gcc

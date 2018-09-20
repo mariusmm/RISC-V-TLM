@@ -1,6 +1,8 @@
-li t1, 150
+li t1, 0xCAFE
 li t2, 300
-li t3, -250
-sw t1, -4(t2)
-li t1, 500
-#lw t1, -4(t2)
+li t3, 0xBEEF
+sb t1, -6(t2)
+sb t3, -13(t2)
+li t1, 23
+lbu t1, -6(t2)
+lbu t3, -13(t2)
