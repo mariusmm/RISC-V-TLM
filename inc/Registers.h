@@ -8,6 +8,7 @@
 #define REGISTERS_H
 
 #define SC_INCLUDE_DYNAMIC_PROCESSES
+#include <iomanip>
 
 #include "systemc"
 #include "tlm.h"
