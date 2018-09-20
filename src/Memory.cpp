@@ -9,7 +9,7 @@ Memory::Memory(sc_module_name name, string filename): sc_module(name)
   socket.register_get_direct_mem_ptr(this, &Memory::get_direct_mem_ptr);
   socket.register_transport_dbg(     this, &Memory::transport_dbg);
 
-  memset(mem, 0, SIZE*sizeof(int));
+  memset(mem, 0, SIZE*sizeof(uint8_t));
   // readCustomHexFile("memory.hex");
   readHexFile(filename);
 
@@ -36,7 +36,7 @@ uint32_t Memory::getPCfromHEX() {
 void Memory::b_transport( tlm::tlm_generic_payload& trans, sc_time& delay )
 {
   tlm::tlm_command cmd = trans.get_command();
-  sc_dt::uint64    adr = trans.get_address() / 4;
+  sc_dt::uint64    adr = trans.get_address();
   unsigned char*   ptr = trans.get_data_ptr();
   unsigned int     len = trans.get_data_length();
   unsigned char*   byt = trans.get_byte_enable_ptr();
@@ -64,7 +64,7 @@ void Memory::b_transport( tlm::tlm_generic_payload& trans, sc_time& delay )
   }
 
   //cout << "MEM: addr=" << hex << adr << endl << endl;
-  //cout << "MEM: data=" << mem[adr] << endl;
+  //cout << "MEM: data=" << hex << mem[adr] << endl;
 
   // Obliged to implement read and write commands
   if ( cmd == tlm::TLM_READ_COMMAND )
@@ -119,7 +119,7 @@ void Memory::invalidation_process()
 unsigned int Memory::transport_dbg(tlm::tlm_generic_payload& trans)
 {
   tlm::tlm_command cmd = trans.get_command();
-  sc_dt::uint64    adr = trans.get_address() / 4;
+  sc_dt::uint64    adr = trans.get_address();
   unsigned char*   ptr = trans.get_data_ptr();
   unsigned int     len = trans.get_data_length();
 
@@ -133,29 +133,6 @@ unsigned int Memory::transport_dbg(tlm::tlm_generic_payload& trans)
 
   return num_bytes;
 }
-
-
-void Memory::readCustomHexFile(string filename) {
-    ifstream hexfile;
-    string line;
-    int i  = 0;
-
-    hexfile.open(filename);
-    if (hexfile.is_open()) {
-      while(getline(hexfile, line) ) {
-        /* # is a comentary in the file */
-        if (line[0] != '#') {
-          cout << "i: " << i << endl;
-          mem[i] = stol(line.substr(0,8), nullptr, 16);
-          i++;
-        }
-      }
-      hexfile.close();
-    } else {
-      SC_REPORT_ERROR("Memory", "Open file error");
-    }
-}
-
 
 void Memory::readHexFile(string filename) {
     ifstream hexfile;
@@ -175,18 +152,15 @@ void Memory::readHexFile(string filename) {
           {
             /* Data */
             byte_count = stol(line.substr(1,2), nullptr, 16);
-            address = stol(line.substr(3,4), nullptr, 16) / 4;
+            address = stol(line.substr(3,4), nullptr, 16);
             address = address + extended_address;
-
-            for (i=0; i < byte_count/4; i++) {
-              mem[address+i] = stol(line.substr(9+(i*8), 2), nullptr, 16);
-              mem[address+i] |= stol(line.substr(11+(i*8),2), nullptr, 16) << 8;
-              mem[address+i] |= stol(line.substr(13+(i*8),2), nullptr, 16) << 16;
-              mem[address+i] |= stol(line.substr(15+(i*8),2), nullptr, 16) << 24;
+            
+            for (i=0; i < byte_count; i++) {
+              mem[address+i] = stol(line.substr(9+(i*2), 2), nullptr, 16);
               }
           } else if (line.substr(7,2) == "02") {
             /* Extended segment address */
-              extended_address = stol(line.substr(9,4), nullptr, 16 ) * 4;
+            extended_address = stol(line.substr(9,4), nullptr, 16) * 16;
           } else if (line.substr(7,2) == "03") {
             /* Start segment address */
               uint32_t code_segment;

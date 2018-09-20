@@ -30,7 +30,7 @@ public:
   // TLM-2 socket, defaults to 32-bits wide, base protocol
   tlm_utils::simple_target_socket<Memory> socket;
 
-  enum { SIZE = 1024 * 1024 };
+  enum { SIZE = 1024 * 1024 * 16 };
   const sc_time LATENCY;
 
   Memory(sc_module_name name, string filename);
@@ -57,15 +57,9 @@ public:
   virtual unsigned int transport_dbg(tlm::tlm_generic_payload& trans);
 
 private:
-  int mem[SIZE];
+  uint8_t mem[SIZE];
 
   uint32_t program_counter;
-  /**
-   * Reads file and stores in Code Memory. Uses propietary file format
-   * @brief Reads file and stores in Code Memory
-   * @param filename File name
-   */
-  virtual void readCustomHexFile(string filename);
 
   /**
    * @brief Read Intel hex file
