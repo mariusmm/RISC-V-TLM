@@ -1,4 +1,4 @@
-TARGET   = trace3
+TARGET   = func1
 
 TARGET_ARCH=riscv32
 
