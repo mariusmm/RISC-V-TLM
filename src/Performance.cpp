@@ -14,7 +14,7 @@ Performance::Performance()
 {}
 
 void Performance::dump() {
-  cout << "# data memory reads: "  << data_memory_read << endl;
+  cout << dec << "# data memory reads: "  << data_memory_read << endl;
   cout << "# data memory writes: " << data_memory_write << endl;
   cout << "# code memory reads: "  << code_memory_read << endl;
   cout << "# code memory writes: " << code_memory_write << endl;

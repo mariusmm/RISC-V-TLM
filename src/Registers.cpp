@@ -12,47 +12,47 @@ Registers::Registers() {
 void Registers::dump(void) {
   cout << "************************************" << endl;
   cout << "Registers dump" << dec << endl;
-  cout << "x0 (zero):  " << left << setw(8) << register_bank[0];
-  cout << "x1 (ra):    " << left << setw(8) << register_bank[1];
-  cout << "x2 (sp):    " << left << setw(8) << register_bank[2];
-  cout << "x3 (gp):    " << left << setw(8) << register_bank[3] << endl;
+  cout << "x0 (zero):  " << right << setw(11) << register_bank[0];
+  cout << " x1 (ra):    " << right << setw(11) << register_bank[1];
+  cout << " x2 (sp):    " << right << setw(11) << register_bank[2];
+  cout << " x3 (gp):    " << right << setw(11) << register_bank[3] << endl;
 
-  cout << "x4 (tp):    " << left << setw(8) << register_bank[4];
-  cout << "x5 (t0):    " << left << setw(8) << register_bank[5];
-  cout << "x6 (t1):    " << left << setw(8) << register_bank[6];
-  cout << "x7 (t2):    " << left << setw(8) << register_bank[7] << endl;
+  cout << "x4 (tp):    " << right << setw(11) << register_bank[4];
+  cout << " x5 (t0):    " << right << setw(11) << register_bank[5];
+  cout << " x6 (t1):    " << right << setw(11) << register_bank[6];
+  cout << " x7 (t2):    " << right << setw(11) << register_bank[7] << endl;
 
-  cout << "x8 (s0/fp): " << left << setw(8) << register_bank[8];
-  cout << "x9 (s1):    " << left << setw(8) << register_bank[9];
-  cout << "x10 (a0):   " << left << setw(8) << register_bank[10];
-  cout << "x11 (a1):   " << left << setw(8) << register_bank[11] << endl;
+  cout << "x8 (s0/fp): " << right << setw(11) << register_bank[8];
+  cout << " x9 (s1):    " << right << setw(11) << register_bank[9];
+  cout << " x10 (a0):   " << right << setw(11) << register_bank[10];
+  cout << " x11 (a1):   " << right << setw(11) << register_bank[11] << endl;
 
-  cout << "x12 (a2):   " << left << setw(8) << register_bank[12];
-  cout << "x13 (a3):   " << left << setw(8) << register_bank[13];
-  cout << "x14 (a4):   " << left << setw(8) << register_bank[14];
-  cout << "x15 (a5):   " << left << setw(8) << register_bank[15] << endl;
+  cout << "x12 (a2):   " << right << setw(11) << register_bank[12];
+  cout << " x13 (a3):   " << right << setw(11) << register_bank[13];
+  cout << " x14 (a4):   " << right << setw(11) << register_bank[14];
+  cout << " x15 (a5):   " << right << setw(11) << register_bank[15] << endl;
 
-  cout << "x16 (a6):   " << left << setw(8) << register_bank[16];
-  cout << "x17 (a7):   " << left << setw(8) << register_bank[17];
-  cout << "x18 (s2):   " << left << setw(8) << register_bank[18];
-  cout << "x19 (s3):   " << left << setw(8) << register_bank[19] << endl;
+  cout << "x16 (a6):   " << right << setw(11) << register_bank[16];
+  cout << " x17 (a7):   " << right << setw(11) << register_bank[17];
+  cout << " x18 (s2):   " << right << setw(11) << register_bank[18];
+  cout << " x19 (s3):   " << right << setw(11) << register_bank[19] << endl;
 
-  cout << "x20 (s4):   " << left << setw(8) << register_bank[16];
-  cout << "x21 (s5):   " << left << setw(8) << register_bank[17];
-  cout << "x22 (s6):   " << left << setw(8) << register_bank[18];
-  cout << "x23 (s7):   " << left << setw(8) << register_bank[19] << endl;
+  cout << "x20 (s4):   " << right << setw(11) << register_bank[16];
+  cout << " x21 (s5):   " << right << setw(11) << register_bank[17];
+  cout << " x22 (s6):   " << right << setw(11) << register_bank[18];
+  cout << " x23 (s7):   " << right << setw(11) << register_bank[19] << endl;
 
-  cout << "x24 (s8):   " << left << setw(8) << register_bank[16];
-  cout << "x25 (s9):   " << left << setw(8) << register_bank[17];
-  cout << "x26 (s10):  " << left << setw(8) << register_bank[18];
-  cout << "x27 (s11):  " << left << setw(8) << register_bank[19] << endl;
+  cout << "x24 (s8):   " << right << setw(11) << register_bank[16];
+  cout << " x25 (s9):   " << right << setw(11) << register_bank[17];
+  cout << " x26 (s10):  " << right << setw(11) << register_bank[18];
+  cout << " x27 (s11):  " << right << setw(11) << register_bank[19] << endl;
 
-  cout << "x28 (t3):   " << left << setw(8) << register_bank[16];
-  cout << "x29 (t4):   " << left << setw(8) << register_bank[17];
-  cout << "x30 (t5):   " << left << setw(8) << register_bank[18];
-  cout << "x31 (t6):   " << left << setw(8) << register_bank[19] << endl;
+  cout << "x28 (t3):   " << right << setw(11) << register_bank[16];
+  cout << " x29 (t4):   " << right << setw(11) << register_bank[17];
+  cout << " x30 (t5):   " << right << setw(11) << register_bank[18];
+  cout << " x31 (t6):   " << right << setw(11) << register_bank[19] << endl;
 
-  cout << "PC: 0x" << hex << left << setw(8) << register_PC << endl;
+  cout << "PC: 0x" << hex << register_PC << endl;
   cout << "************************************" << endl;
 }
 
