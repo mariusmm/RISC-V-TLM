@@ -39,36 +39,43 @@ void RISC_V_execute::AUIPC(Instruction &inst) {
 void RISC_V_execute::JAL(Instruction &inst) {
   int32_t mem_addr = 0;
   int rd;
-  int new_pc;
+  int new_pc, old_pc;
 
   rd = inst.rd();
   mem_addr = inst.imm_J();
 
-  new_pc = regs->getPC();
-  regs->setValue(rd, new_pc);
+  old_pc = regs->getPC();
 
-  new_pc = new_pc + mem_addr - 4;
+
+  new_pc = old_pc + mem_addr;
   regs->setPC(new_pc);
 
-  log->SC_log(Log::INFO) << "JAL: R" << rd << " PC + " << mem_addr
-          << " -> PC (0x" << hex << new_pc << ")" << endl;
+  old_pc = old_pc + 4;
+  regs->setValue(rd, old_pc);
+
+  log->SC_log(Log::INFO) << dec << "JAL: R" << rd << " <- 0x" << hex << old_pc
+          << dec << " PC + " << mem_addr << " -> PC (0x"
+          << hex << new_pc << ")" << endl;
 }
 
 void RISC_V_execute::JALR(Instruction &inst) {
   uint32_t mem_addr = 0;
-  int rd;
-  int new_pc;
+  int rd, rs1;
+  int new_pc, old_pc;
 
   rd = inst.rd();
+  rs1 = inst.rs1();
   mem_addr = inst.imm_I();
 
-  new_pc = regs->getPC();
-  regs->setValue(rd, new_pc);
+  old_pc = regs->getPC();
+  regs->setValue(rd, old_pc + 4);
 
-  new_pc = (new_pc + mem_addr - 4) & 0xFFFFFFFE;
+
+  new_pc = (regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE;
   regs->setPC(new_pc);
 
-  log->SC_log(Log::INFO) << "JALR PC <- 0x" << hex << new_pc << endl;
+  log->SC_log(Log::INFO) << "JALR: R" << dec << rd << " <- 0x" << hex << old_pc + 4
+          << " PC <- 0x" << hex << new_pc << endl;
 }
 
 void RISC_V_execute::BEQ(Instruction &inst) {
@@ -79,8 +86,10 @@ void RISC_V_execute::BEQ(Instruction &inst) {
   rs2 = inst.rs2();
 
   if (regs->getValue(rs1) == regs->getValue(rs2)) {
-    new_pc = regs->getPC() + inst.imm_B() - 4;
+    new_pc = regs->getPC() + inst.imm_B();
     regs->setPC(new_pc);
+  } else {
+    regs->incPC();
   }
 
   log->SC_log(Log::INFO) << "BEQ R" << rs1 << " == R" << rs2  << "? -> PC (" << new_pc << ")" << endl;
@@ -90,16 +99,24 @@ void RISC_V_execute::BEQ(Instruction &inst) {
 void RISC_V_execute::BNE(Instruction &inst) {
   int rs1, rs2;
   int new_pc = 0;
+  uint32_t val1, val2;
 
   rs1 = inst.rs1();
   rs2 = inst.rs2();
 
-  if (regs->getValue(rs1) != regs->getValue(rs2)) {
-    new_pc = regs->getPC() + inst.imm_B() - 4;
+  val1 = regs->getValue(rs1);
+  val2 = regs->getValue(rs2);
+
+  if (val1 != val2) {
+    new_pc = regs->getPC() + inst.imm_B();
     regs->setPC(new_pc);
+  } else {
+    regs->incPC();
   }
 
-  log->SC_log(Log::INFO) << "BNE R" << rs1 << " == R" << rs2  << "? -> PC (" << new_pc << ")" << endl;
+  log->SC_log(Log::INFO) << "BNE: R" << rs1 << "(" <<  val1
+          << ") == R"  << rs2  << "(" << val2 << ")? -> PC ("
+          << new_pc << ")" << endl;
 }
 
 void RISC_V_execute::BLT(Instruction &inst) {
@@ -110,8 +127,10 @@ void RISC_V_execute::BLT(Instruction &inst) {
   rs2 = inst.rs2();
 
   if ((int32_t)regs->getValue(rs1) < (int32_t)regs->getValue(rs2)) {
-    new_pc = regs->getPC() + inst.imm_B() - 4;
+    new_pc = regs->getPC() + inst.imm_B();
     regs->setPC(new_pc);
+  } else {
+    regs->incPC();
   }
 
   log->SC_log(Log::INFO) << "BLT R" << rs1 << " < R" << rs2  << "? -> PC (" << new_pc << ")" << endl;
@@ -125,8 +144,10 @@ void RISC_V_execute::BGE(Instruction &inst) {
   rs2 = inst.rs2();
 
   if ((int32_t)regs->getValue(rs1) >= (int32_t)regs->getValue(rs2)) {
-    new_pc = regs->getPC() + inst.imm_B() - 4;
+    new_pc = regs->getPC() + inst.imm_B();
     regs->setPC(new_pc);
+  } else {
+    regs->incPC();
   }
 
   log->SC_log(Log::INFO) << "BGE R" << rs1 << "(" <<
@@ -143,8 +164,10 @@ void RISC_V_execute::BLTU(Instruction &inst) {
   rs2 = inst.rs2();
 
   if (regs->getValue(rs1) < regs->getValue(rs2)) {
-    new_pc = regs->getPC() + inst.imm_B() - 4;
+    new_pc = regs->getPC() + inst.imm_B();
     regs->setPC(new_pc);
+  } else {
+    regs->incPC();
   }
 
   log->SC_log(Log::INFO) << "BLTU R" << rs1 << " < R" << rs2  << "? -> PC (" << new_pc << ")" << endl;
@@ -158,8 +181,10 @@ void RISC_V_execute::BGEU(Instruction &inst) {
   rs2 = inst.rs2();
 
   if (regs->getValue(rs1) >= regs->getValue(rs2)) {
-    new_pc = regs->getPC() + inst.imm_B() - 4;
+    new_pc = regs->getPC() + inst.imm_B();
     regs->setPC(new_pc);
+  } else {
+    regs->incPC();
   }
 
   log->SC_log(Log::INFO) << "BGEU R" << rs1 << " > R" << rs2  << "? -> PC (" << new_pc << ")" << endl;
@@ -716,10 +741,10 @@ void RISC_V_execute::NOP(Instruction &inst) {
 }
 
 /**
- * Access data memory to get data for LOAD & STORE OPs
- * @note NOT IMPLEMENTED YET
+ * Access data memory to get data for LOAD OPs
  * @param  addr address to access to
- * @return      data value read
+ * @param size size of the data to read in bytes
+ * @return data value read
  */
 uint32_t RISC_V_execute::readDataMem(uint32_t addr, int size) {
   uint32_t data;
@@ -740,7 +765,13 @@ uint32_t RISC_V_execute::readDataMem(uint32_t addr, int size) {
   return data;
 }
 
-
+/**
+ * Acces data memory to write data for STORE ops
+ * @brief
+ * @param addr addr address to access to
+ * @param data data to write
+ * @param size size of the data to write in bytes
+ */
 void RISC_V_execute::writeDataMem(uint32_t addr, uint32_t data, int size) {
   tlm::tlm_generic_payload trans;
   sc_time delay = SC_ZERO_TIME;
