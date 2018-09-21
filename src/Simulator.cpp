@@ -1,3 +1,10 @@
+/*!
+   \file Simulator.cpp
+   \brief Top level simulation entity
+   \author Màrius Montón
+   \date September 2018
+*/
+
 #define SC_INCLUDE_DYNAMIC_PROCESSES
 
 #include "systemc"
@@ -18,7 +25,14 @@ using namespace std;
 
 string filename;
 
-SC_MODULE(Top)
+/**
+ * @class Simulator
+ * This class instiates all necessary modules, connects its ports and starts
+ * the simulation.
+ *
+ * @brief Top simulation entity
+ */
+SC_MODULE(Simulator)
 {
   CPU    *cpu;
   Memory *MainMemory;
@@ -28,7 +42,7 @@ SC_MODULE(Top)
   uint32_t start_PC;
   sc_signal<bool> IRQ;
 
-  SC_CTOR(Top)
+  SC_CTOR(Simulator)
   {
     MainMemory = new Memory("Main_Memory", filename);
     start_PC = MainMemory->getPCfromHEX();
@@ -41,13 +55,13 @@ SC_MODULE(Top)
     cpu->instr_bus.bind(Bus->cpu_instr_socket);
     cpu->exec->data_bus.bind(Bus->cpu_data_socket);
 
-    Bus->data_memory_socket.bind(MainMemory->socket);
+    Bus->memory_socket.bind(MainMemory->socket);
     Bus->trace_socket.bind(trace->socket);
     //cpu->interrupt.bind(IRQ);
   }
 
-  ~Top() {
-    cout << "Top destructor" << endl;
+  ~Simulator() {
+    cout << "Simulator destructor" << endl;
     delete cpu;
     delete MainMemory;
     delete Bus;
@@ -55,7 +69,7 @@ SC_MODULE(Top)
   }
 };
 
-Top *top;
+Simulator *top;
 
 void intHandler(int dummy) {
   delete top;
@@ -74,7 +88,7 @@ int sc_main(int argc, char* argv[])
   }
   filename = argv[1];
 
-  top = new Top("top");
+  top = new Simulator("top");
   sc_start();
   return 0;
 }

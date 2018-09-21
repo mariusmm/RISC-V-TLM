@@ -12,7 +12,9 @@ Brief description of the modules:
 * Registers: Implements the register file, PC register & CSR registers
 * RISC_V_execute: Executes ISA instructions
 * Instruction: Decodes instruction and acces to any instruction field
-* Simulation: Top-level entity that builds & starts the simulation
+* Simulator: Top-level entity that builds & starts the simulation
+* BusCtrl: Simple bus manager
+* Trace: Simple trace peripheral
 
 Current performance is about 284500 instructions / sec in a Core-i5@2.2Ghz
 

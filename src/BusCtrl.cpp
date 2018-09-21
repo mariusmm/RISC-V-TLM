@@ -4,7 +4,7 @@ SC_HAS_PROCESS(BusCtrl);
 BusCtrl::BusCtrl(sc_module_name name): sc_module(name)
   ,cpu_instr_socket("cpu_instr_socket")
   ,cpu_data_socket("cpu_data_socket")
-  ,data_memory_socket("data_memory_socket")
+  ,memory_socket("memory_socket")
   ,trace_socket("trace_socket")
    {
     cpu_instr_socket.register_b_transport(this, &BusCtrl::b_transport);
@@ -14,13 +14,13 @@ BusCtrl::BusCtrl(sc_module_name name): sc_module(name)
 
 
 void BusCtrl::b_transport( tlm::tlm_generic_payload& trans, sc_time& delay ) {
-    tlm::tlm_command cmd = trans.get_command();
+    //tlm::tlm_command cmd = trans.get_command();
     sc_dt::uint64    adr = trans.get_address() / 4;
 
     if (adr == TRACE_MEMORY_ADDRESS / 4) {
       trace_socket->b_transport(trans, delay);
     } else {
-      data_memory_socket->b_transport(trans, delay);
+      memory_socket->b_transport(trans, delay);
     }
 
 #if 0

@@ -21,7 +21,11 @@
 using namespace sc_core;
 using namespace sc_dt;
 using namespace std;
-
+/**
+ * @brief Simple trace peripheral
+ *
+ * This peripheral outputs to cout any character written to its unique register
+ */
 class Trace: sc_module {
 public:
     // TLM-2 socket, defaults to 32-bits wide, base protocol
