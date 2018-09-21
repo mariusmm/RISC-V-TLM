@@ -17,7 +17,7 @@ CPU::CPU(sc_module_name name, uint32_t PC): sc_module(name)
 CPU::~CPU() {
   cout << "*********************************************" << endl;
   register_bank->dump();
-  cout << sc_time_stamp() << endl;
+  cout << "end time: " << sc_time_stamp() << endl;
   perf->dump();
   cout << "*********************************************" << endl;
 }
@@ -31,6 +31,7 @@ void CPU::CPU_thread(void) {
   tlm::tlm_generic_payload* trans = new tlm::tlm_generic_payload;
   int32_t INSTR;
   sc_time delay = SC_ZERO_TIME;
+  bool PC_not_affected = true;
 
   trans->set_command( tlm::TLM_READ_COMMAND );
   trans->set_data_ptr( reinterpret_cast<unsigned char*>(&INSTR) );
@@ -46,6 +47,7 @@ void CPU::CPU_thread(void) {
       /* Get new PC value */
       trans->set_address( register_bank->getPC() );
       instr_bus->b_transport( *trans, delay);
+
       perf->codeMemoryRead();
 
       if ( trans->is_response_error() ) {
@@ -55,6 +57,7 @@ void CPU::CPU_thread(void) {
               << dec << endl;
         Instruction inst(INSTR);
 
+        PC_not_affected = true;
         switch(inst.decode()) {
           case OP_LUI:
             exec->LUI(inst);
@@ -64,27 +67,35 @@ void CPU::CPU_thread(void) {
             break;
           case OP_JAL:
             exec->JAL(inst);
+            PC_not_affected = false;
             break;
           case OP_JALR:
             exec->JALR(inst);
+            PC_not_affected = false;
             break;
           case OP_BEQ:
             exec->BEQ(inst);
+            PC_not_affected = false;
             break;
           case OP_BNE:
             exec->BNE(inst);
+            PC_not_affected = false;
             break;
           case OP_BLT:
             exec->BLT(inst);
+            PC_not_affected = false;
             break;
           case OP_BGE:
             exec->BGE(inst);
+            PC_not_affected = false;
             break;
           case OP_BLTU:
             exec->BLTU(inst);
+            PC_not_affected = false;
             break;
           case OP_BGEU:
             exec->BGEU(inst);
+            PC_not_affected = false;
             break;
           case OP_LB:
             exec->LB(inst);
@@ -185,7 +196,9 @@ void CPU::CPU_thread(void) {
         }
         perf->instructionsInc();
 
-        register_bank->incPC();
+        if (PC_not_affected == true) {
+          register_bank->incPC();
+        }
       }
   } // while(1)
 } // CPU_thread
