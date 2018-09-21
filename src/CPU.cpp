@@ -6,7 +6,7 @@ CPU::CPU(sc_module_name name, uint32_t PC): sc_module(name)
 , instr_bus("instr_bus")
 {
    register_bank = new Registers();
-   exec = new RISC_V_execute("RISC_V_execute", register_bank);
+   exec = new Execute("Execute", register_bank);
    perf = Performance::getInstance();
    log = Log::getInstance();
 

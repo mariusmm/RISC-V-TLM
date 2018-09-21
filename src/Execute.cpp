@@ -1,7 +1,7 @@
-#include "RISC_V_execute.h"
+#include "Execute.h"
 
-SC_HAS_PROCESS(RISC_V_execute);
-RISC_V_execute::RISC_V_execute(sc_module_name name
+SC_HAS_PROCESS(Execute);
+Execute::Execute(sc_module_name name
   , Registers *register_bank)
   : sc_module(name)
   , data_bus("data_bus")
@@ -10,7 +10,7 @@ RISC_V_execute::RISC_V_execute(sc_module_name name
     log = Log::getInstance();
 }
 
-void RISC_V_execute::LUI(Instruction &inst) {
+void Execute::LUI(Instruction &inst) {
   int rd;
   uint32_t imm = 0;
 
@@ -21,7 +21,7 @@ void RISC_V_execute::LUI(Instruction &inst) {
 
 }
 
-void RISC_V_execute::AUIPC(Instruction &inst) {
+void Execute::AUIPC(Instruction &inst) {
   int rd;
   uint32_t imm = 0;
   int new_pc;
@@ -36,7 +36,7 @@ void RISC_V_execute::AUIPC(Instruction &inst) {
   log->SC_log(Log::INFO) << "AUIPC R" << rd << " + PC -> PC (" << new_pc << ")" << endl;
 }
 
-void RISC_V_execute::JAL(Instruction &inst) {
+void Execute::JAL(Instruction &inst) {
   int32_t mem_addr = 0;
   int rd;
   int new_pc, old_pc;
@@ -58,7 +58,7 @@ void RISC_V_execute::JAL(Instruction &inst) {
           << hex << new_pc << ")" << endl;
 }
 
-void RISC_V_execute::JALR(Instruction &inst) {
+void Execute::JALR(Instruction &inst) {
   uint32_t mem_addr = 0;
   int rd, rs1;
   int new_pc, old_pc;
@@ -78,7 +78,7 @@ void RISC_V_execute::JALR(Instruction &inst) {
           << " PC <- 0x" << hex << new_pc << endl;
 }
 
-void RISC_V_execute::BEQ(Instruction &inst) {
+void Execute::BEQ(Instruction &inst) {
   int rs1, rs2;
   int new_pc = 0;
 
@@ -96,7 +96,7 @@ void RISC_V_execute::BEQ(Instruction &inst) {
 
 }
 
-void RISC_V_execute::BNE(Instruction &inst) {
+void Execute::BNE(Instruction &inst) {
   int rs1, rs2;
   int new_pc = 0;
   uint32_t val1, val2;
@@ -119,7 +119,7 @@ void RISC_V_execute::BNE(Instruction &inst) {
           << new_pc << ")" << endl;
 }
 
-void RISC_V_execute::BLT(Instruction &inst) {
+void Execute::BLT(Instruction &inst) {
   int rs1, rs2;
   int new_pc = 0;
 
@@ -136,7 +136,7 @@ void RISC_V_execute::BLT(Instruction &inst) {
   log->SC_log(Log::INFO) << "BLT R" << rs1 << " < R" << rs2  << "? -> PC (" << new_pc << ")" << endl;
 }
 
-void RISC_V_execute::BGE(Instruction &inst) {
+void Execute::BGE(Instruction &inst) {
   int rs1, rs2;
   int new_pc = 0;
 
@@ -156,7 +156,7 @@ void RISC_V_execute::BGE(Instruction &inst) {
           << ")? -> PC (" << new_pc << ")" << endl;
 }
 
-void RISC_V_execute::BLTU(Instruction &inst) {
+void Execute::BLTU(Instruction &inst) {
   int rs1, rs2;
   int new_pc = 0;
 
@@ -173,7 +173,7 @@ void RISC_V_execute::BLTU(Instruction &inst) {
   log->SC_log(Log::INFO) << "BLTU R" << rs1 << " < R" << rs2  << "? -> PC (" << new_pc << ")" << endl;
 }
 
-void RISC_V_execute::BGEU(Instruction &inst) {
+void Execute::BGEU(Instruction &inst) {
   int rs1, rs2;
   int new_pc = 0;
 
@@ -190,7 +190,7 @@ void RISC_V_execute::BGEU(Instruction &inst) {
   log->SC_log(Log::INFO) << "BGEU R" << rs1 << " > R" << rs2  << "? -> PC (" << new_pc << ")" << endl;
 }
 
-void RISC_V_execute::LB(Instruction &inst) {
+void Execute::LB(Instruction &inst) {
   uint32_t mem_addr = 0;
   int rd, rs1;
   int32_t imm = 0;
@@ -208,7 +208,7 @@ void RISC_V_execute::LB(Instruction &inst) {
           << hex <<mem_addr << dec << ") -> R" << rd << endl;
 }
 
-void RISC_V_execute::LH(Instruction &inst) {
+void Execute::LH(Instruction &inst) {
   uint32_t mem_addr = 0;
   int rd, rs1;
   int32_t imm = 0;
@@ -226,7 +226,7 @@ void RISC_V_execute::LH(Instruction &inst) {
           << hex <<mem_addr << dec << ") -> R" << rd << endl;
 }
 
-void RISC_V_execute::LW(Instruction &inst) {
+void Execute::LW(Instruction &inst) {
   uint32_t mem_addr = 0;
   int rd, rs1;
   int32_t imm = 0;
@@ -244,7 +244,7 @@ void RISC_V_execute::LW(Instruction &inst) {
           << hex <<mem_addr << dec << ") -> R" << rd << endl;
 }
 
-void RISC_V_execute::LBU(Instruction &inst) {
+void Execute::LBU(Instruction &inst) {
   uint32_t mem_addr = 0;
   int rd, rs1;
   int32_t imm = 0;
@@ -262,7 +262,7 @@ void RISC_V_execute::LBU(Instruction &inst) {
           << hex <<mem_addr << dec << ") -> R" << rd << endl;
 }
 
-void RISC_V_execute::LHU(Instruction &inst) {
+void Execute::LHU(Instruction &inst) {
   uint32_t mem_addr = 0;
   int rd, rs1;
   int32_t imm = 0;
@@ -280,7 +280,7 @@ void RISC_V_execute::LHU(Instruction &inst) {
           << hex <<mem_addr << dec << ") -> R" << rd << endl;
 }
 
-void RISC_V_execute::SB(Instruction &inst) {
+void Execute::SB(Instruction &inst) {
   uint32_t mem_addr = 0;
   int rs1, rs2;
   int32_t imm = 0;
@@ -299,7 +299,7 @@ void RISC_V_execute::SB(Instruction &inst) {
           << imm << " (@0x" << hex <<mem_addr << dec << ")" <<  endl;
 }
 
-void RISC_V_execute::SH(Instruction &inst) {
+void Execute::SH(Instruction &inst) {
   uint32_t mem_addr = 0;
   int rs1, rs2;
   int32_t imm = 0;
@@ -318,7 +318,7 @@ void RISC_V_execute::SH(Instruction &inst) {
           << imm << " (@0x" << hex <<mem_addr << dec << ")" <<  endl;
 }
 
-void RISC_V_execute::SW(Instruction &inst) {
+void Execute::SW(Instruction &inst) {
   uint32_t mem_addr = 0;
   int rs1, rs2;
   int32_t imm = 0;
@@ -338,7 +338,7 @@ void RISC_V_execute::SW(Instruction &inst) {
           << " (@0x" << hex << mem_addr << dec << ")" <<  endl;
 }
 
-void RISC_V_execute::ADDI(Instruction &inst) {
+void Execute::ADDI(Instruction &inst) {
   int rd, rs1;
   int32_t imm = 0;
   int32_t calc;
@@ -353,7 +353,7 @@ void RISC_V_execute::ADDI(Instruction &inst) {
   log->SC_log(Log::INFO) << dec << "ADDI: R" << rs1 << " + " << imm << " -> R" << rd << endl;
 }
 
-void RISC_V_execute::SLTI(Instruction &inst) {
+void Execute::SLTI(Instruction &inst) {
   int rd, rs1;
   int32_t imm;
 
@@ -372,7 +372,7 @@ void RISC_V_execute::SLTI(Instruction &inst) {
   }
 }
 
-void RISC_V_execute::SLTIU(Instruction &inst) {
+void Execute::SLTIU(Instruction &inst) {
   int rd, rs1;
   int32_t imm;
 
@@ -391,7 +391,7 @@ void RISC_V_execute::SLTIU(Instruction &inst) {
   }
 }
 
-void RISC_V_execute::XORI(Instruction &inst) {
+void Execute::XORI(Instruction &inst) {
   int rd, rs1;
   int32_t imm;
   uint32_t calc;
@@ -407,7 +407,7 @@ void RISC_V_execute::XORI(Instruction &inst) {
           << "-> R" << rd << endl;
 }
 
-void RISC_V_execute::ORI(Instruction &inst) {
+void Execute::ORI(Instruction &inst) {
   int rd, rs1;
   int32_t imm;
   uint32_t calc;
@@ -423,7 +423,7 @@ void RISC_V_execute::ORI(Instruction &inst) {
           << "-> R" << rd << endl;
 }
 
-void RISC_V_execute::ANDI(Instruction &inst) {
+void Execute::ANDI(Instruction &inst) {
   int rd, rs1;
   int32_t imm;
   uint32_t calc;
@@ -439,7 +439,7 @@ void RISC_V_execute::ANDI(Instruction &inst) {
           << " -> R" << rd << endl;
 }
 
-void RISC_V_execute::SLLI(Instruction &inst) {
+void Execute::SLLI(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t shift;
   uint32_t calc;
@@ -456,7 +456,7 @@ void RISC_V_execute::SLLI(Instruction &inst) {
   log->SC_log(Log::INFO) << "SLLI: R" << rs1 << " << " << shift << " -> R" << rd << endl;
 }
 
-void RISC_V_execute::SRLI(Instruction &inst) {
+void Execute::SRLI(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t shift;
   uint32_t calc;
@@ -473,7 +473,7 @@ void RISC_V_execute::SRLI(Instruction &inst) {
   log->SC_log(Log::INFO) << "SRLI: R" << rs1 << " >> " << shift << " -> R" << rd << endl;
 }
 
-void RISC_V_execute::SRAI(Instruction &inst) {
+void Execute::SRAI(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t shift;
   int32_t calc;
@@ -490,7 +490,7 @@ void RISC_V_execute::SRAI(Instruction &inst) {
   log->SC_log(Log::INFO) << "SRAI: R" << rs1 << " >> " << shift << " -> R" << rd << endl;
 }
 
-void RISC_V_execute::ADD(Instruction &inst) {
+void Execute::ADD(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t calc;
   rd = inst.rd();
@@ -503,7 +503,7 @@ void RISC_V_execute::ADD(Instruction &inst) {
   log->SC_log(Log::INFO) << "ADD: R" << rs1 << " + R" << rs2 << " -> R" << rd << endl;
 }
 
-void RISC_V_execute::SUB(Instruction &inst) {
+void Execute::SUB(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t calc;
   rd = inst.rd();
@@ -518,7 +518,7 @@ void RISC_V_execute::SUB(Instruction &inst) {
   log->SC_log(Log::INFO) << "SUB: R" << rs1 << " - R" << rs2 << " -> R" << rd << endl;
 }
 
-void RISC_V_execute::SLL(Instruction &inst) {
+void Execute::SLL(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t shift;
   uint32_t calc;
@@ -537,7 +537,7 @@ void RISC_V_execute::SLL(Instruction &inst) {
 
 
 /** */
-void RISC_V_execute::SLT(Instruction &inst) {
+void Execute::SLT(Instruction &inst) {
   int rd, rs1, rs2;
 
   rd = inst.rd();
@@ -556,7 +556,7 @@ void RISC_V_execute::SLT(Instruction &inst) {
 }
 
 
-void RISC_V_execute::SLTU(Instruction &inst) {
+void Execute::SLTU(Instruction &inst) {
   int rd, rs1, rs2;
 
   rd = inst.rd();
@@ -575,7 +575,7 @@ void RISC_V_execute::SLTU(Instruction &inst) {
 }
 
 
-void RISC_V_execute::XOR(Instruction &inst) {
+void Execute::XOR(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t calc;
 
@@ -592,7 +592,7 @@ void RISC_V_execute::XOR(Instruction &inst) {
 
 
 
-void RISC_V_execute::SRL(Instruction &inst) {
+void Execute::SRL(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t shift;
   uint32_t calc;
@@ -609,7 +609,7 @@ void RISC_V_execute::SRL(Instruction &inst) {
   log->SC_log(Log::INFO) << "SRL: R" << rs1 << " >> " << shift << " -> R" << rd << endl;
 }
 
-void RISC_V_execute::SRA(Instruction &inst) {
+void Execute::SRA(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t shift;
   int32_t calc;
@@ -627,7 +627,7 @@ void RISC_V_execute::SRA(Instruction &inst) {
 }
 
 
-void RISC_V_execute::OR(Instruction &inst) {
+void Execute::OR(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t calc;
 
@@ -643,7 +643,7 @@ void RISC_V_execute::OR(Instruction &inst) {
 }
 
 
-void RISC_V_execute::AND(Instruction &inst) {
+void Execute::AND(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t calc;
 
@@ -658,7 +658,7 @@ void RISC_V_execute::AND(Instruction &inst) {
           << "-> R" << rd << endl;
 }
 
-void RISC_V_execute::CSRRW(Instruction &inst) {
+void Execute::CSRRW(Instruction &inst) {
   int rd, rs1;
   int csr;
   uint32_t aux;
@@ -681,7 +681,7 @@ void RISC_V_execute::CSRRW(Instruction &inst) {
           << ". R" << rs1 << "-> CSR #" << csr << endl;
 }
 
-void RISC_V_execute::CSRRS(Instruction &inst) {
+void Execute::CSRRS(Instruction &inst) {
   int rd, rs1;
   int csr;
   uint32_t bitmask, aux;
@@ -706,7 +706,7 @@ void RISC_V_execute::CSRRS(Instruction &inst) {
           << ". R" << rs1 << " & CSR #" << csr << endl;
 }
 
-void RISC_V_execute::CSRRC(Instruction &inst) {
+void Execute::CSRRC(Instruction &inst) {
   int rd, rs1;
   int csr;
   uint32_t bitmask, aux;
@@ -731,13 +731,13 @@ void RISC_V_execute::CSRRC(Instruction &inst) {
           << ". R" << rs1 << " & CSR #" << csr << endl;
 }
 
-void RISC_V_execute::NOP(Instruction &inst) {
+void Execute::NOP(Instruction &inst) {
   cout << endl;
   regs->dump();
   cout << "Simulation time " << sc_time_stamp() << endl;
   perf->dump();
 
-  SC_REPORT_ERROR("RISC_V_execute", "NOP");
+  SC_REPORT_ERROR("Execute", "NOP");
 }
 
 /**
@@ -746,7 +746,7 @@ void RISC_V_execute::NOP(Instruction &inst) {
  * @param size size of the data to read in bytes
  * @return data value read
  */
-uint32_t RISC_V_execute::readDataMem(uint32_t addr, int size) {
+uint32_t Execute::readDataMem(uint32_t addr, int size) {
   uint32_t data;
   tlm::tlm_generic_payload trans;
   sc_time delay = SC_ZERO_TIME;
@@ -772,7 +772,7 @@ uint32_t RISC_V_execute::readDataMem(uint32_t addr, int size) {
  * @param data data to write
  * @param size size of the data to write in bytes
  */
-void RISC_V_execute::writeDataMem(uint32_t addr, uint32_t data, int size) {
+void Execute::writeDataMem(uint32_t addr, uint32_t data, int size) {
   tlm::tlm_generic_payload trans;
   sc_time delay = SC_ZERO_TIME;
 

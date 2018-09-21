@@ -16,7 +16,7 @@
 
 #include "memory.h"
 #include "Instruction.h"
-#include "RISC_V_execute.h"
+#include "Execute.h"
 #include "Registers.h"
 #include "Log.h"
 
@@ -40,7 +40,7 @@ public:
   CPU(sc_module_name name, uint32_t PC);
   ~CPU();
 
-  RISC_V_execute *exec;
+  Execute *exec;
 
 private:
   Registers *register_bank;

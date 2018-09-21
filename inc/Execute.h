@@ -1,11 +1,11 @@
 /*!
-   \file RISC_V_execute.h
+   \file Execute.h
    \brief RISC-V ISA implementation
    \author Màrius Montón
    \date August 2018
 */
-#ifndef RISC_V_EXECUTE_H
-#define RISC_V_EXECUTE_H
+#ifndef Execute_H
+#define Execute_H
 
 #define SC_INCLUDE_DYNAMIC_PROCESSES
 
@@ -26,7 +26,7 @@ using namespace std;
 /**
  * @brief Risc_V execute module
  */
-class RISC_V_execute : sc_module {
+class Execute : sc_module {
 public:
 
   /**
@@ -34,11 +34,11 @@ public:
    * @param name          module name
    * @param register_bank pointer to register bank to use
    */
-  RISC_V_execute(sc_module_name name,
+  Execute(sc_module_name name,
     Registers *register_bank);
 
   /* Quick & dirty way to publish a socket though modules */
-  tlm_utils::simple_initiator_socket<RISC_V_execute> data_bus;
+  tlm_utils::simple_initiator_socket<Execute> data_bus;
 
   void LUI(Instruction &inst);
   void AUIPC(Instruction &inst);
