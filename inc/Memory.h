@@ -36,6 +36,10 @@ public:
   Memory(sc_module_name name, string filename);
   Memory(sc_module_name name, bool use_file);
 
+  /**
+   * @brief Returns Program Counter read from hexfile
+   * @return Initial PC
+   */
   virtual uint32_t getPCfromHEX();
 
   // TLM-2 blocking transport method
@@ -48,8 +52,6 @@ public:
   virtual bool get_direct_mem_ptr(tlm::tlm_generic_payload& trans,
                                   tlm::tlm_dmi& dmi_data);
 
-  void invalidation_process();
-
   // *********************************************
   // TLM-2 debug transport method
   // *********************************************
@@ -57,8 +59,15 @@ public:
   virtual unsigned int transport_dbg(tlm::tlm_generic_payload& trans);
 
 private:
+
+  /**
+   * @brief Memory array in bytes
+   */
   uint8_t mem[SIZE];
 
+  /**
+  * @brief Program counter (PC) read from hex file
+  */
   uint32_t program_counter;
 
   /**
