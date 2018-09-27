@@ -15,5 +15,5 @@ install:
  - ../configure
  - make -j 4 && make install
  - cd ../..
- - rm systemc-2.3.2/build
+ - rm -r systemc-2.3.2/build
  - rm systemc-2.3.2.tar.gz
