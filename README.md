@@ -7,6 +7,8 @@ This is another RISC-V ISA simulator, this is coded in SystemC + TLM-2.
 It partially supports RV32I Instruction set by now.
 
 [![travis](https://travis-ci.org/mariusmm/RISC-V-TLM.svg?branch=master)](https://travis-ci.org/mariusmm/RISC-V-TLM)
+[![Twitter URL](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/mariusmonton)
+
 
 Brief description of the modules:
 * CPU: Top entity that includes all other modules.
