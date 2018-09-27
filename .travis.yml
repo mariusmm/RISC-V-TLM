@@ -1,0 +1,19 @@
+language: cpp
+os:
+ - linux
+script: 
+ - make -j 4
+compiler: 
+ - gcc
+
+install:
+  cd ..
+  wget http://www.accellera.org/images/downloads/standards/systemc/systemc-2.3.2.tar.gz
+  tar xfvz systemc-2.3.2.tar.gz
+  cd systemc-2.3.2
+  mkdir build && cd build
+  ../configure
+  make -j 4 && make install
+  cd ../..
+  rm systemc-2.3.2/build
+  rm systemc-2.3.2.tar.gz
