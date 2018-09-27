@@ -11,7 +11,15 @@ Performance* Performance::getInstance()
 }
 
 Performance::Performance()
-{}
+{
+    data_memory_read = 0;
+    data_memory_write = 0;
+    code_memory_read = 0;
+    code_memory_write = 0;
+    register_read = 0;
+    register_write = 0;
+    instructions_executed = 0;
+}
 
 void Performance::dump() {
   cout << dec << "# data memory reads: "  << data_memory_read << endl;

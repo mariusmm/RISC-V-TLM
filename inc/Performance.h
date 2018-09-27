@@ -90,13 +90,13 @@ private:
   static Performance* instance;
   Performance();
 
-  uint64_t data_memory_read = 0;
-  uint64_t data_memory_write = 0;
-  uint64_t code_memory_read = 0;
-  uint64_t code_memory_write = 0;
-  uint64_t register_read = 0;
-  uint64_t register_write = 0;
-  uint64_t instructions_executed = 0;
+  uint64_t data_memory_read;
+  uint64_t data_memory_write;
+  uint64_t code_memory_read;
+  uint64_t code_memory_write;
+  uint64_t register_read;
+  uint64_t register_write;
+  uint64_t instructions_executed;
 };
 
 #endif
