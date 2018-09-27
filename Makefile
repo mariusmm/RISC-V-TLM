@@ -5,11 +5,11 @@ TARGET_ARCH=linux64
 
 CC       = g++
 # compiling flags here
-CFLAGS   = -Wall -I. -O3
+CFLAGS   = -Wall -I. -O3 -std=c++11
 
 LINKER   = g++
 # linking flags here
-LFLAGS   = -Wall -I. -lm
+LFLAGS   = -Wall -I. -lm 
 LIBS   = -lsystemc -lm $(EXTRA_LIBS)
 
 
