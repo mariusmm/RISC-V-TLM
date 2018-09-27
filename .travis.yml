@@ -17,3 +17,4 @@ install:
  - cd ../..
  - rm -r systemc-2.3.2/build
  - rm systemc-2.3.2.tar.gz
+ - cd RISC-V-TLM
