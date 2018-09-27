@@ -12,7 +12,7 @@ install:
  - tar xfvz systemc-2.3.2.tar.gz
  - cd systemc-2.3.2
  - mkdir build && cd build
- - ../configure
+ - ../configure  CXXFLAGS="-std=c++11"
  - make -j 4 && make install
  - cd ../..
  - rm -r systemc-2.3.2/build
