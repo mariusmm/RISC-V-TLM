@@ -37,7 +37,7 @@ Current performance is about 284500 instructions / sec in a Core-i5@2.2Ghz
 This is a preliminar and incomplete version.
 
 Task to do:
-* Implement all missing instructions (RISC_V_execute)
+* Implement all missing instructions (Execute)
 * Implement CSRs (where?)
 * Add full support to .elf ~~and .hex~~ filetypes to memory.h
 (only partial .hex support)
