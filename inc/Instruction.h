@@ -147,12 +147,20 @@ public:
     return m_instr.range(11, 7);
   }
 
+  inline void set_rd(int32_t value) {
+    m_instr.range(11,7) = value;
+  }
+
   /**
    * @brief Access to funct3 field
    * @return funct3 field
    */
   inline int32_t get_funct3() {
     return m_instr.range(14, 12);
+  }
+
+  inline void set_funct3(int32_t value) {
+    m_instr.range(14,12) = value;
   }
 
   /**
@@ -163,6 +171,10 @@ public:
     return m_instr.range(19, 15);
   }
 
+  inline void set_rs1(int32_t value) {
+    m_instr.range(19,15) = value;
+  }
+
   /**
    * @brief Access to rs2 field
    * @return rs2 field
@@ -171,12 +183,19 @@ public:
     return m_instr.range(24, 20);
   }
 
+  inline void set_rs2(int32_t value) {
+    m_instr.range(24,10) = value;
+  }
   /**
    * @brief Access to funct7 field
    * @return funct7 field
    */
   inline int32_t get_funct7() {
     return m_instr.range(31, 25);
+  }
+
+  inline void set_func7(int32_t value) {
+    m_instr.range(31,25) = value;
   }
 
   /**
@@ -196,6 +215,10 @@ public:
     return aux;
   }
 
+  inline void set_imm_I(int32_t value) {
+    m_instr.range(31,20) = value;
+  }
+
   /**
    * @brief Access to immediate field for S-type
    * @return immediate_S field
@@ -213,12 +236,23 @@ public:
     return aux;
   }
 
+  inline void set_imm_S(int32_t value) {
+    sc_uint<32> aux = value;
+
+    m_instr.range(31,25) = aux.range(11,5);
+    m_instr.range(11,7) = aux.range(4,0);
+  }
+
   /**
    * @brief Access to immediate field for U-type
    * @return immediate_U field
    */
   inline int32_t get_imm_U() {
     return m_instr.range(31, 12);
+  }
+
+  inline void set_imm_U(int32_t value) {
+    m_instr.range(31,12) = (value << 12);
   }
 
   /**
@@ -240,6 +274,14 @@ public:
     return aux;
   }
 
+  inline void set_imm_B(int32_t value) {
+    sc_uint<32> aux = value;
+
+    m_instr[31] = aux[12];
+    m_instr.range(30,25) = aux.range(10,5);
+    m_instr.range(11,7) = aux.range(4,1);
+    m_instr[6] = aux[11];
+  }
   /**
    * @brief Access to immediate field for J-type
    * @return immediate_J field
@@ -257,6 +299,15 @@ public:
       aux |= (0b111111111111) << 20;
     }
     return aux;
+  }
+
+  inline void set_imm_J(int32_t value) {
+    sc_uint<32> aux = (value << 20);
+
+    m_instr[31] = aux[20];
+    m_instr.range(30,21) = aux.range(10,1);
+    m_instr[20] = aux[11];
+    m_instr.range(19,12) = aux.range(19,12);
   }
 
   inline int32_t get_csr() {
