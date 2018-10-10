@@ -128,7 +128,7 @@ public:
    * @brief Constructor
    * @param instr Instruction to decode
    */
-  Instruction(sc_int<32> instr);
+  Instruction(sc_uint<32> instr);
 
   /**
    * @brief Access to opcode field
@@ -143,7 +143,7 @@ public:
    * @brief Access to rd field
    * @return rd field
    */
-  inline int32_t rd() {
+  inline int32_t get_rd() {
     return m_instr.range(11, 7);
   }
 
@@ -151,7 +151,7 @@ public:
    * @brief Access to funct3 field
    * @return funct3 field
    */
-  inline int32_t funct3() {
+  inline int32_t get_funct3() {
     return m_instr.range(14, 12);
   }
 
@@ -159,7 +159,7 @@ public:
    * @brief Access to rs1 field
    * @return rs1 field
    */
-  inline int32_t rs1() {
+  inline int32_t get_rs1() {
     return m_instr.range(19, 15);
   }
 
@@ -167,7 +167,7 @@ public:
    * @brief Access to rs2 field
    * @return rs2 field
    */
-  inline int32_t rs2() {
+  inline int32_t get_rs2() {
     return m_instr.range(24, 20);
   }
 
@@ -175,7 +175,7 @@ public:
    * @brief Access to funct7 field
    * @return funct7 field
    */
-  inline int32_t funct7() {
+  inline int32_t get_funct7() {
     return m_instr.range(31, 25);
   }
 
@@ -183,7 +183,7 @@ public:
    * @brief Access to immediate field for I-type
    * @return immediate_I field
    */
-  inline int32_t imm_I() {
+  inline int32_t get_imm_I() {
     int32_t aux = 0;
 
     aux = m_instr.range(31, 20);
@@ -200,7 +200,7 @@ public:
    * @brief Access to immediate field for S-type
    * @return immediate_S field
    */
-  inline int32_t imm_S() {
+  inline int32_t get_imm_S() {
     int32_t aux = 0;
 
     aux  = m_instr.range(31, 25) << 5;
@@ -217,7 +217,7 @@ public:
    * @brief Access to immediate field for U-type
    * @return immediate_U field
    */
-  inline int32_t imm_U() {
+  inline int32_t get_imm_U() {
     return m_instr.range(31, 12);
   }
 
@@ -225,7 +225,7 @@ public:
    * @brief Access to immediate field for B-type
    * @return immediate_B field
    */
-  inline int32_t imm_B() {
+  inline int32_t get_imm_B() {
     int32_t aux = 0;
 
     aux |= m_instr[7] << 11;
@@ -244,7 +244,7 @@ public:
    * @brief Access to immediate field for J-type
    * @return immediate_J field
    */
-  inline int32_t imm_J() {
+  inline int32_t get_imm_J() {
     int32_t aux = 0;
 
     aux = m_instr[31] << 20;
@@ -259,8 +259,8 @@ public:
     return aux;
   }
 
-  inline int32_t csr() {
-    return imm_I();
+  inline int32_t get_csr() {
+    return get_imm_I();
   }
 
   /**
@@ -273,7 +273,7 @@ public:
     cout << hex << "0x" << m_instr << dec << endl;
   }
 private:
-  sc_int<32> m_instr;
+  sc_uint<32> m_instr;
 };
 
 #endif

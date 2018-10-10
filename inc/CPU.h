@@ -47,6 +47,15 @@ private:
   Performance *perf;
   Log *log;
 
+  /**
+   * @brief Executes default ISA instruction
+   * @param  inst instruction to execute
+   * @return  true if PC is affected by instruction
+   */
+  bool process_default_instruction(Instruction &inst);
+
+
+  
   void CPU_thread(void);
 };
 
