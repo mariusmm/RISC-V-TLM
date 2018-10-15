@@ -1,4 +1,3 @@
-
 #include "CPU.h"
 
 SC_HAS_PROCESS(CPU);
@@ -22,7 +21,69 @@ CPU::~CPU() {
   cout << "*********************************************" << endl;
 }
 
-bool CPU::process_default_instruction(Instruction &inst) {
+bool CPU::process_c_instruction(Instruction &inst) {
+  bool PC_not_affected = true;
+
+  C_Instruction c_inst(inst.getInstr());
+
+  switch(c_inst.decode()) {
+    case OP_C_ADDI4SPN:
+      exec->C_ADDI4SPN(inst);
+      break;
+    case OP_C_LW:
+      exec->LW(inst, true);
+      break;
+    case OP_C_ADDI:
+      exec->ADDI(inst, true);
+      break;
+    case OP_C_JAL:
+      exec->JAL(inst, true, 1);
+      PC_not_affected = false;
+      break;
+    case OP_C_J:
+      exec->JAL(inst, true, 0);
+      PC_not_affected = false;
+      break;
+    case OP_C_LI:
+      exec->C_LI(inst);
+      break;
+    case OP_C_LWSP:
+      exec->C_LWSP(inst);
+      break;
+    case OP_C_JR:
+      exec->C_JR(inst);
+      PC_not_affected = false;
+      break;
+    case OP_C_MV:
+      exec->C_MV(inst);
+      break;
+    case OP_C_SWSP:
+      exec->C_SWSP(inst);
+      break;
+    case OP_C_ADDI16SP:
+      exec->C_ADDI16SP(inst);
+      break;
+    case OP_C_BEQZ:
+      exec->C_BEQZ(inst);
+      PC_not_affected = false;
+      break;
+    case OP_C_BNEZ:
+      exec->C_BNEZ(inst);
+      PC_not_affected = false;
+      break;
+    default:
+      std::cout << "C instruction not implemented yet" << endl;
+      inst.dump();
+      exec->NOP(inst);
+      //sc_stop();
+      break;
+
+  }
+
+  return PC_not_affected;
+}
+
+bool CPU::process_base_instruction(Instruction &inst) {
   bool PC_not_affected = true;
 
   switch(inst.decode()) {
@@ -156,7 +217,40 @@ bool CPU::process_default_instruction(Instruction &inst) {
       exec->CSRRC(inst);
       break;
 #endif
+    case OP_FENCE:
+      exec->FENCE(inst);
+      break;
+    case OP_ECALL:
+      exec->ECALL(inst);
+      break;
+    case OP_CSRRW:
+      exec->CSRRW(inst);
+      break;
+    case OP_CSRRS:
+      exec->CSRRS(inst);
+      break;
+    case OP_CSRRC:
+      exec->CSRRC(inst);
+      break;
+    case OP_CSRRWI:
+      exec->CSRRWI(inst);
+      break;
+    case OP_CSRRSI:
+      exec->CSRRSI(inst);
+      break;
+    case OP_CSRRCI:
+      exec->CSRRCI(inst);
+      break;
+
+    case OP_MRET:
+      exec->MRET(inst);
+      PC_not_affected = false;
+      break;
     default:
+      std::cout << "Wrong instruction" << endl;
+      inst.dump();
+      exec->NOP(inst);
+      //sc_stop();
       break;
   }
 
@@ -173,6 +267,7 @@ void CPU::CPU_thread(void) {
   uint32_t INSTR;
   sc_time delay = SC_ZERO_TIME;
   bool PC_not_affected;
+  bool incPCby2 = false;
 
   trans->set_command( tlm::TLM_READ_COMMAND );
   trans->set_data_ptr( reinterpret_cast<unsigned char*>(&INSTR) );
@@ -197,14 +292,26 @@ void CPU::CPU_thread(void) {
         log->SC_log(Log::INFO) << "PC: " << hex << register_bank->getPC()
               << dec << endl;
 
-
         Instruction inst(INSTR);
 
         /* check what type of instruction is and execute it */
+        switch(inst.check_extension()) {
+          case BASE_EXTENSION:
+            PC_not_affected = process_base_instruction(inst);
+            incPCby2 = false;
+            break;
+          case C_EXTENSION:
+            PC_not_affected = process_c_instruction(inst);
+            incPCby2 = true;
+            break;
+          default:
+            std::cout << "Extension not implemented yet" << std::endl;
+            inst.dump();
+            exec->NOP(inst);
+        }
 
 
 
-        PC_not_affected = process_default_instruction(inst);
 
 
           // default:
@@ -215,7 +322,7 @@ void CPU::CPU_thread(void) {
         perf->instructionsInc();
 
         if (PC_not_affected == true) {
-          register_bank->incPC();
+          register_bank->incPC(incPCby2);
         }
   } // while(1)
 } // CPU_thread

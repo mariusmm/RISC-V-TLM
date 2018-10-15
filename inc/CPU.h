@@ -15,10 +15,11 @@
 #include "tlm_utils/simple_initiator_socket.h"
 
 #include "memory.h"
-#include "Instruction.h"
 #include "Execute.h"
 #include "Registers.h"
 #include "Log.h"
+#include "Instruction.h"
+#include "C_Instruction.h"
 
 using namespace sc_core;
 using namespace sc_dt;
@@ -52,10 +53,11 @@ private:
    * @param  inst instruction to execute
    * @return  true if PC is affected by instruction
    */
-  bool process_default_instruction(Instruction &inst);
+  bool process_base_instruction(Instruction &inst);
+
+  bool process_c_instruction(Instruction &inst);
 
 
-  
   void CPU_thread(void);
 };
 

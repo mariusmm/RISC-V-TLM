@@ -112,8 +112,64 @@ opCodes Instruction::decode() {
           return OP_AND;
       }
     } /* ADD */
-      return OP_ERROR;
+    case FENCE:
+      return OP_FENCE;
+    case ECALL: {
+      switch (get_funct3()) {
+        case ECALL_F3:
+          switch(get_csr()) {
+            case ECALL_F:
+              return OP_ECALL;
+            case EBREAK_F:
+                return OP_EBREAK;
+            case URET_F:
+              return OP_URET;
+            case SRET_F:
+              return OP_SRET;
+            case MRET_F:
+              return OP_MRET;
+          }
+          break;
+        case CSRRW:
+          return OP_CSRRW;
+          break;
+        case CSRRS:
+          return OP_CSRRS;
+          break;
+        case CSRRC:
+          return OP_CSRRC;
+          break;
+        case CSRRWI:
+          return OP_CSRRWI;
+          break;
+        case CSRRSI:
+          return OP_CSRRSI;
+          break;
+        case CSRRCI:
+          return OP_CSRRCI;
+          break;
+      }
+    }
     default:
       return OP_ERROR;
+  }
+}
+
+
+extension_t Instruction::check_extension() {
+  if (m_instr.range(1,0) == 0b11) {
+    return BASE_EXTENSION;
+  } else if (m_instr.range(1,0) == 0b00) {
+    return C_EXTENSION;
+  } else if (m_instr.range(1,0) == 0b01) {
+    return C_EXTENSION;
+  } else if (m_instr.range(1,0) == 0b10) {
+    return C_EXTENSION;
+  } else if (m_instr.range(6,0) == 0b0110011) {
+    return M_EXTENSION;
+  } else if (m_instr.range(6,0) == 0b0101111) {
+    return A_EXTENSION;
+  } else {
+    return UNKNOWN_EXTENSION;
   }
 }

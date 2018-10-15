@@ -15,6 +15,23 @@ using namespace sc_dt;
 using namespace std;
 
 typedef enum {
+  BASE_EXTENSION,
+  M_EXTENSION,
+  A_EXTENSION,
+  F_EXTENSION,
+  D_EXTENSION,
+  Q_EXTENSION,
+  L_EXTENSION,
+  C_EXTENSION,
+  R_EXTENSION,
+  J_EXTENSION,
+  P_EXTENSION,
+  V_EXTENSION,
+  N_EXTENSION,
+  UNKNOWN_EXTENSION
+} extension_t;
+
+typedef enum {
 OP_LUI,
 OP_AUIPC,
 OP_JAL,
@@ -57,6 +74,21 @@ OP_SRL,
 OP_SRA,
 OP_OR,
 OP_AND,
+
+OP_FENCE,
+OP_ECALL,
+OP_EBREAK,
+
+OP_CSRRW,
+OP_CSRRS,
+OP_CSRRC,
+OP_CSRRWI,
+OP_CSRRSI,
+OP_CSRRCI,
+
+OP_URET,
+OP_SRET,
+OP_MRET,
 
 OP_ERROR
 } opCodes;
@@ -116,6 +148,21 @@ typedef enum {
   SRA_F7  = 0b0100000,
   OR_F    = 0b110,
   AND_F   = 0b111,
+
+  FENCE   = 0b0001111,
+  ECALL   = 0b1110011,
+  ECALL_F = 0b000000000000,
+  EBREAK_F= 0b000000000001,
+  URET_F  = 0b000000000010,
+  SRET_F  = 0b000100000010,
+  MRET_F  = 0b001100000010,
+  ECALL_F3= 0b000,
+  CSRRW   = 0b001,
+  CSRRS   = 0b010,
+  CSRRC   = 0b011,
+  CSRRWI  = 0b101,
+  CSRRSI  = 0b110,
+  CSRRCI  = 0b111,
 } Codes;
 
 /**
@@ -311,7 +358,11 @@ public:
   }
 
   inline int32_t get_csr() {
-    return get_imm_I();
+    int32_t aux = 0;
+
+    aux = m_instr.range(31, 20);
+
+    return aux;
   }
 
   /**
@@ -319,6 +370,18 @@ public:
    * @return opcode of instruction
    */
   opCodes decode();
+
+  /**
+   * @brief returns what instruction extension
+   * @return extension
+   */
+  extension_t check_extension();
+
+
+  uint32_t getInstr() {
+    return m_instr;
+  }
+
 
   inline void dump() {
     cout << hex << "0x" << m_instr << dec << endl;

@@ -16,6 +16,7 @@
 
 #include "memory.h"
 #include "Instruction.h"
+#include "C_Instruction.h"
 #include "Registers.h"
 #include "Log.h"
 
@@ -43,7 +44,7 @@ public:
   void LUI(Instruction &inst);
   void AUIPC(Instruction &inst);
 
-  void JAL(Instruction &inst);
+  void JAL(Instruction &inst, bool c_extension = false, int m_rd = 1);
   void JALR(Instruction &inst);
 
   void BEQ(Instruction &inst);
@@ -55,7 +56,7 @@ public:
 
   void LB(Instruction &inst);
   void LH(Instruction &inst);
-  void LW(Instruction &inst);
+  void LW(Instruction &inst, bool c_extension = false);
   void LBU(Instruction &inst);
   void LHU(Instruction &inst);
 
@@ -65,7 +66,7 @@ public:
   void SBU(Instruction &inst);
   void SHU(Instruction &inst);
 
-  void ADDI(Instruction &inst);
+  void ADDI(Instruction &inst, bool c_extension = false);
   void SLTI(Instruction &inst);
   void SLTIU(Instruction &inst);
   void XORI(Instruction &inst);
@@ -87,12 +88,28 @@ public:
   void OR(Instruction &inst);
   void AND(Instruction &inst);
 
+  void FENCE(Instruction &inst);
+  void ECALL(Instruction &inst);
+
   void CSRRW(Instruction &inst);
   void CSRRS(Instruction &inst);
   void CSRRC(Instruction &inst);
   void CSRRWI(Instruction &inst);
   void CSRRSI(Instruction &inst);
   void CSRRCI(Instruction &inst);
+
+  void MRET(Instruction &inst);
+
+  /* C Extensions */
+  void C_JR(Instruction &inst);
+  void C_MV(Instruction &inst);
+  void C_LWSP(Instruction &inst);
+  void C_ADDI4SPN(Instruction &inst);
+  void C_ADDI16SP(Instruction &inst);
+  void C_SWSP(Instruction &inst);
+  void C_BEQZ(Instruction &inst);
+  void C_BNEZ(Instruction &inst);
+  void C_LI(Instruction &inst);
 
   void NOP(Instruction &inst);
 
