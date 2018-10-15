@@ -14,6 +14,7 @@
 #include "tlm.h"
 
 #include "Performance.h"
+#include "Memory.h"
 
 using namespace sc_core;
 using namespace sc_dt;
@@ -126,8 +127,13 @@ public:
   /**
    * Increments PC couunter to next address
    */
-  inline void incPC() {
-    register_PC += 4;
+  inline void incPC(bool C_ext=false) {
+    if (C_ext == true) {
+      register_PC += 2;
+    } else {
+      register_PC += 4;
+    }
+
   }
 
   /**
