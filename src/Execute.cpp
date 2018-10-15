@@ -17,7 +17,7 @@ void Execute::LUI(Instruction &inst) {
   rd = inst.get_rd();
   imm = inst.get_imm_U() << 12;
   regs->setValue(rd, imm);
-  log->SC_log(Log::INFO) << "LUI x" << rd << " <- 0x" << hex << imm << endl;
+  log->SC_log(Log::INFO) << "LUI x" << dec << rd << " <- 0x" << hex << imm << endl;
 
 }
 
@@ -32,7 +32,8 @@ void Execute::AUIPC(Instruction &inst) {
 
   regs->setValue(rd, new_pc);
 
-  log->SC_log(Log::INFO) << "AUIPC x" << rd << " + PC -> PC (" << new_pc << ")" << endl;
+  log->SC_log(Log::INFO) << "AUIPC x" << dec << rd
+        << " + PC -> PC (" << new_pc << ")" << endl;
 }
 
 void Execute::JAL(Instruction &inst, bool c_extension, int m_rd) {
@@ -81,7 +82,6 @@ void Execute::JALR(Instruction &inst) {
   old_pc = regs->getPC();
   regs->setValue(rd, old_pc + 4);
 
-
   new_pc = (regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE;
   regs->setPC(new_pc);
 
@@ -103,7 +103,8 @@ void Execute::BEQ(Instruction &inst) {
     regs->incPC();
   }
 
-  log->SC_log(Log::INFO) << "BEQ x" << rs1 << " == x" << rs2  << "? -> PC (" << new_pc << ")" << endl;
+  log->SC_log(Log::INFO) << dec << "BEQ x" << rs1
+        << " == x" << rs2  << "? -> PC (" << new_pc << ")" << endl;
 
 }
 
@@ -181,7 +182,8 @@ void Execute::BLTU(Instruction &inst) {
     regs->incPC();
   }
 
-  log->SC_log(Log::INFO) << "BLTU x" << rs1 << " < x" << rs2  << "? -> PC (" << new_pc << ")" << endl;
+  log->SC_log(Log::INFO) << dec << "BLTU x" << rs1
+          << " < x" << rs2  << "? -> PC (" << new_pc << ")" << endl;
 }
 
 void Execute::BGEU(Instruction &inst) {
@@ -259,8 +261,8 @@ void Execute::LW(Instruction &inst, bool c_extension) {
   data = readDataMem(mem_addr, 4);
   regs->setValue(rd, data);
 
-  log->SC_log(Log::INFO) << "C.LW: x" << rs1 << " + " << imm << " (@0x"
-          << hex <<mem_addr << dec << ") -> x" << rd << endl;
+  log->SC_log(Log::INFO) << "C.LW: x" << dec << rs1 << " + "
+        << imm << " (@0x" << hex <<mem_addr << dec << ") -> x" << rd << endl;
 }
 
 void Execute::LBU(Instruction &inst) {
@@ -371,7 +373,7 @@ void Execute::ADDI(Instruction &inst, bool c_extension) {
 
     rd = c_inst.get_rd();
     rs1 = rd;
-    imm = c_inst.get_imm_I();
+    imm = c_inst.get_imm_ADDI();
   }
 
   calc = regs->getValue(rs1) + imm;
@@ -887,7 +889,7 @@ void Execute::C_MV(Instruction &inst) {
   calc = regs->getValue(rs1) + regs->getValue(rs2);
   regs->setValue(rd, calc);
 
-  log->SC_log(Log::INFO) << "MV: x" << rs1 << " + x" << rs2 << " -> x" << rd << endl;
+  log->SC_log(Log::INFO) << "MV: x" << dec << rs1 << " + x" << rs2 << " -> x" << rd << endl;
 }
 
 void Execute::C_LWSP(Instruction &inst) {
@@ -895,19 +897,19 @@ void Execute::C_LWSP(Instruction &inst) {
   int rd, rs1;
   int32_t imm = 0;
   uint32_t data;
-
+  // lw rd, offset[7:2](x2)
   C_Instruction c_inst(inst.getInstr());
 
   rd = c_inst.get_rd();
-  rs1 = c_inst.get_rs1();
+  rs1 = 2;
   imm = c_inst.get_imm_LWSP();
 
   mem_addr = imm + regs->getValue(rs1);
   data = readDataMem(mem_addr, 4);
   regs->setValue(rd, data);
 
-  log->SC_log(Log::INFO) << "C.LWSP: x" << rs1 << " + " << imm << " (@0x"
-          << hex <<mem_addr << dec << ") -> x" << rd << endl;
+  log->SC_log(Log::INFO) << "C.LWSP: x" << dec << rs1 << " + " << imm << " (@0x"
+          << hex <<mem_addr << dec << ") -> x" << rd << dec << endl;
 }
 
 void Execute::C_ADDI4SPN(Instruction  &inst) {
@@ -939,11 +941,11 @@ void Execute::C_ADDI16SP(Instruction &inst) {
   rs1 = 2;
   imm = c_inst.get_imm_ADDI16SP();
 
-
   calc = regs->getValue(rs1) + imm;
   regs->setValue(rd, calc);
 
-  log->SC_log(Log::INFO) << dec << "ADDI16SP: x" << rs1 << " + " << imm << " -> x" << rd << endl;
+  log->SC_log(Log::INFO) << dec << "ADDI16SP: x"
+          << rs1 << " + " << imm << " -> x" << rd << endl;
 }
 
 void Execute::C_SWSP(Instruction &inst) {
@@ -956,7 +958,7 @@ void Execute::C_SWSP(Instruction &inst) {
   C_Instruction c_inst(inst.getInstr());
 
   rs1 = 2;
-  rs2 = 2;
+  rs2 = c_inst.get_rs2();
   imm = c_inst.get_imm_CSS();
 
   mem_addr = imm + regs->getValue(rs1);
@@ -983,10 +985,10 @@ void Execute::C_BEQZ(Instruction &inst) {
     new_pc = regs->getPC() + c_inst.get_imm_CB();
     regs->setPC(new_pc);
   } else {
-    regs->incPC(true); //PC <- PC +2
+    regs->incPC(true); //PC <- PC + 2
   }
 
-  log->SC_log(Log::INFO) << "C.BEQZ: x" << rs1 << "(" <<  val1
+  log->SC_log(Log::INFO) << "C.BEQZ: x" << dec << rs1 << "(" <<  val1
           << ") == 0? -> PC (" << new_pc << ")" << endl;
 }
 
