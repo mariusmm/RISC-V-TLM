@@ -289,8 +289,8 @@ void CPU::CPU_thread(void) {
       if ( trans->is_response_error() ) {
         SC_REPORT_ERROR("CPU base", "Read memory");
       } else {
-        log->SC_log(Log::INFO) << "PC: " << hex << register_bank->getPC()
-              << dec << endl;
+        log->SC_log(Log::INFO) << "PC: 0x" << hex
+              << register_bank->getPC() << ". ";
 
         Instruction inst(INSTR);
 
@@ -308,17 +308,9 @@ void CPU::CPU_thread(void) {
             std::cout << "Extension not implemented yet" << std::endl;
             inst.dump();
             exec->NOP(inst);
+          } // switch (inst.check_extension())
         }
-
-
-
-
-
-          // default:
-          //   cout << endl << "Instruction not implemented: ";
-          //   inst.dump();
-          //   exec->NOP(inst);
-        }
+        
         perf->instructionsInc();
 
         if (PC_not_affected == true) {
