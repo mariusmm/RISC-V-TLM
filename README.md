@@ -16,7 +16,7 @@ Brief description of the modules:
 * CPU: Top entity that includes all other modules.
 * Memory: Memory highly based on TLM-2 example with read file capability
 * Registers: Implements the register file, PC register & CSR registers
-* RISC_V_execute: Executes ISA instructions
+* Execute: Executes ISA instructions
 * Instruction: Decodes instruction and acces to any instruction field
 * Simulator: Top-level entity that builds & starts the simulation
 * BusCtrl: Simple bus manager
@@ -30,6 +30,7 @@ Current performance is about 284500 instructions / sec in a Core-i5@2.2Ghz
 
 
 ### Structure
+![Modules' hierarchy](https://github.com/mariusmm/RISC-V-TLM/blob/master/doc/Hierarchy.png)
 
 
 
@@ -69,6 +70,8 @@ $ ./RISCV_TLM asm/BasicLoop.hex
 ```
 
 ## Test
+See [Test page](Test) for more information.
+
 In the asm directory there are some basic assembly examples.
 
 I "compile" one file with the follwing command:
