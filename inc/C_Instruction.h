@@ -286,7 +286,7 @@ public:
     int32_t aux = 0;
 
     aux = m_instr[12] << 5;
-    aux |= m_instr.range(6,4) << 4;
+    aux |= m_instr.range(6,4) << 2;
     aux |= m_instr.range(3,2) << 6;
 
     return aux;
@@ -298,13 +298,16 @@ public:
     aux = m_instr[12] << 5;
     aux |= m_instr.range(6,2);
 
+    if (m_instr[12] == 1) {
+      aux |= 0b11111111111111111111111111 << 6;
+    }
     return aux;
   }
 
   inline int32_t get_imm_ADDI4SPN() {
     int32_t aux = 0;
 
-    aux = m_instr.range(12,11) << 5;
+    aux = m_instr.range(12,11) << 4;
     aux |= m_instr.range(10,7) << 6;
     aux |= m_instr[6] << 2;
     aux |= m_instr[5] << 3;

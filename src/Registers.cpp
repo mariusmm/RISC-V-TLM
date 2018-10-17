@@ -7,7 +7,7 @@ Registers::Registers() {
   perf = Performance::getInstance();
 
   //register_bank[sp] = 1024-1;  // SP points to end of memory
-  register_bank[sp] = Memory::SIZE-1;
+  register_bank[sp] = Memory::SIZE-4;
   register_PC = 0x10000;       // default _start address
 }
 
