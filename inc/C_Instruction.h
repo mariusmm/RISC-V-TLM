@@ -259,6 +259,10 @@ public:
     aux |= m_instr[6] << 7;
     aux |= m_instr.range(5,3) << 1;
     aux |= m_instr[2] << 5;
+    
+    if (m_instr[12] == 1) {
+        aux |= 0b1111 << 12;
+    }
 
     return aux;
   }
