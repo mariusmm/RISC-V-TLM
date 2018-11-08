@@ -39,7 +39,7 @@ void Execute::AUIPC(Instruction &inst) {
 }
 
 void Execute::JAL(Instruction &inst, bool c_extension, int m_rd) {
-  int16_t mem_addr = 0;
+  int32_t mem_addr = 0;
   int rd;
   int new_pc, old_pc;
 
