@@ -48,14 +48,12 @@ public:
   // *********************************************
   // TLM-2 forward DMI method
   // *********************************************
-
   virtual bool get_direct_mem_ptr(tlm::tlm_generic_payload& trans,
                                   tlm::tlm_dmi& dmi_data);
 
   // *********************************************
   // TLM-2 debug transport method
   // *********************************************
-
   virtual unsigned int transport_dbg(tlm::tlm_generic_payload& trans);
 
 private:

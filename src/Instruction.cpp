@@ -1,7 +1,7 @@
 #include "Instruction.h"
 
 
-Instruction::Instruction(sc_int<32> instr) {
+Instruction::Instruction(sc_uint<32> instr) {
   m_instr = instr;
 }
 
@@ -16,7 +16,7 @@ opCodes Instruction::decode() {
     case JALR:
         return OP_JALR;
     case BEQ:
-      switch(funct3()) {
+      switch(get_funct3()) {
         case BEQ_F:
           return OP_BEQ;
         case BNE_F:
@@ -32,7 +32,7 @@ opCodes Instruction::decode() {
       }
       return OP_ERROR;
     case LB:
-      switch(funct3()) {
+      switch(get_funct3()) {
         case LB_F:
           return OP_LB;
         case LH_F:
@@ -46,7 +46,7 @@ opCodes Instruction::decode() {
       }
       return OP_ERROR;
     case SB:
-      switch(funct3()) {
+      switch(get_funct3()) {
         case SB_F:
           return OP_SB;
         case SH_F:
@@ -56,7 +56,7 @@ opCodes Instruction::decode() {
       }
       return OP_ERROR;
     case ADDI:
-      switch(funct3()) {
+      switch(get_funct3()) {
         case ADDI_F:
           return OP_ADDI;
         case SLTI_F:
@@ -72,7 +72,7 @@ opCodes Instruction::decode() {
         case SLLI_F:
           return OP_SLLI;
         case SRLI_F:
-          switch(funct7()) {
+          switch(get_funct7()) {
             case SRLI_F7:
               return OP_SRLI;
             case SRAI_F7:
@@ -82,9 +82,9 @@ opCodes Instruction::decode() {
       }
       return OP_ERROR;
     case ADD: {
-      switch(funct3()) {
+      switch(get_funct3()) {
         case ADD_F:
-          switch (funct7()) {
+          switch (get_funct7()) {
             case ADD_F7:
               return OP_ADD;
             case SUB_F7:
@@ -100,7 +100,7 @@ opCodes Instruction::decode() {
         case XOR_F:
           return OP_XOR;
         case SRL_F:
-          switch(funct7()) {
+          switch(get_funct7()) {
             case SRL_F7:
               return OP_SRL;
             case SRA_F7:
@@ -112,8 +112,64 @@ opCodes Instruction::decode() {
           return OP_AND;
       }
     } /* ADD */
-      return OP_ERROR;
+    case FENCE:
+      return OP_FENCE;
+    case ECALL: {
+      switch (get_funct3()) {
+        case ECALL_F3:
+          switch(get_csr()) {
+            case ECALL_F:
+              return OP_ECALL;
+            case EBREAK_F:
+                return OP_EBREAK;
+            case URET_F:
+              return OP_URET;
+            case SRET_F:
+              return OP_SRET;
+            case MRET_F:
+              return OP_MRET;
+          }
+          break;
+        case CSRRW:
+          return OP_CSRRW;
+          break;
+        case CSRRS:
+          return OP_CSRRS;
+          break;
+        case CSRRC:
+          return OP_CSRRC;
+          break;
+        case CSRRWI:
+          return OP_CSRRWI;
+          break;
+        case CSRRSI:
+          return OP_CSRRSI;
+          break;
+        case CSRRCI:
+          return OP_CSRRCI;
+          break;
+      }
+    }
     default:
       return OP_ERROR;
+  }
+}
+
+
+extension_t Instruction::check_extension() {
+  if (m_instr.range(1,0) == 0b11) {
+    return BASE_EXTENSION;
+  } else if (m_instr.range(1,0) == 0b00) {
+    return C_EXTENSION;
+  } else if (m_instr.range(1,0) == 0b01) {
+    return C_EXTENSION;
+  } else if (m_instr.range(1,0) == 0b10) {
+    return C_EXTENSION;
+  } else if (m_instr.range(6,0) == 0b0110011) {
+    return M_EXTENSION;
+  } else if (m_instr.range(6,0) == 0b0101111) {
+    return A_EXTENSION;
+  } else {
+    return UNKNOWN_EXTENSION;
   }
 }

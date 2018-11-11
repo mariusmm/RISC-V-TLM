@@ -1,4 +1,3 @@
-
 #include "CPU.h"
 
 SC_HAS_PROCESS(CPU);
@@ -22,6 +21,242 @@ CPU::~CPU() {
   cout << "*********************************************" << endl;
 }
 
+bool CPU::process_c_instruction(Instruction &inst) {
+  bool PC_not_affected = true;
+
+  C_Instruction c_inst(inst.getInstr());
+
+  switch(c_inst.decode()) {
+    case OP_C_ADDI4SPN:
+      exec->C_ADDI4SPN(inst);
+      break;
+    case OP_C_LW:
+      exec->LW(inst, true);
+      break;
+    case OP_C_ADDI:
+      exec->ADDI(inst, true);
+      break;
+    case OP_C_JAL:
+      exec->JAL(inst, true, 1);
+      PC_not_affected = false;
+      break;
+    case OP_C_J:
+      exec->JAL(inst, true, 0);
+      PC_not_affected = false;
+      break;
+    case OP_C_LI:
+      exec->C_LI(inst);
+      break;
+    case OP_C_LWSP:
+      exec->C_LWSP(inst);
+      break;
+    case OP_C_JR:
+      exec->C_JR(inst);
+      PC_not_affected = false;
+      break;
+    case OP_C_MV:
+      exec->C_MV(inst);
+      break;
+    case OP_C_SWSP:
+      exec->C_SWSP(inst);
+      break;
+    case OP_C_ADDI16SP:
+      exec->C_ADDI16SP(inst);
+      break;
+    case OP_C_BEQZ:
+      exec->C_BEQZ(inst);
+      PC_not_affected = false;
+      break;
+    case OP_C_BNEZ:
+      exec->C_BNEZ(inst);
+      PC_not_affected = false;
+      break;
+    default:
+      std::cout << "C instruction not implemented yet" << endl;
+      inst.dump();
+      exec->NOP(inst);
+      //sc_stop();
+      break;
+
+  }
+
+  return PC_not_affected;
+}
+
+bool CPU::process_base_instruction(Instruction &inst) {
+  bool PC_not_affected = true;
+
+  switch(inst.decode()) {
+    case OP_LUI:
+      exec->LUI(inst);
+      break;
+    case OP_AUIPC:
+      exec->AUIPC(inst);
+      break;
+    case OP_JAL:
+      exec->JAL(inst);
+      PC_not_affected = false;
+      break;
+    case OP_JALR:
+      exec->JALR(inst);
+      PC_not_affected = false;
+      break;
+    case OP_BEQ:
+      exec->BEQ(inst);
+      PC_not_affected = false;
+      break;
+    case OP_BNE:
+      exec->BNE(inst);
+      PC_not_affected = false;
+      break;
+    case OP_BLT:
+      exec->BLT(inst);
+      PC_not_affected = false;
+      break;
+    case OP_BGE:
+      exec->BGE(inst);
+      PC_not_affected = false;
+      break;
+    case OP_BLTU:
+      exec->BLTU(inst);
+      PC_not_affected = false;
+      break;
+    case OP_BGEU:
+      exec->BGEU(inst);
+      PC_not_affected = false;
+      break;
+    case OP_LB:
+      exec->LB(inst);
+      break;
+    case OP_LH:
+      exec->LB(inst);
+      break;
+    case OP_LW:
+      exec->LW(inst);
+      break;
+    case OP_LBU:
+      exec->LBU(inst);
+      break;
+    case OP_LHU:
+      exec->LHU(inst);
+      break;
+    case OP_SB:
+      exec->SB(inst);
+      break;
+    case OP_SH:
+      exec->SH(inst);
+      break;
+    case OP_SW:
+      exec->SW(inst);
+      break;
+    case OP_ADDI:
+      exec->ADDI(inst);
+      break;
+    case OP_SLTI:
+      exec->SLTI(inst);
+      break;
+    case OP_SLTIU:
+      exec->SLTIU(inst);
+      break;
+    case OP_XORI:
+      exec->XORI(inst);
+      break;
+    case OP_ORI:
+      exec->ORI(inst);
+      break;
+    case OP_ANDI:
+      exec->ANDI(inst);
+      break;
+    case OP_SLLI:
+      exec->SLLI(inst);
+      break;
+    case OP_SRLI:
+      exec->SRLI(inst);
+      break;
+    case OP_SRAI:
+      exec->SRAI(inst);
+      break;
+    case OP_ADD:
+      exec->ADD(inst);
+      break;
+    case OP_SUB:
+      exec->SUB(inst);
+      break;
+    case OP_SLL:
+      exec->SLL(inst);
+      break;
+    case OP_SLT:
+      exec->SLT(inst);
+      break;
+    case OP_SLTU:
+      exec->SLTU(inst);
+      break;
+    case OP_XOR:
+      exec->XOR(inst);
+      break;
+    case OP_SRL:
+      exec->SRL(inst);
+      break;
+    case OP_SRA:
+      exec->SRA(inst);
+      break;
+    case OP_OR:
+      exec->OR(inst);
+      break;
+    case OP_AND:
+      exec->AND(inst);
+      break;
+#if 0
+    case OP_CSRRW:
+      exec->CSRRW(inst);
+      break;
+    case OP_CSRRS:
+      exec->CSRRS(inst);
+      break;
+    case OP_CSRRC:
+      exec->CSRRC(inst);
+      break;
+#endif
+    case OP_FENCE:
+      exec->FENCE(inst);
+      break;
+    case OP_ECALL:
+      exec->ECALL(inst);
+      break;
+    case OP_CSRRW:
+      exec->CSRRW(inst);
+      break;
+    case OP_CSRRS:
+      exec->CSRRS(inst);
+      break;
+    case OP_CSRRC:
+      exec->CSRRC(inst);
+      break;
+    case OP_CSRRWI:
+      exec->CSRRWI(inst);
+      break;
+    case OP_CSRRSI:
+      exec->CSRRSI(inst);
+      break;
+    case OP_CSRRCI:
+      exec->CSRRCI(inst);
+      break;
+
+    case OP_MRET:
+      exec->MRET(inst);
+      PC_not_affected = false;
+      break;
+    default:
+      std::cout << "Wrong instruction" << endl;
+      inst.dump();
+      exec->NOP(inst);
+      //sc_stop();
+      break;
+  }
+
+  return PC_not_affected;
+}
+
 /**
  * main thread for CPU simulation
  * @brief CPU mai thread
@@ -29,9 +264,10 @@ CPU::~CPU() {
 void CPU::CPU_thread(void) {
 
   tlm::tlm_generic_payload* trans = new tlm::tlm_generic_payload;
-  int32_t INSTR;
+  uint32_t INSTR;
   sc_time delay = SC_ZERO_TIME;
-  bool PC_not_affected = true;
+  bool PC_not_affected;
+  bool incPCby2 = false;
 
   trans->set_command( tlm::TLM_READ_COMMAND );
   trans->set_data_ptr( reinterpret_cast<unsigned char*>(&INSTR) );
@@ -53,152 +289,32 @@ void CPU::CPU_thread(void) {
       if ( trans->is_response_error() ) {
         SC_REPORT_ERROR("CPU base", "Read memory");
       } else {
-        log->SC_log(Log::INFO) << "PC: " << hex << register_bank->getPC()
-              << dec << endl;
+        log->SC_log(Log::INFO) << "PC: 0x" << hex
+              << register_bank->getPC() << ". ";
+
         Instruction inst(INSTR);
 
-        PC_not_affected = true;
-        switch(inst.decode()) {
-          case OP_LUI:
-            exec->LUI(inst);
+        /* check what type of instruction is and execute it */
+        switch(inst.check_extension()) {
+          case BASE_EXTENSION:
+            PC_not_affected = process_base_instruction(inst);
+            incPCby2 = false;
             break;
-          case OP_AUIPC:
-            exec->AUIPC(inst);
+          case C_EXTENSION:
+            PC_not_affected = process_c_instruction(inst);
+            incPCby2 = true;
             break;
-          case OP_JAL:
-            exec->JAL(inst);
-            PC_not_affected = false;
-            break;
-          case OP_JALR:
-            exec->JALR(inst);
-            PC_not_affected = false;
-            break;
-          case OP_BEQ:
-            exec->BEQ(inst);
-            PC_not_affected = false;
-            break;
-          case OP_BNE:
-            exec->BNE(inst);
-            PC_not_affected = false;
-            break;
-          case OP_BLT:
-            exec->BLT(inst);
-            PC_not_affected = false;
-            break;
-          case OP_BGE:
-            exec->BGE(inst);
-            PC_not_affected = false;
-            break;
-          case OP_BLTU:
-            exec->BLTU(inst);
-            PC_not_affected = false;
-            break;
-          case OP_BGEU:
-            exec->BGEU(inst);
-            PC_not_affected = false;
-            break;
-          case OP_LB:
-            exec->LB(inst);
-            break;
-          case OP_LH:
-            exec->LB(inst);
-            break;
-          case OP_LW:
-            exec->LW(inst);
-            break;
-          case OP_LBU:
-            exec->LBU(inst);
-            break;
-          case OP_LHU:
-            exec->LHU(inst);
-            break;
-          case OP_SB:
-            exec->SB(inst);
-            break;
-          case OP_SH:
-            exec->SH(inst);
-            break;
-          case OP_SW:
-            exec->SW(inst);
-            break;
-          case OP_ADDI:
-            exec->ADDI(inst);
-            break;
-          case OP_SLTI:
-            exec->SLTI(inst);
-            break;
-          case OP_SLTIU:
-            exec->SLTIU(inst);
-            break;
-          case OP_XORI:
-            exec->XORI(inst);
-            break;
-          case OP_ORI:
-            exec->ORI(inst);
-            break;
-          case OP_ANDI:
-            exec->ANDI(inst);
-            break;
-          case OP_SLLI:
-            exec->SLLI(inst);
-            break;
-          case OP_SRLI:
-            exec->SRLI(inst);
-            break;
-          case OP_SRAI:
-            exec->SRAI(inst);
-            break;
-          case OP_ADD:
-            exec->ADD(inst);
-            break;
-          case OP_SUB:
-            exec->SUB(inst);
-            break;
-          case OP_SLL:
-            exec->SLL(inst);
-            break;
-          case OP_SLT:
-            exec->SLT(inst);
-            break;
-          case OP_SLTU:
-            exec->SLTU(inst);
-            break;
-          case OP_XOR:
-            exec->XOR(inst);
-            break;
-          case OP_SRL:
-            exec->SRL(inst);
-            break;
-          case OP_SRA:
-            exec->SRA(inst);
-            break;
-          case OP_OR:
-            exec->OR(inst);
-            break;
-          case OP_AND:
-            exec->AND(inst);
-            break;
-#if 0
-          case OP_CSRRW:
-            exec->CSRRW(inst);
-            break;
-          case OP_CSRRS:
-            exec->CSRRS(inst);
-            break;
-          case OP_CSRRC:
-            exec->CSRRC(inst);
-            break;
-#endif
           default:
-            cout << endl << "Instruction not implemented: ";
+            std::cout << "Extension not implemented yet" << std::endl;
             inst.dump();
             exec->NOP(inst);
+          } // switch (inst.check_extension())
         }
+
         perf->instructionsInc();
 
         if (PC_not_affected == true) {
-          register_bank->incPC();
+          register_bank->incPC(incPCby2);
         }
-      }
   } // while(1)
 } // CPU_thread
