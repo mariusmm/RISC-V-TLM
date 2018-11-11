@@ -168,7 +168,7 @@ typedef enum {
 /**
  * @brief Instruction decoding and fields access
  */
-class Instruction{
+class Instruction {
 public:
 
   /**
@@ -329,6 +329,7 @@ public:
     m_instr.range(11,7) = aux.range(4,1);
     m_instr[6] = aux[11];
   }
+
   /**
    * @brief Access to immediate field for J-type
    * @return immediate_J field
@@ -345,6 +346,7 @@ public:
     if (m_instr[31] == 1) {
       aux |= (0b111111111111) << 20;
     }
+
     return aux;
   }
 

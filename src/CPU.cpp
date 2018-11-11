@@ -310,7 +310,7 @@ void CPU::CPU_thread(void) {
             exec->NOP(inst);
           } // switch (inst.check_extension())
         }
-        
+
         perf->instructionsInc();
 
         if (PC_not_affected == true) {

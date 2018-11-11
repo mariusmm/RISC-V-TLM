@@ -5,13 +5,13 @@ TARGET_ARCH=riscv32
 CC       = riscv32-unknown-linux-gnu-gcc
 # compiling flags here
 #CFLAGS = -Wall -I. -O0 -nostdlib -march=rv32i -mabi=ilp32 --entry main 
-#CFLAGS = -Wall -I. -O0
-CFLAGS = -Wall -I. -O0 -Xlinker --gc-sections -lgcc -lc -static 
+CFLAGS = -Wall -I. -O0 -static
+#CFLAGS = -Wall -I. -O0 -Xlinker --gc-sections -lgcc -lc -static --specs=nano.specs
 
 
 LINKER   = riscv32-unknown-linux-gnu-gcc
 # linking flags here
-LFLAGS   = -I. --entry main 
+LFLAGS   = -I. --entry main -L/opt/riscv/riscv32-unknown-elf/lib/
 LIBS   = $(EXTRA_LIBS)
 
 
