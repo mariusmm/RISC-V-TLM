@@ -1,6 +1,6 @@
 TARGET   = RISCV_TLM
 
-SYSTEMC=../systemc-2.3.2
+SYSTEMC ?=../systemc-2.3.2
 TARGET_ARCH=linux64
 
 CC       = g++
