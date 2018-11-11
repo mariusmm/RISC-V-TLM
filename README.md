@@ -18,6 +18,7 @@ Brief description of the modules:
 * Registers: Implements the register file, PC register & CSR registers
 * Execute: Executes ISA instructions
 * Instruction: Decodes instruction and acces to any instruction field
+  * C_Instruction: Decodes Compressed instructions (C extension)
 * Simulator: Top-level entity that builds & starts the simulation
 * BusCtrl: Simple bus manager
 * Trace: Simple trace peripheral
