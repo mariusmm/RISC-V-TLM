@@ -266,7 +266,7 @@ void CPU::CPU_thread(void) {
   tlm::tlm_generic_payload* trans = new tlm::tlm_generic_payload;
   uint32_t INSTR;
   sc_time delay = SC_ZERO_TIME;
-  bool PC_not_affected;
+  bool PC_not_affected = false;
   bool incPCby2 = false;
 
   trans->set_command( tlm::TLM_READ_COMMAND );
