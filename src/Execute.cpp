@@ -1112,7 +1112,57 @@ void Execute::C_LI(Instruction &inst) {
           << imm << " -> x" << rd  << "(" << calc << ")" << endl;
 }
 
+/******************************************************************************/
+/* M  Extensions */
+/******************************************************************************/
+void Execute::M_MUL(Instruction &inst) {
+  int rd, rs1, rs2;
+  int32_t multiplier, multiplicand;
+  int64_t result;
 
+  M_Instruction m_inst(inst.getInstr());
+
+  rd = m_inst.get_rd();
+  rs1 = m_inst.get_rs1();
+  rs2 = m_inst.get_rs2();
+
+  multiplier = regs->getValue(rs1);
+  multiplicand = regs->getValue(rs2);
+
+  result = multiplier * multiplicand;
+  regs->setValue(rd, result & 0x00000000FFFFFFFF);
+
+  log->SC_log(Log::INFO) << dec << "MUL: x" << rs1 << " * x" << rs2
+    << " -> x" << rd << "(" << result << ")" << endl;
+}
+
+void Execute::M_MULH(Instruction &inst) {
+
+}
+
+void Execute::M_MULHSU(Instruction &inst) {
+
+}
+
+void Execute::M_MULHU(Instruction &inst) {
+
+}
+
+void Execute::M_DIV(Instruction &inst) {
+
+}
+
+void Execute::M_DIVU(Instruction &inst) {
+
+}
+
+void Execute::M_REM(Instruction &inst) {
+
+}
+
+void Execute::M_REMU(Instruction &inst) {
+
+}
 
 void Execute::NOP(Instruction &inst) {
   cout << endl;

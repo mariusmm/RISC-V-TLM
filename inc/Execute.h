@@ -17,6 +17,7 @@
 #include "memory.h"
 #include "Instruction.h"
 #include "C_Instruction.h"
+#include "M_Instruction.h"
 #include "Registers.h"
 #include "Log.h"
 
@@ -110,6 +111,16 @@ public:
   void C_BEQZ(Instruction &inst);
   void C_BNEZ(Instruction &inst);
   void C_LI(Instruction &inst);
+
+  /* M Extensinos */
+  void M_MUL(Instruction &inst);
+  void M_MULH(Instruction &inst);
+  void M_MULHSU(Instruction &inst);
+  void M_MULHU(Instruction &inst);
+  void M_DIV(Instruction &inst);
+  void M_DIVU(Instruction &inst);
+  void M_REM(Instruction &inst);
+  void M_REMU(Instruction &inst);
 
   void NOP(Instruction &inst);
 

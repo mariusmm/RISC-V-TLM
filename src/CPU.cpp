@@ -83,6 +83,46 @@ bool CPU::process_c_instruction(Instruction &inst) {
   return PC_not_affected;
 }
 
+bool CPU::process_m_instruction(Instruction &inst) {
+  bool PC_not_affected = true;
+
+  M_Instruction m_inst(inst.getInstr());
+
+  switch(m_inst.decode()) {
+    case OP_M_MUL:
+      exec->M_MUL(inst);
+      break;
+    case OP_M_MULH:
+      exec->M_MULH(inst);
+      break;
+    case OP_M_MULHSU:
+      exec->M_MULHSU(inst);
+      break;
+    case OP_M_MULHU:
+      exec->M_MULHU(inst);
+      break;
+    case OP_M_DIV:
+      exec->M_DIV(inst);
+      break;
+    case OP_M_DIVU:
+      exec->M_DIV(inst);
+      break;
+    case OP_M_REM:
+      exec->M_REM(inst);
+      break;
+    case OP_M_REMU:
+      exec->M_REMU(inst);
+      break;
+    default:
+      std::cout << "M instruction not implemented yet" << endl;
+      inst.dump();
+      exec->NOP(inst);
+      break;
+  }
+
+  return PC_not_affected;
+}
+
 bool CPU::process_base_instruction(Instruction &inst) {
   bool PC_not_affected = true;
 
@@ -303,6 +343,10 @@ void CPU::CPU_thread(void) {
           case C_EXTENSION:
             PC_not_affected = process_c_instruction(inst);
             incPCby2 = true;
+            break;
+          case M_EXTENSION:
+            PC_not_affected = process_m_instruction(inst);
+            incPCby2 = false;
             break;
           default:
             std::cout << "Extension not implemented yet" << std::endl;
