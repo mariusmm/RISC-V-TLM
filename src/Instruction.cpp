@@ -157,7 +157,8 @@ opCodes Instruction::decode() {
 
 
 extension_t Instruction::check_extension() {
-  if (m_instr.range(6,0) == 0b0110011) {
+  if ( (m_instr.range(6,0) == 0b0110011) &&
+      (m_instr.range(31,25) == 0b0000001) ){
     return M_EXTENSION;
   } else if (m_instr.range(1,0) == 0b11) {
     return BASE_EXTENSION;
