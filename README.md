@@ -17,6 +17,8 @@ Brief description of the modules:
 * Memory: Memory highly based on TLM-2 example with read file capability
 * Registers: Implements the register file, PC register & CSR registers
 * Execute: Executes ISA instructions
+  * Executes C instruction extensions
+  * Executes M instruction extensions
 * Instruction: Decodes instruction and acces to any instruction field
   * C_Instruction: Decodes Compressed instructions (C extension)
   * M_INstruction: Decodes Multiplication and Division instructions (M extension)
