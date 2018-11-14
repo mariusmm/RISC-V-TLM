@@ -169,7 +169,7 @@ bool CPU::process_base_instruction(Instruction &inst) {
       exec->LB(inst);
       break;
     case OP_LH:
-      exec->LB(inst);
+      exec->LH(inst);
       break;
     case OP_LW:
       exec->LW(inst);

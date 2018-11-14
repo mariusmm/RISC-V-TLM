@@ -103,7 +103,6 @@ void Execute::BEQ(Instruction &inst) {
   if (regs->getValue(rs1) == regs->getValue(rs2)) {
     new_pc = regs->getPC() + inst.get_imm_B();
     regs->setPC(new_pc);
-    std::cout << "HERE new_pc" << new_pc << std::endl;
   } else {
     regs->incPC();
     new_pc = regs->getPC();
@@ -187,7 +186,7 @@ void Execute::BLTU(Instruction &inst) {
   rs1 = inst.get_rs1();
   rs2 = inst.get_rs2();
 
-  if (regs->getValue(rs1) < regs->getValue(rs2)) {
+  if ((uint32_t) regs->getValue(rs1) < (uint32_t) regs->getValue(rs2)) {
     new_pc = regs->getPC() + inst.get_imm_B();
     regs->setPC(new_pc);
   } else {
@@ -208,7 +207,7 @@ void Execute::BGEU(Instruction &inst) {
   rs1 = inst.get_rs1();
   rs2 = inst.get_rs2();
 
-  if (regs->getValue(rs1) >= regs->getValue(rs2)) {
+  if ((uint32_t) regs->getValue(rs1) >= (uint32_t) regs->getValue(rs2)) {
     new_pc = regs->getPC() + inst.get_imm_B();
     regs->setPC(new_pc);
   } else {
