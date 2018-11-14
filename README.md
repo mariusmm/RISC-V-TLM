@@ -19,6 +19,7 @@ Brief description of the modules:
 * Execute: Executes ISA instructions
 * Instruction: Decodes instruction and acces to any instruction field
   * C_Instruction: Decodes Compressed instructions (C extension)
+  * M_INstruction: Decodes Multiplication and Division instructions (M extension)
 * Simulator: Top-level entity that builds & starts the simulation
 * BusCtrl: Simple bus manager
 * Trace: Simple trace peripheral
