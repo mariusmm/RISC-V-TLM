@@ -77,7 +77,7 @@ public:
    * @return rs1 field
    */
   inline int32_t get_rs1() {
-    return m_instr.range(19, 5);
+    return m_instr.range(19, 15);
   }
 
   inline void set_rs1(int32_t value) {

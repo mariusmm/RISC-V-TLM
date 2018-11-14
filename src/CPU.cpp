@@ -105,7 +105,7 @@ bool CPU::process_m_instruction(Instruction &inst) {
       exec->M_DIV(inst);
       break;
     case OP_M_DIVU:
-      exec->M_DIV(inst);
+      exec->M_DIVU(inst);
       break;
     case OP_M_REM:
       exec->M_REM(inst);

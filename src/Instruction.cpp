@@ -157,7 +157,9 @@ opCodes Instruction::decode() {
 
 
 extension_t Instruction::check_extension() {
-  if (m_instr.range(1,0) == 0b11) {
+  if (m_instr.range(6,0) == 0b0110011) {
+    return M_EXTENSION;
+  } else if (m_instr.range(1,0) == 0b11) {
     return BASE_EXTENSION;
   } else if (m_instr.range(1,0) == 0b00) {
     return C_EXTENSION;
@@ -165,9 +167,8 @@ extension_t Instruction::check_extension() {
     return C_EXTENSION;
   } else if (m_instr.range(1,0) == 0b10) {
     return C_EXTENSION;
-  } else if (m_instr.range(6,0) == 0b0110011) {
-    return M_EXTENSION;
   } else if (m_instr.range(6,0) == 0b0101111) {
+    cout << "check_extension A not yet implemented" << endl;
     return A_EXTENSION;
   } else {
     return UNKNOWN_EXTENSION;

@@ -1130,38 +1130,191 @@ void Execute::M_MUL(Instruction &inst) {
   multiplicand = regs->getValue(rs2);
 
   result = multiplier * multiplicand;
-  regs->setValue(rd, result & 0x00000000FFFFFFFF);
+  result = result & 0x00000000FFFFFFFF;
+  regs->setValue(rd, result);
 
   log->SC_log(Log::INFO) << dec << "MUL: x" << rs1 << " * x" << rs2
     << " -> x" << rd << "(" << result << ")" << endl;
 }
 
 void Execute::M_MULH(Instruction &inst) {
+  int rd, rs1, rs2;
+  int32_t multiplier, multiplicand;
+  int64_t result;
+  int32_t ret_value;
 
+  M_Instruction m_inst(inst.getInstr());
+
+  rd = m_inst.get_rd();
+  rs1 = m_inst.get_rs1();
+  rs2 = m_inst.get_rs2();
+
+  multiplier = regs->getValue(rs1);
+  multiplicand = regs->getValue(rs2);
+
+  result = (int64_t) multiplier * (int64_t) multiplicand;
+
+  ret_value = (int32_t)((result >> 32) & 0x00000000FFFFFFFF);
+  regs->setValue(rd, ret_value);
+
+  log->SC_log(Log::INFO) << dec << "MULH: x" << rs1 << " * x" << rs2
+    << " -> x" << rd << "(" << result << ")" << endl;
 }
 
 void Execute::M_MULHSU(Instruction &inst) {
+  int rd, rs1, rs2;
+  int32_t multiplier;
+  uint32_t multiplicand;
+  int64_t result;
 
+  M_Instruction m_inst(inst.getInstr());
+
+  rd = m_inst.get_rd();
+  rs1 = m_inst.get_rs1();
+  rs2 = m_inst.get_rs2();
+
+  multiplier = regs->getValue(rs1);
+  multiplicand = regs->getValue(rs2);
+
+  result = (int64_t) multiplier * (uint64_t) multiplicand;
+  result = (result >> 32) & 0x00000000FFFFFFFF;
+  regs->setValue(rd, result);
+
+  log->SC_log(Log::INFO) << dec << "MULHSU: x" << rs1 << " * x" << rs2
+    << " -> x" << rd << "(" << result << ")" << endl;
 }
 
 void Execute::M_MULHU(Instruction &inst) {
+  int rd, rs1, rs2;
+  uint32_t multiplier, multiplicand;
+  uint64_t result;
+  int32_t ret_value;
 
+  M_Instruction m_inst(inst.getInstr());
+
+  rd = m_inst.get_rd();
+  rs1 = m_inst.get_rs1();
+  rs2 = m_inst.get_rs2();
+
+  multiplier = (uint32_t) regs->getValue(rs1);
+  multiplicand = (uint32_t) regs->getValue(rs2);
+
+  result = (uint64_t) multiplier * (uint64_t) multiplicand;
+  ret_value = (uint32_t)(result >> 32) & 0x00000000FFFFFFFF;
+  regs->setValue(rd, ret_value);
+
+  log->SC_log(Log::INFO) << dec << "MULHU: x" << rs1 << " * x" << rs2
+    << " -> x" << rd << "(" << ret_value << ")" << endl;
 }
 
 void Execute::M_DIV(Instruction &inst) {
+  int rd, rs1, rs2;
+  int32_t divisor, dividend;
+  int64_t result;
 
+  M_Instruction m_inst(inst.getInstr());
+
+  rd = m_inst.get_rd();
+  rs1 = m_inst.get_rs1();
+  rs2 = m_inst.get_rs2();
+
+  dividend = regs->getValue(rs1);
+  divisor = regs->getValue(rs2);
+
+  if (divisor == 0) {
+    result = - 1;
+  } else if ( (divisor == -1) && (dividend == (int32_t)0x80000000) ) {
+    result = 0x0000000080000000;
+  } else {
+    result = dividend / divisor;
+    result = result & 0x00000000FFFFFFFF;
+  }
+
+  regs->setValue(rd, result);
+
+  log->SC_log(Log::INFO) << dec << "DIV: x" << rs1 << " / x" << rs2
+    << " -> x" << rd << "(" << result << ")" << endl;
 }
 
 void Execute::M_DIVU(Instruction &inst) {
+  int rd, rs1, rs2;
+  uint32_t divisor, dividend;
+  uint64_t result;
 
+  M_Instruction m_inst(inst.getInstr());
+
+  rd = m_inst.get_rd();
+  rs1 = m_inst.get_rs1();
+  rs2 = m_inst.get_rs2();
+
+  dividend = regs->getValue(rs1);
+  divisor = regs->getValue(rs2);
+
+  if (divisor == 0) {
+    result = -1;
+  } else {
+    result = dividend / divisor;
+    result = result & 0x00000000FFFFFFFF;
+  }
+
+  regs->setValue(rd, result);
+
+  log->SC_log(Log::INFO) << dec << "DIVU: x" << rs1 << " / x" << rs2
+    << " -> x" << rd << "(" << result << ")" << endl;
 }
 
 void Execute::M_REM(Instruction &inst) {
+  int rd, rs1, rs2;
+  int32_t divisor, dividend;
+  int32_t result;
 
+  M_Instruction m_inst(inst.getInstr());
+
+  rd = m_inst.get_rd();
+  rs1 = m_inst.get_rs1();
+  rs2 = m_inst.get_rs2();
+
+  dividend = regs->getValue(rs1);
+  divisor = regs->getValue(rs2);
+
+  if (divisor == 0) {
+    result = dividend;
+  } else if ( (divisor == -1) && (dividend == (int32_t)0x80000000) ) {
+    result = 0;
+  } else {
+    result = dividend % divisor;
+  }
+
+  regs->setValue(rd, result);
+
+  log->SC_log(Log::INFO) << dec << "REM: x" << rs1 << " / x" << rs2
+    << " -> x" << rd << "(" << result << ")" << endl;
 }
 
 void Execute::M_REMU(Instruction &inst) {
+  int rd, rs1, rs2;
+  uint32_t divisor, dividend;
+  uint32_t result;
 
+  M_Instruction m_inst(inst.getInstr());
+
+  rd = m_inst.get_rd();
+  rs1 = m_inst.get_rs1();
+  rs2 = m_inst.get_rs2();
+
+  dividend = regs->getValue(rs1);
+  divisor = regs->getValue(rs2);
+
+  if (divisor == 0) {
+    result = dividend;
+  } else  {
+    result = dividend % divisor;
+  }
+
+  regs->setValue(rd, result);
+
+  log->SC_log(Log::INFO) << dec << "REMU: x" << rs1 << " / x" << rs2
+    << " -> x" << rd << "(" << result << ")" << endl;
 }
 
 void Execute::NOP(Instruction &inst) {
