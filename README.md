@@ -4,7 +4,7 @@
 
 
 This is another RISC-V ISA simulator, this is coded in SystemC + TLM-2.
-It partially supports RV32I Instruction set by now.
+It supports RV32IMC Instruction set by now (with some bugs).
 
 [![travis](https://travis-ci.org/mariusmm/RISC-V-TLM.svg?branch=master)](https://travis-ci.org/mariusmm/RISC-V-TLM)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0f7ccc8435f14ce2b241b3bfead772a2)](https://www.codacy.com/app/mariusmm/RISC-V-TLM?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mariusmm/RISC-V-TLM&amp;utm_campaign=Badge_Grade)
@@ -21,7 +21,7 @@ Brief description of the modules:
   * Executes M instruction extensions
 * Instruction: Decodes instruction and acces to any instruction field
   * C_Instruction: Decodes Compressed instructions (C extension)
-  * M_INstruction: Decodes Multiplication and Division instructions (M extension)
+  * M_Instruction: Decodes Multiplication and Division instructions (M extension)
 * Simulator: Top-level entity that builds & starts the simulation
 * BusCtrl: Simple bus manager
 * Trace: Simple trace peripheral
@@ -30,7 +30,8 @@ Helper classes:
 * Performance: Performance indicators stores here (singleton class)
 * Log: Log class to log them all (singleton class)
 
-Current performance is about 284500 instructions / sec in a Core-i5@2.2Ghz
+Current performance is about 284500 instructions / sec in a Intel Core
+i5-5200<span>@</span>2.2Ghz
 
 
 ### Structure
@@ -43,7 +44,7 @@ This is a preliminar and incomplete version.
 
 Task to do:
 * Implement all missing instructions (Execute)
-* Implement CSRs (where?)
+* Implement CSRs (where/how?)
 * Add full support to .elf ~~and .hex~~ filetypes to memory.h
 (only partial .hex support)
 * Connect some TLM peripherals
@@ -51,6 +52,8 @@ Task to do:
      * Some standard UART model
      * ...
 * Test, test, test & test. I'm sure there are a lot of bugs in the code
+     * riscv-test almost incomplete
+     * riscv-compliance WiP
 * Improve structure and modules hierarchy
 * Add 64 & 128 bits architecture (RV64I, RV128I)
 
@@ -96,6 +99,7 @@ an example, to compile it just:
 $ make
 ```
 and then execute the .hex file like the example before.
+
 
 ## Documentation
 The code is documented using doxygen. In the doc folder there is a Doxygen.cfg
