@@ -213,7 +213,7 @@ void Execute::BLTU(Instruction &inst) {
   }
 
   log->SC_log(Log::INFO) << "BLTU x"
-          << rs1 << "(" << regs->getValue(rs1) << ") < x"
+          << dec << rs1 << "(" << regs->getValue(rs1) << ") < x"
           << rs2 << "(" << regs->getValue(rs2) << ")? -> PC (0x"
           << hex << new_pc << ")" << dec << endl;
 }
@@ -784,7 +784,7 @@ void Execute::FENCE(Instruction &inst) {
 void Execute::ECALL(Instruction &inst) {
 
   log->SC_log(Log::INFO) << "ECALL" << endl;
-  std::cout << "ECALL Instruction called, stopping simulation" << endl;
+  std::cout << endl << "ECALL Instruction called, stopping simulation" << endl;
   regs->dump();
   cout << "Simulation time " << sc_time_stamp() << endl;
   perf->dump();

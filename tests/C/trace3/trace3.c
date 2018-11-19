@@ -7,4 +7,6 @@ void main(void) {
   for (i=0; i<5; i++) {
     TRACE = msg[i];
   }
+
+  asm volatile ("ecall");
 }

@@ -4,4 +4,6 @@
 void main(void) {
   TRACE = 'H';
   TRACE = 'e';
+
+  asm volatile ("ecall");
 }
