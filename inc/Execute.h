@@ -46,7 +46,7 @@ public:
   void AUIPC(Instruction &inst);
 
   void JAL(Instruction &inst, bool c_extension = false, int m_rd = 1);
-  void JALR(Instruction &inst);
+  void JALR(Instruction &inst, bool c_extension = false);
 
   void BEQ(Instruction &inst);
   void BNE(Instruction &inst);
@@ -63,7 +63,7 @@ public:
 
   void SB(Instruction &inst);
   void SH(Instruction &inst);
-  void SW(Instruction &inst);
+  void SW(Instruction &inst, bool c_extension = false);
   void SBU(Instruction &inst);
   void SHU(Instruction &inst);
 
@@ -99,18 +99,29 @@ public:
   void CSRRSI(Instruction &inst);
   void CSRRCI(Instruction &inst);
 
+/*********************** Privileged Instructions ******************************/
   void MRET(Instruction &inst);
+  void WFI(Instruction &inst);
 
   /* C Extensions */
   void C_JR(Instruction &inst);
   void C_MV(Instruction &inst);
   void C_LWSP(Instruction &inst);
   void C_ADDI4SPN(Instruction &inst);
+  void C_SLLI(Instruction &inst);
   void C_ADDI16SP(Instruction &inst);
   void C_SWSP(Instruction &inst);
   void C_BEQZ(Instruction &inst);
   void C_BNEZ(Instruction &inst);
   void C_LI(Instruction &inst);
+  void C_SRLI(Instruction &inst);
+  void C_SRAI(Instruction &inst);
+  void C_ANDI(Instruction &inst);
+  void C_ADD(Instruction &inst);
+  void C_SUB(Instruction &inst);
+  void C_XOR(Instruction &inst);
+  void C_OR(Instruction &inst);
+  void C_AND(Instruction &inst);
 
   /* M Extensinos */
   void M_MUL(Instruction &inst);

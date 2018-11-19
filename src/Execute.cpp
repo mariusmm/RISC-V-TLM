@@ -73,24 +73,42 @@ void Execute::JAL(Instruction &inst, bool c_extension, int m_rd) {
           << hex << new_pc << ")" << endl;
 }
 
-void Execute::JALR(Instruction &inst) {
+void Execute::JALR(Instruction &inst, bool c_extension) {
   uint32_t mem_addr = 0;
   int rd, rs1;
   int new_pc, old_pc;
 
-  rd = inst.get_rd();
-  rs1 = inst.get_rs1();
-  mem_addr = inst.get_imm_I();
+  if (c_extension == false) {
+    rd = inst.get_rd();
+    rs1 = inst.get_rs1();
+    mem_addr = inst.get_imm_I();
 
-  old_pc = regs->getPC();
-  regs->setValue(rd, old_pc + 4);
+    old_pc = regs->getPC();
+    regs->setValue(rd, old_pc + 4);
 
-  new_pc = (regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE;
-  regs->setPC(new_pc);
+    new_pc = (regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE;
+    regs->setPC(new_pc);
 
-  log->SC_log(Log::INFO) << dec << "JALR: x"
-          << rd << " <- 0x" << hex << old_pc + 4
-          << " PC <- 0x" << hex << new_pc << endl;
+    log->SC_log(Log::INFO) << dec << "JALR: x"
+            << rd << " <- 0x" << hex << old_pc + 4
+            << " PC <- 0x" << hex << new_pc << endl;
+
+  } else  {
+    C_Instruction c_inst(inst.getInstr());
+
+    rd = 1;
+    rs1 = c_inst.get_rs1();
+
+    old_pc = regs->getPC();
+    regs->setValue(rd, old_pc + 2);
+
+    new_pc = (regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE;
+    regs->setPC(new_pc);
+
+    log->SC_log(Log::INFO) << dec << "C.JALR: x"
+            << rd << " <- 0x" << hex << old_pc + 4
+            << " PC <- 0x" << hex << new_pc << endl;
+  }
 }
 
 void Execute::BEQ(Instruction &inst) {
@@ -364,15 +382,22 @@ void Execute::SH(Instruction &inst) {
           << mem_addr << dec << ")" << endl;
 }
 
-void Execute::SW(Instruction &inst) {
+void Execute::SW(Instruction &inst, bool c_extension) {
   uint32_t mem_addr = 0;
   int rs1, rs2;
   int32_t imm = 0;
   uint32_t data;
 
-  rs1 = inst.get_rs1();
-  rs2 = inst.get_rs2();
-  imm = inst.get_imm_S();
+  if (c_extension == false) {
+    rs1 = inst.get_rs1();
+    rs2 = inst.get_rs2();
+    imm = inst.get_imm_S();
+  } else {
+    C_Instruction c_inst(inst.getInstr());
+    rs1 = c_inst.get_rs1p();
+    rs2 = c_inst.get_rs2p();
+    imm = c_inst.get_imm_L();
+  }
 
   mem_addr = imm + regs->getValue(rs1);
   data = regs->getValue(rs2);
@@ -519,6 +544,10 @@ void Execute::SLLI(Instruction &inst) {
   rs1 = inst.get_rs1();
   rs2 = inst.get_rs2();
 
+  if (rs2 >= 0x20) {
+    // raise an exception, but how?
+  }
+
   shift = rs2 & 0x1F;
 
   calc = ((uint32_t)regs->getValue(rs1)) << shift;
@@ -599,7 +628,7 @@ void Execute::SUB(Instruction &inst) {
   log->SC_log(Log::INFO) << "SUB: x"
           << rs1 << " - x"
           << rs2 << " -> x"
-          << rd  << endl;
+          << rd << "("<< calc << ")" << endl;
 }
 
 void Execute::SLL(Instruction &inst) {
@@ -788,7 +817,7 @@ void Execute::CSRRW(Instruction &inst) {
 void Execute::CSRRS(Instruction &inst) {
   int rd, rs1;
   int csr;
-  uint32_t bitmask, aux;
+  uint32_t bitmask, aux, aux2;
 
   rd = inst.get_rd();
   rs1 = inst.get_rs1();
@@ -803,11 +832,11 @@ void Execute::CSRRS(Instruction &inst) {
   regs->setValue(rd, aux);
 
   bitmask = regs->getValue(rs1);
-  aux = aux | bitmask;
-  regs->setCSR(csr, aux);
+  aux2 = aux | bitmask;
+  regs->setCSR(csr, aux2);
 
   log->SC_log(Log::INFO) << "CSRRS: CSR #"
-          << csr << " -> x" << rd
+          << csr << "(" << aux << ") -> x" << dec << rd
           << ". x" << rs1 << " & CSR #" << csr << endl;
 }
 
@@ -912,6 +941,8 @@ void Execute::CSRRCI(Instruction &inst) {
           << ". x" << rs1 << " & CSR #" << csr << endl;
 }
 
+/*********************** Privileged Instructions ******************************/
+
 void Execute::MRET(Instruction &inst) {
   uint32_t new_pc = 0;
 
@@ -920,6 +951,13 @@ void Execute::MRET(Instruction &inst) {
 
   log->SC_log(Log::INFO) << "MRET: PC <- 0x" << hex << new_pc << endl;
 }
+
+
+void Execute::WFI(Instruction &inst) {
+  log->SC_log(Log::INFO) << "WFI" << endl;
+}
+
+/**************************** C Instructions **********************************/
 
 void Execute::C_JR(Instruction &inst) {
   uint32_t mem_addr = 0;
@@ -952,10 +990,29 @@ void Execute::C_MV(Instruction &inst) {
   calc = regs->getValue(rs1) + regs->getValue(rs2);
   regs->setValue(rd, calc);
 
-  log->SC_log(Log::INFO) << "MV: x" << dec
+  log->SC_log(Log::INFO) << "C.MV: x" << dec
           << rs1 << "(" << regs->getValue(rs1) << ") + x"
           << rs2 << "(" << regs->getValue(rs2) << ") -> x"
           << rd  << "(" << calc << ")" << endl;
+}
+
+void Execute::C_ADD(Instruction &inst) {
+  int rd, rs1, rs2;
+  uint32_t calc;
+
+  C_Instruction c_inst(inst.getInstr());
+
+  rd = c_inst.get_rs1();
+  rs1 = c_inst.get_rs1();
+  rs2 = c_inst.get_rs2();
+
+  calc = regs->getValue(rs1) + regs->getValue(rs2);
+  regs->setValue(rd, calc);
+
+  log->SC_log(Log::INFO) << "C.ADD: x"
+          << dec << rs1 << " + x"
+          << rs2 << " -> x"
+          << rd  << endl;
 }
 
 void Execute::C_LWSP(Instruction &inst) {
@@ -1010,17 +1067,27 @@ void Execute::C_ADDI16SP(Instruction &inst) {
 
   C_Instruction c_inst(inst.getInstr());
 
-  rd = 2;
-  rs1 = 2;
-  imm = c_inst.get_imm_ADDI16SP();
+  if (c_inst.get_rd() == 2) {
+    rd = 2;
+    rs1 = 2;
+    imm = c_inst.get_imm_ADDI16SP();
 
-  calc = regs->getValue(rs1) + imm;
-  regs->setValue(rd, calc);
+    calc = regs->getValue(rs1) + imm;
+    regs->setValue(rd, calc);
 
-  log->SC_log(Log::INFO) << dec << "ADDI16SP: x"
-          << rs1 << " + "
-          << dec << imm << " -> x"
-          << rd  << "(0x" << hex << calc << ")" << endl;
+    log->SC_log(Log::INFO) << dec << "ADDI16SP: x"
+            << rs1 << " + "
+            << dec << imm << " -> x"
+            << rd  << "(0x" << hex << calc << ")" << endl;
+  } else {
+    /* C.LUI OPCODE */
+    rd = c_inst.get_rd();
+    imm = c_inst.get_imm_LUI();
+    regs->setValue(rd, imm);
+    log->SC_log(Log::INFO) << dec << "C.LUI x"
+            << rd << " <- 0x" << hex << imm << endl;
+
+  }
 }
 
 void Execute::C_SWSP(Instruction &inst) {
@@ -1092,7 +1159,6 @@ void Execute::C_BNEZ(Instruction &inst) {
 }
 
 void Execute::C_LI(Instruction &inst) {
-
   int rd, rs1;
   int32_t imm = 0;
   int32_t calc;
@@ -1109,6 +1175,171 @@ void Execute::C_LI(Instruction &inst) {
   log->SC_log(Log::INFO) << dec << "LI: x"
           << rs1 << "(" << regs->getValue(rs1) << ") + "
           << imm << " -> x" << rd  << "(" << calc << ")" << endl;
+}
+
+void Execute::C_SRLI(Instruction &inst) {
+  int rd, rs1, rs2;
+  uint32_t shift;
+  uint32_t calc;
+
+  C_Instruction c_inst(inst.getInstr());
+
+  rd = c_inst.get_rs1p();
+  rs1 = c_inst.get_rs1p();
+  rs2 = c_inst.get_rs2();
+
+  shift = rs2 & 0x1F;
+
+  calc = ((uint32_t)regs->getValue(rs1)) >> shift;
+  regs->setValue(rd, calc);
+
+  log->SC_log(Log::INFO) << "C.SRLI: x"
+          << rs1 << " >> " << shift << " -> x"
+          << rd  << endl;
+}
+
+void Execute::C_SRAI(Instruction &inst) {
+  int rd, rs1, rs2;
+  uint32_t shift;
+  int32_t calc;
+
+  C_Instruction c_inst(inst.getInstr());
+
+  rd = c_inst.get_rs1p();
+  rs1 = c_inst.get_rs1p();
+  rs2 = c_inst.get_rs2();
+
+  shift = rs2 & 0x1F;
+
+  calc = (int32_t)regs->getValue(rs1) >> shift;
+  regs->setValue(rd, calc);
+
+  log->SC_log(Log::INFO) << "C.SRAI: x"
+          << rs1 << " >> " << dec << shift << " -> x"
+          << rd << "("<< calc << ")" << endl;
+}
+
+void Execute::C_SLLI(Instruction &inst) {
+  int rd, rs1, rs2;
+  uint32_t shift;
+  uint32_t calc;
+
+  C_Instruction c_inst(inst.getInstr());
+
+  rd = c_inst.get_rs1p();
+  rs1 = c_inst.get_rs1p();
+  rs2 = c_inst.get_imm_ADDI();
+
+  shift = rs2 & 0x1F;
+
+  calc = ((uint32_t)regs->getValue(rs1)) << shift;
+  regs->setValue(rd, calc);
+
+  log->SC_log(Log::INFO) << "C.SLLI: x"
+          << dec << rs1 << " << "
+          << shift << " -> x"
+          << rd  << endl;
+}
+
+
+void Execute::C_ANDI(Instruction &inst) {
+  int rd, rs1;
+  int32_t imm;
+  uint32_t calc;
+
+  C_Instruction c_inst(inst.getInstr());
+
+  rd = c_inst.get_rs1p();
+  rs1 = c_inst.get_rs1p();
+  imm = c_inst.get_imm_ADDI();
+
+  calc = regs->getValue(rs1) & imm;
+  regs->setValue(rd, calc);
+
+  log->SC_log(Log::INFO) << "C.ANDI: x"
+          << rs1 << " AND "
+          << imm << " -> x"
+          << rd  << endl;
+}
+
+void Execute::C_SUB(Instruction &inst) {
+  int rd, rs1, rs2;
+  uint32_t calc;
+
+  C_Instruction c_inst(inst.getInstr());
+
+  rd = c_inst.get_rs1p();
+  rs1 = c_inst.get_rs1p();
+  rs2 = c_inst.get_rs2p();
+
+  calc = regs->getValue(rs1) - regs->getValue(rs2);
+  regs->setValue(rd, calc);
+
+  /* Can insert some arbitrary execution time */
+  //wait(sc_time(10, SC_NS));
+
+  log->SC_log(Log::INFO) << "C.SUB: x"
+          << dec << rs1 << " - x"
+          << rs2 << " -> x"
+          << rd  << endl;
+}
+
+
+void Execute::C_XOR(Instruction &inst) {
+  int rd, rs1, rs2;
+  uint32_t calc;
+
+  C_Instruction c_inst(inst.getInstr());
+
+  rd = c_inst.get_rs1p();
+  rs1 = c_inst.get_rs1p();
+  rs2 = c_inst.get_rs2p();
+
+  calc = regs->getValue(rs1) ^ regs->getValue(rs2);
+  regs->setValue(rd, calc);
+
+  log->SC_log(Log::INFO) << "C.XOR: x"
+          << dec << rs1 << " XOR x"
+          << rs2 << "-> x"
+          << rd  << endl;
+}
+
+void Execute::C_OR(Instruction &inst) {
+  int rd, rs1, rs2;
+  uint32_t calc;
+
+  C_Instruction c_inst(inst.getInstr());
+
+  rd = c_inst.get_rs1p();
+  rs1 = c_inst.get_rs1p();
+  rs2 = c_inst.get_rs2p();
+
+  calc = regs->getValue(rs1) | regs->getValue(rs2);
+  regs->setValue(rd, calc);
+
+  log->SC_log(Log::INFO) << "C_OR: x"
+          << dec << rs1 << " OR x"
+          << rs2 << "-> x"
+          << rd << endl;
+}
+
+void Execute::C_AND(Instruction &inst) {
+  int rd, rs1, rs2;
+  uint32_t calc;
+
+  C_Instruction c_inst(inst.getInstr());
+
+  rd = c_inst.get_rs1p();
+  rs1 = c_inst.get_rs1p();
+  rs2 = c_inst.get_rs2p();
+
+  calc = regs->getValue(rs1) & regs->getValue(rs2);
+  regs->setValue(rd, calc);
+
+  log->SC_log(Log::INFO) << "C.AND: x"
+          << dec << rs1 << " AND x"
+          << rs2 << "-> x"
+          << rd << endl;
 }
 
 /******************************************************************************/

@@ -71,6 +71,14 @@ typedef enum {
   C_LI       = 0b010,
   C_ADDI16SP = 0b011,
   C_SRLI     = 0b100,
+  C_2_SRLI   = 0b00,
+  C_2_SRAI   = 0b01,
+  C_2_ANDI   = 0b10,
+  C_2_SUB    = 0b11,
+  C_3_SUB    = 0b00,
+  C_3_XOR    = 0b01,
+  C_3_OR     = 0b10,
+  C_3_AND    = 0b11,
   C_J        = 0b101,
   C_BEQZ     = 0b110,
   C_BNEZ     = 0b111,
@@ -118,7 +126,7 @@ public:
   }
 
   inline int32_t get_rdp() {
-    return m_instr.range(4, 2);
+    return m_instr.range(4, 2) + 8;
   }
 
   /**
@@ -135,7 +143,7 @@ public:
 
 
   inline int32_t get_rs1p() {
-    return m_instr.range(9, 7);
+    return m_instr.range(9, 7) + 8;
   }
 
   /**
@@ -150,6 +158,9 @@ public:
     m_instr.range(6,2) = value;
   }
 
+  inline int32_t get_rs2p() {
+    return m_instr.range(4, 2) + 8;
+  }
 
   inline int32_t get_funct3() {
     return m_instr.range(15, 13);
@@ -259,7 +270,7 @@ public:
     aux |= m_instr[6] << 7;
     aux |= m_instr.range(5,3) << 1;
     aux |= m_instr[2] << 5;
-    
+
     if (m_instr[12] == 1) {
         aux |= 0b1111 << 12;
     }
@@ -357,6 +368,19 @@ public:
 
     if (m_instr[12] == 1) {
       aux |= 0b11111111111111111111111 << 9;
+    }
+
+    return aux;
+  }
+
+  inline int32_t get_imm_LUI() {
+    int32_t aux = 0;
+
+    aux = m_instr[12] << 17;
+    aux |=  m_instr.range(6,2) << 12;
+
+    if (m_instr[12] == 1) {
+      aux |= 0b111111111111111 << 17;
     }
 
     return aux;

@@ -33,6 +33,9 @@ bool CPU::process_c_instruction(Instruction &inst) {
     case OP_C_LW:
       exec->LW(inst, true);
       break;
+    case OP_C_SW:
+      exec->SW(inst, true);
+      break;
     case OP_C_ADDI:
       exec->ADDI(inst, true);
       break;
@@ -47,6 +50,9 @@ bool CPU::process_c_instruction(Instruction &inst) {
     case OP_C_LI:
       exec->C_LI(inst);
       break;
+    case OP_C_SLLI:
+      exec->C_SLLI(inst);
+      break;
     case OP_C_LWSP:
       exec->C_LWSP(inst);
       break;
@@ -56,6 +62,13 @@ bool CPU::process_c_instruction(Instruction &inst) {
       break;
     case OP_C_MV:
       exec->C_MV(inst);
+      break;
+    case OP_C_JALR:
+      exec->JALR(inst, true);
+      PC_not_affected = false;
+      break;
+    case OP_C_ADD:
+      exec->C_ADD(inst);
       break;
     case OP_C_SWSP:
       exec->C_SWSP(inst);
@@ -70,6 +83,27 @@ bool CPU::process_c_instruction(Instruction &inst) {
     case OP_C_BNEZ:
       exec->C_BNEZ(inst);
       PC_not_affected = false;
+      break;
+    case OP_C_SRLI:
+      exec->C_SRLI(inst);
+      break;
+    case OP_C_SRAI:
+      exec->C_SRAI(inst);
+      break;
+    case OP_C_ANDI:
+      exec->C_ANDI(inst);
+      break;
+    case OP_C_SUB:
+      exec->C_SUB(inst);
+      break;
+    case OP_C_XOR:
+      exec->C_XOR(inst);
+      break;
+    case OP_C_OR:
+      exec->C_OR(inst);
+      break;
+    case OP_C_AND:
+      exec->C_AND(inst);
       break;
     default:
       std::cout << "C instruction not implemented yet" << endl;
@@ -286,6 +320,9 @@ bool CPU::process_base_instruction(Instruction &inst) {
       exec->MRET(inst);
       PC_not_affected = false;
       break;
+    case OP_WFI:
+      exec->WFI(inst);
+      break;
     default:
       std::cout << "Wrong instruction" << endl;
       inst.dump();
@@ -317,7 +354,7 @@ void CPU::CPU_thread(void) {
   trans->set_dmi_allowed( false ); // Mandatory initial value
   trans->set_response_status( tlm::TLM_INCOMPLETE_RESPONSE );
 
-  register_bank->dump();
+  //register_bank->dump();
 
   while(1) {
       /* Get new PC value */

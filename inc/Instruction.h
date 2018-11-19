@@ -89,6 +89,7 @@ OP_CSRRCI,
 OP_URET,
 OP_SRET,
 OP_MRET,
+OP_WFI,
 
 OP_ERROR
 } opCodes;
@@ -156,6 +157,7 @@ typedef enum {
   URET_F  = 0b000000000010,
   SRET_F  = 0b000100000010,
   MRET_F  = 0b001100000010,
+  WFI_F   = 0b000100000101,
   ECALL_F3= 0b000,
   CSRRW   = 0b001,
   CSRRS   = 0b010,
@@ -182,7 +184,6 @@ public:
    * @return return opcode field
    */
   inline int32_t opcode() {
-    // cout << "OP: " << m_instr << endl;
     return m_instr.range(6,0);
   }
 

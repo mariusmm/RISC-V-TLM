@@ -128,6 +128,8 @@ opCodes Instruction::decode() {
               return OP_SRET;
             case MRET_F:
               return OP_MRET;
+            case WFI_F:
+              return OP_WFI;
           }
           break;
         case CSRRW:
