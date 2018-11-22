@@ -829,21 +829,23 @@ void Execute::CSRRS(Instruction &inst) {
 
   /* These operations must be atomical */
   aux = regs->getCSR(csr);
+  bitmask = regs->getValue(rs1);
+
   regs->setValue(rd, aux);
 
-  bitmask = regs->getValue(rs1);
   aux2 = aux | bitmask;
   regs->setCSR(csr, aux2);
 
   log->SC_log(Log::INFO) << "CSRRS: CSR #"
-          << csr << "(" << aux << ") -> x" << dec << rd
-          << ". x" << rs1 << " & CSR #" << csr << endl;
+          << csr << "(0x" << hex << aux << ") -> x" << dec << rd
+          << ". x" << rs1 << " & CSR #" << csr
+          << " <- 0x" << hex << aux2 << endl;
 }
 
 void Execute::CSRRC(Instruction &inst) {
   int rd, rs1;
   int csr;
-  uint32_t bitmask, aux;
+  uint32_t bitmask, aux, aux2;
 
   rd = inst.get_rd();
   rs1 = inst.get_rs1();
@@ -855,15 +857,17 @@ void Execute::CSRRC(Instruction &inst) {
 
   /* These operations must be atomical */
   aux = regs->getCSR(csr);
+  bitmask = regs->getValue(rs1);
+
   regs->setValue(rd, aux);
 
-  bitmask = regs->getValue(rs1);
-  aux = aux & ~bitmask;
-  regs->setCSR(csr, aux);
+  aux2 = aux & ~bitmask;
+  regs->setCSR(csr, aux2);
 
   log->SC_log(Log::INFO) << "CSRRC: CSR #"
-          << csr << " -> x" << rd
-          << ". x" << rs1 << " & CSR #" << csr << endl;
+          << csr << "(0x" << hex << aux << ") -> x" << dec << rd
+          << ". x" << rs1 << " & CSR #" << csr
+          << " <- 0x" << hex << aux2 << endl;
 }
 
 void Execute::CSRRWI(Instruction &inst) {

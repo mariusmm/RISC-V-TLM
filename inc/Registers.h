@@ -16,6 +16,21 @@
 #include "Performance.h"
 #include "Memory.h"
 
+#define WARL_M_EXTENSION (1 << 12)
+#define WARL_C_EXTENSION (1 << 2)
+#define WARL_I_BASE (1 << 8)
+#define WARL_MXL (1 << 29)
+
+
+#define CSR_MSTATUS (0x300)
+#define CSR_MISA (0x301)
+#define CSR_MEDELEG (0x302)
+#define CSR_MIDELEG (0x303)
+#define CSR_MIE (0x304)
+#define CSR_MTVEC (0x305)
+#define CSR_MCOUNTEREN (0x306)
+
+
 using namespace sc_core;
 using namespace sc_dt;
 using namespace std;
@@ -141,18 +156,14 @@ public:
    * @param csr CSR number to access
    * @return CSR value
    */
-  inline uint32_t getCSR(int csr) {
-    return CSR[csr];
-  }
+  uint32_t getCSR(int csr);
 
   /**
    * @brief Set CSR value
    * @param csr   CSR number to access
    * @param value new value to register
    */
-  inline void setCSR(int csr, uint32_t value) {
-    CSR[csr] = value;
-  }
+  void setCSR(int csr, uint32_t value);
 
   /**
    * Dump register data to console
@@ -174,6 +185,8 @@ private:
    */
   uint32_t CSR[4096];
   Performance *perf;
+
+  void initCSR(void);
 };
 
 #endif
