@@ -73,7 +73,7 @@ public:
   void XORI(Instruction &inst);
   void ORI(Instruction &inst);
   void ANDI(Instruction &inst);
-  void SLLI(Instruction &inst);
+  bool SLLI(Instruction &inst);
   void SRLI(Instruction &inst);
   void SRAI(Instruction &inst);
 
@@ -138,6 +138,9 @@ public:
 private:
   uint32_t readDataMem(uint32_t addr, int size);
   void writeDataMem(uint32_t addr, uint32_t data, int size);
+
+  void RaiseException(uint32_t cause);
+
   Registers *regs;
   Performance *perf;
   Log *log;

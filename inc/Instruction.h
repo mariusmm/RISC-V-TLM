@@ -167,6 +167,13 @@ typedef enum {
   CSRRCI  = 0b111,
 } Codes;
 
+#define EXCEPTION_CAUSE_INSTRUCTION_MISALIGN  0
+#define EXCEPTION_CAUSE_INSTRUCTION_ACCESS    1
+#define EXCEPTION_CAUSE_ILLEGAL_INSTRUCTION   2
+#define EXCEPTION_CAUSE_BREAKPOINT            3
+#define EXCEPTION_CAUSE_LOAD_ADDR_MISALIGN    4
+#define EXCEPTION_CAUSE_LOAD_ACCESS_FAULT     5
+
 /**
  * @brief Instruction decoding and fields access
  */

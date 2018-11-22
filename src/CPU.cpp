@@ -242,7 +242,7 @@ bool CPU::process_base_instruction(Instruction &inst) {
       exec->ANDI(inst);
       break;
     case OP_SLLI:
-      exec->SLLI(inst);
+      PC_not_affected = exec->SLLI(inst);
       break;
     case OP_SRLI:
       exec->SRLI(inst);

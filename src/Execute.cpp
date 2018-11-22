@@ -535,7 +535,7 @@ void Execute::ANDI(Instruction &inst) {
           << rd  << endl;
 }
 
-void Execute::SLLI(Instruction &inst) {
+bool Execute::SLLI(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t shift;
   uint32_t calc;
@@ -547,6 +547,9 @@ void Execute::SLLI(Instruction &inst) {
   if (rs2 >= 0x20) {
     // raise an exception, but how?
     cout << "ILEGAL INSTRUCTION, shamt[5] != 0" << endl;
+    RaiseException(EXCEPTION_CAUSE_ILLEGAL_INSTRUCTION);
+
+    return false;
   }
 
   shift = rs2 & 0x1F;
@@ -557,6 +560,8 @@ void Execute::SLLI(Instruction &inst) {
   log->SC_log(Log::INFO) << "SLLI: x"
           << rs1 << " << " << shift << " -> x"
           << rd << "(0x" << hex << calc << ")" << endl;
+
+  return true;
 }
 
 void Execute::SRLI(Instruction &inst) {
@@ -951,7 +956,7 @@ void Execute::CSRRCI(Instruction &inst) {
 void Execute::MRET(Instruction &inst) {
   uint32_t new_pc = 0;
 
-  new_pc = regs->getCSR(0x341);
+  new_pc = regs->getCSR(CSR_MEPC);
   regs->setPC(new_pc);
 
   log->SC_log(Log::INFO) << "MRET: PC <- 0x" << hex << new_pc << endl;
@@ -1610,4 +1615,25 @@ void Execute::writeDataMem(uint32_t addr, uint32_t data, int size) {
   trans.set_address( addr );
 
   data_bus->b_transport( trans, delay);
+}
+
+
+void Execute::RaiseException(uint32_t cause) {
+  uint32_t new_pc, current_pc, m_cause;
+
+  current_pc = regs->getPC();
+  m_cause = regs->getCSR(CSR_MSTATUS);
+  m_cause |= cause;
+
+  new_pc = regs->getCSR(CSR_MTVEC);
+
+  regs->setCSR(CSR_MEPC, current_pc );
+  regs->setCSR(CSR_MTVAL, current_pc );
+  regs->setCSR(CSR_MCAUSE, cause);
+  regs->setCSR(CSR_MSTATUS, m_cause);
+
+  regs->setPC( new_pc);
+
+  log->SC_log(Log::INFO) << "Exception! new PC " << hex << new_pc << endl;
+
 }
