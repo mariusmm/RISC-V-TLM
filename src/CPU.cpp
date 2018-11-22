@@ -28,7 +28,7 @@ bool CPU::process_c_instruction(Instruction &inst) {
 
   switch(c_inst.decode()) {
     case OP_C_ADDI4SPN:
-      exec->C_ADDI4SPN(inst);
+      PC_not_affected = exec->C_ADDI4SPN(inst);
       break;
     case OP_C_LW:
       exec->LW(inst, true);
@@ -296,6 +296,9 @@ bool CPU::process_base_instruction(Instruction &inst) {
       break;
     case OP_ECALL:
       exec->ECALL(inst);
+      break;
+    case OP_EBREAK:
+      exec->EBREAK(inst);
       break;
     case OP_CSRRW:
       exec->CSRRW(inst);

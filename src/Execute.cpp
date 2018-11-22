@@ -336,9 +336,10 @@ void Execute::LHU(Instruction &inst) {
   data = readDataMem(mem_addr, 2);
   regs->setValue(rd, data);
 
-  log->SC_log(Log::INFO) << "LHU: x"
+  log->SC_log(Log::INFO) << "LHU: x" << dec
           << rs1 << " + " << imm << " (@0x"
-          << hex <<mem_addr << dec << ") -> x" << rd << endl;
+          << hex << mem_addr << dec << ") -> x"
+          << rd << "(0x" << hex << data << ")"<< endl;
 }
 
 void Execute::SB(Instruction &inst) {
@@ -557,7 +558,7 @@ bool Execute::SLLI(Instruction &inst) {
   calc = ((uint32_t)regs->getValue(rs1)) << shift;
   regs->setValue(rd, calc);
 
-  log->SC_log(Log::INFO) << "SLLI: x"
+  log->SC_log(Log::INFO) << "SLLI: x" << dec
           << rs1 << " << " << shift << " -> x"
           << rd << "(0x" << hex << calc << ")" << endl;
 
@@ -578,7 +579,7 @@ void Execute::SRLI(Instruction &inst) {
   calc = ((uint32_t)regs->getValue(rs1)) >> shift;
   regs->setValue(rd, calc);
 
-  log->SC_log(Log::INFO) << "SRLI: x"
+  log->SC_log(Log::INFO) << "SRLI: x" << dec
           << rs1 << " >> " << shift << " -> x"
           << rd  << endl;
 }
@@ -597,7 +598,7 @@ void Execute::SRAI(Instruction &inst) {
   calc = regs->getValue(rs1) >> shift;
   regs->setValue(rd, calc);
 
-  log->SC_log(Log::INFO) << "SRAI: x"
+  log->SC_log(Log::INFO) << "SRAI: x" << dec
           << rs1 << " >> " << shift << " -> x"
           << rd  << endl;
 }
@@ -796,6 +797,19 @@ void Execute::ECALL(Instruction &inst) {
   perf->dump();
 
   SC_REPORT_ERROR("Execute", "ECALL");
+}
+
+bool Execute::EBREAK(Instruction &inst) {
+
+  log->SC_log(Log::INFO) << "EBREAK" << endl;
+  std::cout << endl << "EBRAK  Instruction called, dumping information" << endl;
+  regs->dump();
+  cout << "Simulation time " << sc_time_stamp() << endl;
+  perf->dump();
+
+  RaiseException(EXCEPTION_CAUSE_BREAKPOINT);
+
+  return true;
 }
 
 void Execute::CSRRW(Instruction &inst) {
@@ -1049,7 +1063,7 @@ void Execute::C_LWSP(Instruction &inst) {
           << rd << "(" << hex << data << ")"<< dec << endl;
 }
 
-void Execute::C_ADDI4SPN(Instruction  &inst) {
+bool Execute::C_ADDI4SPN(Instruction  &inst) {
   int rd, rs1;
   int32_t imm = 0;
   int32_t calc;
@@ -1060,6 +1074,11 @@ void Execute::C_ADDI4SPN(Instruction  &inst) {
   rs1 = 2;
   imm = c_inst.get_imm_ADDI4SPN();
 
+  if (imm == 0) {
+    RaiseException(EXCEPTION_CAUSE_ILLEGAL_INSTRUCTION, inst.getInstr() );
+    return false;
+  }
+
   calc = regs->getValue(rs1) + imm;
   regs->setValue(rd, calc);
 
@@ -1067,6 +1086,8 @@ void Execute::C_ADDI4SPN(Instruction  &inst) {
           << rs1 << "(0x" << hex << regs->getValue(rs1) << ") + "
           << dec << imm << " -> x"
           << rd << "(0x" << hex << calc << ")" << endl;
+
+  return true;
 }
 
 void Execute::C_ADDI16SP(Instruction &inst) {
@@ -1618,7 +1639,7 @@ void Execute::writeDataMem(uint32_t addr, uint32_t data, int size) {
 }
 
 
-void Execute::RaiseException(uint32_t cause) {
+void Execute::RaiseException(uint32_t cause, uint32_t inst) {
   uint32_t new_pc, current_pc, m_cause;
 
   current_pc = regs->getPC();
@@ -1628,7 +1649,11 @@ void Execute::RaiseException(uint32_t cause) {
   new_pc = regs->getCSR(CSR_MTVEC);
 
   regs->setCSR(CSR_MEPC, current_pc );
-  regs->setCSR(CSR_MTVAL, current_pc );
+  if (cause == EXCEPTION_CAUSE_ILLEGAL_INSTRUCTION) {
+    regs->setCSR(CSR_MTVAL, inst);
+  } else {
+    regs->setCSR(CSR_MTVAL, current_pc );
+  }
   regs->setCSR(CSR_MCAUSE, cause);
   regs->setCSR(CSR_MSTATUS, m_cause);
 

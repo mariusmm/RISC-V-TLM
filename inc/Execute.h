@@ -91,6 +91,7 @@ public:
 
   void FENCE(Instruction &inst);
   void ECALL(Instruction &inst);
+  bool EBREAK(Instruction &inst);
 
   void CSRRW(Instruction &inst);
   void CSRRS(Instruction &inst);
@@ -107,7 +108,7 @@ public:
   void C_JR(Instruction &inst);
   void C_MV(Instruction &inst);
   void C_LWSP(Instruction &inst);
-  void C_ADDI4SPN(Instruction &inst);
+  bool C_ADDI4SPN(Instruction &inst);
   void C_SLLI(Instruction &inst);
   void C_ADDI16SP(Instruction &inst);
   void C_SWSP(Instruction &inst);
@@ -139,7 +140,7 @@ private:
   uint32_t readDataMem(uint32_t addr, int size);
   void writeDataMem(uint32_t addr, uint32_t data, int size);
 
-  void RaiseException(uint32_t cause);
+  void RaiseException(uint32_t cause, uint32_t inst = 0);
 
   Registers *regs;
   Performance *perf;
