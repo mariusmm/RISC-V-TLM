@@ -542,10 +542,11 @@ void Execute::SLLI(Instruction &inst) {
 
   rd = inst.get_rd();
   rs1 = inst.get_rs1();
-  rs2 = inst.get_rs2();
+  rs2 = inst.get_shamt();
 
   if (rs2 >= 0x20) {
     // raise an exception, but how?
+    cout << "ILEGAL INSTRUCTION, shamt[5] != 0" << endl;
   }
 
   shift = rs2 & 0x1F;
@@ -555,7 +556,7 @@ void Execute::SLLI(Instruction &inst) {
 
   log->SC_log(Log::INFO) << "SLLI: x"
           << rs1 << " << " << shift << " -> x"
-          << rd  << endl;
+          << rd << "(0x" << hex << calc << ")" << endl;
 }
 
 void Execute::SRLI(Instruction &inst) {

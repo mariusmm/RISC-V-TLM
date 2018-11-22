@@ -360,6 +360,10 @@ public:
     m_instr.range(19,12) = aux.range(19,12);
   }
 
+  inline int32_t get_shamt() {
+    return m_instr.range(25, 20);
+  }
+
   inline int32_t get_csr() {
     int32_t aux = 0;
 

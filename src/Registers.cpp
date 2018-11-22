@@ -94,6 +94,6 @@ void Registers::setCSR(int csr, uint32_t value) {
 }
 
 void Registers::initCSR() {
-  CSR[0x301] = WARL_MXL | WARL_M_EXTENSION | WARL_C_EXTENSION | WARL_I_BASE;
+  CSR[CSR_MISA] = WARL_MXL | WARL_M_EXTENSION | WARL_C_EXTENSION | WARL_I_BASE;
 
 }

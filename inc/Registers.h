@@ -19,7 +19,7 @@
 #define WARL_M_EXTENSION (1 << 12)
 #define WARL_C_EXTENSION (1 << 2)
 #define WARL_I_BASE (1 << 8)
-#define WARL_MXL (1 << 29)
+#define WARL_MXL (1 << 30)
 
 
 #define CSR_MSTATUS (0x300)
