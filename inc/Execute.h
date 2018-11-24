@@ -42,99 +42,99 @@ public:
   /* Quick & dirty way to publish a socket though modules */
   tlm_utils::simple_initiator_socket<Execute> data_bus;
 
-  void LUI(Instruction &inst);
-  void AUIPC(Instruction &inst);
+  bool LUI(Instruction &inst);
+  bool AUIPC(Instruction &inst);
 
-  void JAL(Instruction &inst, bool c_extension = false, int m_rd = 1);
-  void JALR(Instruction &inst, bool c_extension = false);
+  bool JAL(Instruction &inst, bool c_extension = false, int m_rd = 1);
+  bool JALR(Instruction &inst, bool c_extension = false);
 
-  void BEQ(Instruction &inst);
-  void BNE(Instruction &inst);
-  void BLT(Instruction &inst);
-  void BGE(Instruction &inst);
-  void BLTU(Instruction &inst);
-  void BGEU(Instruction &inst);
+  bool BEQ(Instruction &inst);
+  bool BNE(Instruction &inst);
+  bool BLT(Instruction &inst);
+  bool BGE(Instruction &inst);
+  bool BLTU(Instruction &inst);
+  bool BGEU(Instruction &inst);
 
-  void LB(Instruction &inst);
-  void LH(Instruction &inst);
-  void LW(Instruction &inst, bool c_extension = false);
-  void LBU(Instruction &inst);
-  void LHU(Instruction &inst);
+  bool LB(Instruction &inst);
+  bool LH(Instruction &inst);
+  bool LW(Instruction &inst, bool c_extension = false);
+  bool LBU(Instruction &inst);
+  bool LHU(Instruction &inst);
 
-  void SB(Instruction &inst);
-  void SH(Instruction &inst);
-  void SW(Instruction &inst, bool c_extension = false);
-  void SBU(Instruction &inst);
-  void SHU(Instruction &inst);
+  bool SB(Instruction &inst);
+  bool SH(Instruction &inst);
+  bool SW(Instruction &inst, bool c_extension = false);
+  bool SBU(Instruction &inst);
+  bool SHU(Instruction &inst);
 
-  void ADDI(Instruction &inst, bool c_extension = false);
-  void SLTI(Instruction &inst);
-  void SLTIU(Instruction &inst);
-  void XORI(Instruction &inst);
-  void ORI(Instruction &inst);
-  void ANDI(Instruction &inst);
+  bool ADDI(Instruction &inst, bool c_extension = false);
+  bool SLTI(Instruction &inst);
+  bool SLTIU(Instruction &inst);
+  bool XORI(Instruction &inst);
+  bool ORI(Instruction &inst);
+  bool ANDI(Instruction &inst);
   bool SLLI(Instruction &inst);
-  void SRLI(Instruction &inst);
-  void SRAI(Instruction &inst);
+  bool SRLI(Instruction &inst);
+  bool SRAI(Instruction &inst);
 
-  void ADD(Instruction &inst);
-  void SUB(Instruction &inst);
-  void SLL(Instruction &inst);
-  void SLT(Instruction &inst);
-  void SLTU(Instruction &inst);
+  bool ADD(Instruction &inst);
+  bool SUB(Instruction &inst);
+  bool SLL(Instruction &inst);
+  bool SLT(Instruction &inst);
+  bool SLTU(Instruction &inst);
 
-  void XOR(Instruction &inst);
-  void SRL(Instruction &inst);
-  void SRA(Instruction &inst);
-  void OR(Instruction &inst);
-  void AND(Instruction &inst);
+  bool XOR(Instruction &inst);
+  bool SRL(Instruction &inst);
+  bool SRA(Instruction &inst);
+  bool OR(Instruction &inst);
+  bool AND(Instruction &inst);
 
-  void FENCE(Instruction &inst);
-  void ECALL(Instruction &inst);
+  bool FENCE(Instruction &inst);
+  bool ECALL(Instruction &inst);
   bool EBREAK(Instruction &inst);
 
-  void CSRRW(Instruction &inst);
-  void CSRRS(Instruction &inst);
-  void CSRRC(Instruction &inst);
-  void CSRRWI(Instruction &inst);
-  void CSRRSI(Instruction &inst);
-  void CSRRCI(Instruction &inst);
+  bool CSRRW(Instruction &inst);
+  bool CSRRS(Instruction &inst);
+  bool CSRRC(Instruction &inst);
+  bool CSRRWI(Instruction &inst);
+  bool CSRRSI(Instruction &inst);
+  bool CSRRCI(Instruction &inst);
 
 /*********************** Privileged Instructions ******************************/
-  void MRET(Instruction &inst);
-  void WFI(Instruction &inst);
+  bool MRET(Instruction &inst);
+  bool WFI(Instruction &inst);
 
   /* C Extensions */
-  void C_JR(Instruction &inst);
-  void C_MV(Instruction &inst);
-  void C_LWSP(Instruction &inst);
+  bool C_JR(Instruction &inst);
+  bool C_MV(Instruction &inst);
+  bool C_LWSP(Instruction &inst);
   bool C_ADDI4SPN(Instruction &inst);
-  void C_SLLI(Instruction &inst);
-  void C_ADDI16SP(Instruction &inst);
-  void C_SWSP(Instruction &inst);
-  void C_BEQZ(Instruction &inst);
-  void C_BNEZ(Instruction &inst);
-  void C_LI(Instruction &inst);
-  void C_SRLI(Instruction &inst);
-  void C_SRAI(Instruction &inst);
-  void C_ANDI(Instruction &inst);
-  void C_ADD(Instruction &inst);
-  void C_SUB(Instruction &inst);
-  void C_XOR(Instruction &inst);
-  void C_OR(Instruction &inst);
-  void C_AND(Instruction &inst);
+  bool C_SLLI(Instruction &inst);
+  bool C_ADDI16SP(Instruction &inst);
+  bool C_SWSP(Instruction &inst);
+  bool C_BEQZ(Instruction &inst);
+  bool C_BNEZ(Instruction &inst);
+  bool C_LI(Instruction &inst);
+  bool C_SRLI(Instruction &inst);
+  bool C_SRAI(Instruction &inst);
+  bool C_ANDI(Instruction &inst);
+  bool C_ADD(Instruction &inst);
+  bool C_SUB(Instruction &inst);
+  bool C_XOR(Instruction &inst);
+  bool C_OR(Instruction &inst);
+  bool C_AND(Instruction &inst);
 
   /* M Extensinos */
-  void M_MUL(Instruction &inst);
-  void M_MULH(Instruction &inst);
-  void M_MULHSU(Instruction &inst);
-  void M_MULHU(Instruction &inst);
-  void M_DIV(Instruction &inst);
-  void M_DIVU(Instruction &inst);
-  void M_REM(Instruction &inst);
-  void M_REMU(Instruction &inst);
+  bool M_MUL(Instruction &inst);
+  bool M_MULH(Instruction &inst);
+  bool M_MULHSU(Instruction &inst);
+  bool M_MULHU(Instruction &inst);
+  bool M_DIV(Instruction &inst);
+  bool M_DIVU(Instruction &inst);
+  bool M_REM(Instruction &inst);
+  bool M_REMU(Instruction &inst);
 
-  void NOP(Instruction &inst);
+  bool NOP(Instruction &inst);
 
 private:
   uint32_t readDataMem(uint32_t addr, int size);

@@ -10,7 +10,7 @@ Execute::Execute(sc_module_name name
     log = Log::getInstance();
 }
 
-void Execute::LUI(Instruction &inst) {
+bool Execute::LUI(Instruction &inst) {
   int rd;
   uint32_t imm = 0;
 
@@ -20,9 +20,10 @@ void Execute::LUI(Instruction &inst) {
   log->SC_log(Log::INFO) << "LUI x" << dec
           << rd << " <- 0x" << hex << imm << endl;
 
+  return true;
 }
 
-void Execute::AUIPC(Instruction &inst) {
+bool Execute::AUIPC(Instruction &inst) {
   int rd;
   uint32_t imm = 0;
   int new_pc;
@@ -36,9 +37,11 @@ void Execute::AUIPC(Instruction &inst) {
   log->SC_log(Log::INFO) << "AUIPC x" << dec
           << rd << " <- 0x" << hex << imm << " + PC (0x"
           << new_pc << ")" << endl;
+
+  return true;
 }
 
-void Execute::JAL(Instruction &inst, bool c_extension, int m_rd) {
+bool Execute::JAL(Instruction &inst, bool c_extension, int m_rd) {
   int32_t mem_addr = 0;
   int rd;
   int new_pc, old_pc;
@@ -71,9 +74,11 @@ void Execute::JAL(Instruction &inst, bool c_extension, int m_rd) {
           << rd << " <- 0x" << hex << old_pc << dec
           << ". PC + 0x" << hex << mem_addr << " -> PC (0x"
           << new_pc << ")" << endl;
+
+  return true;
 }
 
-void Execute::JALR(Instruction &inst, bool c_extension) {
+bool Execute::JALR(Instruction &inst, bool c_extension) {
   uint32_t mem_addr = 0;
   int rd, rs1;
   int new_pc, old_pc;
@@ -109,9 +114,11 @@ void Execute::JALR(Instruction &inst, bool c_extension) {
             << rd << " <- 0x" << hex << old_pc + 4
             << " PC <- 0x" << hex << new_pc << endl;
   }
+
+  return true;
 }
 
-void Execute::BEQ(Instruction &inst) {
+bool Execute::BEQ(Instruction &inst) {
   int rs1, rs2;
   int new_pc = 0;
 
@@ -130,9 +137,11 @@ void Execute::BEQ(Instruction &inst) {
           << rs1 << "(0x" << hex << regs->getValue(rs1) << ") == x" << dec
           << rs2 << "(0x" << hex << regs->getValue(rs2) << ")? -> PC (0x"
           << hex << new_pc << ")" << dec << endl;
+
+  return true;
 }
 
-void Execute::BNE(Instruction &inst) {
+bool Execute::BNE(Instruction &inst) {
   int rs1, rs2;
   int new_pc = 0;
   uint32_t val1, val2;
@@ -155,9 +164,11 @@ void Execute::BNE(Instruction &inst) {
           << rs1 << "(0x" << hex <<  val1 << ") == x" << dec
           << rs2 << "(0x" << hex << val2 << ")? -> PC (0x"
           << hex << new_pc << ")" << dec << endl;
+
+  return true;
 }
 
-void Execute::BLT(Instruction &inst) {
+bool Execute::BLT(Instruction &inst) {
   int rs1, rs2;
   int new_pc = 0;
 
@@ -175,9 +186,11 @@ void Execute::BLT(Instruction &inst) {
           << rs1 << "(0x" << hex << (int32_t)regs->getValue(rs1) << ") < x" << dec
           << rs2 << "(0x" << hex << (int32_t)regs->getValue(rs2) << ")? -> PC (0x"
           << hex << new_pc << ")" << dec << endl;
+
+  return true;
 }
 
-void Execute::BGE(Instruction &inst) {
+bool Execute::BGE(Instruction &inst) {
   int rs1, rs2;
   int new_pc = 0;
 
@@ -195,9 +208,11 @@ void Execute::BGE(Instruction &inst) {
           << rs1 << "(0x" << hex << (int32_t)regs->getValue(rs1) << ") > x" << dec
           << rs2 << "(0x" << hex << (int32_t)regs->getValue(rs2) << ")? -> PC (0x"
           << hex << new_pc << ")" << dec << endl;
+
+  return true;
 }
 
-void Execute::BLTU(Instruction &inst) {
+bool Execute::BLTU(Instruction &inst) {
   int rs1, rs2;
   int new_pc = 0;
 
@@ -216,9 +231,11 @@ void Execute::BLTU(Instruction &inst) {
           << rs1 << "(0x" << hex << regs->getValue(rs1) << ") < x" << dec
           << rs2 << "(0x" << hex << regs->getValue(rs2) << ")? -> PC (0x"
           << hex << new_pc << ")" << dec << endl;
+
+  return true;
 }
 
-void Execute::BGEU(Instruction &inst) {
+bool Execute::BGEU(Instruction &inst) {
   int rs1, rs2;
   int new_pc = 0;
 
@@ -236,9 +253,11 @@ void Execute::BGEU(Instruction &inst) {
           << rs1 << "(0x" << hex << regs->getValue(rs1) << ") > x" << dec
           << rs2 << "(0x" << hex << regs->getValue(rs2) << ")? -> PC (0x"
           << hex << new_pc << ")" << dec << endl;
+
+  return true;
 }
 
-void Execute::LB(Instruction &inst) {
+bool Execute::LB(Instruction &inst) {
   uint32_t mem_addr = 0;
   int rd, rs1;
   int32_t imm = 0;
@@ -255,9 +274,11 @@ void Execute::LB(Instruction &inst) {
   log->SC_log(Log::INFO) << "LB: x"
           << rs1 << " + " << imm << " (@0x"
           << hex << mem_addr << dec << ") -> x" << rd << endl;
+
+  return true;
 }
 
-void Execute::LH(Instruction &inst) {
+bool Execute::LH(Instruction &inst) {
   uint32_t mem_addr = 0;
   int rd, rs1;
   int32_t imm = 0;
@@ -274,9 +295,11 @@ void Execute::LH(Instruction &inst) {
   log->SC_log(Log::INFO) << "LH: x"
           << rs1 << " + " << imm << " (@0x"
           << hex << mem_addr << dec << ") -> x" << rd << endl;
+
+  return true;
 }
 
-void Execute::LW(Instruction &inst, bool c_extension) {
+bool Execute::LW(Instruction &inst, bool c_extension) {
   uint32_t mem_addr = 0;
   int rd, rs1;
   int32_t imm = 0;
@@ -301,9 +324,11 @@ void Execute::LW(Instruction &inst, bool c_extension) {
   log->SC_log(Log::INFO) << dec << "C.LW: x"
           << rs1 << " + " << imm << " (@0x" << hex
           << mem_addr << dec << ") -> x" << rd << endl;
+
+  return true;
 }
 
-void Execute::LBU(Instruction &inst) {
+bool Execute::LBU(Instruction &inst) {
   uint32_t mem_addr = 0;
   int rd, rs1;
   int32_t imm = 0;
@@ -320,9 +345,11 @@ void Execute::LBU(Instruction &inst) {
   log->SC_log(Log::INFO) << "LBU: x"
           << rs1 << " + " << imm << " (@0x"
           << hex << mem_addr << dec << ") -> x" << rd << endl;
+
+  return true;
 }
 
-void Execute::LHU(Instruction &inst) {
+bool Execute::LHU(Instruction &inst) {
   uint32_t mem_addr = 0;
   int rd, rs1;
   int32_t imm = 0;
@@ -340,9 +367,11 @@ void Execute::LHU(Instruction &inst) {
           << rs1 << " + " << imm << " (@0x"
           << hex << mem_addr << dec << ") -> x"
           << rd << "(0x" << hex << data << ")"<< endl;
+
+  return true;
 }
 
-void Execute::SB(Instruction &inst) {
+bool Execute::SB(Instruction &inst) {
   uint32_t mem_addr = 0;
   int rs1, rs2;
   int32_t imm = 0;
@@ -360,9 +389,11 @@ void Execute::SB(Instruction &inst) {
   log->SC_log(Log::INFO) << "SB: x" << dec
           << rs2 << " -> x" << rs1 << " + 0x" << hex << imm
           << " (@0x" << hex << mem_addr << dec << ")" << endl;
+
+  return true;
 }
 
-void Execute::SH(Instruction &inst) {
+bool Execute::SH(Instruction &inst) {
   uint32_t mem_addr = 0;
   int rs1, rs2;
   int32_t imm = 0;
@@ -381,9 +412,11 @@ void Execute::SH(Instruction &inst) {
           << rs2 << " -> x"
           << rs1 << " + 0x" << hex << imm << " (@0x" << hex
           << mem_addr << dec << ")" << endl;
+
+  return true;
 }
 
-void Execute::SW(Instruction &inst, bool c_extension) {
+bool Execute::SW(Instruction &inst, bool c_extension) {
   uint32_t mem_addr = 0;
   int rs1, rs2;
   int32_t imm = 0;
@@ -409,9 +442,11 @@ void Execute::SW(Instruction &inst, bool c_extension) {
           << rs2 << "(0x" << hex << data << ") -> x" << dec
           << rs1 << " + 0x" << hex << imm << " (@0x" << hex
           << mem_addr << dec << ")" << endl;
+
+  return true;
 }
 
-void Execute::ADDI(Instruction &inst, bool c_extension) {
+bool Execute::ADDI(Instruction &inst, bool c_extension) {
   int rd, rs1;
   int32_t imm = 0;
   int32_t calc;
@@ -432,11 +467,13 @@ void Execute::ADDI(Instruction &inst, bool c_extension) {
   regs->setValue(rd, calc);
 
   log->SC_log(Log::INFO) << "ADDI: x" << dec
-          << rs1 << " + 0x" << hex << imm << " -> x" << dec
+          << rs1 << " + " << imm << " -> x" << dec
           << rd  << "(0x" << hex << calc << ")"<< endl;
+
+  return true;
 }
 
-void Execute::SLTI(Instruction &inst) {
+bool Execute::SLTI(Instruction &inst) {
   int rd, rs1;
   int32_t imm;
 
@@ -457,9 +494,11 @@ void Execute::SLTI(Instruction &inst) {
             << imm << " => " << "0 -> x"
             << rd  << endl;
   }
+
+  return true;
 }
 
-void Execute::SLTIU(Instruction &inst) {
+bool Execute::SLTIU(Instruction &inst) {
   int rd, rs1;
   int32_t imm;
 
@@ -480,9 +519,11 @@ void Execute::SLTIU(Instruction &inst) {
             << imm << " => " << "0 -> x"
             << rd  << endl;
   }
+
+  return true;
 }
 
-void Execute::XORI(Instruction &inst) {
+bool Execute::XORI(Instruction &inst) {
   int rd, rs1;
   int32_t imm;
   uint32_t calc;
@@ -498,9 +539,11 @@ void Execute::XORI(Instruction &inst) {
           << rs1 << " XOR "
           << imm << "-> x"
           << rd  << endl;
+
+  return true;
 }
 
-void Execute::ORI(Instruction &inst) {
+bool Execute::ORI(Instruction &inst) {
   int rd, rs1;
   int32_t imm;
   uint32_t calc;
@@ -516,9 +559,11 @@ void Execute::ORI(Instruction &inst) {
           << rs1 << " OR "
           << imm << "-> x"
           << rd  << endl;
+
+  return true;
 }
 
-void Execute::ANDI(Instruction &inst) {
+bool Execute::ANDI(Instruction &inst) {
   int rd, rs1;
   int32_t imm;
   uint32_t calc;
@@ -534,6 +579,8 @@ void Execute::ANDI(Instruction &inst) {
           << rs1 << " AND "
           << imm << " -> x"
           << rd  << endl;
+
+  return true;
 }
 
 bool Execute::SLLI(Instruction &inst) {
@@ -565,7 +612,7 @@ bool Execute::SLLI(Instruction &inst) {
   return true;
 }
 
-void Execute::SRLI(Instruction &inst) {
+bool Execute::SRLI(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t shift;
   uint32_t calc;
@@ -582,9 +629,11 @@ void Execute::SRLI(Instruction &inst) {
   log->SC_log(Log::INFO) << "SRLI: x" << dec
           << rs1 << " >> " << shift << " -> x"
           << rd  << endl;
+
+  return true;
 }
 
-void Execute::SRAI(Instruction &inst) {
+bool Execute::SRAI(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t shift;
   int32_t calc;
@@ -601,9 +650,11 @@ void Execute::SRAI(Instruction &inst) {
   log->SC_log(Log::INFO) << "SRAI: x" << dec
           << rs1 << " >> " << shift << " -> x"
           << rd  << endl;
+
+  return true;
 }
 
-void Execute::ADD(Instruction &inst) {
+bool Execute::ADD(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t calc;
   rd = inst.get_rd();
@@ -617,9 +668,11 @@ void Execute::ADD(Instruction &inst) {
           << rs1 << " + x"
           << rs2 << " -> x"
           << rd  << endl;
+
+  return true;
 }
 
-void Execute::SUB(Instruction &inst) {
+bool Execute::SUB(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t calc;
   rd = inst.get_rd();
@@ -636,9 +689,11 @@ void Execute::SUB(Instruction &inst) {
           << rs1 << " - x"
           << rs2 << " -> x"
           << rd << "("<< calc << ")" << endl;
+
+  return true;
 }
 
-void Execute::SLL(Instruction &inst) {
+bool Execute::SLL(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t shift;
   uint32_t calc;
@@ -655,9 +710,11 @@ void Execute::SLL(Instruction &inst) {
   log->SC_log(Log::INFO) << "SLL: x"
           << rs1 << " << " << shift << " -> x"
           << rd  << endl;
+
+  return true;
 }
 
-void Execute::SLT(Instruction &inst) {
+bool Execute::SLT(Instruction &inst) {
   int rd, rs1, rs2;
 
   rd = inst.get_rd();
@@ -677,9 +734,11 @@ void Execute::SLT(Instruction &inst) {
             << rs2 << " => " << "0 -> x"
             << rd  << endl;
   }
+
+  return true;
 }
 
-void Execute::SLTU(Instruction &inst) {
+bool Execute::SLTU(Instruction &inst) {
   int rd, rs1, rs2;
 
   rd = inst.get_rd();
@@ -699,9 +758,11 @@ void Execute::SLTU(Instruction &inst) {
             << rs2 << " => " << "0 -> x"
             << rd  << endl;
   }
+
+  return true;
 }
 
-void Execute::XOR(Instruction &inst) {
+bool Execute::XOR(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t calc;
 
@@ -716,9 +777,11 @@ void Execute::XOR(Instruction &inst) {
           << rs1 << " XOR x"
           << rs2 << "-> x"
           << rd  << endl;
+
+  return true;
 }
 
-void Execute::SRL(Instruction &inst) {
+bool Execute::SRL(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t shift;
   uint32_t calc;
@@ -734,9 +797,11 @@ void Execute::SRL(Instruction &inst) {
 
   log->SC_log(Log::INFO) << "SRL: x"
           << rs1 << " >> " << shift << " -> x" << rd << endl;
+
+  return true;
 }
 
-void Execute::SRA(Instruction &inst) {
+bool Execute::SRA(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t shift;
   int32_t calc;
@@ -752,9 +817,11 @@ void Execute::SRA(Instruction &inst) {
 
   log->SC_log(Log::INFO) << "SRA: x"
           << rs1 << " >> " << shift << " -> x" << rd << endl;
+
+  return true;
 }
 
-void Execute::OR(Instruction &inst) {
+bool Execute::OR(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t calc;
 
@@ -767,9 +834,11 @@ void Execute::OR(Instruction &inst) {
 
   log->SC_log(Log::INFO) << "OR: x" << rs1 << " OR x" << rs2
           << "-> x" << rd << endl;
+
+  return true;
 }
 
-void Execute::AND(Instruction &inst) {
+bool Execute::AND(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t calc;
 
@@ -782,13 +851,17 @@ void Execute::AND(Instruction &inst) {
 
   log->SC_log(Log::INFO) << "AND: x" << rs1 << " AND x" << rs2
           << "-> x" << rd << endl;
+
+  return true;
 }
 
-void Execute::FENCE(Instruction &inst) {
+bool Execute::FENCE(Instruction &inst) {
   log->SC_log(Log::INFO) << "FENCE" << endl;
+
+  return true;
 }
 
-void Execute::ECALL(Instruction &inst) {
+bool Execute::ECALL(Instruction &inst) {
 
   log->SC_log(Log::INFO) << "ECALL" << endl;
   std::cout << endl << "ECALL Instruction called, stopping simulation" << endl;
@@ -797,6 +870,8 @@ void Execute::ECALL(Instruction &inst) {
   perf->dump();
 
   SC_REPORT_ERROR("Execute", "ECALL");
+
+  return true;
 }
 
 bool Execute::EBREAK(Instruction &inst) {
@@ -812,7 +887,7 @@ bool Execute::EBREAK(Instruction &inst) {
   return true;
 }
 
-void Execute::CSRRW(Instruction &inst) {
+bool Execute::CSRRW(Instruction &inst) {
   int rd, rs1;
   int csr;
   uint32_t aux;
@@ -826,15 +901,18 @@ void Execute::CSRRW(Instruction &inst) {
     aux = regs->getCSR(csr);
     regs->setValue(rd, aux);
   }
+
   aux = regs->getValue(rs1);
   regs->setCSR(csr, aux);
 
   log->SC_log(Log::INFO) << "CSRRW: CSR #"
           << csr << " -> x" << rd
           << ". x" << rs1 << "-> CSR #" << csr << endl;
+
+  return true;
 }
 
-void Execute::CSRRS(Instruction &inst) {
+bool Execute::CSRRS(Instruction &inst) {
   int rd, rs1;
   int csr;
   uint32_t bitmask, aux, aux2;
@@ -844,7 +922,7 @@ void Execute::CSRRS(Instruction &inst) {
   csr = inst.get_csr();
 
   if (rd == 0) {
-    return;
+    return false;
   }
 
   /* These operations must be atomical */
@@ -860,9 +938,11 @@ void Execute::CSRRS(Instruction &inst) {
           << csr << "(0x" << hex << aux << ") -> x" << dec << rd
           << ". x" << rs1 << " & CSR #" << csr
           << " <- 0x" << hex << aux2 << endl;
+
+  return true;
 }
 
-void Execute::CSRRC(Instruction &inst) {
+bool Execute::CSRRC(Instruction &inst) {
   int rd, rs1;
   int csr;
   uint32_t bitmask, aux, aux2;
@@ -872,7 +952,7 @@ void Execute::CSRRC(Instruction &inst) {
   csr = inst.get_csr();
 
   if (rd == 0) {
-    return;
+    return true;
   }
 
   /* These operations must be atomical */
@@ -888,9 +968,11 @@ void Execute::CSRRC(Instruction &inst) {
           << csr << "(0x" << hex << aux << ") -> x" << dec << rd
           << ". x" << rs1 << " & CSR #" << csr
           << " <- 0x" << hex << aux2 << endl;
+
+  return true;
 }
 
-void Execute::CSRRWI(Instruction &inst) {
+bool Execute::CSRRWI(Instruction &inst) {
   int rd, rs1;
   int csr;
   uint32_t aux;
@@ -911,9 +993,11 @@ void Execute::CSRRWI(Instruction &inst) {
   log->SC_log(Log::INFO) << "CSRRWI: CSR #"
           << csr << " -> x" << rd
           << ". x" << rs1 << "-> CSR #" << csr << endl;
+
+  return true;
 }
 
-void Execute::CSRRSI(Instruction &inst) {
+bool Execute::CSRRSI(Instruction &inst) {
   int rd, rs1;
   int csr;
   uint32_t bitmask, aux;
@@ -923,7 +1007,7 @@ void Execute::CSRRSI(Instruction &inst) {
   csr = inst.get_csr();
 
   if (rs1 == 0) {
-    return;
+    return true;
   }
 
   /* These operations must be atomical */
@@ -937,9 +1021,11 @@ void Execute::CSRRSI(Instruction &inst) {
   log->SC_log(Log::INFO) << "CSRRSI: CSR #"
           << csr << " -> x" << rd
           << ". x" << rs1 << " & CSR #" << csr << endl;
+
+  return true;
 }
 
-void Execute::CSRRCI(Instruction &inst) {
+bool Execute::CSRRCI(Instruction &inst) {
   int rd, rs1;
   int csr;
   uint32_t bitmask, aux;
@@ -949,7 +1035,7 @@ void Execute::CSRRCI(Instruction &inst) {
   csr = inst.get_csr();
 
   if (rs1 == 0) {
-    return;
+    return true;
   }
 
   /* These operations must be atomical */
@@ -963,27 +1049,33 @@ void Execute::CSRRCI(Instruction &inst) {
   log->SC_log(Log::INFO) << "CSRRCI: CSR #"
           << csr << " -> x" << rd
           << ". x" << rs1 << " & CSR #" << csr << endl;
+
+  return true;
 }
 
 /*********************** Privileged Instructions ******************************/
 
-void Execute::MRET(Instruction &inst) {
+bool Execute::MRET(Instruction &inst) {
   uint32_t new_pc = 0;
 
   new_pc = regs->getCSR(CSR_MEPC);
   regs->setPC(new_pc);
 
   log->SC_log(Log::INFO) << "MRET: PC <- 0x" << hex << new_pc << endl;
+
+  return true;
 }
 
 
-void Execute::WFI(Instruction &inst) {
+bool Execute::WFI(Instruction &inst) {
   log->SC_log(Log::INFO) << "WFI" << endl;
+
+  return true;
 }
 
 /**************************** C Instructions **********************************/
 
-void Execute::C_JR(Instruction &inst) {
+bool Execute::C_JR(Instruction &inst) {
   uint32_t mem_addr = 0;
   int rs1;
   int new_pc;
@@ -999,9 +1091,11 @@ void Execute::C_JR(Instruction &inst) {
   regs->setPC(new_pc);
 
   log->SC_log(Log::INFO) << "JR: PC <- 0x" << hex << new_pc << endl;
+
+  return true;
 }
 
-void Execute::C_MV(Instruction &inst) {
+bool Execute::C_MV(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t calc;
 
@@ -1018,9 +1112,11 @@ void Execute::C_MV(Instruction &inst) {
           << rs1 << "(0x" << hex << regs->getValue(rs1) << ") + x" << dec
           << rs2 << "(0x" << hex << regs->getValue(rs2) << ") -> x" << dec
           << rd  << "(0x" << hex << calc << ")" << endl;
+
+  return true;
 }
 
-void Execute::C_ADD(Instruction &inst) {
+bool Execute::C_ADD(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t calc;
 
@@ -1037,9 +1133,11 @@ void Execute::C_ADD(Instruction &inst) {
           << dec << rs1 << " + x"
           << rs2 << " -> x"
           << rd  << endl;
+
+  return true;
 }
 
-void Execute::C_LWSP(Instruction &inst) {
+bool Execute::C_LWSP(Instruction &inst) {
   uint32_t mem_addr = 0;
   int rd, rs1;
   int32_t imm = 0;
@@ -1061,6 +1159,8 @@ void Execute::C_LWSP(Instruction &inst) {
           << rs1 << "(0x" << hex << regs->getValue(rs1) << ") + "
           << dec << imm << " (@0x" << hex << mem_addr << dec << ") -> x"
           << rd << "(" << hex << data << ")"<< dec << endl;
+
+  return true;
 }
 
 bool Execute::C_ADDI4SPN(Instruction  &inst) {
@@ -1090,7 +1190,7 @@ bool Execute::C_ADDI4SPN(Instruction  &inst) {
   return true;
 }
 
-void Execute::C_ADDI16SP(Instruction &inst) {
+bool Execute::C_ADDI16SP(Instruction &inst) {
   // addi x2, x2, nzimm[9:4]
   int rd, rs1;
   int32_t imm = 0;
@@ -1117,11 +1217,12 @@ void Execute::C_ADDI16SP(Instruction &inst) {
     regs->setValue(rd, imm);
     log->SC_log(Log::INFO) << dec << "C.LUI x"
             << rd << " <- 0x" << hex << imm << endl;
-
   }
+
+  return true;
 }
 
-void Execute::C_SWSP(Instruction &inst) {
+bool Execute::C_SWSP(Instruction &inst) {
   // sw rs2, offset(x2)
   uint32_t mem_addr = 0;
   int rs1, rs2;
@@ -1143,9 +1244,11 @@ void Execute::C_SWSP(Instruction &inst) {
           << rs2 << "(0x" << hex << data << ") -> x" << dec
           << rs1 << " + " << imm << " (@0x" << hex
           << mem_addr << dec << ")" << endl;
+
+  return true;
 }
 
-void Execute::C_BEQZ(Instruction &inst) {
+bool Execute::C_BEQZ(Instruction &inst) {
   int rs1;
   int new_pc = 0;
   uint32_t val1;
@@ -1165,9 +1268,11 @@ void Execute::C_BEQZ(Instruction &inst) {
   log->SC_log(Log::INFO) << "C.BEQZ: x" << dec
           << rs1 << "(" <<  val1 << ") == 0? -> PC (0x"
           << hex << new_pc << ")" << dec << endl;
+
+  return true;
 }
 
-void Execute::C_BNEZ(Instruction &inst) {
+bool Execute::C_BNEZ(Instruction &inst) {
   int rs1;
   int new_pc = 0;
   uint32_t val1;
@@ -1187,9 +1292,11 @@ void Execute::C_BNEZ(Instruction &inst) {
   log->SC_log(Log::INFO) << "C.BNEZ: x" << dec
           << rs1 << "(0x" << hex << val1 << ") != 0? -> PC (0x"
           << hex << new_pc << ")" << dec << endl;
+
+  return true;
 }
 
-void Execute::C_LI(Instruction &inst) {
+bool Execute::C_LI(Instruction &inst) {
   int rd, rs1;
   int32_t imm = 0;
   int32_t calc;
@@ -1206,9 +1313,11 @@ void Execute::C_LI(Instruction &inst) {
   log->SC_log(Log::INFO) << dec << "LI: x"
           << rs1 << "(" << regs->getValue(rs1) << ") + "
           << imm << " -> x" << rd  << "(" << calc << ")" << endl;
+
+  return true;
 }
 
-void Execute::C_SRLI(Instruction &inst) {
+bool Execute::C_SRLI(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t shift;
   uint32_t calc;
@@ -1227,9 +1336,11 @@ void Execute::C_SRLI(Instruction &inst) {
   log->SC_log(Log::INFO) << "C.SRLI: x"
           << rs1 << " >> " << shift << " -> x"
           << rd  << endl;
+
+  return true;
 }
 
-void Execute::C_SRAI(Instruction &inst) {
+bool Execute::C_SRAI(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t shift;
   int32_t calc;
@@ -1248,9 +1359,11 @@ void Execute::C_SRAI(Instruction &inst) {
   log->SC_log(Log::INFO) << "C.SRAI: x"
           << rs1 << " >> " << dec << shift << " -> x"
           << rd << "("<< calc << ")" << endl;
+
+  return true;
 }
 
-void Execute::C_SLLI(Instruction &inst) {
+bool Execute::C_SLLI(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t shift;
   uint32_t calc;
@@ -1270,10 +1383,12 @@ void Execute::C_SLLI(Instruction &inst) {
           << dec << rs1 << " << "
           << shift << " -> x"
           << rd  << endl;
+
+  return true;
 }
 
 
-void Execute::C_ANDI(Instruction &inst) {
+bool Execute::C_ANDI(Instruction &inst) {
   int rd, rs1;
   int32_t imm;
   uint32_t calc;
@@ -1291,9 +1406,11 @@ void Execute::C_ANDI(Instruction &inst) {
           << rs1 << " AND "
           << imm << " -> x"
           << rd  << endl;
+
+  return true;
 }
 
-void Execute::C_SUB(Instruction &inst) {
+bool Execute::C_SUB(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t calc;
 
@@ -1313,10 +1430,12 @@ void Execute::C_SUB(Instruction &inst) {
           << dec << rs1 << " - x"
           << rs2 << " -> x"
           << rd  << endl;
+
+  return true;
 }
 
 
-void Execute::C_XOR(Instruction &inst) {
+bool Execute::C_XOR(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t calc;
 
@@ -1333,9 +1452,11 @@ void Execute::C_XOR(Instruction &inst) {
           << dec << rs1 << " XOR x"
           << rs2 << "-> x"
           << rd  << endl;
+
+  return true;
 }
 
-void Execute::C_OR(Instruction &inst) {
+bool Execute::C_OR(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t calc;
 
@@ -1352,9 +1473,11 @@ void Execute::C_OR(Instruction &inst) {
           << dec << rs1 << " OR x"
           << rs2 << "-> x"
           << rd << endl;
+
+  return true;
 }
 
-void Execute::C_AND(Instruction &inst) {
+bool Execute::C_AND(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t calc;
 
@@ -1371,12 +1494,14 @@ void Execute::C_AND(Instruction &inst) {
           << dec << rs1 << " AND x"
           << rs2 << "-> x"
           << rd << endl;
+
+  return true;
 }
 
 /******************************************************************************/
 /* M  Extensions */
 /******************************************************************************/
-void Execute::M_MUL(Instruction &inst) {
+bool Execute::M_MUL(Instruction &inst) {
   int rd, rs1, rs2;
   int32_t multiplier, multiplicand;
   int64_t result;
@@ -1396,9 +1521,11 @@ void Execute::M_MUL(Instruction &inst) {
 
   log->SC_log(Log::INFO) << dec << "MUL: x" << rs1 << " * x" << rs2
     << " -> x" << rd << "(" << result << ")" << endl;
+
+  return true;
 }
 
-void Execute::M_MULH(Instruction &inst) {
+bool Execute::M_MULH(Instruction &inst) {
   int rd, rs1, rs2;
   int32_t multiplier, multiplicand;
   int64_t result;
@@ -1420,9 +1547,11 @@ void Execute::M_MULH(Instruction &inst) {
 
   log->SC_log(Log::INFO) << dec << "MULH: x" << rs1 << " * x" << rs2
     << " -> x" << rd << "(" << result << ")" << endl;
+
+  return true;
 }
 
-void Execute::M_MULHSU(Instruction &inst) {
+bool Execute::M_MULHSU(Instruction &inst) {
   int rd, rs1, rs2;
   int32_t multiplier;
   uint32_t multiplicand;
@@ -1443,9 +1572,11 @@ void Execute::M_MULHSU(Instruction &inst) {
 
   log->SC_log(Log::INFO) << dec << "MULHSU: x" << rs1 << " * x" << rs2
     << " -> x" << rd << "(" << result << ")" << endl;
+
+  return true;
 }
 
-void Execute::M_MULHU(Instruction &inst) {
+bool Execute::M_MULHU(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t multiplier, multiplicand;
   uint64_t result;
@@ -1466,9 +1597,11 @@ void Execute::M_MULHU(Instruction &inst) {
 
   log->SC_log(Log::INFO) << dec << "MULHU: x" << rs1 << " * x" << rs2
     << " -> x" << rd << "(" << ret_value << ")" << endl;
+
+  return true;
 }
 
-void Execute::M_DIV(Instruction &inst) {
+bool Execute::M_DIV(Instruction &inst) {
   int rd, rs1, rs2;
   int32_t divisor, dividend;
   int64_t result;
@@ -1495,9 +1628,11 @@ void Execute::M_DIV(Instruction &inst) {
 
   log->SC_log(Log::INFO) << dec << "DIV: x" << rs1 << " / x" << rs2
     << " -> x" << rd << "(" << result << ")" << endl;
+
+  return true;
 }
 
-void Execute::M_DIVU(Instruction &inst) {
+bool Execute::M_DIVU(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t divisor, dividend;
   uint64_t result;
@@ -1522,9 +1657,11 @@ void Execute::M_DIVU(Instruction &inst) {
 
   log->SC_log(Log::INFO) << dec << "DIVU: x" << rs1 << " / x" << rs2
     << " -> x" << rd << "(" << result << ")" << endl;
+
+  return true;
 }
 
-void Execute::M_REM(Instruction &inst) {
+bool Execute::M_REM(Instruction &inst) {
   int rd, rs1, rs2;
   int32_t divisor, dividend;
   int32_t result;
@@ -1550,9 +1687,11 @@ void Execute::M_REM(Instruction &inst) {
 
   log->SC_log(Log::INFO) << dec << "REM: x" << rs1 << " / x" << rs2
     << " -> x" << rd << "(" << result << ")" << endl;
+
+  return true;
 }
 
-void Execute::M_REMU(Instruction &inst) {
+bool Execute::M_REMU(Instruction &inst) {
   int rd, rs1, rs2;
   uint32_t divisor, dividend;
   uint32_t result;
@@ -1576,15 +1715,19 @@ void Execute::M_REMU(Instruction &inst) {
 
   log->SC_log(Log::INFO) << dec << "REMU: x" << rs1 << " / x" << rs2
     << " -> x" << rd << "(" << result << ")" << endl;
+
+  return true;
 }
 
-void Execute::NOP(Instruction &inst) {
+bool Execute::NOP(Instruction &inst) {
   cout << endl;
   regs->dump();
   cout << "Simulation time " << sc_time_stamp() << endl;
   perf->dump();
 
   SC_REPORT_ERROR("Execute", "NOP");
+
+  return true;
 }
 
 /**
@@ -1637,7 +1780,6 @@ void Execute::writeDataMem(uint32_t addr, uint32_t data, int size) {
 
   data_bus->b_transport( trans, delay);
 }
-
 
 void Execute::RaiseException(uint32_t cause, uint32_t inst) {
   uint32_t new_pc, current_pc, m_cause;
