@@ -1,6 +1,6 @@
 /*!
-   \file Instruction.h
-   \brief Decode instructions part of the RISC-V
+   \file C_Instruction.h
+   \brief Decode C extensions part of the RISC-V
    \author Màrius Montón
    \date August 2018
 */

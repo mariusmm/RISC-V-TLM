@@ -202,6 +202,10 @@ public:
     return m_instr.range(11, 7);
   }
 
+  /**
+   * @brief Sets rd field
+   * @param value desired rd value
+   */
   inline void set_rd(int32_t value) {
     m_instr.range(11,7) = value;
   }
@@ -214,6 +218,10 @@ public:
     return m_instr.range(14, 12);
   }
 
+  /**
+   * @brief Sets func3 field
+   * @param value desired func3 value
+   */
   inline void set_funct3(int32_t value) {
     m_instr.range(14,12) = value;
   }
@@ -226,6 +234,10 @@ public:
     return m_instr.range(19, 15);
   }
 
+  /**
+   * @brief Sets rs1 field
+   * @param value desired rs1 value
+   */
   inline void set_rs1(int32_t value) {
     m_instr.range(19,15) = value;
   }
@@ -238,9 +250,14 @@ public:
     return m_instr.range(24, 20);
   }
 
+  /**
+   * @brief Sets rs2 field
+   * @param value desired rs2 value
+   */
   inline void set_rs2(int32_t value) {
     m_instr.range(24,10) = value;
   }
+
   /**
    * @brief Access to funct7 field
    * @return funct7 field
@@ -249,12 +266,16 @@ public:
     return m_instr.range(31, 25);
   }
 
+  /**
+   * @brief Sets func7 field
+   * @param value desired func7 value
+   */
   inline void set_func7(int32_t value) {
     m_instr.range(31,25) = value;
   }
 
   /**
-   * @brief Access to immediate field for I-type
+   * @brief Gets immediate field value for I-type
    * @return immediate_I field
    */
   inline int32_t get_imm_I() {
@@ -270,12 +291,16 @@ public:
     return aux;
   }
 
+  /**
+   * @brief Sets immediate field for I-type
+   * @param value desired I value
+   */
   inline void set_imm_I(int32_t value) {
     m_instr.range(31,20) = value;
   }
 
   /**
-   * @brief Access to immediate field for S-type
+   * @brief Gets immediate field value for S-type
    * @return immediate_S field
    */
   inline int32_t get_imm_S() {
@@ -291,6 +316,10 @@ public:
     return aux;
   }
 
+  /**
+   * @brief Sets immediate field for S-type
+   * @param value desired S value
+   */
   inline void set_imm_S(int32_t value) {
     sc_uint<32> aux = value;
 
@@ -299,19 +328,23 @@ public:
   }
 
   /**
-   * @brief Access to immediate field for U-type
+   * @brief Gets immediate field value for U-type
    * @return immediate_U field
    */
   inline int32_t get_imm_U() {
     return m_instr.range(31, 12);
   }
 
+  /**
+   * @brief Sets immediate field for U-type
+   * @param value desired U value
+   */
   inline void set_imm_U(int32_t value) {
     m_instr.range(31,12) = (value << 12);
   }
 
   /**
-   * @brief Access to immediate field for B-type
+   * @brief Gets immediate field value for B-type
    * @return immediate_B field
    */
   inline int32_t get_imm_B() {
@@ -329,6 +362,10 @@ public:
     return aux;
   }
 
+  /**
+   * @brief Sets immediate field for B-type
+   * @param value desired B value
+   */
   inline void set_imm_B(int32_t value) {
     sc_uint<32> aux = value;
 
@@ -339,7 +376,7 @@ public:
   }
 
   /**
-   * @brief Access to immediate field for J-type
+   * @brief Gets immediate field value for J-type
    * @return immediate_J field
    */
   inline int32_t get_imm_J() {
@@ -358,6 +395,10 @@ public:
     return aux;
   }
 
+  /**
+   * @brief Sets immediate field for J-type
+   * @param value desired J value
+   */
   inline void set_imm_J(int32_t value) {
     sc_uint<32> aux = (value << 20);
 
@@ -367,10 +408,18 @@ public:
     m_instr.range(19,12) = aux.range(19,12);
   }
 
+  /**
+   * @brief Returns shamt field for Shifts instructions
+   * @return value corresponding to inst(25:20)
+   */
   inline int32_t get_shamt() {
     return m_instr.range(25, 20);
   }
 
+  /**
+   * @brief Returns CSR field for CSR instructions
+   * @return value corresponding to instr(31:20)
+   */
   inline int32_t get_csr() {
     int32_t aux = 0;
 
@@ -391,7 +440,10 @@ public:
    */
   extension_t check_extension();
 
-
+  /**
+   * @brief return instruction
+   * @return all instruction bits (31:0)
+   */
   uint32_t getInstr() {
     return m_instr;
   }

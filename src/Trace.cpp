@@ -15,7 +15,6 @@ void Trace::b_transport( tlm::tlm_generic_payload& trans, sc_time& delay ) {
     //unsigned char*   byt = trans.get_byte_enable_ptr();
     //unsigned int     wid = trans.get_streaming_width();
 
-
     cout << (char) *ptr << flush;
 
     trans.set_response_status( tlm::TLM_OK_RESPONSE );
