@@ -82,6 +82,9 @@ int sc_main(int argc, char* argv[])
 
   signal(SIGINT, intHandler);
 
+  /* SystemC time resolution set to 1 ns*/
+  sc_set_time_resolution(1, SC_NS);
+
   if (argv[1] == nullptr) {
     cerr << "Filename needed for hex memory" << endl;
     return -1;

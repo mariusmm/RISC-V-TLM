@@ -41,6 +41,16 @@
 #define CSR_MTVAL (0x343)
 #define CSR_MIP (0x344)
 
+#define CSR_CYCLE (0xC00)
+#define CSR_TIME (0xC01)
+#define CSR_INSTRET (0xC02)
+
+#define CSR_CYCLEH (0xC80)
+#define CSR_TIMEH (0xC81)
+#define CSR_INSTRETH (0xC02)
+
+/* 1 ns tick in CYCLE & TIME counters */
+#define TICKS_PER_SECOND (1000000)
 
 using namespace sc_core;
 using namespace sc_dt;

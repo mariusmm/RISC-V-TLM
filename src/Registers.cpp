@@ -99,12 +99,10 @@ uint32_t Registers::getCSR(int csr) {
     case CSR_TIME:
       ret_value = (uint64_t)(sc_time(sc_time_stamp()
           - sc_time(SC_ZERO_TIME)).to_double()) & 0x00000000FFFFFFFF;
-      cout << "TIME " << ret_value << endl;
       break;
     case CSR_TIMEH:
       ret_value = (uint32_t)((uint64_t)(sc_time(sc_time_stamp()
           - sc_time(SC_ZERO_TIME)).to_double()) >> 32 & 0x00000000FFFFFFFF);
-      cout << "TIMEH " << ret_value << endl;
       break;
     default:
       ret_value = CSR[csr];

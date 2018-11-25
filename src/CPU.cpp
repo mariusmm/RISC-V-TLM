@@ -393,6 +393,8 @@ void CPU::CPU_thread(void) {
             inst.dump();
             exec->NOP(inst);
           } // switch (inst.check_extension())
+          /* Fixed instruction time to 10 ns (i.e. 100 MHz)*/
+          sc_core::wait(10, SC_NS);
         }
 
         perf->instructionsInc();
