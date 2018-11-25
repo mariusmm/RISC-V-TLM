@@ -40,20 +40,20 @@ void Registers::dump(void) {
   cout << " x18 (s2):   " << right << setw(11) << register_bank[18];
   cout << " x19 (s3):   " << right << setw(11) << register_bank[19] << endl;
 
-  cout << "x20 (s4):   " << right << setw(11) << register_bank[16];
-  cout << " x21 (s5):   " << right << setw(11) << register_bank[17];
-  cout << " x22 (s6):   " << right << setw(11) << register_bank[18];
-  cout << " x23 (s7):   " << right << setw(11) << register_bank[19] << endl;
+  cout << "x20 (s4):   " << right << setw(11) << register_bank[20];
+  cout << " x21 (s5):   " << right << setw(11) << register_bank[21];
+  cout << " x22 (s6):   " << right << setw(11) << register_bank[22];
+  cout << " x23 (s7):   " << right << setw(11) << register_bank[23] << endl;
 
-  cout << "x24 (s8):   " << right << setw(11) << register_bank[16];
-  cout << " x25 (s9):   " << right << setw(11) << register_bank[17];
-  cout << " x26 (s10):  " << right << setw(11) << register_bank[18];
-  cout << " x27 (s11):  " << right << setw(11) << register_bank[19] << endl;
+  cout << "x24 (s8):   " << right << setw(11) << register_bank[24];
+  cout << " x25 (s9):   " << right << setw(11) << register_bank[25];
+  cout << " x26 (s10):  " << right << setw(11) << register_bank[26];
+  cout << " x27 (s11):  " << right << setw(11) << register_bank[27] << endl;
 
-  cout << "x28 (t3):   " << right << setw(11) << register_bank[16];
-  cout << " x29 (t4):   " << right << setw(11) << register_bank[17];
-  cout << " x30 (t5):   " << right << setw(11) << register_bank[18];
-  cout << " x31 (t6):   " << right << setw(11) << register_bank[19] << endl;
+  cout << "x28 (t3):   " << right << setw(11) << register_bank[28];
+  cout << " x29 (t4):   " << right << setw(11) << register_bank[29];
+  cout << " x30 (t5):   " << right << setw(11) << register_bank[30];
+  cout << " x31 (t6):   " << right << setw(11) << register_bank[31] << endl;
 
   cout << "PC: 0x" << hex << register_PC << endl;
   cout << "************************************" << endl;
@@ -85,7 +85,32 @@ void Registers::setPC(uint32_t new_pc) {
 }
 
 uint32_t Registers::getCSR(int csr) {
-  return CSR[csr];
+  uint32_t ret_value = 0;
+
+  switch (csr) {
+    case CSR_CYCLE:
+      ret_value = (uint64_t)(sc_time(sc_time_stamp()
+            - sc_time(SC_ZERO_TIME)).to_double()) & 0x00000000FFFFFFFF;
+      break;
+    case CSR_CYCLEH:
+      ret_value = (uint32_t)((uint64_t)(sc_time(sc_time_stamp()
+          - sc_time(SC_ZERO_TIME)).to_double()) >> 32 & 0x00000000FFFFFFFF);
+      break;
+    case CSR_TIME:
+      ret_value = (uint64_t)(sc_time(sc_time_stamp()
+          - sc_time(SC_ZERO_TIME)).to_double()) & 0x00000000FFFFFFFF;
+      cout << "TIME " << ret_value << endl;
+      break;
+    case CSR_TIMEH:
+      ret_value = (uint32_t)((uint64_t)(sc_time(sc_time_stamp()
+          - sc_time(SC_ZERO_TIME)).to_double()) >> 32 & 0x00000000FFFFFFFF);
+      cout << "TIMEH " << ret_value << endl;
+      break;
+    default:
+      ret_value = CSR[csr];
+      break;
+  }
+  return ret_value;
 }
 
 
