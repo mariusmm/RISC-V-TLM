@@ -18,6 +18,8 @@
 #include "tlm.h"
 #include "tlm_utils/simple_target_socket.h"
 
+#include "Log.h"
+
 using namespace sc_core;
 using namespace sc_dt;
 using namespace std;
@@ -30,7 +32,8 @@ public:
   // TLM-2 socket, defaults to 32-bits wide, base protocol
   tlm_utils::simple_target_socket<Memory> socket;
 
-  enum { SIZE = 1024 * 1024 * 16 };
+  //enum { SIZE = 0x90000000  };
+  enum { SIZE = 0x10000000  };
   const sc_time LATENCY;
 
   Memory(sc_module_name name, string filename);
@@ -61,13 +64,19 @@ private:
   /**
    * @brief Memory array in bytes
    */
-  uint8_t mem[SIZE];
+  //uint8_t mem[SIZE];
+  uint8_t *mem;
 
+  /**
+   * @brief Log classe
+   */
+  Log *log;
   /**
   * @brief Program counter (PC) read from hex file
   */
   uint32_t program_counter;
 
+  uint32_t memory_offset;
   /**
    * @brief Read Intel hex file
    * @param filename file name to read

@@ -1,5 +1,6 @@
 #include "Memory.h"
 
+
 SC_HAS_PROCESS(Memory);
 Memory::Memory(sc_module_name name, string filename): sc_module(name)
   ,socket("socket")
@@ -9,9 +10,14 @@ Memory::Memory(sc_module_name name, string filename): sc_module(name)
   socket.register_get_direct_mem_ptr(this, &Memory::get_direct_mem_ptr);
   socket.register_transport_dbg(     this, &Memory::transport_dbg);
 
-  memset(mem, 0, SIZE*sizeof(uint8_t));
+  mem = new uint8_t[SIZE];
+  //memset(mem, 0, SIZE*sizeof(uint8_t));
 
+  memory_offset = 0;
   readHexFile(filename);
+
+  log = Log::getInstance();
+  log->SC_log(Log::INFO) << "Using file: " << filename << endl;
 }
 
 Memory::Memory(sc_module_name name, bool use_file): sc_module(name)
@@ -21,7 +27,7 @@ Memory::Memory(sc_module_name name, bool use_file): sc_module(name)
     socket.register_get_direct_mem_ptr(this, &Memory::get_direct_mem_ptr);
     socket.register_transport_dbg(     this, &Memory::transport_dbg);
 
-    memset(mem, 0, SIZE*sizeof(int));
+    //memset(mem, 0, SIZE*sizeof(uint8_t));
   }
 
 uint32_t Memory::getPCfromHEX() {
@@ -37,6 +43,8 @@ void Memory::b_transport( tlm::tlm_generic_payload& trans, sc_time& delay )
   unsigned char*   byt = trans.get_byte_enable_ptr();
   unsigned int     wid = trans.get_streaming_width();
 
+
+  adr = adr - memory_offset;
   // Obliged to check address range and check for unsupported features,
   //   i.e. byte enables, streaming, and bursts
   // Can ignore extensions
@@ -118,9 +126,9 @@ void Memory::readHexFile(string filename) {
     ifstream hexfile;
     string line;
     int byte_count;
-    int address;
+    uint32_t address;
     int i = 0;
-    int extended_address = 0;
+    uint32_t extended_address = 0;
 
     hexfile.open(filename);
 
@@ -132,19 +140,32 @@ void Memory::readHexFile(string filename) {
             byte_count = stol(line.substr(1,2), nullptr, 16);
             address = stol(line.substr(3,4), nullptr, 16);
             address = address + extended_address;
-
+            //cout << "00 address 0x" << hex << address << endl;
             for (i=0; i < byte_count; i++) {
               mem[address+i] = stol(line.substr(9+(i*2), 2), nullptr, 16);
             }
           } else if (line.substr(7,2) == "02") {
             /* Extended segment address */
             extended_address = stol(line.substr(9,4), nullptr, 16) * 16;
+            cout << "02 extended address 0x" << hex << extended_address << endl;
           } else if (line.substr(7,2) == "03") {
             /* Start segment address */
             uint32_t code_segment;
             code_segment = stol(line.substr(9,4), nullptr, 16) * 16; /* ? */
             program_counter = stol(line.substr(13,4), nullptr, 16);
             program_counter = program_counter + code_segment;
+            cout << "03 PC set to 0x" << hex << program_counter << endl;
+          } else if (line.substr(7,2) == "04") {
+            /* Start segment address */
+            //extended_address = stol(line.substr(9,4), nullptr, 16) << 16;
+            memory_offset = stol(line.substr(9,4), nullptr, 16) << 16;
+            extended_address = 0;
+            cout << "04 address set to 0x" << hex << extended_address << endl;
+            cout << "04 offset set to 0x" << hex << memory_offset << endl;
+          } else if (line.substr(7,2) == "05") {
+            program_counter = stol(line.substr(9,8), nullptr, 16);
+            //program_counter = 0;
+            cout << "05 PC set to 0x" << hex << program_counter << endl;
           }
         }
       }
