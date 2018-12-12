@@ -130,6 +130,11 @@ opCodes Instruction::decode() {
               return OP_MRET;
             case WFI_F:
               return OP_WFI;
+            case SFENCE_F:
+              return OP_SFENCE;
+          }
+          if (m_instr.range(31,25) == 0b0001001) {
+            return OP_SFENCE;
           }
           break;
         case CSRRW:
@@ -162,6 +167,8 @@ extension_t Instruction::check_extension() {
   if ( (m_instr.range(6,0) == 0b0110011) &&
       (m_instr.range(31,25) == 0b0000001) ){
     return M_EXTENSION;
+  } else if (m_instr.range(6,0) == 0b0101111) {
+    return A_EXTENSION;
   } else if (m_instr.range(1,0) == 0b11) {
     return BASE_EXTENSION;
   } else if (m_instr.range(1,0) == 0b00) {
@@ -171,7 +178,6 @@ extension_t Instruction::check_extension() {
   } else if (m_instr.range(1,0) == 0b10) {
     return C_EXTENSION;
   } else if (m_instr.range(6,0) == 0b0101111) {
-    cout << "check_extension A not yet implemented" << endl;
     return A_EXTENSION;
   } else {
     return UNKNOWN_EXTENSION;

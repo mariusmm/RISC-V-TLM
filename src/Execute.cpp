@@ -322,8 +322,9 @@ bool Execute::LW(Instruction &inst, bool c_extension) {
   regs->setValue(rd, data);
 
   log->SC_log(Log::INFO) << dec << "C.LW: x"
-          << rs1 << " + " << imm << " (@0x" << hex
-          << mem_addr << dec << ") -> x" << rd << endl;
+          << rs1 << "(0x" << hex << regs->getValue(rs1) << ") + "
+          << dec << imm << " (@0x" << hex << mem_addr << dec << ") -> x" << rd << hex
+          << " (0x" << data << ")"<< endl;
 
   return true;
 }
@@ -565,20 +566,22 @@ bool Execute::ORI(Instruction &inst) {
 
 bool Execute::ANDI(Instruction &inst) {
   int rd, rs1;
-  int32_t imm;
+  uint32_t imm;
   uint32_t calc;
+  uint32_t aux;
 
   rd = inst.get_rd();
   rs1 = inst.get_rs1();
   imm = inst.get_imm_I();
 
-  calc = regs->getValue(rs1) & imm;
+  aux = regs->getValue(rs1);
+  calc = aux & imm;
   regs->setValue(rd, calc);
 
   log->SC_log(Log::INFO) << "ANDI: x"
-          << rs1 << " AND "
+          << rs1 << "(0x" << hex << aux << ") AND 0x"
           << imm << " -> x"
-          << rd  << endl;
+          << dec << rd  << "(0x" << hex << calc << ")" << endl;
 
   return true;
 }
@@ -662,12 +665,16 @@ bool Execute::ADD(Instruction &inst) {
   rs2 = inst.get_rs2();
 
   calc = regs->getValue(rs1) + regs->getValue(rs2);
+
+  // log->SC_log(Log::INFO) << "ADD 0x" << hex << regs->getValue(rs1)
+  //   << " + 0x" << regs->getValue(rs2) << " = " << calc << endl;
+
   regs->setValue(rd, calc);
 
-  log->SC_log(Log::INFO) << "ADD: x"
+  log->SC_log(Log::INFO) << "ADD: x" << dec
           << rs1 << " + x"
           << rs2 << " -> x"
-          << rd  << endl;
+          << rd  << hex << "(0x" << calc << ")"<< endl;
 
   return true;
 }
@@ -922,6 +929,7 @@ bool Execute::CSRRS(Instruction &inst) {
   csr = inst.get_csr();
 
   if (rd == 0) {
+    log->SC_log(Log::INFO) << "CSRRS with rd1 == 0, doing nothing." << endl;
     return false;
   }
 
@@ -952,6 +960,7 @@ bool Execute::CSRRC(Instruction &inst) {
   csr = inst.get_csr();
 
   if (rd == 0) {
+    log->SC_log(Log::INFO) << "CSRRC with rd1 == 0, doing nothing." << endl;
     return true;
   }
 
@@ -1048,7 +1057,8 @@ bool Execute::CSRRCI(Instruction &inst) {
 
   log->SC_log(Log::INFO) << "CSRRCI: CSR #"
           << csr << " -> x" << rd
-          << ". x" << rs1 << " & CSR #" << csr << endl;
+          << ". x" << rs1 << " & CSR #" << csr
+          << "(0x" << hex << aux << ")"<< endl;
 
   return true;
 }
@@ -1066,9 +1076,25 @@ bool Execute::MRET(Instruction &inst) {
   return true;
 }
 
+bool Execute::SRET(Instruction &inst) {
+  uint32_t new_pc = 0;
+
+  new_pc = regs->getCSR(CSR_SEPC);
+  regs->setPC(new_pc);
+
+  log->SC_log(Log::INFO) << "SRET: PC <- 0x" << hex << new_pc << endl;
+
+  return true;
+}
 
 bool Execute::WFI(Instruction &inst) {
   log->SC_log(Log::INFO) << "WFI" << endl;
+
+  return true;
+}
+
+bool Execute::SFENCE(Instruction &inst) {
+  log->SC_log(Log::INFO) << "SFENCE" << endl;
 
   return true;
 }
@@ -1390,7 +1416,8 @@ bool Execute::C_SLLI(Instruction &inst) {
 
 bool Execute::C_ANDI(Instruction &inst) {
   int rd, rs1;
-  int32_t imm;
+  uint32_t imm;
+  uint32_t aux;
   uint32_t calc;
 
   C_Instruction c_inst(inst.getInstr());
@@ -1399,11 +1426,12 @@ bool Execute::C_ANDI(Instruction &inst) {
   rs1 = c_inst.get_rs1p();
   imm = c_inst.get_imm_ADDI();
 
-  calc = regs->getValue(rs1) & imm;
+  aux = regs->getValue(rs1);
+  calc =  aux & imm;
   regs->setValue(rd, calc);
 
   log->SC_log(Log::INFO) << "C.ANDI: x"
-          << rs1 << " AND "
+          << rs1 << "(" << aux << ") AND "
           << imm << " -> x"
           << rd  << endl;
 
@@ -1719,6 +1747,329 @@ bool Execute::M_REMU(Instruction &inst) {
   return true;
 }
 
+
+bool Execute::A_LR(Instruction &inst) {
+  uint32_t mem_addr = 0;
+  int rd, rs1, rs2;
+  uint32_t data;
+
+  A_Instruction a_inst(inst.getInstr());
+
+  rd = a_inst.get_rd();
+  rs1 = a_inst.get_rs1();
+  rs2 = a_inst.get_rs2();
+
+  if (rs2 != 0) {
+    cout << "ILEGAL INSTRUCTION, LR.W: rs2 != 0" << endl;
+    RaiseException(EXCEPTION_CAUSE_ILLEGAL_INSTRUCTION);
+
+    return false;
+  }
+
+  mem_addr = regs->getValue(rs1);
+  data = readDataMem(mem_addr, 4);
+  regs->setValue(rd, data);
+
+  TLB_reserve(mem_addr);
+
+  log->SC_log(Log::INFO) << dec << "LR.W: x"
+          << rs1 << " (@0x" << hex << mem_addr
+          << dec << ") -> x" << rd << endl;
+
+  return true;
+}
+
+bool Execute::A_SC(Instruction &inst) {
+  uint32_t mem_addr = 0;
+  int rd, rs1, rs2;
+  uint32_t data;
+
+  A_Instruction a_inst(inst.getInstr());
+
+  rd = a_inst.get_rd();
+  rs1 = a_inst.get_rs1();
+  rs2 = a_inst.get_rs2();
+
+  mem_addr = regs->getValue(rs1);
+  data = regs->getValue(rs2);
+
+  if (TLB_reserved(mem_addr) == true) {
+    writeDataMem(mem_addr, data, 4);
+    regs->setValue(rd, 0);  // SC writes 0 to rd on success
+  } else {
+    regs->setValue(rd, 1);  // SC writes nonzero on failure
+  }
+
+  log->SC_log(Log::INFO) << dec << "SC.W: (@0x" <<
+          hex << mem_addr << dec << ") <- x" << rs2 <<
+          hex << "(0x" << data << ")" << endl;
+
+  return true;
+}
+
+bool Execute::A_AMOSWAP(Instruction &inst) {
+  uint32_t mem_addr = 0;
+  int rd, rs1, rs2;
+  uint32_t data;
+  uint32_t aux;
+
+  A_Instruction a_inst(inst.getInstr());
+
+  /* These instructions must be atomic */
+
+  rd = a_inst.get_rd();
+  rs1 = a_inst.get_rs1();
+  rs2 = a_inst.get_rs2();
+
+  mem_addr = regs->getValue(rs1);
+  data = readDataMem(mem_addr, 4);
+
+  regs->setValue(rd, data);
+
+  // swap
+  aux = regs->getValue(rs2);
+  regs->setValue(rs2, data);
+
+  writeDataMem(mem_addr, aux, 4);
+
+  log->SC_log(Log::INFO) << dec << "AMOSWAP " << endl;
+  return true;
+}
+
+bool Execute::A_AMOADD(Instruction &inst)  {
+  uint32_t mem_addr = 0;
+  int rd, rs1, rs2;
+  uint32_t data;
+
+  A_Instruction a_inst(inst.getInstr());
+
+  /* These instructions must be atomic */
+
+  rd = a_inst.get_rd();
+  rs1 = a_inst.get_rs1();
+  rs2 = a_inst.get_rs2();
+
+  mem_addr = regs->getValue(rs1);
+  data = readDataMem(mem_addr, 4);
+
+  regs->setValue(rd, data);
+
+  // add
+  data = data + regs->getValue(rs2);
+
+  writeDataMem(mem_addr, data, 4);
+
+  log->SC_log(Log::INFO) << dec << "AMOADD " << endl;
+
+  return true;
+}
+
+bool Execute::A_AMOXOR(Instruction &inst)  {
+  uint32_t mem_addr = 0;
+  int rd, rs1, rs2;
+  uint32_t data;
+
+  A_Instruction a_inst(inst.getInstr());
+
+  /* These instructions must be atomic */
+
+  rd = a_inst.get_rd();
+  rs1 = a_inst.get_rs1();
+  rs2 = a_inst.get_rs2();
+
+  mem_addr = regs->getValue(rs1);
+  data = readDataMem(mem_addr, 4);
+
+  regs->setValue(rd, data);
+
+  // add
+  data = data ^ regs->getValue(rs2);
+
+  writeDataMem(mem_addr, data, 4);
+
+  log->SC_log(Log::INFO) << dec << "AMOXOR " << endl;
+
+  return true;
+}
+bool Execute::A_AMOAND(Instruction &inst)  {
+  uint32_t mem_addr = 0;
+  int rd, rs1, rs2;
+  uint32_t data;
+
+  A_Instruction a_inst(inst.getInstr());
+
+  /* These instructions must be atomic */
+
+  rd = a_inst.get_rd();
+  rs1 = a_inst.get_rs1();
+  rs2 = a_inst.get_rs2();
+
+  mem_addr = regs->getValue(rs1);
+  data = readDataMem(mem_addr, 4);
+
+  regs->setValue(rd, data);
+
+  // add
+  data = data & regs->getValue(rs2);
+
+  writeDataMem(mem_addr, data, 4);
+
+  log->SC_log(Log::INFO) << dec << "AMOAND " << endl;
+
+  return true;
+}
+bool Execute::A_AMOOR(Instruction &inst) {
+  uint32_t mem_addr = 0;
+  int rd, rs1, rs2;
+  uint32_t data;
+
+  A_Instruction a_inst(inst.getInstr());
+
+  /* These instructions must be atomic */
+
+  rd = a_inst.get_rd();
+  rs1 = a_inst.get_rs1();
+  rs2 = a_inst.get_rs2();
+
+  mem_addr = regs->getValue(rs1);
+  data = readDataMem(mem_addr, 4);
+
+  regs->setValue(rd, data);
+
+  // add
+  data = data | regs->getValue(rs2);
+
+  writeDataMem(mem_addr, data, 4);
+
+  log->SC_log(Log::INFO) << dec << "AMOOR " << endl;
+  return true;
+}
+bool Execute::A_AMOMIN(Instruction &inst) {
+  uint32_t mem_addr = 0;
+  int rd, rs1, rs2;
+  uint32_t data;
+  uint32_t aux;
+
+  A_Instruction a_inst(inst.getInstr());
+
+  /* These instructions must be atomic */
+
+  rd = a_inst.get_rd();
+  rs1 = a_inst.get_rs1();
+  rs2 = a_inst.get_rs2();
+
+  mem_addr = regs->getValue(rs1);
+  data = readDataMem(mem_addr, 4);
+
+  regs->setValue(rd, data);
+
+  // min
+  aux = regs->getValue(rs2);
+  if ((int32_t)data < (int32_t)aux) {
+    aux = data;
+  }
+
+  writeDataMem(mem_addr, aux, 4);
+
+  log->SC_log(Log::INFO) << dec << "AMOMIN " << endl;
+
+  return true;
+}
+bool Execute::A_AMOMAX(Instruction &inst) {
+  uint32_t mem_addr = 0;
+  int rd, rs1, rs2;
+  uint32_t data;
+  uint32_t aux;
+
+  A_Instruction a_inst(inst.getInstr());
+
+  /* These instructions must be atomic */
+
+  rd = a_inst.get_rd();
+  rs1 = a_inst.get_rs1();
+  rs2 = a_inst.get_rs2();
+
+  mem_addr = regs->getValue(rs1);
+  data = readDataMem(mem_addr, 4);
+
+  regs->setValue(rd, data);
+
+  // >
+  aux = regs->getValue(rs2);
+  if ((int32_t)data > (int32_t)aux) {
+    aux = data;
+  }
+
+  writeDataMem(mem_addr, aux, 4);
+
+  log->SC_log(Log::INFO) << dec << "AMOMAX " << endl;
+
+  return true;
+}
+bool Execute::A_AMOMINU(Instruction &inst) {
+  uint32_t mem_addr = 0;
+  int rd, rs1, rs2;
+  uint32_t data;
+  uint32_t aux;
+
+  A_Instruction a_inst(inst.getInstr());
+
+  /* These instructions must be atomic */
+
+  rd = a_inst.get_rd();
+  rs1 = a_inst.get_rs1();
+  rs2 = a_inst.get_rs2();
+
+  mem_addr = regs->getValue(rs1);
+  data = readDataMem(mem_addr, 4);
+
+  regs->setValue(rd, data);
+
+  // min
+  aux = regs->getValue(rs2);
+  if (data < aux) {
+    aux = data;
+  }
+
+  writeDataMem(mem_addr, aux, 4);
+
+  log->SC_log(Log::INFO) << dec << "AMOMINU " << endl;
+
+  return true;
+}
+bool Execute::A_AMOMAXU(Instruction &inst) {
+  uint32_t mem_addr = 0;
+  int rd, rs1, rs2;
+  uint32_t data;
+  uint32_t aux;
+
+  A_Instruction a_inst(inst.getInstr());
+
+  /* These instructions must be atomic */
+
+  rd = a_inst.get_rd();
+  rs1 = a_inst.get_rs1();
+  rs2 = a_inst.get_rs2();
+
+  mem_addr = regs->getValue(rs1);
+  data = readDataMem(mem_addr, 4);
+
+  regs->setValue(rd, data);
+
+  // max
+  aux = regs->getValue(rs2);
+  if (data > aux) {
+    aux = data;
+  }
+
+  writeDataMem(mem_addr, aux, 4);
+
+  log->SC_log(Log::INFO) << dec << "AMOMAXU " << endl;
+
+  return true;
+}
+
+
 bool Execute::NOP(Instruction &inst) {
   cout << endl;
   regs->dump();
@@ -1804,4 +2155,19 @@ void Execute::RaiseException(uint32_t cause, uint32_t inst) {
   regs->setPC( new_pc);
 
   log->SC_log(Log::INFO) << "Exception! new PC " << hex << new_pc << endl;
+}
+
+
+void Execute::TLB_reserve(uint32_t address) {
+  TLB_A_Entries.insert(address);
+  return;
+}
+
+bool Execute::TLB_reserved(uint32_t address) {
+  if (TLB_A_Entries.count(address) == 1) {
+    TLB_A_Entries.erase(address);
+    return true;
+  } else {
+    return false;
+  }
 }

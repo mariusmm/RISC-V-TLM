@@ -157,6 +157,56 @@ bool CPU::process_m_instruction(Instruction &inst) {
   return PC_not_affected;
 }
 
+
+bool CPU::process_a_instruction(Instruction inst) {
+  bool PC_not_affected = true;
+
+  A_Instruction a_inst(inst.getInstr());
+
+  switch(a_inst.decode()) {
+    case OP_A_LR:
+      exec->A_LR(inst);
+      break;
+    case OP_A_SC:
+      exec->A_SC(inst);
+      break;
+    case OP_A_AMOSWAP:
+      exec->A_AMOSWAP(inst);
+      break;
+    case OP_A_AMOADD:
+      exec->A_AMOADD(inst);
+      break;
+    case OP_A_AMOXOR:
+      exec->A_AMOXOR(inst);
+      break;
+    case OP_A_AMOAND:
+      exec->A_AMOAND(inst);
+      break;
+    case OP_A_AMOOR:
+      exec->A_AMOOR(inst);
+      break;
+    case OP_A_AMOMIN:
+      exec->A_AMOMIN(inst);
+      break;
+    case OP_A_AMOMAX:
+      exec->A_AMOMAX(inst);
+      break;
+    case OP_A_AMOMINU:
+      exec->A_AMOMINU(inst);
+      break;
+    case OP_A_AMOMAXU:
+      exec->A_AMOMAXU(inst);
+      break;
+    default:
+      std::cout << "A instruction not implemented yet" << endl;
+      inst.dump();
+      exec->NOP(inst);
+      break;
+  }
+
+  return PC_not_affected;
+}
+
 bool CPU::process_base_instruction(Instruction &inst) {
   bool PC_not_affected = true;
 
@@ -280,17 +330,6 @@ bool CPU::process_base_instruction(Instruction &inst) {
     case OP_AND:
       exec->AND(inst);
       break;
-#if 0
-    case OP_CSRRW:
-      exec->CSRRW(inst);
-      break;
-    case OP_CSRRS:
-      exec->CSRRS(inst);
-      break;
-    case OP_CSRRC:
-      exec->CSRRC(inst);
-      break;
-#endif
     case OP_FENCE:
       exec->FENCE(inst);
       break;
@@ -323,8 +362,15 @@ bool CPU::process_base_instruction(Instruction &inst) {
       exec->MRET(inst);
       PC_not_affected = false;
       break;
+    case OP_SRET:
+      exec->SRET(inst);
+      PC_not_affected = false;
+      break;
     case OP_WFI:
       exec->WFI(inst);
+      break;
+    case OP_SFENCE:
+      exec->SFENCE(inst);
       break;
     default:
       std::cout << "Wrong instruction" << endl;
@@ -361,6 +407,7 @@ void CPU::CPU_thread(void) {
 
   while(1) {
       /* Get new PC value */
+      //cout << "CPU: PC 0x" << hex << (uint32_t) register_bank->getPC() << endl;
       trans->set_address( register_bank->getPC() );
       instr_bus->b_transport( *trans, delay);
 
@@ -386,6 +433,10 @@ void CPU::CPU_thread(void) {
             break;
           case M_EXTENSION:
             PC_not_affected = process_m_instruction(inst);
+            incPCby2 = false;
+            break;
+          case A_EXTENSION:
+            PC_not_affected = process_a_instruction(inst);
             incPCby2 = false;
             break;
           default:

@@ -21,6 +21,7 @@
 #include "Instruction.h"
 #include "C_Instruction.h"
 #include "M_Instruction.h"
+#include "A_Instruction.h"
 
 using namespace sc_core;
 using namespace sc_dt;
@@ -59,6 +60,8 @@ private:
   bool process_c_instruction(Instruction &inst);
 
   bool process_m_instruction(Instruction &inst);
+
+  bool process_a_instruction(Instruction inst);
 
   void CPU_thread(void);
 };

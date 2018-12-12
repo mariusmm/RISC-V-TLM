@@ -10,7 +10,7 @@
 #define SC_INCLUDE_DYNAMIC_PROCESSES
 
 #include "systemc"
-
+#include <set>
 #include "tlm.h"
 #include "tlm_utils/simple_initiator_socket.h"
 
@@ -18,6 +18,7 @@
 #include "Instruction.h"
 #include "C_Instruction.h"
 #include "M_Instruction.h"
+#include "A_Instruction.h"
 #include "Registers.h"
 #include "Log.h"
 
@@ -102,8 +103,10 @@ public:
 
 /*********************** Privileged Instructions ******************************/
   bool MRET(Instruction &inst);
+  bool SRET(Instruction &inst);
   bool WFI(Instruction &inst);
-
+  bool SFENCE(Instruction &inst);
+  
   /* C Extensions */
   bool C_JR(Instruction &inst);
   bool C_MV(Instruction &inst);
@@ -134,6 +137,19 @@ public:
   bool M_REM(Instruction &inst);
   bool M_REMU(Instruction &inst);
 
+  /* A Extensinos */
+  bool A_LR(Instruction &inst);
+  bool A_SC(Instruction &inst);
+  bool A_AMOSWAP(Instruction &inst);
+  bool A_AMOADD(Instruction &inst);
+  bool A_AMOXOR(Instruction &inst);
+  bool A_AMOAND(Instruction &inst);
+  bool A_AMOOR(Instruction &inst);
+  bool A_AMOMIN(Instruction &inst);
+  bool A_AMOMAX(Instruction &inst);
+  bool A_AMOMINU(Instruction &inst);
+  bool A_AMOMAXU(Instruction &inst);
+
   bool NOP(Instruction &inst);
 
 private:
@@ -141,6 +157,11 @@ private:
   void writeDataMem(uint32_t addr, uint32_t data, int size);
 
   void RaiseException(uint32_t cause, uint32_t inst = 0);
+
+  std::set<uint32_t> TLB_A_Entries;
+
+  void TLB_reserve(uint32_t address);
+  bool TLB_reserved(uint32_t address);
 
   Registers *regs;
   Performance *perf;

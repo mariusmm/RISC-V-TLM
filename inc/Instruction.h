@@ -90,6 +90,7 @@ OP_URET,
 OP_SRET,
 OP_MRET,
 OP_WFI,
+OP_SFENCE,
 
 OP_ERROR
 } opCodes;
@@ -158,6 +159,8 @@ typedef enum {
   SRET_F  = 0b000100000010,
   MRET_F  = 0b001100000010,
   WFI_F   = 0b000100000101,
+  SFENCE_F = 0b0001001,
+
   ECALL_F3= 0b000,
   CSRRW   = 0b001,
   CSRRS   = 0b010,
