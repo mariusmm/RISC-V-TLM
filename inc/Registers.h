@@ -16,10 +16,12 @@
 #include "Performance.h"
 #include "Memory.h"
 
-#define WARL_M_EXTENSION (1 << 12)
-#define WARL_C_EXTENSION (1 << 2)
-#define WARL_I_BASE (1 << 8)
-#define WARL_MXL (1 << 30)
+#define MISA_A_EXTENSION (1 << 0)
+#define MISA_B_EXTENSION (1 << 1)
+#define MISA_C_EXTENSION (1 << 2)
+#define MISA_I_BASE (1 << 8)
+#define MISA_M_EXTENSION (1 << 12)
+#define MISA_MXL (1 << 30)
 
 
 #define CSR_MVENDORID (0xF11)
@@ -40,6 +42,12 @@
 #define CSR_MCAUSE (0x342)
 #define CSR_MTVAL (0x343)
 #define CSR_MIP (0x344)
+
+#define CSR_SSCRATCH (0x140)
+#define CSR_SEPC (0x141)
+#define CSR_SCAUSE (0x142)
+#define CSR_STVAL (0x143)
+#define CSR_SIP (0x144)
 
 #define CSR_CYCLE (0xC00)
 #define CSR_TIME (0xC01)
