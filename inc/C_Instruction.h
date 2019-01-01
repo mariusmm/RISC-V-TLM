@@ -272,7 +272,7 @@ public:
     aux |= m_instr[2] << 5;
 
     if (m_instr[12] == 1) {
-        aux |= 0b1111 << 12;
+        aux |= 0b11111111111111111111 << 12;
     }
 
     return aux;

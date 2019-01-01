@@ -1111,8 +1111,6 @@ bool Execute::C_JR(Instruction &inst) {
   rs1 = c_inst.get_rs1();
   mem_addr = 0;
 
-  std::cout << "rs1 :" << rs1 << std::endl;
-
   new_pc = (regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE;
   regs->setPC(new_pc);
 
@@ -1158,7 +1156,7 @@ bool Execute::C_ADD(Instruction &inst) {
   log->SC_log(Log::INFO) << "C.ADD: x"
           << dec << rs1 << " + x"
           << rs2 << " -> x"
-          << rd  << endl;
+          << rd  << "(0x" << hex << calc << ")" << endl;
 
   return true;
 }
@@ -1182,8 +1180,8 @@ bool Execute::C_LWSP(Instruction &inst) {
   regs->setValue(rd, data);
 
   log->SC_log(Log::INFO) << "C.LWSP: x" << dec
-          << rs1 << "(0x" << hex << regs->getValue(rs1) << ") + "
-          << dec << imm << " (@0x" << hex << mem_addr << dec << ") -> x"
+          << rs1 << " + " << imm
+          << " (@0x" << hex << mem_addr << dec << ") -> x"
           << rd << "(" << hex << data << ")"<< dec << endl;
 
   return true;
@@ -1408,7 +1406,7 @@ bool Execute::C_SLLI(Instruction &inst) {
   log->SC_log(Log::INFO) << "C.SLLI: x"
           << dec << rs1 << " << "
           << shift << " -> x"
-          << rd  << endl;
+          << rd  << "(0x" << calc << ")"<< endl;
 
   return true;
 }
@@ -2155,6 +2153,11 @@ void Execute::RaiseException(uint32_t cause, uint32_t inst) {
   regs->setPC( new_pc);
 
   log->SC_log(Log::INFO) << "Exception! new PC " << hex << new_pc << endl;
+
+  regs->dump();
+  cout << "Simulation time " << sc_time_stamp() << endl;
+  perf->dump();
+  SC_REPORT_ERROR("Exception" , "Exception");
 }
 
 
