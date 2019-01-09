@@ -45,8 +45,8 @@ i5-5200<span>@</span>2.2Ghz
 This is a preliminar and incomplete version.
 
 Task to do:
-* Implement all missing instructions (Execute)
-* Implement CSRs (where/how?)
+* ~~Iimplement all missing instructions (Execute)~~
+* ~~Implement CSRs (where/how?)~~
 * Add full support to .elf ~~and .hex~~ filetypes to memory.h
 (only partial .hex support)
 * Connect some TLM peripherals
