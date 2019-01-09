@@ -2,11 +2,9 @@ TARGET   = stdlibs
 
 TARGET_ARCH=riscv32
 
-CC       = riscv32-unknown-linux-gnu-gcc
+CC       = riscv32-unknown-elf-gcc
 # compiling flags here
-#CFLAGS = -Wall -I. -O0 -march=rv32 -mabi=ilp32
-#CFLAGS = -Wall -I. -O0 -nostdlib -march=rv32i -mabi=ilp32 --entry main -lc
-CFLAGS = -Wall -I. -O0 -nostdlib -march=rv32i -mabi=ilp32 --entry main
+CFLAGS = -Wall -I. -O0 -march=rv32i -mabi=ilp32 --specs=nosys.specs
 
 
 LINKER   = riscv32-unknown-linux-gnu-gcc

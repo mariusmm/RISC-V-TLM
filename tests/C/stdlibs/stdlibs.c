@@ -10,8 +10,14 @@ void print(char *msg) {
   }
 }
 
-void main(void) {
+int main(void) {
   char msg[50];
-  print("hello");
+  print("hello\n");
   sprintf(msg, "%i", 5);
+  print(msg);
+
+  asm volatile ("ecall");
+
+  return 0;
+
 }

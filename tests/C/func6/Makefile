@@ -1,15 +1,16 @@
-TARGET   = func2
+TARGET   = func6
 
 TARGET_ARCH=riscv32
 
 CC       = riscv32-unknown-elf-gcc
+
 # compiling flags here
-CFLAGS = -Wall -I. -O0 -march=rv32i -mabi=ilp32 
+CFLAGS = -Wall -I. -O0 -static -march=rv32imac -mabi=ilp32 --specs=nosys.specs
 
 
 LINKER   = riscv32-unknown-linux-gnu-gcc
 # linking flags here
-LFLAGS   = -I. --entry main
+LDFLAGS   = -I. --entry main -L/opt/riscv/riscv32-unknown-elf/lib/ -T ld_script.ld
 LIBS   = $(EXTRA_LIBS)
 
 
@@ -28,7 +29,7 @@ rm       = rm -f
 
 
 $(BINDIR)/$(TARGET): $(OBJECTS)
-#	$(LINKER) $(OBJECTS) $(LFLAGS) $(LIBS) $(LIBDIR) -o $@
+#	$(LINKER) $(OBJECTS) $(LDFLAGS) $(LIBS) $(LIBDIR) -o $@
 	riscv32-unknown-linux-gnu-objdump -d $< > dump
 	objcopy -Oihex $< $(TARGET).hex
 #	@echo "Linking complete!"
@@ -41,7 +42,7 @@ $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
 
 .PHONY: clean
 clean:
-	@$(rm) $(OBJECTS)
+	@$(rm) $(OBJECTS) *.hex dump
 	@echo "Cleanup complete!"
 
 .PHONY: remove

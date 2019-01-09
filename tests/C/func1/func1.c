@@ -5,7 +5,7 @@ int func1(int a, int* b) {
 }
 
 
-void main(void) {
+int main(void) {
   int x1, x2, x3;
 
   x1 = 6;
@@ -22,4 +22,6 @@ void main(void) {
     TRACE = 'R';
     TRACE = '\n';
   }
+
+  asm volatile ("ecall");
 }
