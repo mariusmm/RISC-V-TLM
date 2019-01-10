@@ -57,7 +57,7 @@ Task to do:
 - [ ] Implement interrupts
      - [ ] implement timer (mtimecmp) & timer interrupt  
 - [x] Test, test, test & test. I'm sure there are a ~~lot of~~ some bugs in the code
-     - [x] riscv-test almost complete (see [Test](Tests.md))
+     - [x] riscv-test almost complete (see [Test](https://github.com/mariusmm/RISC-V-TLM/wiki/Tests))
      - [ ] riscv-compliance WiP
 * Improve structure and modules hierarchy
 * Add 64 & 128 bits architecture (RV64I, RV128I)
