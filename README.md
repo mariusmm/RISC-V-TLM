@@ -45,17 +45,20 @@ i5-5200<span>@</span>2.2Ghz
 This is a preliminar and incomplete version.
 
 Task to do:
-* ~~Iimplement all missing instructions (Execute)~~
-* ~~Implement CSRs (where/how?)~~
-* Add full support to .elf ~~and .hex~~ filetypes to memory.h
-(only partial .hex support)
-* Connect some TLM peripherals
-     * ~~Debug module similiar to ARM's ITM~~
-     * Some standard UART model
-     * ...
-* Test, test, test & test. I'm sure there are a lot of bugs in the code
-     * riscv-test almost incomplete
-     * riscv-compliance WiP
+- [x]  Implement all missing instructions (Execute)
+- [x] Implement CSRs (where/how?)
+- [ ] Add full support to read file with memory contents (to memory.h)
+   - [ ] .elf files
+   - [x] .hex files (only partial .hex support)
+- [ ]  Connect some TLM peripherals
+     - [x]  Debug module similiar to ARM's ITM
+     - [ ] Some standard UART model
+     - [ ] ...
+- [ ] Implement interrupts
+     - [ ] implement timer (mtimecmp) & timer interrupt  
+- [x] Test, test, test & test. I'm sure there are a ~~lot of~~ some bugs in the code
+     - [x] riscv-test almost complete (see [Test](Tests.md))
+     - [ ] riscv-compliance WiP
 * Improve structure and modules hierarchy
 * Add 64 & 128 bits architecture (RV64I, RV128I)
 
