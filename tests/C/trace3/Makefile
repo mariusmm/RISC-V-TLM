@@ -2,14 +2,14 @@ TARGET   = trace3
 
 TARGET_ARCH=riscv32
 
-CC       = riscv32-unknown-linux-gnu-gcc
+CC       = riscv32-unknown-elf-gcc
 # compiling flags here
 #CFLAGS   = -Wall -I. -O0 -nostartfiles  -march=rv32i -mabi=ilp32
 CFLAGS = -Wall -I. -O0 -nostdlib -march=rv32i -mabi=ilp32 --entry main
 #CFLAGS = -Wall -I. -O0 -nodefaultlibs -march=rv32i -mabi=ilp32
 
 
-LINKER   = riscv32-unknown-linux-gnu-gcc
+LINKER   = riscv32-unknown-elf-gcc
 # linking flags here
 LFLAGS   = -I. --entry main
 LIBS   = $(EXTRA_LIBS)
