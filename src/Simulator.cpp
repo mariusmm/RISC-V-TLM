@@ -18,6 +18,7 @@
 #include "Memory.h"
 #include "BusCtrl.h"
 #include "Trace.h"
+#include "Timer.h"
 
 using namespace sc_core;
 using namespace sc_dt;
@@ -38,6 +39,7 @@ SC_MODULE(Simulator)
   Memory *MainMemory;
   BusCtrl* Bus;
   Trace *trace;
+  Timer *timer;
 
   uint32_t start_PC;
   sc_signal<bool> IRQ;
@@ -51,13 +53,16 @@ SC_MODULE(Simulator)
 
     Bus = new BusCtrl("BusCtrl");
     trace = new Trace("Trace");
+    timer = new Timer("Timer");
 
     cpu->instr_bus.bind(Bus->cpu_instr_socket);
     cpu->exec->data_bus.bind(Bus->cpu_data_socket);
 
     Bus->memory_socket.bind(MainMemory->socket);
     Bus->trace_socket.bind(trace->socket);
-    //cpu->interrupt.bind(IRQ);
+    Bus->timer_socket.bind(timer->socket);
+    timer->timer_irq.bind(IRQ);
+    cpu->interrupt.bind(IRQ);
   }
 
   ~Simulator() {
@@ -66,6 +71,7 @@ SC_MODULE(Simulator)
     delete MainMemory;
     delete Bus;
     delete trace;
+    delete timer;
   }
 };
 
@@ -80,6 +86,7 @@ void intHandler(int dummy) {
 int sc_main(int argc, char* argv[])
 {
 
+  /* Capture Ctrl+C and finish the simulation */
   signal(SIGINT, intHandler);
 
   /* SystemC time resolution set to 1 ns*/

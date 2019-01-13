@@ -17,10 +17,19 @@ void BusCtrl::b_transport( tlm::tlm_generic_payload& trans, sc_time& delay ) {
     //tlm::tlm_command cmd = trans.get_command();
     sc_dt::uint64    adr = trans.get_address() / 4;
 
-    if (adr == TRACE_MEMORY_ADDRESS / 4) {
-      trace_socket->b_transport(trans, delay);
-    } else {
-      memory_socket->b_transport(trans, delay);
+    switch (adr) {
+      case TIMER_MEMORY_ADDRESS_HI / 4:
+      case TIMER_MEMORY_ADDRESS_LO / 4:
+      case TIMERCMP_MEMORY_ADDRESS_HI / 4:
+      case TIMERCMP_MEMORY_ADDRESS_LO / 4:
+        timer_socket->b_transport(trans, delay);
+        break;
+      case TRACE_MEMORY_ADDRESS / 4:
+        trace_socket->b_transport(trans, delay);
+        break;
+      default:
+        memory_socket->b_transport(trans, delay);
+        break;
     }
 
 #if 0

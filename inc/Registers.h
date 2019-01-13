@@ -57,6 +57,8 @@
 #define CSR_TIMEH (0xC81)
 #define CSR_INSTRETH (0xC02)
 
+#define CSR_STVEC (0x105)
+
 /* 1 ns tick in CYCLE & TIME counters */
 #define TICKS_PER_SECOND (1000000)
 

@@ -1,0 +1,58 @@
+#include <stdio.h>
+
+#define TIMER (*(uint32_t *)0x40004000)
+#define TIMER_CMP (*(uint32_t *)0x40004008)
+#define TRACE (*(unsigned char *)0x40000000)
+
+volatile int ticks = 0;
+
+int _write(int file, const char *ptr, int len) {
+  int x;
+
+  for (x = 0; x < len; x++) {
+    TRACE =  *ptr++;
+  }
+
+  return (len);
+}
+
+void timer_ISR() {
+  ticks++;
+}
+
+void register_timer_isr() {
+  asm volatile("la t0, timer_ISR\n csrw mtvec, t0");
+  asm volatile("li t1, 0x888\ncsrw mie, t1");
+}
+
+int main(void) {
+
+  uint32_t timer_value;
+  uint32_t start_time;
+
+  register_timer_isr();
+
+  timer_value = TIMER;
+  printf("Time: %ld ns\n", timer_value);
+
+  timer_value = TIMER;
+  printf("Time: %ld ns\n", timer_value);
+
+  timer_value = TIMER;
+  printf("Time: %ld ns\n", timer_value);
+
+  timer_value = TIMER;
+  printf("Time: %ld ns\n", timer_value);
+
+  start_time = TIMER;
+  TIMER_CMP = start_time + 1000;
+  do {
+    timer_value = TIMER;
+  } while (timer_value < start_time + 50000);
+  asm volatile ("ecall");
+
+  printf("Timer: %ld ns\n", timer_value);
+  asm volatile ("ecall");
+  return 0;
+
+}

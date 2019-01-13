@@ -38,7 +38,7 @@ public:
 
   //tlm_utils::simple_initiator_socket<cpu_base> data_bus;
 
-  //sc_in<sc_signal<bool> > interrupt;
+  sc_in<bool> interrupt;
 
   CPU(sc_module_name name, uint32_t PC);
   ~CPU();
@@ -50,6 +50,12 @@ private:
   Performance *perf;
   Log *log;
 
+  /**
+   *
+   * @brief Process and triggers IRQ if all conditions memory_socket
+   * @return true if IRQ is triggered, false otherwise
+   */
+  bool cpu_process_IRQ();
   /**
    * @brief Executes default ISA instruction
    * @param  inst instruction to execute

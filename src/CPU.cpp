@@ -21,6 +21,45 @@ CPU::~CPU() {
   cout << "*********************************************" << endl;
 }
 
+bool CPU::cpu_process_IRQ() {
+  uint32_t csr_temp;
+  uint32_t new_pc, old_pc;
+  bool ret_value = false;
+
+  if (interrupt == true){
+    csr_temp = register_bank->getCSR(CSR_MIP);
+
+    if ( (csr_temp & (1 << 11) ) == 0 )  {
+      csr_temp |= (1 << 11);  // MEIP bit in MIP register (11th bit)
+      register_bank->setCSR(CSR_MIP, csr_temp);
+      // cout << "time: " << sc_time_stamp() << ". CPU: interrupt" << endl;
+      log->SC_log(Log::INFO) << "Interrupt!" << endl;
+
+      /* updated MEPC register */
+      old_pc = register_bank->getPC();
+      register_bank->setCSR(CSR_MEPC, old_pc);
+      // log->SC_log(Log::INFO) << "Old PC Value 0x" << hex << old_pc << endl;
+
+      /* update MCAUSE register */
+      register_bank->setCSR(CSR_MCAUSE, 0x8000000);
+
+      /* set new PC address */
+      new_pc = register_bank->getCSR(CSR_MTVEC);
+      new_pc = new_pc & 0xFFFFFFFC; // last two bits always to 0
+      // log->SC_log(Log::DEBUG) << "NEW PC Value 0x" << hex << new_pc << endl;
+      register_bank->setPC(new_pc);
+
+      ret_value = true;
+    }
+  } else  {
+    csr_temp = register_bank->getCSR(CSR_MIP);
+    csr_temp &= ~(1 << 11);
+    register_bank->setCSR(CSR_MIP, csr_temp);
+  }
+
+  return ret_value;
+}
+
 bool CPU::process_c_instruction(Instruction &inst) {
   bool PC_not_affected = true;
 
@@ -444,8 +483,6 @@ void CPU::CPU_thread(void) {
             inst.dump();
             exec->NOP(inst);
           } // switch (inst.check_extension())
-          /* Fixed instruction time to 10 ns (i.e. 100 MHz)*/
-          sc_core::wait(10, SC_NS);
         }
 
         perf->instructionsInc();
@@ -453,5 +490,13 @@ void CPU::CPU_thread(void) {
         if (PC_not_affected == true) {
           register_bank->incPC(incPCby2);
         }
+
+        /* Process IRQ (if any) */
+        cpu_process_IRQ();
+
+        /* Fixed instruction time to 10 ns (i.e. 100 MHz)*/
+        sc_core::wait(10, SC_NS);
+
+
   } // while(1)
 } // CPU_thread
