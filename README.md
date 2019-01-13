@@ -45,17 +45,18 @@ i5-5200<span>@</span>2.2Ghz
 This is a preliminar and incomplete version.
 
 Task to do:
-- [x]  Implement all missing instructions (Execute)
+- [x] Implement all missing instructions (Execute)
 - [x] Implement CSRs (where/how?)
 - [ ] Add full support to read file with memory contents (to memory.h)
    - [ ] .elf files
    - [x] .hex files (only partial .hex support)
 - [ ]  Connect some TLM peripherals
-     - [x]  Debug module similiar to ARM's ITM
+     - [x] Debug module similiar to ARM's ITM
      - [ ] Some standard UART model
      - [ ] ...
 - [ ] Implement interrupts
-     - [ ] implement timer (mtimecmp) & timer interrupt  
+     - [x] implement timer (mtimecmp) & timer interrupt  
+     - [ ] generic IRQ comtroller
 - [x] Test, test, test & test. I'm sure there are a ~~lot of~~ some bugs in the code
      - [x] riscv-test almost complete (see [Test](https://github.com/mariusmm/RISC-V-TLM/wiki/Tests))
      - [ ] riscv-compliance WiP
