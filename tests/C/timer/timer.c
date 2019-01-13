@@ -22,7 +22,9 @@ void timer_ISR() {
   ticks++;
   if (ticks < 10) {
     timer_value = TIMER;
-    TIMER_CMP = timer_value + 590; // timer is in nanoseconds, set to 1 ms.
+    // timer is in nanoseconds, set to 1 ms.
+    // comparator value fixed to take into account number of instructions executed
+    TIMER_CMP = timer_value + 590; 
   }
 }
 
