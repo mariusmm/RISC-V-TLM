@@ -27,6 +27,7 @@ Brief description of the modules:
 * Simulator: Top-level entity that builds & starts the simulation
 * BusCtrl: Simple bus manager
 * Trace: Simple trace peripheral
+* Timer: Simple IRQ programable real-time counter peripheral
 
 Helper classes:
 * Performance: Performance indicators stores here (singleton class)
@@ -90,9 +91,9 @@ In the asm directory there are some basic assembly examples.
 I "compile" one file with the follwing command:
 ```
 $ cd asm
-$ riscv32-unknown-linux-gnu-as  EternalLoop.asm -o EternalLoop.o
-$ riscv32-unknown-linux-gnu-ld -T ../my_linker_script.ld EternalLoop.o -o EternalLoop.elf
-$ objcopy -O ihex EternalLoop.elf EternalLoop.hex
+$ riscv32-unknown-elf-as  EternalLoop.asm -o EternalLoop.o
+$ riscv32-unknown-elf-ld -T ../my_linker_script.ld EternalLoop.o -o EternalLoop.elf
+$ riscv32-unknown-elf-objcopy -O ihex EternalLoop.elf EternalLoop.hex
 $ cd ..
 $ ./RISCV_SCTLM asm/EternalLoop.hex
 ```

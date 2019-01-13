@@ -2,21 +2,15 @@
 
 SC_HAS_PROCESS(Timer);
 Timer::Timer(sc_module_name name): sc_module(name)
-  ,socket("timer_socket"), m_mtime(0), m_mtimecmp(0), irq_value(false) {
+  ,socket("timer_socket"), m_mtime(0), m_mtimecmp(0) {
 
     socket.register_b_transport(this, &Timer::b_transport);
 
     SC_THREAD(run);
   }
 
-/**
- * @brief Waits for event timer_event and triggers an IRQ
- *
- */
 void Timer::run() {
   while(true) {
-
-    // timer_event.notify( sc_time(10000, SC_NS) );
 
     wait(timer_event);
 
@@ -32,12 +26,6 @@ void Timer::run() {
   }
 }
 
-/**
- *
- * @brief TLM-2.0 socket implementaiton
- * @param trans TLM-2.0 transaction
- * @param delay transactino delay time
- */
 void Timer::b_transport( tlm::tlm_generic_payload& trans, sc_time& delay ) {
     tlm::tlm_command cmd = trans.get_command();
     sc_dt::uint64    addr = trans.get_address();
@@ -66,9 +54,6 @@ void Timer::b_transport( tlm::tlm_generic_payload& trans, sc_time& delay ) {
             m_mtimecmp.range(63,32) = aux_value;
             // notify needs relative time, mtimecmp works in absolute time
             notify_time = m_mtimecmp  - m_mtime;
-            // cout << "time: " << sc_core::sc_time_stamp()
-            //     << ": interrupt will be in " << dec << notify_time
-            //     << " ns" << endl;
             timer_event.notify( sc_time(notify_time, SC_NS) );
             break;
       }
