@@ -8,7 +8,7 @@
 #define LOAD     lw
 #define REGBYTES 4
 
-
+.align 2
 TIMER_CMP_INT:
 /* store execution context on the stack (register content) */
 addi    sp, sp, -REGBYTES * 32
@@ -32,7 +32,7 @@ STORE   x31, 30 * REGBYTES(sp)
 
 /* load interrupt/trap reason and call external C function to handle it */
 csrr    a0, mcause
-jal    timer_ISR 
+jal    timer_ISR
 
 /* re-store the saved context */
 LOAD    x1, 0x0(sp)
@@ -54,4 +54,3 @@ LOAD    x30, 29 * REGBYTES(sp)
 LOAD    x31, 30 * REGBYTES(sp)
 addi    sp, sp, REGBYTES * 32
 mret
-
