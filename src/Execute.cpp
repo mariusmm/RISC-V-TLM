@@ -2152,7 +2152,7 @@ void Execute::RaiseException(uint32_t cause, uint32_t inst) {
 
   regs->setPC( new_pc);
 
-  log->SC_log(Log::INFO) << "Exception! new PC 0x" << hex << new_pc << endl;
+  log->SC_log(Log::ERROR) << "Exception! new PC 0x" << hex << new_pc << endl;
 
   regs->dump();
   cout << "Simulation time " << sc_time_stamp() << endl;
