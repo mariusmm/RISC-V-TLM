@@ -2,8 +2,7 @@
 
 Log* Log::getInstance()
 {
-  if (instance == 0)
-  {
+  if (instance == 0) {
       instance = new Log("Log.txt");
   }
 
@@ -16,18 +15,24 @@ Log::Log(const char* filename) {
 }
 
 void Log::SC_log(std::string msg, enum LogLevel level) {
-  if (level >= currentLogLevel) {
+
+  if (level <= currentLogLevel) {
     m_stream << "time " << sc_core::sc_time_stamp() << ": " << msg << std::endl;
+  } else {
+    m_stream << "patata" << std::endl;
   }
 }
 
 std::ofstream& Log::SC_log(enum LogLevel level) {
 
-  if (level >= currentLogLevel) {
+  if (level <= currentLogLevel) {
     m_stream << "time " << sc_core::sc_time_stamp() << ": ";
+    return m_stream;
+  } else {
+    return m_sink;
   }
 
-  return m_stream;
+
 }
 
 void Log::setLogLevel(enum LogLevel newLevel) {

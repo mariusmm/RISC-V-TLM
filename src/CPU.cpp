@@ -38,7 +38,7 @@ bool CPU::cpu_process_IRQ() {
       /* updated MEPC register */
       old_pc = register_bank->getPC();
       register_bank->setCSR(CSR_MEPC, old_pc);
-      // log->SC_log(Log::INFO) << "Old PC Value 0x" << hex << old_pc << endl;
+      log->SC_log(Log::INFO) << "Old PC Value 0x" << hex << old_pc << endl;
 
       /* update MCAUSE register */
       register_bank->setCSR(CSR_MCAUSE, 0x8000000);
@@ -46,7 +46,7 @@ bool CPU::cpu_process_IRQ() {
       /* set new PC address */
       new_pc = register_bank->getCSR(CSR_MTVEC);
       new_pc = new_pc & 0xFFFFFFFC; // last two bits always to 0
-      // log->SC_log(Log::DEBUG) << "NEW PC Value 0x" << hex << new_pc << endl;
+      log->SC_log(Log::DEBUG) << "NEW PC Value 0x" << hex << new_pc << endl;
       register_bank->setPC(new_pc);
 
       ret_value = true;
