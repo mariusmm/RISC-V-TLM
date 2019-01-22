@@ -34,13 +34,30 @@ using namespace std;
 class CPU: sc_module {
 public:
 
+  /**
+   * @brief Instruction Memory bus socket
+   * @param trans transction to perfoem
+   * @param delay time to annotate
+   */
   tlm_utils::simple_initiator_socket<CPU> instr_bus;
 
-  //tlm_utils::simple_initiator_socket<cpu_base> data_bus;
+  /**
+   * @brief IRQ line socket
+   * @param trans transction to perform (empty)
+   * @param delay time to annotate
+   */
+  tlm_utils::simple_target_socket<CPU> irq_line_socket;
 
-  sc_in<bool> interrupt;
-
+  /**
+   * @brief Constructor
+   * @param name Module name
+   * @param PC   Program Counter initialize value
+   */
   CPU(sc_module_name name, uint32_t PC);
+
+  /**
+   * @brief Destructor
+   */
   ~CPU();
 
   Execute *exec;
@@ -50,12 +67,15 @@ private:
   Performance *perf;
   Log *log;
 
+  bool interrupt;
+
   /**
    *
    * @brief Process and triggers IRQ if all conditions memory_socket
    * @return true if IRQ is triggered, false otherwise
    */
   bool cpu_process_IRQ();
+
   /**
    * @brief Executes default ISA instruction
    * @param  inst instruction to execute
@@ -70,6 +90,13 @@ private:
   bool process_a_instruction(Instruction inst);
 
   void CPU_thread(void);
+
+  /**
+   * @brief callback for IRQ simple socket
+   * @param trans transaction to perform (empty)
+   * @param delay time to annotate
+   */
+  void call_interrupt(tlm::tlm_generic_payload &trans, sc_time &delay);
 };
 
 #endif

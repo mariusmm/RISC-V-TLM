@@ -10,6 +10,13 @@ CPU::CPU(sc_module_name name, uint32_t PC): sc_module(name)
    log = Log::getInstance();
 
    register_bank->setPC(PC);
+
+   register_bank->setValue(Registers::sp, (0xD0000 / 4) - 1);
+   //register_bank->setValue(Registers::sp, (0x10000000 / 4) - 1);
+
+   irq_line_socket.register_b_transport(this, &CPU::call_interrupt);
+   interrupt = false;
+   
    SC_THREAD(CPU_thread);
 }
 
@@ -33,7 +40,7 @@ bool CPU::cpu_process_IRQ() {
       csr_temp |= (1 << 11);  // MEIP bit in MIP register (11th bit)
       register_bank->setCSR(CSR_MIP, csr_temp);
       // cout << "time: " << sc_time_stamp() << ". CPU: interrupt" << endl;
-      log->SC_log(Log::INFO) << "Interrupt!" << endl;
+      log->SC_log(Log::DEBUG) << "Interrupt!" << endl;
 
       /* updated MEPC register */
       old_pc = register_bank->getPC();
@@ -50,6 +57,7 @@ bool CPU::cpu_process_IRQ() {
       register_bank->setPC(new_pc);
 
       ret_value = true;
+      interrupt = false;
     }
   } else  {
     csr_temp = register_bank->getCSR(CSR_MIP);
@@ -500,3 +508,7 @@ void CPU::CPU_thread(void) {
 
   } // while(1)
 } // CPU_thread
+
+void CPU::call_interrupt(tlm::tlm_generic_payload &trans, sc_time &delay) {
+  interrupt = true;
+}

@@ -10,19 +10,22 @@ Timer::Timer(sc_module_name name): sc_module(name)
   }
 
 void Timer::run() {
+
+  tlm::tlm_generic_payload* irq_trans = new tlm::tlm_generic_payload;
+  sc_time delay = SC_ZERO_TIME;
+
+  irq_trans->set_command(tlm::TLM_WRITE_COMMAND);
+  irq_trans->set_data_ptr(NULL);
+  irq_trans->set_data_length(0);
+  irq_trans->set_streaming_width(0);
+  irq_trans->set_byte_enable_ptr(0);
+  irq_trans->set_dmi_allowed(false);
+  irq_trans->set_response_status(tlm::TLM_INCOMPLETE_RESPONSE);
+  irq_trans->set_address( 0x01);
+
   while(true) {
-
     wait(timer_event);
-
-    if (timer_irq.read() == true) {
-      timer_irq.write(false);
-      // cout << "time: " << sc_time_stamp() <<". bla bla " << endl;
-    } else {
-      timer_irq.write(true);
-      cout << "time: " << sc_time_stamp() << ". Timer interrupt!" << endl;
-      // notify in 20 ns to low irq signal
-      timer_event.notify( sc_time(20, SC_NS));
-    }
+    irq_line->b_transport(*irq_trans, delay);
   }
 }
 
@@ -30,11 +33,12 @@ void Timer::b_transport( tlm::tlm_generic_payload& trans, sc_time& delay ) {
     tlm::tlm_command cmd = trans.get_command();
     sc_dt::uint64    addr = trans.get_address();
     unsigned char*   ptr = trans.get_data_ptr();
-    uint32_t aux_value = 0;
-    uint64_t notify_time = 0;
     unsigned int     len = trans.get_data_length();
     //unsigned char*   byt = trans.get_byte_enable_ptr();
     //unsigned int     wid = trans.get_streaming_width();
+
+    uint32_t aux_value = 0;
+    uint64_t notify_time = 0;
 
     // cout << "accessing TIMER 0x" << hex << addr << endl;
     if (cmd == tlm::TLM_WRITE_COMMAND) {
@@ -48,12 +52,14 @@ void Timer::b_transport( tlm::tlm_generic_payload& trans, sc_time& delay ) {
             break;
         case TIMERCMP_MEMORY_ADDRESS_LO:
             m_mtimecmp.range(31,0) = aux_value;
-            // timer_event.notify(SC_ZERO_TIME);
             break;
         case TIMERCMP_MEMORY_ADDRESS_HI:
             m_mtimecmp.range(63,32) = aux_value;
+
             // notify needs relative time, mtimecmp works in absolute time
             notify_time = m_mtimecmp  - m_mtime;
+            // cout << "time: " << sc_time_stamp() << ". Timer: IRQ will be at "
+            //   << dec << notify_time + m_mtime << " ns." << endl;
             timer_event.notify( sc_time(notify_time, SC_NS) );
             break;
       }

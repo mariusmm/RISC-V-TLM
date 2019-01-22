@@ -40,12 +40,15 @@ SC_MODULE(Simulator)
   BusCtrl* Bus;
   Trace *trace;
   Timer *timer;
+  Log *log;
 
   uint32_t start_PC;
-  sc_signal<bool> IRQ;
 
   SC_CTOR(Simulator)
   {
+    log = Log::getInstance();
+    log->setLogLevel(Log::ERROR);
+
     MainMemory = new Memory("Main_Memory", filename);
     start_PC = MainMemory->getPCfromHEX();
 
@@ -61,8 +64,10 @@ SC_MODULE(Simulator)
     Bus->memory_socket.bind(MainMemory->socket);
     Bus->trace_socket.bind(trace->socket);
     Bus->timer_socket.bind(timer->socket);
-    timer->timer_irq.bind(IRQ);
-    cpu->interrupt.bind(IRQ);
+
+    //timer->timer_irq.bind(IRQ);
+    // cpu->interrupt.bind(IRQ);
+    timer->irq_line.bind(cpu->irq_line_socket);
   }
 
   ~Simulator() {
