@@ -33,7 +33,7 @@ Helper classes:
 * Performance: Performance indicators stores here (singleton class)
 * Log: Log class to log them all (singleton class)
 
-Current performance is about 284500 instructions / sec in a Intel Core
+Current performance is about 1.500.000 instructions / sec in a Intel Core
 i5-5200<span>@</span>2.2Ghz
 
 
