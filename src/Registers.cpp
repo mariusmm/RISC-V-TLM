@@ -9,7 +9,8 @@ Registers::Registers() {
   initCSR();
   //register_bank[sp] = 1024-1;  // SP points to end of memory
   //register_bank[sp] = 0x70000000;
-  register_bank[sp] = (0x10000000 / 4) - 1;
+  //register_bank[sp] = (0x10000000 / 4) - 1;
+
   //cout << "Memory size: 0x" << hex << Memory::SIZE << endl;
   //cout << "SP address: 0x" << hex << (0x10000000 / 4) - 1 << endl;
 
