@@ -33,6 +33,9 @@ void register_timer_isr() {
   asm volatile("csrw mtvec, t0");
   asm volatile("li t1, 0x888");
   asm volatile("csrw mie, t1");
+
+  // enable interrupts
+  asm volatile( "csrs mstatus,1" );
 }
 
 int main(void) {
