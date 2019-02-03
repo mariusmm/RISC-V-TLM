@@ -98,6 +98,22 @@ $ docker run -v <localfiles>:/tmp -it riscv /bin/bash
 # ./RISCV_TLM /tmp/<your_hex_file>
 ```
 
+I'm using docker image [zmors/riscv_gcc](https://hub.docker.com/r/zmors/riscv_gcc) to have a cross-compiler,  I'm using both docker images this way:
+```
+console1:
+$ docker run -v /tmp:/PRJ -it zmors/riscv_gcc:1  bash
+
+# cd /PRJ/func3
+# make
+
+console2:
+$ docker run -v /tmp:/tmp -it mariusmm/riscv-tlm /bin/bash
+
+# cd /usr/src/riscv64/RISC-V-TLM/ 
+# ./RISCV-TLM /tmp/file.hex
+...
+```
+
 Performance is not affected by running the simulator inside the container
 
 ## Test
