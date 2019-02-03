@@ -4,7 +4,7 @@
 
 
 This is another RISC-V ISA simulator, this is coded in SystemC + TLM-2.
-It supports RV32IMC Instruction set by now (with some bugs).
+It supports RV32IMCA Instruction set by now.
 
 [![travis](https://travis-ci.org/mariusmm/RISC-V-TLM.svg?branch=master)](https://travis-ci.org/mariusmm/RISC-V-TLM)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0f7ccc8435f14ce2b241b3bfead772a2)](https://www.codacy.com/app/mariusmm/RISC-V-TLM?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mariusmm/RISC-V-TLM&amp;utm_campaign=Badge_Grade)
@@ -82,6 +82,23 @@ And then you can execute the simulator:
 ```
 $ ./RISCV_TLM asm/BasicLoop.hex
 ```
+
+
+## Docker container
+
+There is a Docker container available with the latest release at https://hub.docker.com/r/mariusmm/riscv-tlm. 
+This container has RISCV-TLM already build at /usr/src/riscv64/RISCV-TLM directory.
+
+### How to use Docker
+```
+$ docker pull mariusmm/riscv-tlm
+$ docker run -v <localfiles>:/tmp -it riscv /bin/bash
+
+# cd /usr/src/riscv64/RISCV_TLM/
+# ./RISCV_TLM /tmp/<your_hex_file>
+```
+
+Performance is not affected by running the simulator inside the container
 
 ## Test
 See [Test page](Test) for more information.
