@@ -11,6 +11,28 @@ It supports RV32IMCA Instruction set by now.
 [![license](https://img.shields.io/badge/license-GNU--3.0-green.svg)](https://github.com/mariusmm/RISC-V-TLM/blob/master/LICENSE)
 [![Twitter URL](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/mariusmonton)
 
+---
+Table of Contents
+=================
+<!--ts-->
+   * [Another RISC-V ISA simulator.](#another-risc-v-isa-simulator)
+      * [Description](#description)
+         * [Structure](#structure)
+      * [TODO](#todo)
+      * [Compile](#compile)
+      * [Docker container](#docker-container)
+         * [How to use Docker](#how-to-use-docker)
+      * [Test](#test)
+         * [C code](#c-code)
+      * [Documentation](#documentation)
+      * [Contribute](#contribute)
+      * [License](#license)
+
+<!-- Added by: marius, at: 2019-02-04T13:16+01:00 -->
+
+<!--te-->
+
+## Description
 
 Brief description of the modules:
 * CPU: Top entity that includes all other modules.
