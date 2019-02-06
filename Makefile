@@ -31,6 +31,7 @@ $(BINDIR)/$(TARGET): $(OBJECTS)
 	@$(LINKER) $(OBJECTS) $(LFLAGS) $(LIBS) $(LIBDIR) -o $@
 	@echo "Linking complete!"
 
+
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 #	@$(CC) $(CFLAGS) $(INCDIR) -c $< -o $@
 	@echo "Compiling "$<" ..."
@@ -46,3 +47,5 @@ clean:
 remove: clean
 	@$(rm) $(BINDIR)/$(TARGET)
 	@echo "Executable removed!"
+
+all: $(BINDIR)/$(TARGET)
