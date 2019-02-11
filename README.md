@@ -15,20 +15,22 @@ It supports RV32IMCA Instruction set by now.
 Table of Contents
 =================
 <!--ts-->
-   * [Another RISC-V ISA simulator.](#another-risc-v-isa-simulator)
-      * [Description](#description)
-         * [Structure](#structure)
-      * [TODO](#todo)
-      * [Compile](#compile)
-      * [Docker container](#docker-container)
-         * [How to use Docker](#how-to-use-docker)
-      * [Test](#test)
-         * [C code](#c-code)
-      * [Documentation](#documentation)
-      * [Contribute](#contribute)
-      * [License](#license)
+   * [Another RISC-V ISA simulator.](./README.md#another-risc-v-isa-simulator)
+   * [Table of Contents](./README.md#table-of-contents)
+      * [Description](./README.md#description)
+         * [Structure](./README.md#structure)
+      * [TODO](./README.md#todo)
+      * [Compile](./README.md#compile)
+      * [Docker container](./README.md#docker-container)
+         * [How to use Docker](./README.md#how-to-use-docker)
+      * [Test](./README.md#test)
+         * [C code](./README.md#c-code)
+         * [FreeRTOS](./README.md#freertos)
+      * [Documentation](./README.md#documentation)
+      * [Contribute](./README.md#contribute)
+      * [License](./README.md#license)
 
-<!-- Added by: marius, at: 2019-02-04T13:16+01:00 -->
+<!-- Added by: marius, at: 2019-02-11T20:15+01:00 -->
 
 <!--te-->
 
@@ -162,6 +164,10 @@ $ make
 ```
 and then execute the .hex file like the example before.
 
+### FreeRTOS
+FreeRTOS can run in this simulator!
+
+In test/FreeRTOS/ directory there is portable files (port.c, portmacro.c portasm.S) and main file (freertos_test.c) ported to this RISC-V model.
 
 ## Documentation
 The code is documented using doxygen. In the doc folder there is a Doxygen.cfg
