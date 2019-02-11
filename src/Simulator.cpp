@@ -47,7 +47,7 @@ SC_MODULE(Simulator)
   SC_CTOR(Simulator)
   {
     log = Log::getInstance();
-    log->setLogLevel(Log::ERROR);
+    log->setLogLevel(Log::INFO);
 
     MainMemory = new Memory("Main_Memory", filename);
     start_PC = MainMemory->getPCfromHEX();

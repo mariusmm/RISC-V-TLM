@@ -7,14 +7,11 @@ Registers::Registers() {
   perf = Performance::getInstance();
 
   initCSR();
-  //register_bank[sp] = 1024-1;  // SP points to end of memory
-  //register_bank[sp] = 0x70000000;
-  //register_bank[sp] = (0x10000000 / 4) - 1;
 
   //cout << "Memory size: 0x" << hex << Memory::SIZE << endl;
   //cout << "SP address: 0x" << hex << (0x10000000 / 4) - 1 << endl;
 
-  //register_bank[sp] = Memory::SIZE-4;
+  register_bank[sp] = Memory::SIZE-4; // default stack at the end of the memory
   register_PC = 0x80000000;       // default _start address
 }
 
@@ -119,7 +116,7 @@ uint32_t Registers::getCSR(int csr) {
 
 
 void Registers::setCSR(int csr, uint32_t value) {
-  /* @note rv32mi-p-ma_fetch tests doesn't allow MISA to writable,
+  /* @FIXME: rv32mi-p-ma_fetch tests doesn't allow MISA to writable,
    * but Volume II: Privileged Architectura v1.10 says MISRA is writable (?)
    */
   if (csr != CSR_MISA) {
@@ -130,5 +127,6 @@ void Registers::setCSR(int csr, uint32_t value) {
 void Registers::initCSR() {
   CSR[CSR_MISA] = MISA_MXL | MISA_M_EXTENSION | MISA_C_EXTENSION
         | MISA_A_EXTENSION | MISA_I_BASE;
+  CSR[CSR_MSTATUS] = MISA_MXL ;
 
 }
