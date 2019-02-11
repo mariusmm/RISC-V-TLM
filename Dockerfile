@@ -1,5 +1,5 @@
 FROM ubuntu:bionic
-MAINTAINER Màrius Montón
+LABEL maintainer="Màrius Montón"
 ENV SYSTEMC_VERSION 2.3.3
 
 RUN apt-get update -q && apt-get install -qy gcc-riscv64-linux-gnu

@@ -177,9 +177,7 @@ extension_t Instruction::check_extension() {
     return C_EXTENSION;
   } else if (m_instr.range(1,0) == 0b10) {
     return C_EXTENSION;
-  } else if (m_instr.range(6,0) == 0b0101111) {
-    return A_EXTENSION;
-  } else {
+   } else {
     return UNKNOWN_EXTENSION;
   }
 }

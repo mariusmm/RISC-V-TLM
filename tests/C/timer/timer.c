@@ -47,14 +47,14 @@ int main(void) {
 
   start_time = TIMER;
   TIMER_CMP = start_time + 10000;
-  printf("set timer to %ld ns\n", start_time + 10000);
+  printf("set timer to %d ns\n", start_time + 10000);
 
   do {
     timer_value = TIMER;
   } while (timer_value < start_time + 2000000);
 
-  printf("Timer: %ld ns\n", timer_value);
-  printf("ticks: %ld\n", ticks);
+  printf("Timer: %d ns\n", timer_value);
+  printf("ticks: %d\n", ticks);
 
   if (ticks > 2100) {
     printf("Test OK!\n");

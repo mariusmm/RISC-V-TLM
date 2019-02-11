@@ -28,7 +28,7 @@ int main(void) {
   x2 = 7;
   x3 = func1(x1, &x2);
 
-  memcpy(aux, aux2, sizeof(int)*5);
+  memcpy(aux2, aux, sizeof(int)*5);
 
   for(int i = 0; i < 5; i++) {
     if (aux[i] != aux2[i]) {
