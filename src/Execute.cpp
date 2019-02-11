@@ -1029,7 +1029,8 @@ bool Execute::CSRRSI(Instruction &inst) {
 
   log->SC_log(Log::INFO) << "CSRRSI: CSR #"
           << csr << " -> x" << rd
-          << ". x" << rs1 << " & CSR #" << csr << endl;
+          << ". x" << rs1 << " & CSR #" << csr
+          << "(0x" << hex << aux << ")"<< endl;
 
   return true;
 }
@@ -1072,6 +1073,15 @@ bool Execute::MRET(Instruction &inst) {
   regs->setPC(new_pc);
 
   log->SC_log(Log::INFO) << "MRET: PC <- 0x" << hex << new_pc << endl;
+
+  // update mstatus
+  uint32_t csr_temp;
+  csr_temp = regs->getCSR(CSR_MSTATUS);
+  if (csr_temp & MSTATUS_MPIE) {
+	  csr_temp |= MSTATUS_MIE;
+  }
+  csr_temp |= MSTATUS_MPIE;
+  regs->setCSR(CSR_MSTATUS, csr_temp);
 
   return true;
 }

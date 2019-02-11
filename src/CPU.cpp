@@ -11,12 +11,12 @@ CPU::CPU(sc_module_name name, uint32_t PC): sc_module(name)
 
    register_bank->setPC(PC);
 
-   register_bank->setValue(Registers::sp, (0xD0000 / 4) - 1);
-   //register_bank->setValue(Registers::sp, (0x10000000 / 4) - 1);
+   //register_bank->setValue(Registers::sp, (0xD0000 / 4) - 1);
+   register_bank->setValue(Registers::sp, (0x10000000 / 4) - 1);
 
    irq_line_socket.register_b_transport(this, &CPU::call_interrupt);
    interrupt = false;
-   
+
    SC_THREAD(CPU_thread);
 }
 
@@ -33,11 +33,18 @@ bool CPU::cpu_process_IRQ() {
   uint32_t new_pc, old_pc;
   bool ret_value = false;
 
-  if (interrupt == true){
+  if (interrupt == true) {
+    csr_temp = register_bank->getCSR(CSR_MSTATUS);
+    if (csr_temp & MSTATUS_MIE) {
+    } else  {
+      log->SC_log(Log::DEBUG)  << "interrupt delayed" << endl;
+      return ret_value;
+    }
+
     csr_temp = register_bank->getCSR(CSR_MIP);
 
-    if ( (csr_temp & (1 << 11) ) == 0 )  {
-      csr_temp |= (1 << 11);  // MEIP bit in MIP register (11th bit)
+    if ( (csr_temp & MIP_MEIP ) == 0 )  {
+      csr_temp |= MIP_MEIP;  // MEIP bit in MIP register (11th bit)
       register_bank->setCSR(CSR_MIP, csr_temp);
       // cout << "time: " << sc_time_stamp() << ". CPU: interrupt" << endl;
       log->SC_log(Log::DEBUG) << "Interrupt!" << endl;
@@ -48,7 +55,7 @@ bool CPU::cpu_process_IRQ() {
       log->SC_log(Log::INFO) << "Old PC Value 0x" << hex << old_pc << endl;
 
       /* update MCAUSE register */
-      register_bank->setCSR(CSR_MCAUSE, 0x8000000);
+      register_bank->setCSR(CSR_MCAUSE, 0x80000000);
 
       /* set new PC address */
       new_pc = register_bank->getCSR(CSR_MTVEC);
@@ -61,7 +68,7 @@ bool CPU::cpu_process_IRQ() {
     }
   } else  {
     csr_temp = register_bank->getCSR(CSR_MIP);
-    csr_temp &= ~(1 << 11);
+    csr_temp &= ~MIP_MEIP;
     register_bank->setCSR(CSR_MIP, csr_temp);
   }
 
@@ -508,6 +515,7 @@ void CPU::CPU_thread(void) {
 
   } // while(1)
 } // CPU_thread
+
 
 void CPU::call_interrupt(tlm::tlm_generic_payload &trans, sc_time &delay) {
   interrupt = true;
