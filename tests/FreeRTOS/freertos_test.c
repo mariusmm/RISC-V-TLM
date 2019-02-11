@@ -54,9 +54,6 @@ int main( void )
 
 	printf("Starting FreeRTOS test\n");
 
-	/* register ISR */
-	register_timer_isr();
-
         my_queue = xQueueCreate(10, sizeof(int));
         
         /* Create tasks */

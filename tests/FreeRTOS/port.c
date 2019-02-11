@@ -189,6 +189,9 @@ void vPortSetupTimer(void)
 #endif
 
         volatile uint32_t timer_value;
+        
+        register_timer_isr();
+        
         timer_value = TIMER;
         // timer_value += configTICK_CLOCK_HZ / configTICK_RATE_HZ;
 	timer_value += 10000 - 620;        // timer set to 100 Hz and corrected
