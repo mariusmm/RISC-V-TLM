@@ -71,7 +71,7 @@ private:
 
   /**
    *
-   * @brief Process and triggers IRQ if all conditions memory_socket
+   * @brief Process and triggers IRQ if all conditions met
    * @return true if IRQ is triggered, false otherwise
    */
   bool cpu_process_IRQ();
@@ -95,6 +95,8 @@ private:
    * @brief callback for IRQ simple socket
    * @param trans transaction to perform (empty)
    * @param delay time to annotate
+   *
+   * When called it triggers an IRQ
    */
   void call_interrupt(tlm::tlm_generic_payload &trans, sc_time &delay);
 };

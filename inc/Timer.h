@@ -58,9 +58,9 @@ public:
 
     /**
      *
-     * @brief TLM-2.0 socket implementaiton
+     * @brief TLM-2.0 socket implementation
      * @param trans TLM-2.0 transaction
-     * @param delay transactino delay time
+     * @param delay transaction delay time
      */
     virtual void b_transport( tlm::tlm_generic_payload& trans, sc_time& delay );
 
