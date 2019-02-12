@@ -18,8 +18,6 @@ void Log::SC_log(std::string msg, enum LogLevel level) {
 
   if (level <= currentLogLevel) {
     m_stream << "time " << sc_core::sc_time_stamp() << ": " << msg << std::endl;
-  } else {
-    m_stream << "patata" << std::endl;
   }
 }
 
