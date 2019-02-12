@@ -34,6 +34,7 @@ std::ofstream& Log::SC_log(enum LogLevel level) {
 }
 
 void Log::setLogLevel(enum LogLevel newLevel) {
+  std::cout << "LogLevel set to " << newLevel << std::endl;
   currentLogLevel = newLevel;
 }
 

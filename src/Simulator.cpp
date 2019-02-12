@@ -13,6 +13,7 @@
 #include "tlm_utils/simple_target_socket.h"
 
 #include <signal.h>
+#include <unistd.h>
 
 #include "CPU.h"
 #include "Memory.h"
@@ -28,7 +29,7 @@ string filename;
 
 /**
  * @class Simulator
- * This class instiates all necessary modules, connects its ports and starts
+ * This class instantiates all necessary modules, connects its ports and starts
  * the simulation.
  *
  * @brief Top simulation entity
@@ -40,14 +41,13 @@ SC_MODULE(Simulator)
   BusCtrl* Bus;
   Trace *trace;
   Timer *timer;
-  Log *log;
+//  Log *log;
 
   uint32_t start_PC;
 
   SC_CTOR(Simulator)
   {
-    log = Log::getInstance();
-    log->setLogLevel(Log::INFO);
+//    log = Log::getInstance();
 
     MainMemory = new Memory("Main_Memory", filename);
     start_PC = MainMemory->getPCfromHEX();
@@ -88,8 +88,54 @@ void intHandler(int dummy) {
   exit(-1);
 }
 
+void process_arguments(int argc, char* argv[]) {
+
+	int c;
+	int debug_level;
+	Log *log;
+
+	log = Log::getInstance();
+	log->setLogLevel(Log::ERROR);
+	while ((c = getopt (argc, argv, "D:f:?")) != -1) {
+		switch (c) {
+			case 'D':
+				debug_level = atoi(optarg);
+
+				switch (debug_level) {
+					case 3:
+						log->setLogLevel(Log::INFO);
+						break;
+					case 2:
+						log->setLogLevel(Log::WARNING);
+						break;
+					case 1:
+						log->setLogLevel(Log::DEBUG);
+						break;
+					case 0:
+						log->setLogLevel(Log::ERROR);
+						break;
+					default:
+						log->setLogLevel(Log::INFO);
+						break;
+				}
+				break;
+			case 'f' :
+				filename = std::string(optarg);
+				break;
+			case '?' :
+				std::cout << "Call ./RISCV_TLM -D <debuglevel> (0..4) filename.hex" << std::endl;
+				break;
+		}
+	}
+	if (filename.empty()) {
+		filename = std::string(argv[optind]);
+	}
+
+}
+
 int sc_main(int argc, char* argv[])
 {
+
 
   /* Capture Ctrl+C and finish the simulation */
   signal(SIGINT, intHandler);
@@ -97,11 +143,8 @@ int sc_main(int argc, char* argv[])
   /* SystemC time resolution set to 1 ns*/
   sc_set_time_resolution(1, SC_NS);
 
-  if (argv[1] == nullptr) {
-    cerr << "Filename needed for hex memory" << endl;
-    return -1;
-  }
-  filename = argv[1];
+  /* Parse and process program arguments. -f is mandatory */
+  process_arguments(argc, argv);
 
   top = new Simulator("top");
   sc_start();
