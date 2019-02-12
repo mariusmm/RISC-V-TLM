@@ -4,7 +4,7 @@
 
 
 This is another RISC-V ISA simulator, this is coded in SystemC + TLM-2.
-It supports RV32IMCA Instruction set by now.
+It supports RV32IMAC Instruction set by now.
 
 [![travis](https://travis-ci.org/mariusmm/RISC-V-TLM.svg?branch=master)](https://travis-ci.org/mariusmm/RISC-V-TLM)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0f7ccc8435f14ce2b241b3bfead772a2)](https://www.codacy.com/app/mariusmm/RISC-V-TLM?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mariusmm/RISC-V-TLM&amp;utm_campaign=Badge_Grade)
