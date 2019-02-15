@@ -9,8 +9,8 @@ It supports RV32IMAC Instruction set by now.
 [![travis](https://travis-ci.org/mariusmm/RISC-V-TLM.svg?branch=master)](https://travis-ci.org/mariusmm/RISC-V-TLM)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0f7ccc8435f14ce2b241b3bfead772a2)](https://www.codacy.com/app/mariusmm/RISC-V-TLM?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mariusmm/RISC-V-TLM&amp;utm_campaign=Badge_Grade)
 [![license](https://img.shields.io/badge/license-GNU--3.0-green.svg)](https://github.com/mariusmm/RISC-V-TLM/blob/master/LICENSE)
+[![Docker](https://img.shields.io/docker/automated/mariusmm/riscv-tlm.svg?style=flat)](https://hub.docker.com/r/mariusmm/riscv-tlm)
 [![Twitter URL](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/mariusmonton)
-
 ---
 Table of Contents
 =================
@@ -71,7 +71,7 @@ This is a preliminar and incomplete version.
 
 Task to do:
 - [x] Implement all missing instructions (Execute)
-- [x] Implement CSRs (where/how?)
+- [x] Implement CSRs ~~(where/how?)~~
 - [ ] Add full support to read file with memory contents (to memory.h)
    - [ ] .elf files
    - [x] .hex files (only partial .hex support)
@@ -107,6 +107,9 @@ And then you can execute the simulator:
 $ ./RISCV_TLM asm/BasicLoop.hex
 ```
 
+### Arguments
+-D loglevel: 3 for detailed (INFO) log, 0 to ERROR log level
+-f filename .hex filename to use
 
 ## Docker container
 
@@ -136,6 +139,14 @@ $ docker run -v /tmp:/tmp -it mariusmm/riscv-tlm /bin/bash
 # cd /usr/src/riscv64/RISC-V-TLM/ 
 # ./RISCV-TLM /tmp/file.hex
 ...
+```
+
+or 
+
+```
+...
+console 2:
+$  docker run -v /tmp/tmp -it  mariusmm/riscv-tlm /usr/src/riscv64/RISC-V-TLM/RISCV_TLM /tmp/file.hex
 ```
 
 Performance is not affected by running the simulator inside the container
@@ -178,6 +189,7 @@ There are several ways to contribute to this project:
 * Test
 * Pull request are welcome (see TODO list)
 * Good documentation
+* RTL-Level simulation
 
 ##  License
 
