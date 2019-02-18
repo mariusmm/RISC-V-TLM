@@ -912,9 +912,10 @@ bool Execute::CSRRW(Instruction &inst) {
   aux = regs->getValue(rs1);
   regs->setCSR(csr, aux);
 
-  log->SC_log(Log::INFO) << "CSRRW: CSR #"
-          << csr << " -> x" << rd
-          << ". x" << rs1 << "-> CSR #" << csr << endl;
+  log->SC_log(Log::INFO) << hex << "CSRRW: CSR #"
+          << csr << " -> x" << dec << rd
+          << ". x" << rs1 << "-> CSR #" << hex << csr << " (0x"
+		  << aux << ")" << endl;
 
   return true;
 }
