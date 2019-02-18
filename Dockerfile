@@ -11,7 +11,8 @@ RUN apt-get update -q && apt-get install -qy --no-install-recommends \
       openssh-client \
       wget \
       g++-8 \
-      && apt-get clean 
+      && apt-get clean \
+      && rm -rf /var/lib/apt/lists/*
  
 RUN mkdir -p /usr/src/systemc \ 
  && wget --no-check-certificate https://accellera.org/images/downloads/standards/systemc/systemc-$SYSTEMC_VERSION.tar.gz \
