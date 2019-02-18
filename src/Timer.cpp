@@ -13,15 +13,15 @@ void Timer::run() {
 
   tlm::tlm_generic_payload* irq_trans = new tlm::tlm_generic_payload;
   sc_time delay = SC_ZERO_TIME;
-
+  uint32_t cause = 1 << 31 | 0x07;	 // Machine timer interrupt
   irq_trans->set_command(tlm::TLM_WRITE_COMMAND);
-  irq_trans->set_data_ptr(NULL);
-  irq_trans->set_data_length(0);
-  irq_trans->set_streaming_width(0);
-  irq_trans->set_byte_enable_ptr(0);
+  irq_trans->set_data_ptr( reinterpret_cast<unsigned char*>(&cause) );
+  irq_trans->set_data_length( 4 );
+  irq_trans->set_streaming_width( 4 );
+  irq_trans->set_byte_enable_ptr( 0 );
   irq_trans->set_dmi_allowed(false);
   irq_trans->set_response_status(tlm::TLM_INCOMPLETE_RESPONSE);
-  irq_trans->set_address( 0x01);
+  irq_trans->set_address( 0 );
 
   while(true) {
     wait(timer_event);
@@ -40,7 +40,6 @@ void Timer::b_transport( tlm::tlm_generic_payload& trans, sc_time& delay ) {
     uint32_t aux_value = 0;
     uint64_t notify_time = 0;
 
-    // cout << "accessing TIMER 0x" << hex << addr << endl;
     if (cmd == tlm::TLM_WRITE_COMMAND) {
       memcpy(&aux_value, ptr, len);
       switch (addr) {
@@ -58,8 +57,7 @@ void Timer::b_transport( tlm::tlm_generic_payload& trans, sc_time& delay ) {
 
             // notify needs relative time, mtimecmp works in absolute time
             notify_time = m_mtimecmp  - m_mtime;
-            // cout << "time: " << sc_time_stamp() << ". Timer: IRQ will be at "
-            //   << dec << notify_time + m_mtime << " ns." << endl;
+
             timer_event.notify( sc_time(notify_time, SC_NS) );
             break;
       }

@@ -17,6 +17,9 @@ CPU::CPU(sc_module_name name, uint32_t PC): sc_module(name)
    irq_line_socket.register_b_transport(this, &CPU::call_interrupt);
    interrupt = false;
 
+   int_cause = 0;
+   irq_already_down = false;
+
    SC_THREAD(CPU_thread);
 }
 
@@ -43,10 +46,9 @@ bool CPU::cpu_process_IRQ() {
 
     csr_temp = register_bank->getCSR(CSR_MIP);
 
-    if ( (csr_temp & MIP_MEIP ) == 0 )  {
+    if ( (csr_temp & MIP_MEIP ) == 0 ) {
       csr_temp |= MIP_MEIP;  // MEIP bit in MIP register (11th bit)
       register_bank->setCSR(CSR_MIP, csr_temp);
-      // cout << "time: " << sc_time_stamp() << ". CPU: interrupt" << endl;
       log->SC_log(Log::DEBUG) << "Interrupt!" << endl;
 
       /* updated MEPC register */
@@ -59,17 +61,21 @@ bool CPU::cpu_process_IRQ() {
 
       /* set new PC address */
       new_pc = register_bank->getCSR(CSR_MTVEC);
-      new_pc = new_pc & 0xFFFFFFFC; // last two bits always to 0
+      //new_pc = new_pc & 0xFFFFFFFC; // last two bits always to 0
       log->SC_log(Log::DEBUG) << "NEW PC Value 0x" << hex << new_pc << endl;
       register_bank->setPC(new_pc);
 
       ret_value = true;
       interrupt = false;
+      irq_already_down = false;
     }
-  } else  {
-    csr_temp = register_bank->getCSR(CSR_MIP);
-    csr_temp &= ~MIP_MEIP;
-    register_bank->setCSR(CSR_MIP, csr_temp);
+  } else {
+	  if (irq_already_down == false) {
+		csr_temp = register_bank->getCSR(CSR_MIP);
+		csr_temp &= ~MIP_MEIP;
+		register_bank->setCSR(CSR_MIP, csr_temp);
+		irq_already_down = true;
+	  }
   }
 
   return ret_value;
@@ -511,12 +517,12 @@ void CPU::CPU_thread(void) {
 
         /* Fixed instruction time to 10 ns (i.e. 100 MHz)*/
         sc_core::wait(10, SC_NS);
-
-
   } // while(1)
 } // CPU_thread
 
 
 void CPU::call_interrupt(tlm::tlm_generic_payload &trans, sc_time &delay) {
   interrupt = true;
+  /* Socket caller send a cause (its id) */
+  memcpy(&int_cause, trans.get_data_ptr(), sizeof(int));
 }

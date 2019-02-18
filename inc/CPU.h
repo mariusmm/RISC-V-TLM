@@ -68,7 +68,8 @@ private:
   Log *log;
 
   bool interrupt;
-
+  uint32_t int_cause;
+  bool irq_already_down;
   /**
    *
    * @brief Process and triggers IRQ if all conditions met
