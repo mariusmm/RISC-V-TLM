@@ -10,6 +10,8 @@ BusCtrl::BusCtrl(sc_module_name name): sc_module(name)
     cpu_instr_socket.register_b_transport(this, &BusCtrl::b_transport);
     cpu_data_socket.register_b_transport(this, &BusCtrl::b_transport);
     log = Log::getInstance();
+    cpu_instr_socket.register_get_direct_mem_ptr(this, &BusCtrl::instr_direct_mem_ptr);
+    memory_socket.register_invalidate_direct_mem_ptr( this, &BusCtrl::invalidate_direct_mem_ptr);
   }
 
 
@@ -42,3 +44,12 @@ void BusCtrl::b_transport( tlm::tlm_generic_payload& trans, sc_time& delay ) {
 
     trans.set_response_status( tlm::TLM_OK_RESPONSE );
 }
+
+bool BusCtrl::instr_direct_mem_ptr(tlm::tlm_generic_payload& gp, tlm::tlm_dmi& dmi_data) {
+	return memory_socket->get_direct_mem_ptr(gp, dmi_data);
+}
+
+void BusCtrl::invalidate_direct_mem_ptr(sc_dt::uint64 start, sc_dt::uint64 end) {
+	cpu_instr_socket->invalidate_direct_mem_ptr(start, end);
+}
+

@@ -41,14 +41,11 @@ SC_MODULE(Simulator)
   BusCtrl* Bus;
   Trace *trace;
   Timer *timer;
-//  Log *log;
 
   uint32_t start_PC;
 
   SC_CTOR(Simulator)
   {
-//    log = Log::getInstance();
-
     MainMemory = new Memory("Main_Memory", filename);
     start_PC = MainMemory->getPCfromHEX();
 
@@ -127,15 +124,14 @@ void process_arguments(int argc, char* argv[]) {
 				break;
 		}
 	}
+
 	if (filename.empty()) {
 		filename = std::string(argv[optind]);
 	}
-
 }
 
 int sc_main(int argc, char* argv[])
 {
-
 
   /* Capture Ctrl+C and finish the simulation */
   signal(SIGINT, intHandler);

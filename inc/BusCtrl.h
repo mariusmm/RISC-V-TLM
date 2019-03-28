@@ -86,6 +86,9 @@ public:
 
 private:
       Log *log;
+
+      bool instr_direct_mem_ptr(tlm::tlm_generic_payload&, tlm::tlm_dmi& dmi_data);
+      void invalidate_direct_mem_ptr(sc_dt::uint64 start, sc_dt::uint64 end);
 };
 
 #endif

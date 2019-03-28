@@ -70,6 +70,9 @@ private:
   bool interrupt;
   uint32_t int_cause;
   bool irq_already_down;
+
+  bool dmi_ptr_valid;
+
   /**
    *
    * @brief Process and triggers IRQ if all conditions met
@@ -100,6 +103,8 @@ private:
    * When called it triggers an IRQ
    */
   void call_interrupt(tlm::tlm_generic_payload &trans, sc_time &delay);
+
+  void invalidate_direct_mem_ptr(sc_dt::uint64 start, sc_dt::uint64 end);
 };
 
 #endif
