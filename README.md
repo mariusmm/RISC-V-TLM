@@ -19,6 +19,7 @@ Table of Contents
    * [Table of Contents](./README.md#table-of-contents)
       * [Description](./README.md#description)
          * [Structure](./README.md#structure)
+         * [Memory Map](./README.md#memory-map)
       * [TODO](./README.md#todo)
       * [Compile](./README.md#compile)
       * [Docker container](./README.md#docker-container)
@@ -64,6 +65,16 @@ i5-5200<span>@</span>2.2Ghz
 ### Structure
 ![Modules' hierarchy](https://github.com/mariusmm/RISC-V-TLM/blob/master/doc/Hierarchy.png)
 
+
+### Memory map
+
+| Base | Module | Description | 
+| ---- | :----: | ---- |
+| 0x40000000 | Trace | Output data directly to stdout | 
+| 0x40004000 | Timer | LSB Timer |
+| 0x40004004 | Timer | MSB Timer |
+| 0x40004008 | Timer | MSB Timer Comparator |
+| 0x4000400C | Timer | LSB Timer Comparator |
 
 
 ## TODO
