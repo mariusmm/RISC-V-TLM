@@ -171,7 +171,7 @@ I "compile" one file with the follwing command:
 ```
 $ cd asm
 $ riscv32-unknown-elf-as  EternalLoop.asm -o EternalLoop.o
-$ riscv32-unknown-elf-ld -T ../my_linker_script.ld EternalLoop.o -o EternalLoop.elf
+$ riscv32-unknown-elf-ld EternalLoop.o -o EternalLoop.elf
 $ riscv32-unknown-elf-objcopy -O ihex EternalLoop.elf EternalLoop.hex
 $ cd ..
 $ ./RISCV_SCTLM asm/EternalLoop.hex
@@ -204,7 +204,7 @@ There are several ways to contribute to this project:
 
 ##  License
 
-Copyright (C) 2018 Màrius Montón ([\@mariusmonton](https://twitter.com/mariusmonton/))
+Copyright (C) 2018, 2019 Màrius Montón ([\@mariusmonton](https://twitter.com/mariusmonton/))
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
