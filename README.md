@@ -22,6 +22,7 @@ Table of Contents
          * [Memory Map](./README.md#memory-map)
       * [TODO](./README.md#todo)
       * [Compile](./README.md#compile)
+      * [Cross-compiler](./README.md#cross)
       * [Docker container](./README.md#docker-container)
          * [How to use Docker](./README.md#how-to-use-docker)
       * [Test](./README.md#test)
@@ -121,6 +122,19 @@ $ ./RISCV_TLM asm/BasicLoop.hex
 ### Arguments
 -D loglevel: 3 for detailed (INFO) log, 0 to ERROR log level
 -f filename .hex filename to use
+
+## Cross-compiler
+It is possible to use gcc for risc-v compiler. Follow the instructions (from https://github.com/riscv/riscv-gnu-toolchain):
+~~~
+$ git clone --recursive https://github.com/riscv/riscv-gnu-toolchain
+$ cd riscv-gnu-toolchain
+$ ./configure --prefix=/opt/riscv --with-arch=rv32gc --with-abi=ilp32d
+$ make
+...
+wait for long time ...
+...
+$ export PATH=$PATH:/opt/riscv/bin
+~~~
 
 ## Docker container
 
