@@ -22,7 +22,7 @@ Table of Contents
          * [Memory Map](./README.md#memory-map)
       * [TODO](./README.md#todo)
       * [Compile](./README.md#compile)
-      * [Cross-compiler](./README.md#cross)
+      * [Cross-compiler](./README.md#cross-compiler)
       * [Docker container](./README.md#docker-container)
          * [How to use Docker](./README.md#how-to-use-docker)
       * [Test](./README.md#test)
@@ -128,7 +128,7 @@ It is possible to use gcc for risc-v compiler. Follow the instructions (from htt
 ~~~
 $ git clone --recursive https://github.com/riscv/riscv-gnu-toolchain
 $ cd riscv-gnu-toolchain
-$ ./configure --prefix=/opt/riscv --with-arch=rv32gc --with-abi=ilp32d
+$ ./configure --prefix=/opt/riscv --with-arch=rv32gc --with-abi=ilp32
 $ make
 ...
 wait for long time ...
