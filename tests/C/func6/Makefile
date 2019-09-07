@@ -8,7 +8,7 @@ CC       = riscv32-unknown-elf-gcc
 CFLAGS = -Wall -I. -O0 -static -march=rv32imac -mabi=ilp32 --specs=nosys.specs
 
 
-LINKER   = riscv32-unknown-linux-gnu-gcc
+LINKER   = riscv32-unknown-elf-gcc
 # linking flags here
 LDFLAGS   = -I. --entry main -L/opt/riscv/riscv32-unknown-elf/lib/ -T ld_script.ld
 LIBS   = $(EXTRA_LIBS)
@@ -30,7 +30,7 @@ rm       = rm -f
 
 $(BINDIR)/$(TARGET): $(OBJECTS)
 #	$(LINKER) $(OBJECTS) $(LDFLAGS) $(LIBS) $(LIBDIR) -o $@
-	riscv32-unknown-linux-gnu-objdump -d $< > dump
+	riscv32-unknown-elf-objdump -d $< > dump
 	objcopy -Oihex $< $(TARGET).hex
 #	@echo "Linking complete!"
 

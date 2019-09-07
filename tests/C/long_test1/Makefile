@@ -32,7 +32,7 @@ rm       = rm -f
 $(BINDIR)/$(TARGET): $(OBJECTS)
 #	$(LINKER) $(OBJECTS) $(LDFLAGS) $(LIBS) $(LIBDIR) -o $@
 	riscv32-unknown-linux-gnu-objdump -d $< > dump
-	objcopy -Oihex $< $(TARGET).hex
+	riscv32-unknown-elf-objcopy -Oihex $< $(TARGET).hex
 #	@echo "Linking complete!"
 
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
