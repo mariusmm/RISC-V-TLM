@@ -29,14 +29,35 @@ using namespace std;
  */
 class Trace: sc_module {
 public:
-    // TLM-2 socket, defaults to 32-bits wide, base protocol
+
+    /**
+     * @brief Bus socket
+     */
     tlm_utils::simple_target_socket<Trace> socket;
 
-    // Constructor
+    /**
+     * @brief Constructor
+     * @param name Module name
+     */
     Trace(sc_module_name name);
-
+    
+    /**
+     * @brief Destructor
+     */
+    ~Trace();
+    
+private:
+    
     // TLM-2 blocking transport method
     virtual void b_transport( tlm::tlm_generic_payload& trans, sc_time& delay );
+    
+    void xtermLaunch(char *slaveName);
+    void xtermKill( const char *mess );
+    void xtermSetup(void);
+    
+    int ptSlave;
+    int ptMaster;
+    int xtermPid;
 };
 
 #endif
