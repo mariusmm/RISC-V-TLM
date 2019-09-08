@@ -876,8 +876,8 @@ bool Execute::ECALL(Instruction &inst) {
   cout << "Simulation time " << sc_time_stamp() << endl;
   perf->dump();
 
-  SC_REPORT_ERROR("Execute", "ECALL");
-
+  //SC_REPORT_ERROR("Execute", "ECALL");
+  sc_stop();
   return true;
 }
 

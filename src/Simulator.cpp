@@ -68,7 +68,6 @@ SC_MODULE(Simulator)
   }
 
   ~Simulator() {
-    cout << "Simulator destructor" << endl;
     delete cpu;
     delete MainMemory;
     delete Bus;
@@ -120,7 +119,7 @@ void process_arguments(int argc, char* argv[]) {
 				filename = std::string(optarg);
 				break;
 			case '?' :
-				std::cout << "Call ./RISCV_TLM -D <debuglevel> (0..4) filename.hex" << std::endl;
+				std::cout << "Call ./RISCV_TLM -D <debuglevel> (0..3) filename.hex" << std::endl;
 				break;
 		}
 	}
@@ -144,5 +143,12 @@ int sc_main(int argc, char* argv[])
 
   top = new Simulator("top");
   sc_start();
+  
+  cout << "Press Enter to finish" << endl;
+  cin.ignore();
+  
+  // call all destructors, clean exit.
+  delete top;
+  
   return 0;
 }
