@@ -11,6 +11,7 @@ RUN apt-get update -q && apt-get install -qy --no-install-recommends \
       openssh-client \
       wget \
       g++-8 \
+      xterm \
       && apt-get clean \
       && rm -rf /var/lib/apt/lists/*
  
