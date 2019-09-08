@@ -39,6 +39,8 @@ public:
   Memory(sc_module_name name, string filename);
   Memory(sc_module_name name, bool use_file);
 
+  ~Memory(void);
+  
   /**
    * @brief Returns Program Counter read from hexfile
    * @return Initial PC

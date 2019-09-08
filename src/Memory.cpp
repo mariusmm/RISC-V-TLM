@@ -31,6 +31,11 @@ Memory::Memory(sc_module_name name, bool use_file): sc_module(name)
     //memset(mem, 0, SIZE*sizeof(uint8_t));
   }
 
+  
+Memory::~Memory() {
+    delete mem;
+}
+
 uint32_t Memory::getPCfromHEX() {
   return program_counter;
 
