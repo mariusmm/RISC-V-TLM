@@ -160,7 +160,7 @@ $ docker run -v /tmp:/PRJ -it zmors/riscv_gcc:1  bash
 # make
 
 console2:
-$ docker run -v /tmp:/tmp -it mariusmm/riscv-tlm /bin/bash
+$ docker run -v /tmp:/tmp -u $UID -e DISPLAY=$DISPLAY --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" -it mariusmm/riscv-tlm /bin/bash
 
 # cd /usr/src/riscv64/RISC-V-TLM/ 
 # ./RISCV-TLM /tmp/file.hex
