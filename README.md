@@ -145,7 +145,7 @@ This container has RISCV-TLM already build at /usr/src/riscv64/RISCV-TLM directo
 ### How to use Docker
 ```
 $ docker pull mariusmm/riscv-tlm
-$ docker run -v <localfiles>:/tmp -it mariusmm/riscv-tlm /bin/bash
+$ docker run -v <path_to_RISCV-V-TLM>/:/tmp -u $UID -e DISPLAY=$DISPLAY --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"  -it mariusmm/riscv-tlm /bin/bash
 
 # cd /usr/src/riscv64/RISCV_TLM/
 # ./RISCV_TLM /tmp/<your_hex_file>
