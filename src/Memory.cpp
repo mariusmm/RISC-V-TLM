@@ -49,7 +49,6 @@ void Memory::b_transport( tlm::tlm_generic_payload& trans, sc_time& delay )
   unsigned char*   byt = trans.get_byte_enable_ptr();
   unsigned int     wid = trans.get_streaming_width();
 
-
   adr = adr - memory_offset;
   // Obliged to check address range and check for unsupported features,
   //   i.e. byte enables, streaming, and bursts
@@ -101,6 +100,10 @@ void Memory::b_transport( tlm::tlm_generic_payload& trans, sc_time& delay )
 bool Memory::get_direct_mem_ptr(tlm::tlm_generic_payload& trans,
                                 tlm::tlm_dmi& dmi_data)
 {
+  if (memory_offset != 0) {
+    return false;
+  }
+    
   // Permit read and write access
   dmi_data.allow_read_write();
 

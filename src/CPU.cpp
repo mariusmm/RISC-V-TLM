@@ -442,7 +442,7 @@ bool CPU::process_base_instruction(Instruction &inst) {
 		//sc_stop();
 		break;
 	}
-
+     
 	return PC_not_affected;
 }
 
@@ -483,7 +483,6 @@ void CPU::CPU_thread(void) {
 			/* if memory_offset at Memory module is set, this won't work */
 			memcpy(&INSTR, dmi_ptr + register_bank->getPC(), 4);
 		} else {
-			cout << "No DMI access" << endl;
 			trans->set_address(register_bank->getPC());
 			instr_bus->b_transport(*trans, delay);
 
@@ -491,10 +490,13 @@ void CPU::CPU_thread(void) {
 				SC_REPORT_ERROR("CPU base", "Read memory");
 			}
 
-			dmi_ptr_valid = instr_bus->get_direct_mem_ptr(*trans, dmi_data);
-			if (dmi_ptr_valid) {
-				dmi_ptr = dmi_data.get_dmi_ptr();
-			}
+			if (trans->is_dmi_allowed()) {
+                dmi_ptr_valid = instr_bus->get_direct_mem_ptr(*trans, dmi_data);
+                if (dmi_ptr_valid) {
+                    std::cout << "Get DMI_PTR " << std::endl;
+                    dmi_ptr = dmi_data.get_dmi_ptr();
+                }
+            }
 		}
 
 		perf->codeMemoryRead();
