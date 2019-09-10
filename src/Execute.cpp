@@ -876,6 +876,12 @@ bool Execute::ECALL(Instruction &inst) {
   cout << "Simulation time " << sc_time_stamp() << endl;
   perf->dump();
 
+  uint32_t gp_value = regs->getValue(Registers::gp);
+  if ( gp_value == 1) {
+      cout << "GP value is 1, test result is OK" << endl;
+  } else {
+      cout << "GP value is " << gp_value << endl;
+  }
   //SC_REPORT_ERROR("Execute", "ECALL");
   sc_stop();
   return true;
