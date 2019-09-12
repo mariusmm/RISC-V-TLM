@@ -92,10 +92,12 @@ uint32_t Registers::getCSR(int csr) {
 
   switch (csr) {
     case CSR_CYCLE:
+    case CSR_MCYCLE:
       ret_value = (uint64_t)(sc_time(sc_time_stamp()
             - sc_time(SC_ZERO_TIME)).to_double()) & 0x00000000FFFFFFFF;
       break;
     case CSR_CYCLEH:
+    case CSR_MCYCLEH:
       ret_value = (uint32_t)((uint64_t)(sc_time(sc_time_stamp()
           - sc_time(SC_ZERO_TIME)).to_double()) >> 32 & 0x00000000FFFFFFFF);
       break;

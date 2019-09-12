@@ -49,6 +49,11 @@
 #define CSR_STVAL (0x143)
 #define CSR_SIP (0x144)
 
+#define CSR_MCYCLE (0xB00)
+#define CSR_MINSTRET (0xB02)
+#define CSR_MCYCLEH (0xB80)
+#define CSR_MINSTRETH (0xB82)
+
 #define CSR_CYCLE (0xC00)
 #define CSR_TIME (0xC01)
 #define CSR_INSTRET (0xC02)
