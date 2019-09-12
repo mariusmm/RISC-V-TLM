@@ -61,7 +61,7 @@ Helper classes:
 * Log: Log class to log them all (singleton class)
 
 Current performance is about 1.500.000 instructions / sec in a Intel Core
-i5-5200<span>@</span>2.2Ghz
+i5-5200<span>@</span>2.2Ghz and about 3.000.000 instructions / sec in a Intel Core i7-8550U<span>@</span>1.8Ghz.
 
 
 ### Structure
