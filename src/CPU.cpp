@@ -40,8 +40,7 @@ bool CPU::cpu_process_IRQ() {
 
 	if (interrupt == true) {
 		csr_temp = register_bank->getCSR(CSR_MSTATUS);
-		if (csr_temp & MSTATUS_MIE) {
-		} else {
+		if ( (csr_temp & MSTATUS_MIE) == 0) {
 			log->SC_log(Log::DEBUG) << "interrupt delayed" << endl;
 			return ret_value;
 		}
