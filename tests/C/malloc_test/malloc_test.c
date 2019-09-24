@@ -2,45 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <errno.h>
-#include <sys/stat.h>
 
 #define BUFFER_SIZE (512)
-#define TRACE (*(unsigned char *)0x40000000)
 
-extern int  errno;
-
-int _write(int file, const char *ptr, int len) {
-  int x;
-
-  for (x = 0; x < len; x++) {
-    TRACE =  *ptr++;
-  }
-
-  return (len);
-}
-
-int _read (int   file, char *ptr, int   len) {
-  return  0;
-}  
-
-int _close (int   file) {
-  errno = EBADF;
-  return -1;
-} 
-
-int _fstat (int file, struct stat *st) {
-  st->st_mode = S_IFCHR;
-  return  0;
-}   
-
-int _isatty (int   file) {
-  return  1;
-} 
-
-int _lseek (int file, int offset, int whence) {
-  return  0;
-} 
 
 int main(void) {
   uint16_t *buffA, *buffB;  
