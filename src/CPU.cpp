@@ -547,7 +547,7 @@ void CPU::CPU_thread(void) {
 void CPU::call_interrupt(tlm::tlm_generic_payload &trans, sc_time &delay) {
 	interrupt = true;
 	/* Socket caller send a cause (its id) */
-	memcpy(&int_cause, trans.get_data_ptr(), sizeof(int));
+	memcpy(&int_cause, trans.get_data_ptr(), sizeof(uint32_t));
 }
 
 void CPU::invalidate_direct_mem_ptr(sc_dt::uint64 start, sc_dt::uint64 end)
