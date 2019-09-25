@@ -63,6 +63,7 @@ Helper classes:
 Current performance is about 1.500.000 instructions / sec in a Intel Core
 i5-5200<span>@</span>2.2Ghz and about 3.000.000 instructions / sec in a Intel Core i7-8550U<span>@</span>1.8Ghz.
 
+Trace perihperal creates a xterm window where it prints out all received data. 
 
 ### Structure
 ![Modules' hierarchy](https://github.com/mariusmm/RISC-V-TLM/blob/master/doc/Hierarchy.png)
@@ -72,7 +73,7 @@ i5-5200<span>@</span>2.2Ghz and about 3.000.000 instructions / sec in a Intel Co
 
 | Base | Module | Description | 
 | ---- | :----: | ---- |
-| 0x40000000 | Trace | Output data directly to stdout | 
+| 0x40000000 | Trace | Output data to xterm | 
 | 0x40004000 | Timer | LSB Timer |
 | 0x40004004 | Timer | MSB Timer |
 | 0x40004008 | Timer | MSB Timer Comparator |
@@ -137,6 +138,11 @@ wait for long time ...
 ...
 $ export PATH=$PATH:/opt/riscv/bin
 ~~~
+
+In test/C/long_test/ example there is a Makefile that compiles a project with any .c files and links them against new-lib nano. 
+There is a Helper_functions.c file with defiitions of all missing functions needed by the library (**_read()**, **_close()**, **_fstat_r()**, 
+**_lseek_r()**, **_isatty_r()**, **_write()**). All of them are defined empty except **_write()** that is written to use the Trace perihperal. 
+The definition of the function **_write()** allows developer to use printf() as usual and the stdout will be redirected to the Trace perihperal.
 
 ## Docker container
 
