@@ -122,6 +122,7 @@ $ ./RISCV_TLM asm/BasicLoop.hex
 
 ### Arguments
 -D loglevel: 3 for detailed (INFO) log, 0 to ERROR log level
+
 -f filename .hex filename to use
 
 ## Cross-compiler
@@ -147,8 +148,14 @@ This container has RISCV-TLM already build at /usr/src/riscv64/RISCV-TLM directo
 $ docker pull mariusmm/riscv-tlm
 $ docker run -v <path_to_RISCV-V-TLM>/:/tmp -u $UID -e DISPLAY=$DISPLAY --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"  -it mariusmm/riscv-tlm /bin/bash
 
-# cd /usr/src/riscv64/RISCV_TLM/
+# cd /usr/src/riscv64/RISC-V-TLM/
 # ./RISCV_TLM /tmp/<your_hex_file>
+```
+
+or you can call binary inside docker image directly:
+
+```
+$ docker run -v <path_to_RISCV-V-TLM>/:/tmp -u $UID -e DISPLAY=$DISPLAY --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"  -it mariusmm/riscv-tlm /usr/src/riscv64/RISC-V-TLM/RISCV_TLM /tmp/<your_hex_file>
 ```
 
 I'm using docker image [zmors/riscv_gcc](https://hub.docker.com/r/zmors/riscv_gcc) to have a cross-compiler,  I'm using both docker images this way:
