@@ -1,3 +1,10 @@
+/*!
+   \file Registers.cpp
+   \brief Basic register file implementation
+   \author Màrius Montón
+   \date August 2018
+*/
+
 #include "Registers.h"
 
 Registers::Registers() {
@@ -58,7 +65,7 @@ void Registers::dump(void) {
   cout << " x30 (t5):   " << right << setw(11) << register_bank[30];
   cout << " x31 (t6):   " << right << setw(11) << register_bank[31] << endl;
 
-  cout << "PC: 0x" << hex << register_PC << endl;
+  cout << "PC: 0x" << hex << register_PC << dec << endl;
   cout << "************************************" << endl;
 }
 

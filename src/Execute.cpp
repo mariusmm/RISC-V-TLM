@@ -1558,7 +1558,7 @@ bool Execute::M_MUL(Instruction &inst) {
   multiplier = regs->getValue(rs1);
   multiplicand = regs->getValue(rs2);
 
-  result = multiplier * multiplicand;
+  result = (int64_t) multiplier * multiplicand;
   result = result & 0x00000000FFFFFFFF;
   regs->setValue(rd, result);
 

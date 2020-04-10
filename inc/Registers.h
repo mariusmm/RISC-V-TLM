@@ -1,6 +1,6 @@
 /*!
    \file Registers.h
-   \brief Basic register file implementation
+   \brief Basic register file 
    \author Màrius Montón
    \date August 2018
 */

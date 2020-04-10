@@ -38,3 +38,10 @@ helper.ods
 *.swp
 RISCV_TLM
 dump
+.project
+.cproject
+.settings
+doc/Drawings.odg
+doc/html
+env.sh
+gh-md-toc

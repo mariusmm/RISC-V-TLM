@@ -29,6 +29,10 @@ Memory::Memory(sc_module_name name, bool use_file): sc_module(name)
     memory_offset = 0;
     program_counter = 0;
     //memset(mem, 0, SIZE*sizeof(uint8_t));
+    //
+    mem = new uint8_t[SIZE];
+    log = Log::getInstance();
+    log->SC_log(Log::INFO) << "Memory instantiated wihtout file" << endl;
   }
 
   
@@ -160,23 +164,23 @@ void Memory::readHexFile(string filename) {
           } else if (line.substr(7,2) == "02") {
             /* Extended segment address */
             extended_address = stol(line.substr(9,4), nullptr, 16) * 16;
-            cout << "02 extended address 0x" << hex << extended_address << endl;
+            cout << "02 extended address 0x" << hex << extended_address << dec << endl;
           } else if (line.substr(7,2) == "03") {
             /* Start segment address */
             uint32_t code_segment;
             code_segment = stol(line.substr(9,4), nullptr, 16) * 16; /* ? */
             program_counter = stol(line.substr(13,4), nullptr, 16);
             program_counter = program_counter + code_segment;
-            cout << "03 PC set to 0x" << hex << program_counter << endl;
+            cout << "03 PC set to 0x" << hex << program_counter << dec << endl;
           } else if (line.substr(7,2) == "04") {
             /* Start segment address */
             memory_offset = stol(line.substr(9,4), nullptr, 16) << 16;
             extended_address = 0;
-            cout << "04 address set to 0x" << hex << extended_address << endl;
-            cout << "04 offset set to 0x" << hex << memory_offset << endl;
+            cout << "04 address set to 0x" << hex << extended_address << dec << endl;
+            cout << "04 offset set to 0x" << hex << memory_offset << dec << endl;
           } else if (line.substr(7,2) == "05") {
             program_counter = stol(line.substr(9,8), nullptr, 16);
-            cout << "05 PC set to 0x" << hex << program_counter << endl;
+            cout << "05 PC set to 0x" << hex << program_counter << dec << endl;
           }
         }
       }

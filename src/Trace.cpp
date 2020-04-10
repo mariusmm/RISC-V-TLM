@@ -64,24 +64,27 @@ void Trace::xtermKill( const char *mess ) {
 
 void Trace::xtermSetup(void) {
     ptMaster = open("/dev/ptmx", O_RDWR);
-    grantpt( ptMaster );
+
+    if (ptMaster != -1) {
+        grantpt( ptMaster );
     
-    unlockpt( ptMaster );
+        unlockpt( ptMaster );
     
-    char *ptSlaveName = ptsname( ptMaster );
-    ptSlave = open( ptSlaveName, O_RDWR );	// In and out are the same
+        char *ptSlaveName = ptsname( ptMaster );
+        ptSlave = open( ptSlaveName, O_RDWR );	// In and out are the same
     
-    struct termios  termInfo;
-    tcgetattr( ptSlave, &termInfo );
+        struct termios  termInfo;
+        tcgetattr( ptSlave, &termInfo );
     
-    termInfo.c_lflag &= ~ECHO;
-    termInfo.c_lflag &= ~ICANON;
-    tcsetattr( ptSlave, TCSADRAIN, &termInfo );
+        termInfo.c_lflag &= ~ECHO;
+        termInfo.c_lflag &= ~ICANON;
+        tcsetattr( ptSlave, TCSADRAIN, &termInfo );
     
-    xtermPid = fork();
+        xtermPid = fork();
     
-    if (xtermPid == 0) {
-        xtermLaunch( ptSlaveName );
+        if (xtermPid == 0) {
+            xtermLaunch( ptSlaveName );
+        }
     }
 }
 
