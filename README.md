@@ -63,6 +63,7 @@ Helper classes:
 Current performance is about 1.500.000 instructions / sec in a Intel Core
 i5-5200<span>@</span>2.2Ghz and about 3.000.000 instructions / sec in a Intel Core i7-8550U<span>@</span>1.8Ghz.
 
+Trace perihperal creates a xterm window where it prints out all received data. 
 
 ### Structure
 ![Modules' hierarchy](https://github.com/mariusmm/RISC-V-TLM/blob/master/doc/Hierarchy.png)
@@ -72,7 +73,7 @@ i5-5200<span>@</span>2.2Ghz and about 3.000.000 instructions / sec in a Intel Co
 
 | Base | Module | Description | 
 | ---- | :----: | ---- |
-| 0x40000000 | Trace | Output data directly to stdout | 
+| 0x40000000 | Trace | Output data to xterm | 
 | 0x40004000 | Timer | LSB Timer |
 | 0x40004004 | Timer | MSB Timer |
 | 0x40004008 | Timer | MSB Timer Comparator |
@@ -122,6 +123,7 @@ $ ./RISCV_TLM asm/BasicLoop.hex
 
 ### Arguments
 -D loglevel: 3 for detailed (INFO) log, 0 to ERROR log level
+
 -f filename .hex filename to use
 
 ## Cross-compiler
@@ -137,6 +139,11 @@ wait for long time ...
 $ export PATH=$PATH:/opt/riscv/bin
 ~~~
 
+In test/C/long_test/ example there is a Makefile that compiles a project with any .c files and links them against new-lib nano. 
+There is a Helper_functions.c file with defiitions of all missing functions needed by the library (**_read()**, **_close()**, **_fstat_r()**, 
+**_lseek_r()**, **_isatty_r()**, **_write()**). All of them are defined empty except **_write()** that is written to use the Trace perihperal. 
+The definition of the function **_write()** allows developer to use printf() as usual and the stdout will be redirected to the Trace perihperal.
+
 ## Docker container
 
 There is a Docker container available with the latest release at https://hub.docker.com/r/mariusmm/riscv-tlm. 
@@ -147,8 +154,14 @@ This container has RISCV-TLM already build at /usr/src/riscv64/RISCV-TLM directo
 $ docker pull mariusmm/riscv-tlm
 $ docker run -v <path_to_RISCV-V-TLM>/:/tmp -u $UID -e DISPLAY=$DISPLAY --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"  -it mariusmm/riscv-tlm /bin/bash
 
-# cd /usr/src/riscv64/RISCV_TLM/
+# cd /usr/src/riscv64/RISC-V-TLM/
 # ./RISCV_TLM /tmp/<your_hex_file>
+```
+
+or you can call binary inside docker image directly:
+
+```
+$ docker run -v <path_to_RISCV-V-TLM>/:/tmp -u $UID -e DISPLAY=$DISPLAY --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"  -it mariusmm/riscv-tlm /usr/src/riscv64/RISC-V-TLM/RISCV_TLM /tmp/<your_hex_file>
 ```
 
 I'm using docker image [zmors/riscv_gcc](https://hub.docker.com/r/zmors/riscv_gcc) to have a cross-compiler,  I'm using both docker images this way:
