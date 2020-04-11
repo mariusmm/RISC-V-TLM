@@ -1,0 +1,57 @@
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccr4h4a0.o: in function `.L8':
+queue.c:(.text+0x126): undefined reference to `pvPortMalloc'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccr4h4a0.o: in function `.L78':
+queue.c:(.text+0x66c): undefined reference to `vPortSetInterruptMask'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccr4h4a0.o: in function `.L91':
+queue.c:(.text+0x70e): undefined reference to `vPortClearInterruptMask'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccr4h4a0.o: in function `.L98':
+queue.c:(.text+0x77a): undefined reference to `vPortSetInterruptMask'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccr4h4a0.o: in function `.L108':
+queue.c:(.text+0x818): undefined reference to `vPortClearInterruptMask'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccr4h4a0.o: in function `.L178':
+queue.c:(.text+0xdb2): undefined reference to `vPortSetInterruptMask'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccr4h4a0.o: in function `.L184':
+queue.c:(.text+0xe50): undefined reference to `vPortClearInterruptMask'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccr4h4a0.o: in function `.L189':
+queue.c:(.text+0xeba): undefined reference to `vPortSetInterruptMask'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccr4h4a0.o: in function `.L190':
+queue.c:(.text+0xf00): undefined reference to `vPortClearInterruptMask'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccr4h4a0.o: in function `.L202':
+queue.c:(.text+0xffe): undefined reference to `vPortFree'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccsuZjhZ.o: in function `xTaskCreate':
+tasks.c:(.text+0x2a): undefined reference to `pvPortMalloc'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: tasks.c:(.text+0x40): undefined reference to `pvPortMalloc'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: tasks.c:(.text+0x62): undefined reference to `vPortFree'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccsuZjhZ.o: in function `.L18':
+tasks.c:(.text+0x220): undefined reference to `pxPortInitialiseStack'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccsuZjhZ.o: in function `.L60':
+tasks.c:(.text+0x634): undefined reference to `vPortSetInterruptMask'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: tasks.c:(.text+0x666): undefined reference to `vPortClearInterruptMask'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccsuZjhZ.o: in function `.L97':
+tasks.c:(.text+0x9d4): undefined reference to `vPortSetInterruptMask'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccsuZjhZ.o: in function `.L107':
+tasks.c:(.text+0xa66): undefined reference to `vPortClearInterruptMask'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccsuZjhZ.o: in function `vTaskResume':
+tasks.c:(.text+0xab2): undefined reference to `xTimerCreateTimerTask'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccsuZjhZ.o: in function `vTaskStartScheduler':
+tasks.c:(.text+0xc78): undefined reference to `vPortSetInterruptMask'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: tasks.c:(.text+0xc94): undefined reference to `vPortClearInterruptMask'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccsuZjhZ.o: in function `.L180':
+tasks.c:(.text+0x1102): undefined reference to `vApplicationTickHook'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: tasks.c:(.text+0x1118): undefined reference to `vApplicationTickHook'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccsuZjhZ.o: in function `.L232':
+tasks.c:(.text+0x1712): undefined reference to `vPortFree'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccsuZjhZ.o: in function `.L234':
+tasks.c:(.text+0x171e): undefined reference to `vPortFree'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccsuZjhZ.o: in function `.L300':
+tasks.c:(.text+0x1e22): undefined reference to `vPortSetInterruptMask'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccsuZjhZ.o: in function `.L310':
+tasks.c:(.text+0x1f82): undefined reference to `vPortClearInterruptMask'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccsuZjhZ.o: in function `.L312':
+tasks.c:(.text+0x1fbe): undefined reference to `vPortSetInterruptMask'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/ccsuZjhZ.o: in function `uxTaskResetEventItemValue':
+tasks.c:(.text+0x2094): undefined reference to `vPortClearInterruptMask'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: /tmp/cc60FMsY.o: in function `.L0 ':
+(.text+0x4e): undefined reference to `vPortSysTickHandler'
+/opt/riscv/lib/gcc/riscv32-unknown-elf/8.3.0/../../../../riscv32-unknown-elf/bin/ld: (.text+0xa6): undefined reference to `vPortSetupTimer'
+collect2: error: ld returned 1 exit status
