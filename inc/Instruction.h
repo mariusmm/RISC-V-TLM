@@ -450,7 +450,10 @@ public:
   uint32_t getInstr() {
     return m_instr;
   }
-
+  
+  void setInstr(uint32_t p_instr) {
+      m_instr = p_instr;
+  }
 
   inline void dump() {
     cout << hex << "0x" << m_instr << dec << endl;

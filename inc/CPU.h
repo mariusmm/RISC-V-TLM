@@ -66,6 +66,8 @@ private:
   Registers *register_bank;
   Performance *perf;
   Log *log;
+  C_Instruction *c_inst;
+  M_Instruction *m_inst;
 
   bool interrupt;
   uint32_t int_cause;

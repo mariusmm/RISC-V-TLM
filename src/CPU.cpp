@@ -22,6 +22,8 @@ CPU::CPU(sc_module_name name, uint32_t PC) :
 	dmi_ptr_valid = false;
 	instr_bus.register_invalidate_direct_mem_ptr( this, &CPU::invalidate_direct_mem_ptr);
 
+    c_inst = new C_Instruction(0);
+    m_inst = new M_Instruction(0);
 	SC_THREAD(CPU_thread);
 }
 
@@ -87,9 +89,9 @@ bool CPU::cpu_process_IRQ() {
 bool CPU::process_c_instruction(Instruction &inst) {
 	bool PC_not_affected = true;
 
-	C_Instruction c_inst(inst.getInstr());
+    c_inst->setInstr(inst.getInstr());
 
-	switch (c_inst.decode()) {
+	switch (c_inst->decode()) {
 	case OP_C_ADDI4SPN:
 		PC_not_affected = exec->C_ADDI4SPN(inst);
 		break;
@@ -183,9 +185,11 @@ bool CPU::process_c_instruction(Instruction &inst) {
 bool CPU::process_m_instruction(Instruction &inst) {
 	bool PC_not_affected = true;
 
-	M_Instruction m_inst(inst.getInstr());
+	
 
-	switch (m_inst.decode()) {
+    m_inst->setInstr(inst.getInstr());
+    
+	switch (m_inst->decode()) {
 	case OP_M_MUL:
 		exec->M_MUL(inst);
 		break;
@@ -474,6 +478,8 @@ void CPU::CPU_thread(void) {
 //	}
 	//register_bank->dump();
 
+    Instruction inst(0);
+    
 	while (1) {
 		/* Get new PC value */
 		//cout << "CPU: PC 0x" << hex << (uint32_t) register_bank->getPC() << endl;
@@ -500,10 +506,11 @@ void CPU::CPU_thread(void) {
 
 		perf->codeMemoryRead();
 
+        #ifdef DEBUG
 		log->SC_log(Log::INFO) << "PC: 0x" << hex << register_bank->getPC()
 				<< ". ";
-
-		Instruction inst(INSTR);
+#endif
+		inst.setInstr(INSTR);
 
 		/* check what type of instruction is and execute it */
 		switch (inst.check_extension()) {
@@ -535,11 +542,16 @@ void CPU::CPU_thread(void) {
 			register_bank->incPC(incPCby2);
 		}
 
+#define USE_IRQ
+#define USE_TIME
+#ifdef USE_IRQ
 		/* Process IRQ (if any) */
 		cpu_process_IRQ();
-
+#endif
 		/* Fixed instruction time to 10 ns (i.e. 100 MHz)*/
+#ifdef USE_TIME
 		sc_core::wait(10, SC_NS);
+#endif
 	} // while(1)
 } // CPU_thread
 

@@ -105,6 +105,11 @@ public:
    */
   C_Instruction(sc_uint<32> instr);
 
+    
+  void setInstr(uint32_t p_instr) {
+      m_instr = sc_uint<32> (p_instr);
+  }
+  
   /**
    * @brief Access to opcode field
    * @return return opcode field

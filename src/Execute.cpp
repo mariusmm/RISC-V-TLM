@@ -17,9 +17,10 @@ bool Execute::LUI(Instruction &inst) {
   rd = inst.get_rd();
   imm = inst.get_imm_U() << 12;
   regs->setValue(rd, imm);
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "LUI x" << dec
           << rd << " <- 0x" << hex << imm << endl;
-
+#endif
   return true;
 }
 
@@ -33,11 +34,11 @@ bool Execute::AUIPC(Instruction &inst) {
   new_pc = regs->getPC() + imm;
 
   regs->setValue(rd, new_pc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "AUIPC x" << dec
           << rd << " <- 0x" << hex << imm << " + PC (0x"
           << new_pc << ")" << endl;
-
+#endif
   return true;
 }
 
@@ -69,12 +70,12 @@ bool Execute::JAL(Instruction &inst, bool c_extension, int m_rd) {
     old_pc = old_pc + 2;
     regs->setValue(rd, old_pc);
   }
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "JAL: x" << dec
           << rd << " <- 0x" << hex << old_pc << dec
           << ". PC + 0x" << hex << mem_addr << " -> PC (0x"
           << new_pc << ")" << endl;
-
+#endif
   return true;
 }
 
@@ -93,11 +94,11 @@ bool Execute::JALR(Instruction &inst, bool c_extension) {
 
     new_pc = (regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE;
     regs->setPC(new_pc);
-
+#ifdef DEBUG
     log->SC_log(Log::INFO) << "JALR: x" << dec
             << rd << " <- 0x" << hex << old_pc + 4
             << " PC <- 0x" << new_pc << endl;
-
+#endif
   } else  {
     C_Instruction c_inst(inst.getInstr());
 
@@ -109,10 +110,11 @@ bool Execute::JALR(Instruction &inst, bool c_extension) {
 
     new_pc = (regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE;
     regs->setPC(new_pc);
-
+#ifdef DEBUG
     log->SC_log(Log::INFO) << "C.JALR: x" << dec
             << rd << " <- 0x" << hex << old_pc + 4
             << " PC <- 0x" << hex << new_pc << endl;
+#endif
   }
 
   return true;
@@ -132,12 +134,12 @@ bool Execute::BEQ(Instruction &inst) {
     regs->incPC();
     new_pc = regs->getPC();
   }
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "BEQ x" << dec
           << rs1 << "(0x" << hex << regs->getValue(rs1) << ") == x" << dec
           << rs2 << "(0x" << hex << regs->getValue(rs2) << ")? -> PC (0x"
           << hex << new_pc << ")" << dec << endl;
-
+#endif
   return true;
 }
 
@@ -159,12 +161,12 @@ bool Execute::BNE(Instruction &inst) {
     regs->incPC();
     new_pc = regs->getPC();
   }
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "BNE: x" << dec
           << rs1 << "(0x" << hex <<  val1 << ") == x" << dec
           << rs2 << "(0x" << hex << val2 << ")? -> PC (0x"
           << hex << new_pc << ")" << dec << endl;
-
+#endif
   return true;
 }
 
@@ -181,12 +183,12 @@ bool Execute::BLT(Instruction &inst) {
   } else {
     regs->incPC();
   }
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "BLT x" << dec
           << rs1 << "(0x" << hex << (int32_t)regs->getValue(rs1) << ") < x" << dec
           << rs2 << "(0x" << hex << (int32_t)regs->getValue(rs2) << ")? -> PC (0x"
           << hex << new_pc << ")" << dec << endl;
-
+#endif
   return true;
 }
 
@@ -203,12 +205,12 @@ bool Execute::BGE(Instruction &inst) {
   } else {
     regs->incPC();
   }
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "BGE x" << dec
           << rs1 << "(0x" << hex << (int32_t)regs->getValue(rs1) << ") > x" << dec
           << rs2 << "(0x" << hex << (int32_t)regs->getValue(rs2) << ")? -> PC (0x"
           << hex << new_pc << ")" << dec << endl;
-
+#endif
   return true;
 }
 
@@ -226,12 +228,12 @@ bool Execute::BLTU(Instruction &inst) {
     regs->incPC();
     new_pc = regs->getPC();
   }
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "BLTU x" << dec
           << rs1 << "(0x" << hex << regs->getValue(rs1) << ") < x" << dec
           << rs2 << "(0x" << hex << regs->getValue(rs2) << ")? -> PC (0x"
           << hex << new_pc << ")" << dec << endl;
-
+#endif
   return true;
 }
 
@@ -248,12 +250,12 @@ bool Execute::BGEU(Instruction &inst) {
   } else {
     regs->incPC();
   }
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "BGEU x" << dec
           << rs1 << "(0x" << hex << regs->getValue(rs1) << ") > x" << dec
           << rs2 << "(0x" << hex << regs->getValue(rs2) << ")? -> PC (0x"
           << hex << new_pc << ")" << dec << endl;
-
+#endif
   return true;
 }
 
@@ -270,11 +272,11 @@ bool Execute::LB(Instruction &inst) {
   mem_addr = imm + regs->getValue(rs1);
   data = readDataMem(mem_addr, 1);
   regs->setValue(rd, data);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "LB: x"
           << rs1 << " + " << imm << " (@0x"
           << hex << mem_addr << dec << ") -> x" << rd << endl;
-
+#endif
   return true;
 }
 
@@ -291,11 +293,11 @@ bool Execute::LH(Instruction &inst) {
   mem_addr = imm + regs->getValue(rs1);
   data = readDataMem(mem_addr, 2);
   regs->setValue(rd, data);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "LH: x"
           << rs1 << " + " << imm << " (@0x"
           << hex << mem_addr << dec << ") -> x" << rd << endl;
-
+#endif
   return true;
 }
 
@@ -320,12 +322,12 @@ bool Execute::LW(Instruction &inst, bool c_extension) {
   mem_addr = imm + regs->getValue(rs1);
   data = readDataMem(mem_addr, 4);
   regs->setValue(rd, data);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << dec << "C.LW: x"
           << rs1 << "(0x" << hex << regs->getValue(rs1) << ") + "
           << dec << imm << " (@0x" << hex << mem_addr << dec << ") -> x" << rd << hex
           << " (0x" << data << ")"<< endl;
-
+#endif
   return true;
 }
 
@@ -342,11 +344,11 @@ bool Execute::LBU(Instruction &inst) {
   mem_addr = imm + regs->getValue(rs1);
   data = readDataMem(mem_addr, 1);
   regs->setValue(rd, data);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "LBU: x"
           << rs1 << " + " << imm << " (@0x"
           << hex << mem_addr << dec << ") -> x" << rd << endl;
-
+#endif
   return true;
 }
 
@@ -363,12 +365,12 @@ bool Execute::LHU(Instruction &inst) {
   mem_addr = imm + regs->getValue(rs1);
   data = readDataMem(mem_addr, 2);
   regs->setValue(rd, data);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "LHU: x" << dec
           << rs1 << " + " << imm << " (@0x"
           << hex << mem_addr << dec << ") -> x"
           << rd << "(0x" << hex << data << ")"<< endl;
-
+#endif
   return true;
 }
 
@@ -386,11 +388,11 @@ bool Execute::SB(Instruction &inst) {
   data = regs->getValue(rs2);
 
   writeDataMem(mem_addr, data, 1);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "SB: x" << dec
           << rs2 << " -> x" << rs1 << " + 0x" << hex << imm
           << " (@0x" << hex << mem_addr << dec << ")" << endl;
-
+#endif
   return true;
 }
 
@@ -408,12 +410,12 @@ bool Execute::SH(Instruction &inst) {
   data = regs->getValue(rs2);
 
   writeDataMem(mem_addr, data, 2);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "SH: x" << dec
           << rs2 << " -> x"
           << rs1 << " + 0x" << hex << imm << " (@0x" << hex
           << mem_addr << dec << ")" << endl;
-
+#endif
   return true;
 }
 
@@ -438,12 +440,12 @@ bool Execute::SW(Instruction &inst, bool c_extension) {
   data = regs->getValue(rs2);
 
   writeDataMem(mem_addr, data, 4);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "SW: x" << dec
           << rs2 << "(0x" << hex << data << ") -> x" << dec
           << rs1 << " + 0x" << hex << imm << " (@0x" << hex
           << mem_addr << dec << ")" << endl;
-
+#endif
   return true;
 }
 
@@ -466,11 +468,11 @@ bool Execute::ADDI(Instruction &inst, bool c_extension) {
 
   calc = regs->getValue(rs1) + imm;
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "ADDI: x" << dec
           << rs1 << " + " << imm << " -> x" << dec
           << rd  << "(0x" << hex << calc << ")"<< endl;
-
+#endif
   return true;
 }
 
@@ -484,16 +486,20 @@ bool Execute::SLTI(Instruction &inst) {
 
   if (regs->getValue(rs1) < imm) {
     regs->setValue(rd, 1);
+    #ifdef DEBUG
     log->SC_log(Log::INFO) << "SLTI: x"
             << rs1 << " < "
             << imm << " => " << "1 -> x"
             << rd  << endl;
+    #endif
   } else {
     regs->setValue(rd, 0);
+    #ifdef DEBUG
     log->SC_log(Log::INFO) << "SLTI: x"
             << rs1 << " < "
             << imm << " => " << "0 -> x"
             << rd  << endl;
+    #endif
   }
 
   return true;
@@ -509,16 +515,20 @@ bool Execute::SLTIU(Instruction &inst) {
 
   if ((uint32_t) regs->getValue(rs1) < (uint32_t)imm) {
     regs->setValue(rd, 1);
+    #ifdef DEBUG
     log->SC_log(Log::INFO) << "SLTIU: x"
             << rs1 << " < "
             << imm << " => " << "1 -> x"
             << rd  << endl;
+    #endif
   } else {
     regs->setValue(rd, 0);
+    #ifdef DEBUG
     log->SC_log(Log::INFO) << "SLTIU: x"
             << rs1 << " < "
             << imm << " => " << "0 -> x"
             << rd  << endl;
+    #endif
   }
 
   return true;
@@ -535,12 +545,12 @@ bool Execute::XORI(Instruction &inst) {
 
   calc = regs->getValue(rs1) ^ imm;
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "XORI: x"
           << rs1 << " XOR "
           << imm << "-> x"
           << rd  << endl;
-
+#endif
   return true;
 }
 
@@ -555,12 +565,12 @@ bool Execute::ORI(Instruction &inst) {
 
   calc = regs->getValue(rs1) | imm;
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "ORI: x"
           << rs1 << " OR "
           << imm << "-> x"
           << rd  << endl;
-
+#endif
   return true;
 }
 
@@ -577,12 +587,12 @@ bool Execute::ANDI(Instruction &inst) {
   aux = regs->getValue(rs1);
   calc = aux & imm;
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "ANDI: x"
           << rs1 << "(0x" << hex << aux << ") AND 0x"
           << imm << " -> x"
           << dec << rd  << "(0x" << hex << calc << ")" << endl;
-
+#endif
   return true;
 }
 
@@ -607,11 +617,11 @@ bool Execute::SLLI(Instruction &inst) {
 
   calc = ((uint32_t)regs->getValue(rs1)) << shift;
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "SLLI: x" << dec
           << rs1 << " << " << shift << " -> x"
           << rd << "(0x" << hex << calc << ")" << endl;
-
+#endif
   return true;
 }
 
@@ -628,11 +638,11 @@ bool Execute::SRLI(Instruction &inst) {
 
   calc = ((uint32_t)regs->getValue(rs1)) >> shift;
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "SRLI: x" << dec
           << rs1 << " >> " << shift << " -> x"
           << rd  << endl;
-
+#endif
   return true;
 }
 
@@ -649,11 +659,11 @@ bool Execute::SRAI(Instruction &inst) {
 
   calc = regs->getValue(rs1) >> shift;
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "SRAI: x" << dec
           << rs1 << " >> " << shift << " -> x"
           << rd  << endl;
-
+#endif
   return true;
 }
 
@@ -670,12 +680,12 @@ bool Execute::ADD(Instruction &inst) {
   //   << " + 0x" << regs->getValue(rs2) << " = " << calc << endl;
 
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "ADD: x" << dec
           << rs1 << " + x"
           << rs2 << " -> x"
           << rd  << hex << "(0x" << calc << ")"<< endl;
-
+#endif
   return true;
 }
 
@@ -691,12 +701,12 @@ bool Execute::SUB(Instruction &inst) {
 
   /* Can insert some arbitrary execution time */
   //wait(sc_time(10, SC_NS));
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "SUB: x"
           << rs1 << " - x"
           << rs2 << " -> x"
           << rd << "("<< calc << ")" << endl;
-
+#endif
   return true;
 }
 
@@ -713,11 +723,11 @@ bool Execute::SLL(Instruction &inst) {
 
   calc = ((uint32_t)regs->getValue(rs1)) << shift;
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "SLL: x"
           << rs1 << " << " << shift << " -> x"
           << rd  << endl;
-
+#endif
   return true;
 }
 
@@ -730,16 +740,20 @@ bool Execute::SLT(Instruction &inst) {
 
   if (regs->getValue(rs1) < regs->getValue(rs2)) {
     regs->setValue(rd, 1);
+    #ifdef DEBUG
     log->SC_log(Log::INFO) << "SLT: x"
             << rs1 << " < x"
             << rs2 << " => " << "1 -> x"
             << rd << endl;
+    #endif
   } else {
     regs->setValue(rd, 0);
+    #ifdef DEBUG
     log->SC_log(Log::INFO) << "SLT: x"
             << rs1 << " < x"
             << rs2 << " => " << "0 -> x"
             << rd  << endl;
+    #endif
   }
 
   return true;
@@ -754,16 +768,20 @@ bool Execute::SLTU(Instruction &inst) {
 
   if ( (uint32_t)regs->getValue(rs1) < (uint32_t)regs->getValue(rs2)) {
     regs->setValue(rd, 1);
+    #ifdef DEBUG
     log->SC_log(Log::INFO) << "SLTU: x"
             << rs1 << " < x"
             << rs2 << " => " << "1 -> x"
             << rd << endl;
+    #endif
   } else {
     regs->setValue(rd, 0);
+    #ifdef DEBUG
     log->SC_log(Log::INFO) << "SLTU: x"
             << rs1 << " < x"
             << rs2 << " => " << "0 -> x"
             << rd  << endl;
+    #endif
   }
 
   return true;
@@ -779,12 +797,12 @@ bool Execute::XOR(Instruction &inst) {
 
   calc = regs->getValue(rs1) ^ regs->getValue(rs2);
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "XOR: x"
           << rs1 << " XOR x"
           << rs2 << "-> x"
           << rd  << endl;
-
+#endif
   return true;
 }
 
@@ -801,10 +819,10 @@ bool Execute::SRL(Instruction &inst) {
 
   calc = ((uint32_t)regs->getValue(rs1)) >> shift;
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "SRL: x"
           << rs1 << " >> " << shift << " -> x" << rd << endl;
-
+#endif
   return true;
 }
 
@@ -821,10 +839,10 @@ bool Execute::SRA(Instruction &inst) {
 
   calc = regs->getValue(rs1) >> shift;
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "SRA: x"
           << rs1 << " >> " << shift << " -> x" << rd << endl;
-
+#endif
   return true;
 }
 
@@ -838,10 +856,10 @@ bool Execute::OR(Instruction &inst) {
 
   calc = regs->getValue(rs1) | regs->getValue(rs2);
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "OR: x" << rs1 << " OR x" << rs2
           << "-> x" << rd << endl;
-
+#endif
   return true;
 }
 
@@ -855,10 +873,10 @@ bool Execute::AND(Instruction &inst) {
 
   calc = regs->getValue(rs1) & regs->getValue(rs2);
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "AND: x" << rs1 << " AND x" << rs2
           << "-> x" << rd << endl;
-
+#endif
   return true;
 }
 
@@ -1130,9 +1148,9 @@ bool Execute::C_JR(Instruction &inst) {
 
   new_pc = (regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE;
   regs->setPC(new_pc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "JR: PC <- 0x" << hex << new_pc << endl;
-
+#endif
   return true;
 }
 
@@ -1148,12 +1166,12 @@ bool Execute::C_MV(Instruction &inst) {
 
   calc = regs->getValue(rs1) + regs->getValue(rs2);
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "C.MV: x" << dec
           << rs1 << "(0x" << hex << regs->getValue(rs1) << ") + x" << dec
           << rs2 << "(0x" << hex << regs->getValue(rs2) << ") -> x" << dec
           << rd  << "(0x" << hex << calc << ")" << endl;
-
+#endif
   return true;
 }
 
@@ -1169,12 +1187,12 @@ bool Execute::C_ADD(Instruction &inst) {
 
   calc = regs->getValue(rs1) + regs->getValue(rs2);
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "C.ADD: x"
           << dec << rs1 << " + x"
           << rs2 << " -> x"
           << rd  << "(0x" << hex << calc << ")" << endl;
-
+#endif
   return true;
 }
 
@@ -1195,12 +1213,12 @@ bool Execute::C_LWSP(Instruction &inst) {
   data = readDataMem(mem_addr, 4);
 
   regs->setValue(rd, data);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "C.LWSP: x" << dec
           << rs1 << " + " << imm
           << " (@0x" << hex << mem_addr << dec << ") -> x"
           << rd << "(" << hex << data << ")"<< dec << endl;
-
+#endif
   return true;
 }
 
@@ -1222,12 +1240,12 @@ bool Execute::C_ADDI4SPN(Instruction  &inst) {
 
   calc = regs->getValue(rs1) + imm;
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << dec << "ADDI4SPN: x"
           << rs1 << "(0x" << hex << regs->getValue(rs1) << ") + "
           << dec << imm << " -> x"
           << rd << "(0x" << hex << calc << ")" << endl;
-
+#endif
   return true;
 }
 
@@ -1246,18 +1264,21 @@ bool Execute::C_ADDI16SP(Instruction &inst) {
 
     calc = regs->getValue(rs1) + imm;
     regs->setValue(rd, calc);
-
+#ifdef DEBUG
     log->SC_log(Log::INFO) << dec << "ADDI16SP: x"
             << rs1 << " + "
             << dec << imm << " -> x"
             << rd  << "(0x" << hex << calc << ")" << endl;
+#endif
   } else {
     /* C.LUI OPCODE */
     rd = c_inst.get_rd();
     imm = c_inst.get_imm_LUI();
     regs->setValue(rd, imm);
+#ifdef DEBUG    
     log->SC_log(Log::INFO) << dec << "C.LUI x"
             << rd << " <- 0x" << hex << imm << endl;
+#endif
   }
 
   return true;
@@ -1280,12 +1301,12 @@ bool Execute::C_SWSP(Instruction &inst) {
   data = regs->getValue(rs2);
 
   writeDataMem(mem_addr, data, 4);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << dec << "SWSP: x"
           << rs2 << "(0x" << hex << data << ") -> x" << dec
           << rs1 << " + " << imm << " (@0x" << hex
           << mem_addr << dec << ")" << endl;
-
+#endif
   return true;
 }
 
@@ -1305,11 +1326,11 @@ bool Execute::C_BEQZ(Instruction &inst) {
     regs->incPC(true); //PC <- PC + 2
     new_pc = regs->getPC();
   }
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "C.BEQZ: x" << dec
           << rs1 << "(" <<  val1 << ") == 0? -> PC (0x"
           << hex << new_pc << ")" << dec << endl;
-
+#endif
   return true;
 }
 
@@ -1330,10 +1351,11 @@ bool Execute::C_BNEZ(Instruction &inst) {
     new_pc = regs->getPC();
   }
 
+  #ifdef DEBUG
   log->SC_log(Log::INFO) << "C.BNEZ: x" << dec
           << rs1 << "(0x" << hex << val1 << ") != 0? -> PC (0x"
           << hex << new_pc << ")" << dec << endl;
-
+#endif
   return true;
 }
 
@@ -1350,11 +1372,11 @@ bool Execute::C_LI(Instruction &inst) {
 
   calc = regs->getValue(rs1) + imm;
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << dec << "LI: x"
           << rs1 << "(" << regs->getValue(rs1) << ") + "
           << imm << " -> x" << rd  << "(" << calc << ")" << endl;
-
+#endif
   return true;
 }
 
@@ -1373,11 +1395,11 @@ bool Execute::C_SRLI(Instruction &inst) {
 
   calc = ((uint32_t)regs->getValue(rs1)) >> shift;
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "C.SRLI: x"
           << rs1 << " >> " << shift << " -> x"
           << rd  << endl;
-
+#endif
   return true;
 }
 
@@ -1396,11 +1418,11 @@ bool Execute::C_SRAI(Instruction &inst) {
 
   calc = (int32_t)regs->getValue(rs1) >> shift;
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "C.SRAI: x"
           << rs1 << " >> " << dec << shift << " -> x"
           << rd << "("<< calc << ")" << endl;
-
+#endif
   return true;
 }
 
@@ -1419,12 +1441,12 @@ bool Execute::C_SLLI(Instruction &inst) {
 
   calc = ((uint32_t)regs->getValue(rs1)) << shift;
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "C.SLLI: x"
           << dec << rs1 << " << "
           << shift << " -> x"
           << rd  << "(0x" << calc << ")"<< endl;
-
+#endif
   return true;
 }
 
@@ -1444,12 +1466,12 @@ bool Execute::C_ANDI(Instruction &inst) {
   aux = regs->getValue(rs1);
   calc =  aux & imm;
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "C.ANDI: x"
           << rs1 << "(" << aux << ") AND "
           << imm << " -> x"
           << rd  << endl;
-
+#endif
   return true;
 }
 
@@ -1468,12 +1490,12 @@ bool Execute::C_SUB(Instruction &inst) {
 
   /* Can insert some arbitrary execution time */
   //wait(sc_time(10, SC_NS));
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "C.SUB: x"
           << dec << rs1 << " - x"
           << rs2 << " -> x"
           << rd  << endl;
-
+#endif
   return true;
 }
 
@@ -1490,12 +1512,12 @@ bool Execute::C_XOR(Instruction &inst) {
 
   calc = regs->getValue(rs1) ^ regs->getValue(rs2);
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "C.XOR: x"
           << dec << rs1 << " XOR x"
           << rs2 << "-> x"
           << rd  << endl;
-
+#endif
   return true;
 }
 
@@ -1511,12 +1533,12 @@ bool Execute::C_OR(Instruction &inst) {
 
   calc = regs->getValue(rs1) | regs->getValue(rs2);
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "C_OR: x"
           << dec << rs1 << " OR x"
           << rs2 << "-> x"
           << rd << endl;
-
+#endif
   return true;
 }
 
@@ -1532,12 +1554,12 @@ bool Execute::C_AND(Instruction &inst) {
 
   calc = regs->getValue(rs1) & regs->getValue(rs2);
   regs->setValue(rd, calc);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << "C.AND: x"
           << dec << rs1 << " AND x"
           << rs2 << "-> x"
           << rd << endl;
-
+#endif
   return true;
 }
 
@@ -1561,10 +1583,10 @@ bool Execute::M_MUL(Instruction &inst) {
   result = (int64_t) multiplier * multiplicand;
   result = result & 0x00000000FFFFFFFF;
   regs->setValue(rd, result);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << dec << "MUL: x" << rs1 << " * x" << rs2
     << " -> x" << rd << "(" << result << ")" << endl;
-
+#endif
   return true;
 }
 
@@ -1668,10 +1690,10 @@ bool Execute::M_DIV(Instruction &inst) {
   }
 
   regs->setValue(rd, result);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << dec << "DIV: x" << rs1 << " / x" << rs2
     << " -> x" << rd << "(" << result << ")" << endl;
-
+#endif
   return true;
 }
 
@@ -1697,10 +1719,10 @@ bool Execute::M_DIVU(Instruction &inst) {
   }
 
   regs->setValue(rd, result);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << dec << "DIVU: x" << rs1 << " / x" << rs2
     << " -> x" << rd << "(" << result << ")" << endl;
-
+#endif
   return true;
 }
 
@@ -1727,10 +1749,10 @@ bool Execute::M_REM(Instruction &inst) {
   }
 
   regs->setValue(rd, result);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << dec << "REM: x" << rs1 << " / x" << rs2
     << " -> x" << rd << "(" << result << ")" << endl;
-
+#endif
   return true;
 }
 
@@ -1755,10 +1777,10 @@ bool Execute::M_REMU(Instruction &inst) {
   }
 
   regs->setValue(rd, result);
-
+#ifdef DEBUG
   log->SC_log(Log::INFO) << dec << "REMU: x" << rs1 << " / x" << rs2
     << " -> x" << rd << "(" << result << ")" << endl;
-
+#endif
   return true;
 }
 
