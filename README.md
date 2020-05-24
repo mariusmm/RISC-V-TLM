@@ -30,6 +30,7 @@ Table of Contents
          * [C code](./README.md#c-code)
          * [FreeRTOS](./README.md#freertos)
       * [Documentation](./README.md#documentation)
+         * [Publications](./README.md#publications)
       * [Contribute](./README.md#contribute)
       * [License](./README.md#license)
 
@@ -229,6 +230,10 @@ There are several ways to contribute to this project:
 * Pull request are welcome (see TODO list)
 * Good documentation
 * RTL-Level simulation
+
+
+## Publications
+IÂ've published a paper describing the RISC-V simulator in [CARRV 2020](https://carrv.github.io/2020/) conference ([pdf](http://mariusmonton.com/wp-uploads/2020/05/CARRV2020_paper_7_Monton.pdf)).
 
 ##  License
 
