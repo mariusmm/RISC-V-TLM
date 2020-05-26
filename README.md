@@ -32,6 +32,7 @@ Table of Contents
       * [Documentation](./README.md#documentation)
          * [Publications](./README.md#publications)
       * [Contribute](./README.md#contribute)
+      * [Authors and credits](./README.md#Authors-and-credits)
       * [License](./README.md#license)
 
 <!-- Added by: marius, at: 2019-02-11T20:15+01:00 -->
@@ -232,12 +233,25 @@ There are several ways to contribute to this project:
 * RTL-Level simulation
 
 
+## Authors and credits
+RISC-V-TLM is managed by Màrius Montón.
+
+If you find this code useful, please consider citing:
+```
+@inproceedings{montonriscvtlm2020,
+        title = {A {RISC}-{V} {SystemC}-{TLM} simulator},
+        booktitle = {Workshop on {Computer} {Architecture} {Research} with {RISC}-{V}},
+        author = {Montón, Màrius},
+        year = {2020}
+}
+```
+
 ## Publications
 I've published a paper describing the RISC-V simulator in [CARRV 2020](https://carrv.github.io/2020/) conference ([pdf](http://mariusmonton.com/wp-uploads/2020/05/CARRV2020_paper_7_Monton.pdf)).
 
 ##  License
 
-Copyright (C) 2018, 2019 Màrius Montón ([\@mariusmonton](https://twitter.com/mariusmonton/))
+Copyright (C) 2018, 2019, 2020 Màrius Montón ([\@mariusmonton](https://twitter.com/mariusmonton/))
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
