@@ -13,6 +13,7 @@
 
 #include "tlm.h"
 #include "tlm_utils/simple_initiator_socket.h"
+#include "tlm_utils/tlm_quantumkeeper.h"
 
 #include "memory.h"
 #include "Execute.h"
@@ -66,10 +67,18 @@ private:
   Registers *register_bank;
   Performance *perf;
   Log *log;
+  Instruction * inst;
+  C_Instruction *c_inst;
+  M_Instruction *m_inst;
+  A_Instruction *a_inst;
+
+  tlm_utils::tlm_quantumkeeper *m_qk;
 
   bool interrupt;
   uint32_t int_cause;
   bool irq_already_down;
+
+  sc_time default_time;
 
   bool dmi_ptr_valid;
 

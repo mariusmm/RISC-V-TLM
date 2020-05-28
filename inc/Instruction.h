@@ -443,6 +443,10 @@ public:
    */
   extension_t check_extension();
 
+
+  void setInstr(uint32_t p_instr) {
+      m_instr = p_instr;
+  }
   /**
    * @brief return instruction
    * @return all instruction bits (31:0)

@@ -25,7 +25,7 @@ using namespace sc_dt;
 using namespace std;
 
 /**
- * @brief Basic TLm-2 memory
+ * @brief Basic TLM-2 memory
  */
 class Memory: sc_module {
 public:

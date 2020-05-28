@@ -2,7 +2,7 @@
 
 SC_HAS_PROCESS(CPU);
 CPU::CPU(sc_module_name name, uint32_t PC) :
-		sc_module(name), instr_bus("instr_bus") {
+		sc_module(name), instr_bus("instr_bus"), default_time(10, SC_NS) {
 	register_bank = new Registers();
 	exec = new Execute("Execute", register_bank);
 	perf = Performance::getInstance();
@@ -20,7 +20,15 @@ CPU::CPU(sc_module_name name, uint32_t PC) :
 	irq_already_down = false;
 
 	dmi_ptr_valid = false;
-	instr_bus.register_invalidate_direct_mem_ptr( this, &CPU::invalidate_direct_mem_ptr);
+	instr_bus.register_invalidate_direct_mem_ptr(this,
+			&CPU::invalidate_direct_mem_ptr);
+
+	inst   = new Instruction(0);
+	c_inst = new C_Instruction(0);
+	m_inst = new M_Instruction(0);
+	a_inst = new A_Instruction(0);
+
+	m_qk = new tlm_utils::tlm_quantumkeeper();
 
 	SC_THREAD(CPU_thread);
 }
@@ -40,7 +48,7 @@ bool CPU::cpu_process_IRQ() {
 
 	if (interrupt == true) {
 		csr_temp = register_bank->getCSR(CSR_MSTATUS);
-		if ( (csr_temp & MSTATUS_MIE) == 0) {
+		if ((csr_temp & MSTATUS_MIE) == 0) {
 			log->SC_log(Log::DEBUG) << "interrupt delayed" << endl;
 			return ret_value;
 		}
@@ -87,9 +95,9 @@ bool CPU::cpu_process_IRQ() {
 bool CPU::process_c_instruction(Instruction &inst) {
 	bool PC_not_affected = true;
 
-	C_Instruction c_inst(inst.getInstr());
+	c_inst->setInstr(inst.getInstr());
 
-	switch (c_inst.decode()) {
+	switch (c_inst->decode()) {
 	case OP_C_ADDI4SPN:
 		PC_not_affected = exec->C_ADDI4SPN(inst);
 		break;
@@ -183,9 +191,9 @@ bool CPU::process_c_instruction(Instruction &inst) {
 bool CPU::process_m_instruction(Instruction &inst) {
 	bool PC_not_affected = true;
 
-	M_Instruction m_inst(inst.getInstr());
+	m_inst->setInstr(inst.getInstr());
 
-	switch (m_inst.decode()) {
+	switch (m_inst->decode()) {
 	case OP_M_MUL:
 		exec->M_MUL(inst);
 		break;
@@ -223,9 +231,9 @@ bool CPU::process_m_instruction(Instruction &inst) {
 bool CPU::process_a_instruction(Instruction inst) {
 	bool PC_not_affected = true;
 
-	A_Instruction a_inst(inst.getInstr());
+	a_inst->setInstr(inst.getInstr());
 
-	switch (a_inst.decode()) {
+	switch (a_inst->decode()) {
 	case OP_A_LR:
 		exec->A_LR(inst);
 		break;
@@ -441,7 +449,7 @@ bool CPU::process_base_instruction(Instruction &inst) {
 		//sc_stop();
 		break;
 	}
-     
+
 	return PC_not_affected;
 }
 
@@ -451,13 +459,13 @@ bool CPU::process_base_instruction(Instruction &inst) {
  */
 void CPU::CPU_thread(void) {
 
-	tlm::tlm_generic_payload* trans = new tlm::tlm_generic_payload;
+	tlm::tlm_generic_payload *trans = new tlm::tlm_generic_payload;
 	uint32_t INSTR;
 	sc_time delay = SC_ZERO_TIME;
 	bool PC_not_affected = false;
 	bool incPCby2 = false;
 	tlm::tlm_dmi dmi_data;
-	unsigned char* dmi_ptr = NULL;
+	unsigned char *dmi_ptr = NULL;
 
 	trans->set_command(tlm::TLM_READ_COMMAND);
 	trans->set_data_ptr(reinterpret_cast<unsigned char*>(&INSTR));
@@ -467,17 +475,11 @@ void CPU::CPU_thread(void) {
 	trans->set_dmi_allowed(false); // Mandatory initial value
 	trans->set_response_status(tlm::TLM_INCOMPLETE_RESPONSE);
 
-	//if (trans->is_dmi_allowed() ) {
-//	if (true) {
-//		dmi_ptr_valid = instr_bus->get_direct_mem_ptr(*trans, dmi_data);
-//		dmi_ptr = dmi_data.get_dmi_ptr();
-//	}
-	//register_bank->dump();
+	//Instruction inst(0);
+	m_qk->reset();
 
 	while (1) {
 		/* Get new PC value */
-		//cout << "CPU: PC 0x" << hex << (uint32_t) register_bank->getPC() << endl;
-		//dmi_ptr_valid = true;
 		if (dmi_ptr_valid == true) {
 			/* if memory_offset at Memory module is set, this won't work */
 			memcpy(&INSTR, dmi_ptr + register_bank->getPC(), 4);
@@ -490,12 +492,12 @@ void CPU::CPU_thread(void) {
 			}
 
 			if (trans->is_dmi_allowed()) {
-                dmi_ptr_valid = instr_bus->get_direct_mem_ptr(*trans, dmi_data);
-                if (dmi_ptr_valid) {
-                    std::cout << "Get DMI_PTR " << std::endl;
-                    dmi_ptr = dmi_data.get_dmi_ptr();
-                }
-            }
+				dmi_ptr_valid = instr_bus->get_direct_mem_ptr(*trans, dmi_data);
+				if (dmi_ptr_valid) {
+					std::cout << "Get DMI_PTR " << std::endl;
+					dmi_ptr = dmi_data.get_dmi_ptr();
+				}
+			}
 		}
 
 		perf->codeMemoryRead();
@@ -503,30 +505,30 @@ void CPU::CPU_thread(void) {
 		log->SC_log(Log::INFO) << "PC: 0x" << hex << register_bank->getPC()
 				<< ". ";
 
-		Instruction inst(INSTR);
+		inst->setInstr(INSTR);
 
 		/* check what type of instruction is and execute it */
-		switch (inst.check_extension()) {
+		switch (inst->check_extension()) {
 		case BASE_EXTENSION:
-			PC_not_affected = process_base_instruction(inst);
+			PC_not_affected = process_base_instruction(*inst);
 			incPCby2 = false;
 			break;
 		case C_EXTENSION:
-			PC_not_affected = process_c_instruction(inst);
+			PC_not_affected = process_c_instruction(*inst);
 			incPCby2 = true;
 			break;
 		case M_EXTENSION:
-			PC_not_affected = process_m_instruction(inst);
+			PC_not_affected = process_m_instruction(*inst);
 			incPCby2 = false;
 			break;
 		case A_EXTENSION:
-			PC_not_affected = process_a_instruction(inst);
+			PC_not_affected = process_a_instruction(*inst);
 			incPCby2 = false;
 			break;
 		default:
 			std::cout << "Extension not implemented yet" << std::endl;
-			inst.dump();
-			exec->NOP(inst);
+			inst->dump();
+			exec->NOP(*inst);
 		} // switch (inst.check_extension())
 
 		perf->instructionsInc();
@@ -539,7 +541,18 @@ void CPU::CPU_thread(void) {
 		cpu_process_IRQ();
 
 		/* Fixed instruction time to 10 ns (i.e. 100 MHz)*/
-		sc_core::wait(10, SC_NS);
+//#define USE_QK
+#ifdef USE_QK
+		// Model time used for additional processing
+		m_qk->inc(default_time);
+		if (m_qk->need_sync()) {
+			m_qk->sync();
+		}
+#else
+       sc_core::wait(10, SC_NS);
+
+#endif
+
 	} // while(1)
 } // CPU_thread
 
@@ -549,7 +562,6 @@ void CPU::call_interrupt(tlm::tlm_generic_payload &trans, sc_time &delay) {
 	memcpy(&int_cause, trans.get_data_ptr(), sizeof(uint32_t));
 }
 
-void CPU::invalidate_direct_mem_ptr(sc_dt::uint64 start, sc_dt::uint64 end)
-{
+void CPU::invalidate_direct_mem_ptr(sc_dt::uint64 start, sc_dt::uint64 end) {
 	dmi_ptr_valid = false;
 }

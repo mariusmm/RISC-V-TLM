@@ -58,6 +58,14 @@ public:
   A_Instruction(sc_uint<32> instr);
 
   /**
+   * @brief Sets instruction
+   * @param p_instr instruction to decode
+   */
+  void setInstr(uint32_t p_instr) {
+        a_instr = sc_uint<32> (p_instr);
+  }
+
+  /**
    * @brief Access to opcode field
    * @return return opcode field
    */
