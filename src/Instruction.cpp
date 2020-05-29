@@ -157,9 +157,12 @@ opCodes Instruction::decode() {
           break;
       }
     }
+    break;
     default:
       return OP_ERROR;
   }
+
+  return OP_ERROR;
 }
 
 
