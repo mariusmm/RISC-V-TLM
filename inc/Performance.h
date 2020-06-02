@@ -1,9 +1,10 @@
 /*!
-   \file Performance.h
-   \brief Class to store performance of CPU
-   \author Màrius Montón
-   \date Aug 2018
-*/
+ \file Performance.h
+ \brief Class to store performance of CPU
+ \author Màrius Montón
+ \date Aug 2018
+ */
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #ifndef PERFORMANCE_H
 #define PERFORMANCE_H
@@ -14,89 +15,85 @@
 
 #include "tlm.h"
 
-using namespace sc_core;
-using namespace sc_dt;
-using namespace std;
-
 /**
  * @brief Performance indicators class
  *
  * Singleton class to be shared among all other classes
  */
-class Performance{
+class Performance {
 public:
 
-  /**
-   * @brief Get an instance of the class
-   * @return pointer to Performance class
-   */
-  static Performance* getInstance();
+	/**
+	 * @brief Get an instance of the class
+	 * @return pointer to Performance class
+	 */
+	static Performance* getInstance();
 
-  /**
-   * @brief Increment data memory read counter
-   */
-  inline void dataMemoryRead() {
-    data_memory_read++;
-  }
+	/**
+	 * @brief Increment data memory read counter
+	 */
+	inline void dataMemoryRead() {
+		data_memory_read++;
+	}
 
-  /**
-   * @brief Increment data memory write counter
-   */
-  inline void dataMemoryWrite() {
-    data_memory_write++;
-  }
+	/**
+	 * @brief Increment data memory write counter
+	 */
+	inline void dataMemoryWrite() {
+		data_memory_write++;
+	}
 
-  /**
-   * @brief Increment code memory read counter
-   */
-  inline void codeMemoryRead() {
-    code_memory_read++;
-  }
+	/**
+	 * @brief Increment code memory read counter
+	 */
+	inline void codeMemoryRead() {
+		code_memory_read++;
+	}
 
-  /**
-   * @brief Increment code memory write counter
-   */
-  inline void codeMemoryWrite() {
-    code_memory_write++;
-  }
+	/**
+	 * @brief Increment code memory write counter
+	 */
+	inline void codeMemoryWrite() {
+		code_memory_write++;
+	}
 
-  /**
-   * @brief Increment register read counter
-   */
-  inline void registerRead() {
-    register_read++;
-  }
+	/**
+	 * @brief Increment register read counter
+	 */
+	inline void registerRead() {
+		register_read++;
+	}
 
-  /**
-   * @brief Increment register write counter
-   */
-  inline void registerWrite() {
-    register_write++;
-  }
+	/**
+	 * @brief Increment register write counter
+	 */
+	inline void registerWrite() {
+		register_write++;
+	}
 
-  /**
-   * @brief Increment instructions executed counter
-   */
-  inline void instructionsInc() {
-    instructions_executed++;
-  }
+	/**
+	 * @brief Increment instructions executed counter
+	 */
+	inline void instructionsInc() {
+		instructions_executed++;
+	}
 
-  /**
-   * @brief Dump counters to cout
-   */
-  void dump();
+	/**
+	 * @brief Dump counters to cout
+	 */
+	void dump();
 
 private:
-  static Performance* instance;
-  Performance();
+	static Performance *instance;
+	Performance();
 
-  uint64_t data_memory_read;
-  uint64_t data_memory_write;
-  uint64_t code_memory_read;
-  uint64_t code_memory_write;
-  uint64_t register_read;
-  uint64_t register_write;
-  uint64_t instructions_executed;
+	uint64_t data_memory_read;
+	uint64_t data_memory_write;
+	uint64_t code_memory_read;
+	uint64_t code_memory_write;
+	uint64_t register_read;
+	uint64_t register_write;
+	uint64_t instructions_executed;
 };
 
 #endif

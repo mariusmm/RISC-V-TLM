@@ -1,9 +1,9 @@
 /*!
-   \file Simulator.cpp
-   \brief Top level simulation entity
-   \author Màrius Montón
-   \date September 2018
-*/
+ \file Simulator.cpp
+ \brief Top level simulation entity
+ \author Màrius Montón
+ \date September 2018
+ */
 
 #define SC_INCLUDE_DYNAMIC_PROCESSES
 
@@ -21,11 +21,7 @@
 #include "Trace.h"
 #include "Timer.h"
 
-using namespace sc_core;
-using namespace sc_dt;
-using namespace std;
-
-string filename;
+std::string filename;
 
 /**
  * @class Simulator
@@ -34,57 +30,55 @@ string filename;
  *
  * @brief Top simulation entity
  */
-SC_MODULE(Simulator)
-{
-  CPU    *cpu;
-  Memory *MainMemory;
-  BusCtrl* Bus;
-  Trace *trace;
-  Timer *timer;
+SC_MODULE(Simulator) {
+	CPU *cpu;
+	Memory *MainMemory;
+	BusCtrl *Bus;
+	Trace *trace;
+	Timer *timer;
 
-  uint32_t start_PC;
+	uint32_t start_PC;
 
-  SC_CTOR(Simulator)
-  {
-    MainMemory = new Memory("Main_Memory", filename);
-    start_PC = MainMemory->getPCfromHEX();
+	SC_CTOR(Simulator) {
+		MainMemory = new Memory("Main_Memory", filename);
+		start_PC = MainMemory->getPCfromHEX();
 
-    cpu    = new CPU("cpu", start_PC);
+		cpu = new CPU("cpu", start_PC);
 
-    Bus = new BusCtrl("BusCtrl");
-    trace = new Trace("Trace");
-    timer = new Timer("Timer");
+		Bus = new BusCtrl("BusCtrl");
+		trace = new Trace("Trace");
+		timer = new Timer("Timer");
 
-    cpu->instr_bus.bind(Bus->cpu_instr_socket);
-    cpu->exec->data_bus.bind(Bus->cpu_data_socket);
+		cpu->instr_bus.bind(Bus->cpu_instr_socket);
+		cpu->mem_intf->data_bus.bind(Bus->cpu_data_socket);
 
-    Bus->memory_socket.bind(MainMemory->socket);
-    Bus->trace_socket.bind(trace->socket);
-    Bus->timer_socket.bind(timer->socket);
+		Bus->memory_socket.bind(MainMemory->socket);
+		Bus->trace_socket.bind(trace->socket);
+		Bus->timer_socket.bind(timer->socket);
 
-    //timer->timer_irq.bind(IRQ);
-    // cpu->interrupt.bind(IRQ);
-    timer->irq_line.bind(cpu->irq_line_socket);
-  }
+		//timer->timer_irq.bind(IRQ);
+		// cpu->interrupt.bind(IRQ);
+		timer->irq_line.bind(cpu->irq_line_socket);
+	}
 
-  ~Simulator() {
-    delete cpu;
-    delete MainMemory;
-    delete Bus;
-    delete trace;
-    delete timer;
-  }
+	~Simulator() {
+		delete MainMemory;
+		delete cpu;
+		delete Bus;
+		delete trace;
+		delete timer;
+	}
 };
 
 Simulator *top;
 
 void intHandler(int dummy) {
-  delete top;
-  //sc_stop();
-  exit(-1);
+	delete top;
+	//sc_stop();
+	exit(-1);
 }
 
-void process_arguments(int argc, char* argv[]) {
+void process_arguments(int argc, char *argv[]) {
 
 	int c;
 	int debug_level;
@@ -92,35 +86,36 @@ void process_arguments(int argc, char* argv[]) {
 
 	log = Log::getInstance();
 	log->setLogLevel(Log::ERROR);
-	while ((c = getopt (argc, argv, "D:f:?")) != -1) {
+	while ((c = getopt(argc, argv, "D:f:?")) != -1) {
 		switch (c) {
-			case 'D':
-				debug_level = atoi(optarg);
+		case 'D':
+			debug_level = atoi(optarg);
 
-				switch (debug_level) {
-					case 3:
-						log->setLogLevel(Log::INFO);
-						break;
-					case 2:
-						log->setLogLevel(Log::WARNING);
-						break;
-					case 1:
-						log->setLogLevel(Log::DEBUG);
-						break;
-					case 0:
-						log->setLogLevel(Log::ERROR);
-						break;
-					default:
-						log->setLogLevel(Log::INFO);
-						break;
-				}
+			switch (debug_level) {
+			case 3:
+				log->setLogLevel(Log::INFO);
 				break;
-			case 'f' :
-				filename = std::string(optarg);
+			case 2:
+				log->setLogLevel(Log::WARNING);
 				break;
-			case '?' :
-				std::cout << "Call ./RISCV_TLM -D <debuglevel> (0..3) filename.hex" << std::endl;
+			case 1:
+				log->setLogLevel(Log::DEBUG);
 				break;
+			case 0:
+				log->setLogLevel(Log::ERROR);
+				break;
+			default:
+				log->setLogLevel(Log::INFO);
+				break;
+			}
+			break;
+		case 'f':
+			filename = std::string(optarg);
+			break;
+		case '?':
+			std::cout << "Call ./RISCV_TLM -D <debuglevel> (0..3) filename.hex"
+					<< std::endl;
+			break;
 		}
 	}
 
@@ -129,26 +124,25 @@ void process_arguments(int argc, char* argv[]) {
 	}
 }
 
-int sc_main(int argc, char* argv[])
-{
+int sc_main(int argc, char *argv[]) {
 
-  /* Capture Ctrl+C and finish the simulation */
-  signal(SIGINT, intHandler);
+	/* Capture Ctrl+C and finish the simulation */
+	signal(SIGINT, intHandler);
 
-  /* SystemC time resolution set to 1 ns*/
-  sc_set_time_resolution(1, SC_NS);
+	/* SystemC time resolution set to 1 ns*/
+	sc_core::sc_set_time_resolution(1, sc_core::SC_NS);
 
-  /* Parse and process program arguments. -f is mandatory */
-  process_arguments(argc, argv);
+	/* Parse and process program arguments. -f is mandatory */
+	process_arguments(argc, argv);
 
-  top = new Simulator("top");
-  sc_start();
-  
-  cout << "Press Enter to finish" << endl;
-  cin.ignore();
-  
-  // call all destructors, clean exit.
-  delete top;
-  
-  return 0;
+	top = new Simulator("top");
+	sc_core::sc_start();
+
+	std::cout << "Press Enter to finish" << std::endl;
+	std::cin.ignore();
+
+	// call all destructors, clean exit.
+	delete top;
+
+	return 0;
 }

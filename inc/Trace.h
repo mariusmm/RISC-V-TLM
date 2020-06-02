@@ -1,9 +1,10 @@
 /*!
-   \file Trace.h
-   \brief Basic TLM-2 Trace module
-   \author Màrius Montón
-   \date September 2018
-*/
+ \file Trace.h
+ \brief Basic TLM-2 Trace module
+ \author Màrius Montón
+ \date September 2018
+ */
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #ifndef __TRACE_H__
 #define __TRACE_H__
@@ -18,46 +19,43 @@
 #include "tlm.h"
 #include "tlm_utils/simple_target_socket.h"
 
-using namespace sc_core;
-using namespace sc_dt;
-using namespace std;
-
 /**
  * @brief Simple trace peripheral
  *
  * This peripheral outputs to cout any character written to its unique register
  */
-class Trace: sc_module {
+class Trace: sc_core::sc_module {
 public:
 
-    /**
-     * @brief Bus socket
-     */
-    tlm_utils::simple_target_socket<Trace> socket;
+	/**
+	 * @brief Bus socket
+	 */
+	tlm_utils::simple_target_socket<Trace> socket;
 
-    /**
-     * @brief Constructor
-     * @param name Module name
-     */
-    Trace(sc_module_name name);
-    
-    /**
-     * @brief Destructor
-     */
-    ~Trace();
-    
+	/**
+	 * @brief Constructor
+	 * @param name Module name
+	 */
+	Trace(sc_core::sc_module_name name);
+
+	/**
+	 * @brief Destructor
+	 */
+	~Trace();
+
 private:
-    
-    // TLM-2 blocking transport method
-    virtual void b_transport( tlm::tlm_generic_payload& trans, sc_time& delay );
-    
-    void xtermLaunch(char *slaveName);
-    void xtermKill( const char *mess );
-    void xtermSetup(void);
-    
-    int ptSlave;
-    int ptMaster;
-    int xtermPid;
+
+	// TLM-2 blocking transport method
+	virtual void b_transport(tlm::tlm_generic_payload &trans,
+			sc_core::sc_time &delay);
+
+	void xtermLaunch(char *slaveName);
+	void xtermKill(const char *mess);
+	void xtermSetup(void);
+
+	int ptSlave;
+	int ptMaster;
+	int xtermPid;
 };
 
 #endif

@@ -45,14 +45,11 @@ Brief description of the modules:
 * CPU: Top entity that includes all other modules.
 * Memory: Memory highly based on TLM-2 example with read file capability
 * Registers: Implements the register file, PC register & CSR registers
-* Execute: Executes ISA instructions
-  * Executes C instruction extensions
-  * Executes M instruction extensions
-  * Executes A instruction extensions
-* Instruction: Decodes instruction and acces to any instruction field
-  * C_Instruction: Decodes Compressed instructions (C extension)
-  * M_Instruction: Decodes Multiplication and Division instructions (M extension)
-  * A_Instruction: Decodes Atomic instructions (A extension)
+* Instruction: Decodes instruction type and keeps instruction field
+* BASE_ISA: Executes Base ISA, Zifencei and Zicsr.
+  * C_extension: Decodes & Executes Compressed instructions (C extension)
+  * M_extension: Decodes & Executes Multiplication and Division instructions (M extension)
+  * A_extension: Decodes & Executes Atomic instructions (A extension)
 * Simulator: Top-level entity that builds & starts the simulation
 * BusCtrl: Simple bus manager
 * Trace: Simple trace peripheral
@@ -100,7 +97,7 @@ Task to do:
      - [ ] generic IRQ comtroller
 - [x] Test, test, test & test. I'm sure there are a ~~lot of~~ some bugs in the code
      - [x] riscv-test almost complete (see [Test](https://github.com/mariusmm/RISC-V-TLM/wiki/Tests))
-     - [ ] riscv-compliance WiP
+     - [x] riscv-compliance 
 * Improve structure and modules hierarchy
 * Add 64 & 128 bits architecture (RV64I, RV128I)
 
@@ -129,7 +126,7 @@ $ ./RISCV_TLM asm/BasicLoop.hex
 -f filename .hex filename to use
 
 ## Cross-compiler
-It is possible to use gcc for risc-v compiler. Follow the instructions (from https://github.com/riscv/riscv-gnu-toolchain):
+It is possible to use gcc as risc-v compiler. Follow the instructions (from https://github.com/riscv/riscv-gnu-toolchain):
 ~~~
 $ git clone --recursive https://github.com/riscv/riscv-gnu-toolchain
 $ cd riscv-gnu-toolchain
@@ -240,7 +237,7 @@ If you find this code useful, please consider citing:
 ```
 @inproceedings{montonriscvtlm2020,
         title = {A {RISC}-{V} {SystemC}-{TLM} simulator},
-        booktitle = {Workshop on {Computer} {Architecture} {Research} with {RISC}-{V}},
+        booktitle = {Workshop on {Computer} {Architecture} {Research} with {RISC}-{V} ({CARRV 2020}),
         author = {Montón, Màrius},
         year = {2020}
 }

@@ -1,41 +1,52 @@
+/*!
+ \file Log.cpp
+ \brief Class to manage Log
+ \author Màrius Montón
+ \date Aug 2018
+ */
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "Log.h"
 
-Log* Log::getInstance()
-{
-  if (instance == 0) {
-      instance = new Log("Log.txt");
-  }
+Log* Log::getInstance() {
+	if (instance == 0) {
+		instance = new Log("Log.txt");
+	}
 
-  return instance;
+	return instance;
 }
 
-Log::Log(const char* filename) {
-  m_stream.open(filename);
-  currentLogLevel = Log::INFO;
+Log::Log(const char *filename) {
+	m_stream.open(filename);
+	currentLogLevel = Log::INFO;
 }
 
 void Log::SC_log(std::string msg, enum LogLevel level) {
 
-  if (level <= currentLogLevel) {
-    m_stream << "time " << sc_core::sc_time_stamp() << ": " << msg << std::endl;
-  }
+	if (level <= currentLogLevel) {
+		m_stream << "time " << sc_core::sc_time_stamp() << ": " << msg
+				<< std::endl;
+	}
 }
 
 std::ofstream& Log::SC_log(enum LogLevel level) {
 
-  if (level <= currentLogLevel) {
-    m_stream << "time " << sc_core::sc_time_stamp() << ": ";
-    return m_stream;
-  } else {
-    return m_sink;
-  }
-
+	if (level <= currentLogLevel) {
+		m_stream << "time " << sc_core::sc_time_stamp() << ": ";
+		return m_stream;
+	} else {
+		return m_sink;
+	}
 
 }
 
 void Log::setLogLevel(enum LogLevel newLevel) {
-  std::cout << "LogLevel set to " << newLevel << std::endl;
-  currentLogLevel = newLevel;
+	std::cout << "LogLevel set to " << newLevel << std::endl;
+	currentLogLevel = newLevel;
 }
 
-Log* Log::instance = 0;
+enum Log::LogLevel Log::getLogLevel() {
+	return currentLogLevel;
+}
+
+Log *Log::instance = 0;

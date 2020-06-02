@@ -1,9 +1,10 @@
 /*!
-   \file Memory.h
-   \brief Basic TLM-2 memory model
-   \author Màrius Montón
-   \date August 2018
-*/
+ \file Memory.h
+ \brief Basic TLM-2 memory model
+ \author Màrius Montón
+ \date August 2018
+ */
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #ifndef __MEMORY_H__
 #define __MEMORY_H__
@@ -20,69 +21,68 @@
 
 #include "Log.h"
 
-using namespace sc_core;
-using namespace sc_dt;
-using namespace std;
-
 /**
  * @brief Basic TLM-2 memory
  */
-class Memory: sc_module {
+class Memory: sc_core::sc_module {
 public:
-  // TLM-2 socket, defaults to 32-bits wide, base protocol
-  tlm_utils::simple_target_socket<Memory> socket;
+	// TLM-2 socket, defaults to 32-bits wide, base protocol
+	tlm_utils::simple_target_socket<Memory> socket;
 
-  //enum { SIZE = 0x90000000  };
-  enum { SIZE = 0x10000000  };
-  const sc_time LATENCY;
+	//enum { SIZE = 0x90000000  };
+	enum {
+		SIZE = 0x10000000
+	};
+	const sc_core::sc_time LATENCY;
 
-  Memory(sc_module_name name, string filename);
-  Memory(sc_module_name name, bool use_file);
+	Memory(sc_core::sc_module_name name, std::string filename);
+	Memory(sc_core::sc_module_name name, bool use_file);
 
-  ~Memory(void);
-  
-  /**
-   * @brief Returns Program Counter read from hexfile
-   * @return Initial PC
-   */
-  virtual uint32_t getPCfromHEX();
+	~Memory(void);
 
-  // TLM-2 blocking transport method
-  virtual void b_transport( tlm::tlm_generic_payload& trans, sc_time& delay );
+	/**
+	 * @brief Returns Program Counter read from hexfile
+	 * @return Initial PC
+	 */
+	virtual uint32_t getPCfromHEX();
 
-  // *********************************************
-  // TLM-2 forward DMI method
-  // *********************************************
-  virtual bool get_direct_mem_ptr(tlm::tlm_generic_payload& trans,
-                                  tlm::tlm_dmi& dmi_data);
+	// TLM-2 blocking transport method
+	virtual void b_transport(tlm::tlm_generic_payload &trans,
+			sc_core::sc_time &delay);
 
-  // *********************************************
-  // TLM-2 debug transport method
-  // *********************************************
-  virtual unsigned int transport_dbg(tlm::tlm_generic_payload& trans);
+	// *********************************************
+	// TLM-2 forward DMI method
+	// *********************************************
+	virtual bool get_direct_mem_ptr(tlm::tlm_generic_payload &trans,
+			tlm::tlm_dmi &dmi_data);
+
+	// *********************************************
+	// TLM-2 debug transport method
+	// *********************************************
+	virtual unsigned int transport_dbg(tlm::tlm_generic_payload &trans);
 
 private:
 
-  /**
-   * @brief Memory array in bytes
-   */
-  //uint8_t mem[SIZE];
-  uint8_t *mem;
+	/**
+	 * @brief Memory array in bytes
+	 */
+	uint8_t *mem;
 
-  /**
-   * @brief Log classe
-   */
-  Log *log;
-  /**
-  * @brief Program counter (PC) read from hex file
-  */
-  uint32_t program_counter;
+	/**
+	 * @brief Log class
+	 */
+	Log *log;
 
-  uint32_t memory_offset;
-  /**
-   * @brief Read Intel hex file
-   * @param filename file name to read
-   */
-  virtual void readHexFile(string filename);
+	/**
+	 * @brief Program counter (PC) read from hex file
+	 */
+	uint32_t program_counter;
+
+	uint32_t memory_offset;
+	/**
+	 * @brief Read Intel hex file
+	 * @param filename file name to read
+	 */
+	virtual void readHexFile(std::string filename);
 };
- #endif /* __MEMORY_H__ */
+#endif /* __MEMORY_H__ */
