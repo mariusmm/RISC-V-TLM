@@ -1,7 +1,7 @@
 /*!
  \file Timer.cpp
  \brief Basic TLM-2 Timer module
- \author Màrius Montón
+ \author Marius Monton
  \date January 2019
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -33,7 +33,7 @@ void Timer::run() {
 
 	while (true) {
 		wait(timer_event);
-		irq_line->b_transport(*irq_trans, delay);
+		irq_line[0]->b_transport(*irq_trans, delay);
 	}
 }
 

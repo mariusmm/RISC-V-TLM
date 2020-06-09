@@ -1,7 +1,7 @@
 /**
  @file BusCtrl.h
  @brief Basic TLM-2 Bus controller
- @author Màrius Montón
+ @author Marius Monton
  @date September 2018
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -46,12 +46,12 @@ public:
 	/**
 	 * @brief TLM target socket CPU instruction memory bus
 	 */
-	tlm_utils::simple_target_socket<BusCtrl> cpu_instr_socket;
+	tlm_utils::simple_target_socket_tagged<BusCtrl> cpu_instr_socket[2];
 
 	/**
 	 * @brief TLM target socket CPU data memory bus
 	 */
-	tlm_utils::simple_target_socket<BusCtrl> cpu_data_socket;
+	tlm_utils::simple_target_socket_tagged<BusCtrl> cpu_data_socket[2];
 
 	/**
 	 * @brief TLM initiator socket Main memory bus
@@ -79,13 +79,13 @@ public:
 	 * @param trans transtractino to perform
 	 * @param delay delay associated to this transaction
 	 */
-	virtual void b_transport(tlm::tlm_generic_payload &trans,
+	virtual void b_transport(int id, tlm::tlm_generic_payload &trans,
 			sc_core::sc_time &delay);
 
 private:
 	Log *log;
 
-	bool instr_direct_mem_ptr(tlm::tlm_generic_payload&,
+	bool instr_direct_mem_ptr(int id, tlm::tlm_generic_payload&,
 			tlm::tlm_dmi &dmi_data);
 	void invalidate_direct_mem_ptr(sc_dt::uint64 start, sc_dt::uint64 end);
 };

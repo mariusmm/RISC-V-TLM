@@ -54,7 +54,7 @@ public:
 	 * @brief Decodes opcode of instruction
 	 * @return opcode of instruction
 	 */
-	op_M_Codes decode();
+	op_M_Codes decode(); 
 
 	inline void dump() {
 		std::cout << std::hex << "0x" << m_instr << std::dec << std::endl;

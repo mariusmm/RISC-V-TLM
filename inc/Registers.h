@@ -11,6 +11,7 @@
 
 #define SC_INCLUDE_DYNAMIC_PROCESSES
 #include <iomanip>
+#include <array>
 
 #include "systemc"
 #include "tlm.h"
@@ -244,7 +245,7 @@ private:
 	/**
 	 * bank of registers (32 regs of 32bits each)
 	 */
-	int32_t register_bank[32];
+	std::array<int32_t, 32> register_bank;
 
 	/**
 	 * Program counter (32 bits width)
@@ -254,7 +255,7 @@ private:
 	/**
 	 * CSR registers (4096 maximum)
 	 */
-	uint32_t CSR[4096];
+	std::array<uint32_t, 4096> CSR;
 	Performance *perf;
 
 	void initCSR(void);

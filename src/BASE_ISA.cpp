@@ -919,7 +919,7 @@ bool BASE_ISA::Exec_ECALL() {
 		std::cout << "GP value is " << gp_value << std::endl;
 	}
 	//SC_REPORT_ERROR("Execute", "ECALL");
-	sc_core::sc_stop();
+	//sc_core::sc_stop();
 	return true;
 }
 

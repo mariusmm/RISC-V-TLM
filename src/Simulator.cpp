@@ -1,9 +1,10 @@
 /*!
  \file Simulator.cpp
  \brief Top level simulation entity
- \author Màrius Montón
+ \author Marius Monton
  \date September 2018
  */
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #define SC_INCLUDE_DYNAMIC_PROCESSES
 
@@ -12,7 +13,8 @@
 #include "tlm_utils/simple_initiator_socket.h"
 #include "tlm_utils/simple_target_socket.h"
 
-#include <signal.h>
+#include <csignal>
+
 #include <unistd.h>
 
 #include "CPU.h"
@@ -31,7 +33,9 @@ std::string filename;
  * @brief Top simulation entity
  */
 SC_MODULE(Simulator) {
-	CPU *cpu;
+	CPU *cpuA;
+	CPU *cpuB;
+
 	Memory *MainMemory;
 	BusCtrl *Bus;
 	Trace *trace;
@@ -43,14 +47,18 @@ SC_MODULE(Simulator) {
 		MainMemory = new Memory("Main_Memory", filename);
 		start_PC = MainMemory->getPCfromHEX();
 
-		cpu = new CPU("cpu", start_PC);
+		cpuA = new CPU("cpuA", start_PC);
+		cpuB = new CPU("cpuB", start_PC);
 
 		Bus = new BusCtrl("BusCtrl");
 		trace = new Trace("Trace");
 		timer = new Timer("Timer");
 
-		cpu->instr_bus.bind(Bus->cpu_instr_socket);
-		cpu->mem_intf->data_bus.bind(Bus->cpu_data_socket);
+		cpuA->instr_bus(Bus->cpu_instr_socket[0]);
+		cpuA->mem_intf->data_bus.bind(Bus->cpu_data_socket[0]);
+
+		cpuB->instr_bus.bind(Bus->cpu_instr_socket[1]);
+		cpuB->mem_intf->data_bus.bind(Bus->cpu_data_socket[1]);
 
 		Bus->memory_socket.bind(MainMemory->socket);
 		Bus->trace_socket.bind(trace->socket);
@@ -58,12 +66,14 @@ SC_MODULE(Simulator) {
 
 		//timer->timer_irq.bind(IRQ);
 		// cpu->interrupt.bind(IRQ);
-		timer->irq_line.bind(cpu->irq_line_socket);
+		timer->irq_line[0].bind(cpuA->irq_line_socket);
+		timer->irq_line[1].bind(cpuB->irq_line_socket);
 	}
 
 	~Simulator() {
 		delete MainMemory;
-		delete cpu;
+		delete cpuA;
+		delete cpuB;
 		delete Bus;
 		delete trace;
 		delete timer;
@@ -89,7 +99,7 @@ void process_arguments(int argc, char *argv[]) {
 	while ((c = getopt(argc, argv, "D:f:?")) != -1) {
 		switch (c) {
 		case 'D':
-			debug_level = atoi(optarg);
+			debug_level = std::atoi(optarg);
 
 			switch (debug_level) {
 			case 3:
@@ -127,7 +137,7 @@ void process_arguments(int argc, char *argv[]) {
 int sc_main(int argc, char *argv[]) {
 
 	/* Capture Ctrl+C and finish the simulation */
-	signal(SIGINT, intHandler);
+	std::signal(SIGINT, intHandler);
 
 	/* SystemC time resolution set to 1 ns*/
 	sc_core::sc_set_time_resolution(1, sc_core::SC_NS);

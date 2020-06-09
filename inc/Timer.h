@@ -1,7 +1,7 @@
 /*!
  \file Timer.h
  \brief Basic TLM-2 Timer module
- \author Màrius Montón
+ \author Marius Monton
  \date January 2019
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -32,7 +32,7 @@ public:
 	// TLM-2 socket, defaults to 32-bits wide, base protocol
 	tlm_utils::simple_target_socket<Timer> socket;
 
-	tlm_utils::simple_initiator_socket<Timer> irq_line;
+	tlm_utils::simple_initiator_socket<Timer> irq_line[2];
 
 	/**
 	 *

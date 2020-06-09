@@ -1,7 +1,7 @@
 /**
  @file BusCtrl.cpp
  @brief Basic TLM-2 Bus controller
- @author Màrius Montón
+ @author Marius Monton
  @date September 2018
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -10,19 +10,24 @@
 
 SC_HAS_PROCESS(BusCtrl);
 BusCtrl::BusCtrl(sc_core::sc_module_name name) :
-		sc_module(name), cpu_instr_socket("cpu_instr_socket"), cpu_data_socket(
-				"cpu_data_socket"), memory_socket("memory_socket"), trace_socket(
+		sc_module(name), memory_socket("memory_socket"), trace_socket(
 				"trace_socket") {
-	cpu_instr_socket.register_b_transport(this, &BusCtrl::b_transport);
-	cpu_data_socket.register_b_transport(this, &BusCtrl::b_transport);
+
+
+	cpu_instr_socket[0].register_b_transport(this, &BusCtrl::b_transport, 0);
+	cpu_data_socket[0].register_b_transport(this, &BusCtrl::b_transport, 0);
+
+	cpu_instr_socket[1].register_b_transport(this, &BusCtrl::b_transport, 0);
+	cpu_data_socket[1].register_b_transport(this, &BusCtrl::b_transport, 0);
+
 	log = Log::getInstance();
-	cpu_instr_socket.register_get_direct_mem_ptr(this,
-			&BusCtrl::instr_direct_mem_ptr);
+	cpu_instr_socket[0].register_get_direct_mem_ptr(this,
+			&BusCtrl::instr_direct_mem_ptr, 0);
 	memory_socket.register_invalidate_direct_mem_ptr(this,
 			&BusCtrl::invalidate_direct_mem_ptr);
 }
 
-void BusCtrl::b_transport(tlm::tlm_generic_payload &trans,
+void BusCtrl::b_transport(int id, tlm::tlm_generic_payload &trans,
 		sc_core::sc_time &delay) {
 	//tlm::tlm_command cmd = trans.get_command();
 	sc_dt::uint64 adr = trans.get_address() / 4;
@@ -53,13 +58,14 @@ void BusCtrl::b_transport(tlm::tlm_generic_payload &trans,
 	trans.set_response_status(tlm::TLM_OK_RESPONSE);
 }
 
-bool BusCtrl::instr_direct_mem_ptr(tlm::tlm_generic_payload &gp,
+bool BusCtrl::instr_direct_mem_ptr(int id, tlm::tlm_generic_payload &gp,
 		tlm::tlm_dmi &dmi_data) {
 	return memory_socket->get_direct_mem_ptr(gp, dmi_data);
 }
 
 void BusCtrl::invalidate_direct_mem_ptr(sc_dt::uint64 start,
 		sc_dt::uint64 end) {
-	cpu_instr_socket->invalidate_direct_mem_ptr(start, end);
+	cpu_instr_socket[0]->invalidate_direct_mem_ptr(start, end);
+	cpu_instr_socket[1]->invalidate_direct_mem_ptr(start, end);
 }
 

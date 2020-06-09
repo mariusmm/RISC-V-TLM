@@ -4,6 +4,8 @@
  \author Màrius Montón
  \date August 2018
 */
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "C_extension.h"
 
 op_C_Codes C_extension::decode() {
