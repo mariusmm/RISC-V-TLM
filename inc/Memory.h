@@ -71,7 +71,7 @@ private:
 	/**
 	 * @brief Log class
 	 */
-	Log *log;
+//	Log *log;
 
 	/**
 	 * @brief Program counter (PC) read from hex file

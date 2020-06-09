@@ -75,7 +75,7 @@ bool A_extension::Exec_A_LR() {
 
 	TLB_reserve(mem_addr);
 
-	log->SC_log(Log::INFO) << std::dec << "LR.W: x" << rs1 << " (@0x"
+	FILE_LOG(logINFO) << std::dec << "LR.W: x" << rs1 << " (@0x"
 			<< std::hex << mem_addr << std::dec << ") -> x" << rd << std::endl;
 
 	return true;
@@ -100,7 +100,7 @@ bool A_extension::Exec_A_SC() {
 		regs->setValue(rd, 1);  // SC writes nonzero on failure
 	}
 
-	log->SC_log(Log::INFO) << std::dec << "SC.W: (@0x" << std::hex << mem_addr
+	FILE_LOG(logINFO) << std::dec << "SC.W: (@0x" << std::hex << mem_addr
 			<< std::dec << ") <- x" << rs2 << std::hex << "(0x" << data << ")"
 			<< std::endl;
 
@@ -130,7 +130,7 @@ bool A_extension::Exec_A_AMOSWAP() {
 
 	mem_intf->writeDataMem(mem_addr, aux, 4);
 
-	log->SC_log(Log::INFO) << std::dec << "AMOSWAP " << std::endl;
+	FILE_LOG(logINFO) << std::dec << "AMOSWAP " << std::endl;
 	return true;
 }
 
@@ -155,7 +155,7 @@ bool A_extension::Exec_A_AMOADD() {
 
 	mem_intf->writeDataMem(mem_addr, data, 4);
 
-	log->SC_log(Log::INFO) << std::dec << "AMOADD " << std::endl;
+	FILE_LOG(logINFO) << std::dec << "AMOADD " << std::endl;
 
 	return true;
 }
@@ -181,7 +181,7 @@ bool A_extension::Exec_A_AMOXOR() {
 
 	mem_intf->writeDataMem(mem_addr, data, 4);
 
-	log->SC_log(Log::INFO) << std::dec << "AMOXOR " << std::endl;
+	FILE_LOG(logINFO) << std::dec << "AMOXOR " << std::endl;
 
 	return true;
 }
@@ -206,7 +206,7 @@ bool A_extension::Exec_A_AMOAND() {
 
 	mem_intf->writeDataMem(mem_addr, data, 4);
 
-	log->SC_log(Log::INFO) << std::dec << "AMOAND " << std::endl;
+	FILE_LOG(logINFO) << std::dec << "AMOAND " << std::endl;
 
 	return true;
 }
@@ -232,7 +232,7 @@ bool A_extension::Exec_A_AMOOR() {
 
 	mem_intf->writeDataMem(mem_addr, data, 4);
 
-	log->SC_log(Log::INFO) << std::dec << "AMOOR " << std::endl;
+	FILE_LOG(logINFO) << std::dec << "AMOOR " << std::endl;
 	return true;
 }
 bool A_extension::Exec_A_AMOMIN() {
@@ -260,7 +260,7 @@ bool A_extension::Exec_A_AMOMIN() {
 
 	mem_intf->writeDataMem(mem_addr, aux, 4);
 
-	log->SC_log(Log::INFO) << std::dec << "AMOMIN " << std::endl;
+	FILE_LOG(logINFO) << std::dec << "AMOMIN " << std::endl;
 
 	return true;
 }
@@ -289,7 +289,7 @@ bool A_extension::Exec_A_AMOMAX() {
 
 	mem_intf->writeDataMem(mem_addr, aux, 4);
 
-	log->SC_log(Log::INFO) << std::dec << "AMOMAX " << std::endl;
+	FILE_LOG(logINFO) << std::dec << "AMOMAX " << std::endl;
 
 	return true;
 }
@@ -318,7 +318,7 @@ bool A_extension::Exec_A_AMOMINU() {
 
 	mem_intf->writeDataMem(mem_addr, aux, 4);
 
-	log->SC_log(Log::INFO) << std::dec << "AMOMINU " << std::endl;
+	FILE_LOG(logINFO) << std::dec << "AMOMINU " << std::endl;
 
 	return true;
 }
@@ -347,7 +347,7 @@ bool A_extension::Exec_A_AMOMAXU() {
 
 	mem_intf->writeDataMem(mem_addr, aux, 4);
 
-	log->SC_log(Log::INFO) << std::dec << "AMOMAXU " << std::endl;
+	FILE_LOG(logINFO) << std::dec << "AMOMAXU " << std::endl;
 
 	return true;
 }

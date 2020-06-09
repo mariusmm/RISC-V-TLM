@@ -65,7 +65,7 @@ public:
 private:
 	Registers *register_bank;
 	Performance *perf;
-	Log *log;
+//	Log *log;
 	Instruction *inst;
 	C_extension *c_inst;
 	M_extension *m_inst;

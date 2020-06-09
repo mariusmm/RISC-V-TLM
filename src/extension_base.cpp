@@ -13,7 +13,6 @@ extension_base::extension_base(sc_dt::sc_uint<32> instr,
 		m_instr(instr), regs(register_bank), mem_intf(mem_interface) {
 
 	perf = Performance::getInstance();
-	log = Log::getInstance();
 }
 
 extension_base::~extension_base() {
@@ -49,7 +48,7 @@ void extension_base::RaiseException(uint32_t cause, uint32_t inst) {
 
 	regs->setPC(new_pc);
 
-	log->SC_log(Log::ERROR) << "Exception! new PC 0x" << std::hex << new_pc
+	FILE_LOG(logERROR) << "Exception! new PC 0x" << std::hex << new_pc
 			<< std::endl;
 
 	regs->dump();

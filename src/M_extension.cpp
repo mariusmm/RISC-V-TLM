@@ -59,7 +59,7 @@ bool M_extension::Exec_M_MUL() {
 	result = result & 0x00000000FFFFFFFF;
 	regs->setValue(rd, result);
 
-	log->SC_log(Log::INFO) << std::dec << "MUL: x" << rs1 << " * x" << rs2
+	FILE_LOG(logDEBUG) << std::dec << "MUL: x" << rs1 << " * x" << rs2
 			<< " -> x" << rd << "(" << result << ")" << std::endl;
 
 	return true;
@@ -83,7 +83,7 @@ bool M_extension::Exec_M_MULH() {
 	ret_value = (int32_t) ((result >> 32) & 0x00000000FFFFFFFF);
 	regs->setValue(rd, ret_value);
 
-	log->SC_log(Log::INFO) << std::dec << "MULH: x" << rs1 << " * x" << rs2
+	FILE_LOG(logDEBUG) << std::dec << "MULH: x" << rs1 << " * x" << rs2
 			<< " -> x" << rd << "(" << result << ")" << std::endl;
 
 	return true;
@@ -106,7 +106,7 @@ bool M_extension::Exec_M_MULHSU() {
 	result = (result >> 32) & 0x00000000FFFFFFFF;
 	regs->setValue(rd, result);
 
-	log->SC_log(Log::INFO) << std::dec << "MULHSU: x" << rs1 << " * x" << rs2
+	FILE_LOG(logDEBUG) << std::dec << "MULHSU: x" << rs1 << " * x" << rs2
 			<< " -> x" << rd << "(" << result << ")" << std::endl;
 
 	return true;
@@ -129,7 +129,7 @@ bool M_extension::Exec_M_MULHU() {
 	ret_value = (uint32_t) (result >> 32) & 0x00000000FFFFFFFF;
 	regs->setValue(rd, ret_value);
 
-	log->SC_log(Log::INFO) << std::dec << "MULHU: x" << rs1 << " * x" << rs2
+	FILE_LOG(logDEBUG) << std::dec << "MULHU: x" << rs1 << " * x" << rs2
 			<< " -> x" << rd << "(" << ret_value << ")" << std::endl;
 
 	return true;
@@ -158,7 +158,7 @@ bool M_extension::Exec_M_DIV() {
 
 	regs->setValue(rd, result);
 
-	log->SC_log(Log::INFO) << std::dec << "DIV: x" << rs1 << " / x" << rs2
+	FILE_LOG(logDEBUG) << std::dec << "DIV: x" << rs1 << " / x" << rs2
 			<< " -> x" << rd << "(" << result << ")" << std::endl;
 
 	return true;
@@ -185,7 +185,7 @@ bool M_extension::Exec_M_DIVU() {
 
 	regs->setValue(rd, result);
 
-	log->SC_log(Log::INFO) << std::dec << "DIVU: x" << rs1 << " / x" << rs2
+	FILE_LOG(logDEBUG) << std::dec << "DIVU: x" << rs1 << " / x" << rs2
 			<< " -> x" << rd << "(" << result << ")" << std::endl;
 
 	return true;
@@ -213,7 +213,7 @@ bool M_extension::Exec_M_REM() {
 
 	regs->setValue(rd, result);
 
-	log->SC_log(Log::INFO) << std::dec << "REM: x" << rs1 << " / x" << rs2
+	FILE_LOG(logDEBUG) << std::dec << "REM: x" << rs1 << " / x" << rs2
 			<< " -> x" << rd << "(" << result << ")" << std::endl;
 
 	return true;
@@ -239,7 +239,7 @@ bool M_extension::Exec_M_REMU() {
 
 	regs->setValue(rd, result);
 
-	log->SC_log(Log::INFO) << std::dec << "REMU: x" << rs1 << " / x" << rs2
+	FILE_LOG(logDEBUG) << std::dec << "REMU: x" << rs1 << " / x" << rs2
 			<< " -> x" << rd << "(" << result << ")" << std::endl;
 
 	return true;

@@ -22,8 +22,7 @@ Memory::Memory(sc_core::sc_module_name name, std::string filename) :
 	memory_offset = 0;
 	readHexFile(filename);
 
-	log = Log::getInstance();
-	log->SC_log(Log::INFO) << "Using file: " << filename << std::endl;
+	FILE_LOG(logINFO) << "Using file: " << filename << std::endl;
 }
 
 Memory::Memory(sc_core::sc_module_name name, bool use_file) :
@@ -36,8 +35,7 @@ Memory::Memory(sc_core::sc_module_name name, bool use_file) :
 
 	mem = new uint8_t[SIZE];
 
-	log = Log::getInstance();
-	log->SC_log(Log::INFO) << "Memory instantiated wihtout file" << std::endl;
+	FILE_LOG(logINFO) << "Memory instantiated wihtout file" << std::endl;
 }
 
 Memory::~Memory() {

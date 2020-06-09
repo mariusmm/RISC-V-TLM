@@ -82,10 +82,8 @@ void process_arguments(int argc, char *argv[]) {
 
 	int c;
 	int debug_level;
-	Log *log;
 
-	log = Log::getInstance();
-	log->setLogLevel(Log::ERROR);
+	//log->setLogLevel(Log::ERROR);
 	while ((c = getopt(argc, argv, "D:f:?")) != -1) {
 		switch (c) {
 		case 'D':
@@ -93,19 +91,19 @@ void process_arguments(int argc, char *argv[]) {
 
 			switch (debug_level) {
 			case 3:
-				log->setLogLevel(Log::INFO);
+//				log->setLogLevel(Log::INFO);
 				break;
 			case 2:
-				log->setLogLevel(Log::WARNING);
+//				log->setLogLevel(Log::WARNING);
 				break;
 			case 1:
-				log->setLogLevel(Log::DEBUG);
+//				log->setLogLevel(Log::DEBUG);
 				break;
 			case 0:
-				log->setLogLevel(Log::ERROR);
+//				log->setLogLevel(Log::ERROR);
 				break;
 			default:
-				log->setLogLevel(Log::INFO);
+//				log->setLogLevel(Log::INFO);
 				break;
 			}
 			break;

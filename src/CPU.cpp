@@ -16,7 +16,6 @@ CPU::CPU(sc_core::sc_module_name name, uint32_t PC) :
 	mem_intf = new MemoryInterface();
 
 	perf = Performance::getInstance();
-	log = Log::getInstance();
 
 	register_bank->setPC(PC);
 
@@ -68,7 +67,7 @@ bool CPU::cpu_process_IRQ() {
 	if (interrupt == true) {
 		csr_temp = register_bank->getCSR(CSR_MSTATUS);
 		if ((csr_temp & MSTATUS_MIE) == 0) {
-			log->SC_log(Log::DEBUG) << "interrupt delayed" << std::endl;
+			FILE_LOG(logDEBUG) << "interrupt delayed" << std::endl;
 			return ret_value;
 		}
 
@@ -77,12 +76,12 @@ bool CPU::cpu_process_IRQ() {
 		if ((csr_temp & MIP_MEIP) == 0) {
 			csr_temp |= MIP_MEIP;  // MEIP bit in MIP register (11th bit)
 			register_bank->setCSR(CSR_MIP, csr_temp);
-			log->SC_log(Log::DEBUG) << "Interrupt!" << std::endl;
+			FILE_LOG(logDEBUG) << "Interrupt!" << std::endl;
 
 			/* updated MEPC register */
 			old_pc = register_bank->getPC();
 			register_bank->setCSR(CSR_MEPC, old_pc);
-			log->SC_log(Log::INFO) << "Old PC Value 0x" << std::hex << old_pc
+			FILE_LOG(logINFO) << "Old PC Value 0x" << std::hex << old_pc
 					<< std::endl;
 
 			/* update MCAUSE register */
@@ -91,7 +90,7 @@ bool CPU::cpu_process_IRQ() {
 			/* set new PC address */
 			new_pc = register_bank->getCSR(CSR_MTVEC);
 			//new_pc = new_pc & 0xFFFFFFFC; // last two bits always to 0
-			log->SC_log(Log::DEBUG) << "NEW PC Value 0x" << std::hex << new_pc
+			FILE_LOG(logDEBUG) << "NEW PC Value 0x" << std::hex << new_pc
 					<< std::endl;
 			register_bank->setPC(new_pc);
 
@@ -155,7 +154,7 @@ void CPU::CPU_thread(void) {
 
 		perf->codeMemoryRead();
 
-		log->SC_log(Log::INFO) << "PC: 0x" << std::hex << register_bank->getPC()
+		FILE_LOG(logINFO) << "PC: 0x" << std::hex << register_bank->getPC()
 				<< ". ";
 
 		inst->setInstr(INSTR);

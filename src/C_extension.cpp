@@ -157,9 +157,7 @@ bool C_extension::Exec_C_JR() {
 	new_pc = (regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE;
 	regs->setPC(new_pc);
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << "JR: PC <- 0x" << std::hex << new_pc << std::endl;
-	}
+		FILE_LOG(logINFO) << "JR: PC <- 0x" << std::hex << new_pc << std::endl;
 
 	return true;
 }
@@ -175,12 +173,10 @@ bool C_extension::Exec_C_MV() {
 	calc = regs->getValue(rs1) + regs->getValue(rs2);
 	regs->setValue(rd, calc);
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << "C.MV: x" << std::dec << rs1 << "(0x" << std::hex
+		FILE_LOG(logINFO) << "C.MV: x" << std::dec << rs1 << "(0x" << std::hex
 			<< regs->getValue(rs1) << ") + x" << std::dec << rs2 << "(0x"
 			<< std::hex << regs->getValue(rs2) << ") -> x" << std::dec << rd
 			<< "(0x" << std::hex << calc << ")" << std::endl;
-	}
 
 	return true;
 }
@@ -196,10 +192,8 @@ bool C_extension::Exec_C_ADD() {
 	calc = regs->getValue(rs1) + regs->getValue(rs2);
 	regs->setValue(rd, calc);
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << "C.ADD: x" << std::dec << rs1 << " + x" << rs2
+		FILE_LOG(logINFO) << "C.ADD: x" << std::dec << rs1 << " + x" << rs2
 			<< " -> x" << rd << "(0x" << std::hex << calc << ")" << std::endl;
-	}
 
 	return true;
 }
@@ -221,11 +215,9 @@ bool C_extension::Exec_C_LWSP() {
 
 	regs->setValue(rd, data);
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << "C.LWSP: x" << std::dec << rs1 << " + " << imm
+		FILE_LOG(logINFO) << "C.LWSP: x" << std::dec << rs1 << " + " << imm
 			<< " (@0x" << std::hex << mem_addr << std::dec << ") -> x" << rd
 			<< "(" << std::hex << data << ")" << std::dec << std::endl;
-	}
 
 	return true;
 }
@@ -247,11 +239,9 @@ bool C_extension::Exec_C_ADDI4SPN() {
 	calc = regs->getValue(rs1) + imm;
 	regs->setValue(rd, calc);
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << std::dec << "C.ADDI4SPN: x" << rs1 << "(0x"
+		FILE_LOG(logINFO) << std::dec << "C.ADDI4SPN: x" << rs1 << "(0x"
 			<< std::hex << regs->getValue(rs1) << ") + " << std::dec << imm
 			<< " -> x" << rd << "(0x" << std::hex << calc << ")" << std::endl;
-	}
 
 	return true;
 }
@@ -270,7 +260,7 @@ bool C_extension::Exec_C_ADDI16SP() {
 		calc = regs->getValue(rs1) + imm;
 		regs->setValue(rd, calc);
 
-		log->SC_log(Log::INFO) << std::dec << "C.ADDI16SP: x" << rs1 << " + "
+		FILE_LOG(logINFO) << std::dec << "C.ADDI16SP: x" << rs1 << " + "
 				<< std::dec << imm << " -> x" << rd << "(0x" << std::hex << calc
 				<< ")" << std::endl;
 	} else {
@@ -278,7 +268,7 @@ bool C_extension::Exec_C_ADDI16SP() {
 		rd = get_rd();
 		imm = get_imm_LUI();
 		regs->setValue(rd, imm);
-		log->SC_log(Log::INFO) << std::dec << "C.LUI x" << rd << " <- 0x"
+		FILE_LOG(logINFO) << std::dec << "C.LUI x" << rd << " <- 0x"
 				<< std::hex << imm << std::endl;
 	}
 
@@ -301,11 +291,9 @@ bool C_extension::Exec_C_SWSP() {
 
 	mem_intf->writeDataMem(mem_addr, data, 4);
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << std::dec << "C.SWSP: x" << rs2 << "(0x"
+		FILE_LOG(logINFO) << std::dec << "C.SWSP: x" << rs2 << "(0x"
 			<< std::hex << data << ") -> x" << std::dec << rs1 << " + " << imm
 			<< " (@0x" << std::hex << mem_addr << std::dec << ")" << std::endl;
-	}
 
 	return true;
 }
@@ -326,11 +314,9 @@ bool C_extension::Exec_C_BEQZ() {
 		new_pc = regs->getPC();
 	}
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << "C.BEQZ: x" << std::dec << rs1 << "(" << val1
+		FILE_LOG(logINFO) << "C.BEQZ: x" << std::dec << rs1 << "(" << val1
 			<< ") == 0? -> PC (0x" << std::hex << new_pc << ")" << std::dec
 			<< std::endl;
-	}
 
 	return true;
 }
@@ -351,11 +337,10 @@ bool C_extension::Exec_C_BNEZ() {
 		new_pc = regs->getPC();
 	}
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << "C.BNEZ: x" << std::dec << rs1 << "(0x"
+
+		FILE_LOG(logINFO) << "C.BNEZ: x" << std::dec << rs1 << "(0x"
 			<< std::hex << val1 << ") != 0? -> PC (0x" << std::hex << new_pc
 			<< ")" << std::dec << std::endl;
-	}
 
 	return true;
 }
@@ -372,11 +357,9 @@ bool C_extension::Exec_C_LI() {
 	calc = regs->getValue(rs1) + imm;
 	regs->setValue(rd, calc);
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << std::dec << "C.LI: x" << rs1 << "("
+		FILE_LOG(logINFO) << std::dec << "C.LI: x" << rs1 << "("
 			<< regs->getValue(rs1) << ") + " << imm << " -> x" << rd << "("
 			<< calc << ")" << std::endl;
-	}
 
 	return true;
 }
@@ -395,10 +378,8 @@ bool C_extension::Exec_C_SRLI() {
 	calc = ((uint32_t) regs->getValue(rs1)) >> shift;
 	regs->setValue(rd, calc);
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << "C.SRLI: x" << rs1 << " >> " << shift << " -> x"
+		FILE_LOG(logINFO) << "C.SRLI: x" << rs1 << " >> " << shift << " -> x"
 			<< rd << std::endl;
-	}
 
 	return true;
 }
@@ -417,10 +398,9 @@ bool C_extension::Exec_C_SRAI() {
 	calc = (int32_t) regs->getValue(rs1) >> shift;
 	regs->setValue(rd, calc);
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << "C.SRAI: x" << rs1 << " >> " << std::dec << shift
+		FILE_LOG(logINFO) << "C.SRAI: x" << rs1 << " >> " << std::dec << shift
 			<< " -> x" << rd << "(" << calc << ")" << std::endl;
-	}
+
 
 	return true;
 }
@@ -439,10 +419,8 @@ bool C_extension::Exec_C_SLLI() {
 	calc = ((uint32_t) regs->getValue(rs1)) << shift;
 	regs->setValue(rd, calc);
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << "C.SLLI: x" << std::dec << rs1 << " << " << shift
+		FILE_LOG(logINFO) << "C.SLLI: x" << std::dec << rs1 << " << " << shift
 			<< " -> x" << rd << "(0x" << calc << ")" << std::endl;
-	}
 
 	return true;
 }
@@ -461,10 +439,8 @@ bool C_extension::Exec_C_ANDI() {
 	calc = aux & imm;
 	regs->setValue(rd, calc);
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << "C.ANDI: x" << rs1 << "(" << aux << ") AND "
+		FILE_LOG(logINFO) << "C.ANDI: x" << rs1 << "(" << aux << ") AND "
 			<< imm << " -> x" << rd << std::endl;
-	}
 
 	return true;
 }
@@ -480,10 +456,8 @@ bool C_extension::Exec_C_SUB() {
 	calc = regs->getValue(rs1) - regs->getValue(rs2);
 	regs->setValue(rd, calc);
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << "C.SUB: x" << std::dec << rs1 << " - x" << rs2
+		FILE_LOG(logINFO) << "C.SUB: x" << std::dec << rs1 << " - x" << rs2
 			<< " -> x" << rd << std::endl;
-	}
 
 	return true;
 }
@@ -499,10 +473,8 @@ bool C_extension::Exec_C_XOR() {
 	calc = regs->getValue(rs1) ^ regs->getValue(rs2);
 	regs->setValue(rd, calc);
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << "C.XOR: x" << std::dec << rs1 << " XOR x" << rs2
+		FILE_LOG(logINFO) << "C.XOR: x" << std::dec << rs1 << " XOR x" << rs2
 			<< "-> x" << rd << std::endl;
-	}
 
 	return true;
 }
@@ -518,10 +490,8 @@ bool C_extension::Exec_C_OR() {
 	calc = regs->getValue(rs1) | regs->getValue(rs2);
 	regs->setValue(rd, calc);
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << "C_OR: x" << std::dec << rs1 << " OR x" << rs2
+		FILE_LOG(logINFO) << "C_OR: x" << std::dec << rs1 << " OR x" << rs2
 			<< "-> x" << rd << std::endl;
-	}
 
 	return true;
 }
@@ -537,10 +507,8 @@ bool C_extension::Exec_C_AND() {
 	calc = regs->getValue(rs1) & regs->getValue(rs2);
 	regs->setValue(rd, calc);
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << "C.AND: x" << std::dec << rs1 << " AND x" << rs2
+		FILE_LOG(logINFO) << "C.AND: x" << std::dec << rs1 << " AND x" << rs2
 			<< "-> x" << rd << std::endl;
-	}
 
 	return true;
 }
@@ -557,11 +525,9 @@ bool C_extension::Exec_C_ADDI() {
 	calc = regs->getValue(rs1) + imm;
 	regs->setValue(rd, calc);
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << "C.ADDI: x" << std::dec << rs1 << " + " << imm
+		FILE_LOG(logINFO) << "C.ADDI: x" << std::dec << rs1 << " + " << imm
 			<< " -> x" << std::dec << rd << "(0x" << std::hex << calc << ")"
 			<< std::endl;
-	}
 
 	return true;
 }
@@ -580,11 +546,9 @@ bool C_extension::Exec_C_JALR() {
 	new_pc = (regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE;
 	regs->setPC(new_pc);
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << "C.JALR: x" << std::dec << rd << " <- 0x"
+		FILE_LOG(logINFO) << "C.JALR: x" << std::dec << rd << " <- 0x"
 			<< std::hex << old_pc + 4 << " PC <- 0x" << std::hex << new_pc
 			<< std::endl;
-	}
 
 	return true;
 }
@@ -603,12 +567,10 @@ bool C_extension::Exec_C_LW() {
 	data = mem_intf->readDataMem(mem_addr, 4);
 	regs->setValue(rd, data);
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << std::dec << "C.LW: x" << rs1 << "(0x" << std::hex
+		FILE_LOG(logINFO) << std::dec << "C.LW: x" << rs1 << "(0x" << std::hex
 			<< regs->getValue(rs1) << ") + " << std::dec << imm << " (@0x"
 			<< std::hex << mem_addr << std::dec << ") -> x" << rd << std::hex
 			<< " (0x" << data << ")" << std::endl;
-	}
 
 	return true;
 }
@@ -628,11 +590,9 @@ bool C_extension::Exec_C_SW() {
 
 	mem_intf->writeDataMem(mem_addr, data, 4);
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << "C.SW: x" << std::dec << rs2 << "(0x" << std::hex
+		FILE_LOG(logINFO) << "C.SW: x" << std::dec << rs2 << "(0x" << std::hex
 			<< data << ") -> x" << std::dec << rs1 << " + 0x" << std::hex << imm
 			<< " (@0x" << std::hex << mem_addr << std::dec << ")" << std::endl;
-	}
 
 	return true;
 }
@@ -652,11 +612,9 @@ bool C_extension::Exec_C_JAL(int m_rd) {
 	old_pc = old_pc + 2;
 	regs->setValue(rd, old_pc);
 
-	if (log->getLogLevel() > Log::INFO) {
-		log->SC_log(Log::INFO) << "C.JAL: x" << std::dec << rd << " <- 0x"
+		FILE_LOG(logINFO) << "C.JAL: x" << std::dec << rd << " <- 0x"
 			<< std::hex << old_pc << std::dec << ". PC + 0x" << std::hex
 			<< mem_addr << " -> PC (0x" << new_pc << ")" << std::endl;
-	}
 
 	return true;
 }

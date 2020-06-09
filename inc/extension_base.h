@@ -51,7 +51,7 @@ protected:
 	sc_dt::sc_uint<32> m_instr;
 	Registers *regs;
 	Performance *perf;
-	Log *log;
+//	Log *log;
 	MemoryInterface *mem_intf;
 };
 

@@ -83,7 +83,7 @@ public:
 			sc_core::sc_time &delay);
 
 private:
-	Log *log;
+//	Log *log;
 
 	bool instr_direct_mem_ptr(tlm::tlm_generic_payload&,
 			tlm::tlm_dmi &dmi_data);

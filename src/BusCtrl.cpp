@@ -15,7 +15,7 @@ BusCtrl::BusCtrl(sc_core::sc_module_name name) :
 				"trace_socket") {
 	cpu_instr_socket.register_b_transport(this, &BusCtrl::b_transport);
 	cpu_data_socket.register_b_transport(this, &BusCtrl::b_transport);
-	log = Log::getInstance();
+
 	cpu_instr_socket.register_get_direct_mem_ptr(this,
 			&BusCtrl::instr_direct_mem_ptr);
 	memory_socket.register_invalidate_direct_mem_ptr(this,
