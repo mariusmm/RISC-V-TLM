@@ -11,7 +11,7 @@
 Registers::Registers() {
 
 	memset(register_bank, 0, sizeof(uint32_t) * 32); // 32 registers of 32 bits each
-	memset(CSR, 0, sizeof(uint32_t) * 4096);
+	//memset(CSR, 0, sizeof(uint32_t) * 4096);
 	perf = Performance::getInstance();
 
 	initCSR();
@@ -156,7 +156,7 @@ uint32_t Registers::getCSR(int csr) {
 						- sc_core::sc_time(sc_core::SC_ZERO_TIME)).to_double())
 				>> 32 & 0x00000000FFFFFFFF);
 		break;
-	default:
+	[[likely]] default:
 		ret_value = CSR[csr];
 		break;
 	}

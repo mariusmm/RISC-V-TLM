@@ -11,6 +11,7 @@
 
 #define SC_INCLUDE_DYNAMIC_PROCESSES
 #include <iomanip>
+#include <unordered_map>
 
 #include "systemc"
 #include "tlm.h"
@@ -254,7 +255,10 @@ private:
 	/**
 	 * CSR registers (4096 maximum)
 	 */
-	uint32_t CSR[4096];
+	//uint32_t CSR[4096];
+	std::unordered_map<unsigned int, uint32_t> CSR;
+
+
 	Performance *perf;
 
 	void initCSR(void);
