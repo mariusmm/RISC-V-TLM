@@ -162,7 +162,7 @@ void CPU::CPU_thread(void) {
 
 		/* check what type of instruction is and execute it */
 		switch (inst->check_extension()) {
-		case BASE_EXTENSION:
+		[[likely]] case BASE_EXTENSION:
 			PC_not_affected = exec->process_instruction(*inst);
 			incPCby2 = false;
 			break;
@@ -178,7 +178,7 @@ void CPU::CPU_thread(void) {
 			PC_not_affected = a_inst->process_instruction(*inst);
 			incPCby2 = false;
 			break;
-		default:
+		[[unlikely]] default:
 			std::cout << "Extension not implemented yet" << std::endl;
 			inst->dump();
 			exec->NOP();
@@ -193,7 +193,7 @@ void CPU::CPU_thread(void) {
 		/* Process IRQ (if any) */
 		cpu_process_IRQ();
 
-		/* Fixed instruction time to 10 ns (i.e. 100 MHz)*/
+		/* Fixed instruction time to 10 ns (i.e. 100 MHz) */
 //#define USE_QK
 #ifdef USE_QK
 		// Model time used for additional processing

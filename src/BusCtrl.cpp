@@ -37,7 +37,7 @@ void BusCtrl::b_transport(tlm::tlm_generic_payload &trans,
 	case TRACE_MEMORY_ADDRESS / 4:
 		trace_socket->b_transport(trans, delay);
 		break;
-	default:
+	[[likely]] default:
 		memory_socket->b_transport(trans, delay);
 		break;
 	}

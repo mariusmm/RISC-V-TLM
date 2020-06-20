@@ -33,7 +33,7 @@ op_C_Codes C_extension::decode() {
 		case C_FSW:
 			return OP_C_FSW;
 			break;
-		default:
+		[[unlikely]] default:
 			return OP_C_ERROR;
 			break;
 		}
@@ -90,7 +90,7 @@ op_C_Codes C_extension::decode() {
 		case C_BNEZ:
 			return OP_C_BNEZ;
 			break;
-		default:
+		[[unlikely]] default:
 			return OP_C_ERROR;
 			break;
 		}
@@ -131,13 +131,13 @@ op_C_Codes C_extension::decode() {
 			return OP_C_SWSP;
 			break;
 		case C_FWWSP:
-		default:
+		[[unlikely]] default:
 			return OP_C_ERROR;
 			break;
 		}
 		break;
 
-	default:
+	[[unlikely]] default:
 		return OP_C_ERROR;
 		break;
 
@@ -745,7 +745,7 @@ bool C_extension::process_instruction(Instruction &inst) {
 	case OP_C_AND:
 		Exec_C_AND();
 		break;
-	default:
+	[[unlikely]] default:
 		std::cout << "C instruction not implemented yet" << std::endl;
 		inst.dump();
 		NOP();

@@ -35,7 +35,7 @@ op_M_Codes M_extension::decode() {
 	case M_REMU:
 		return OP_M_REMU;
 		break;
-	default:
+	[[unlikely]] default:
 		return OP_M_ERROR;
 		break;
 	}
@@ -275,7 +275,7 @@ bool M_extension::process_instruction(Instruction &inst) {
 	case OP_M_REMU:
 		Exec_M_REMU();
 		break;
-	default:
+	[[unlikely]] default:
 		std::cout << "M instruction not implemented yet" << std::endl;
 		inst.dump();
 		//NOP(inst);

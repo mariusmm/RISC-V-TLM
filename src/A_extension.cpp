@@ -44,7 +44,7 @@ op_A_Codes A_extension::decode() {
 	case A_AMOMAXU:
 		return OP_A_AMOMAXU;
 		break;
-	default:
+	[[unlikely]] default:
 		return OP_A_ERROR;
 		break;
 
@@ -405,7 +405,7 @@ bool A_extension::process_instruction(Instruction &inst) {
 	case OP_A_AMOMAXU:
 		Exec_A_AMOMAXU();
 		break;
-	default:
+	[[unlikely]] default:
 		std::cout << "A instruction not implemented yet" << std::endl;
 		inst.dump();
 		NOP();

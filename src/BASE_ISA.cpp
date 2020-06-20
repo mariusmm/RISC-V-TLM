@@ -1316,7 +1316,7 @@ bool BASE_ISA::process_instruction(Instruction &inst) {
 	case OP_SFENCE:
 		Exec_SFENCE();
 		break;
-	default:
+	[[unlikely]] default:
 		std::cout << "Wrong instruction" << std::endl;
 		inst.dump();
 		NOP();
