@@ -7,7 +7,6 @@ CC       = riscv32-unknown-elf-gcc
 CFLAGS = -Wall -I. -O0 -Xlinker --gc-sections -lgcc -lc -static --specs=nano.specs
 
 
-LINKER   = riscv32-unknown-linux-gnu-gcc
 # linking flags here
 LDFLAGS   = -I. --entry main -L/opt/riscv/riscv32-unknown-elf/lib/ -T ld_script.ld
 LIBS   = $(EXTRA_LIBS)

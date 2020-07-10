@@ -6,8 +6,6 @@ CC       = riscv32-unknown-elf-gcc
 # compiling flags here
 CFLAGS = -Wall -I. -O0 -march=rv32i -mabi=ilp32 --specs=nosys.specs
 
-
-LINKER   = riscv32-unknown-linux-gnu-gcc
 # linking flags here
 LFLAGS = -I.
 LIBS   = $(EXTRA_LIBS)

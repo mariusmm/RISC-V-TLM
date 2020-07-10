@@ -7,7 +7,6 @@ CC       = riscv32-unknown-elf-gcc
 CFLAGS = -Wall -L. -O0 -g -static  
 
 
-LINKER   = riscv32-unknown-linux-gnu-gcc
 # linking flags here
 LFLAGS   = -I. --entry main
 LIBS   = $(EXTRA_LIBS)

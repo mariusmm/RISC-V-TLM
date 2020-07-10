@@ -9,7 +9,6 @@ CFLAGS = -Wall -I. -O0 -nostdlib -march=rv32i -mabi=ilp32 --entry main
 #CFLAGS = -Wall -I. -O0 -nodefaultlibs -march=rv32i -mabi=ilp32
 
 
-LINKER   = riscv32-unknown-linux-gnu-gcc
 # linking flags here
 LFLAGS   = -I. --entry main
 LIBS   = $(EXTRA_LIBS)
