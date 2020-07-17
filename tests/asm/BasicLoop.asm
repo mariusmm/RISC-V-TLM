@@ -8,3 +8,4 @@ loop:
   SUB t1, t1, t2
   BNE t1, zero, loop
 # END
+  ECALL
