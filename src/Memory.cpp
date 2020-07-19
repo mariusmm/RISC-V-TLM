@@ -86,7 +86,7 @@ void Memory::b_transport(tlm::tlm_generic_payload &trans,
 		memcpy(&mem[adr], ptr, len);
 
 	// Illustrates that b_transport may block
-	wait(delay);
+	sc_core::wait(delay);
 
 	// Reset timing annotation after waiting
 	delay = sc_core::SC_ZERO_TIME;

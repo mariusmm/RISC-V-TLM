@@ -235,6 +235,7 @@ bool A_extension::Exec_A_AMOOR() {
 	log->SC_log(Log::INFO) << std::dec << "AMOOR " << std::endl;
 	return true;
 }
+
 bool A_extension::Exec_A_AMOMIN() {
 	uint32_t mem_addr = 0;
 	int rd, rs1, rs2;
