@@ -22,6 +22,8 @@
 
 #include "Log.h"
 
+#define NUM_PORTS 4
+
 /**
  * Memory mapped Trace peripheral address
  */
@@ -46,12 +48,14 @@ public:
 	/**
 	 * @brief TLM target socket CPU instruction memory bus
 	 */
-	tlm_utils::simple_target_socket_tagged<BusCtrl> cpu_instr_socket[2];
+	std::array<tlm_utils::simple_target_socket_tagged<BusCtrl>, NUM_PORTS> cpu_instr_socket;
+	//tlm_utils::simple_target_socket_tagged<BusCtrl> cpu_instr_socket[NUM_PORTS];
 
 	/**
 	 * @brief TLM target socket CPU data memory bus
 	 */
-	tlm_utils::simple_target_socket_tagged<BusCtrl> cpu_data_socket[2];
+	std::array<tlm_utils::simple_target_socket_tagged<BusCtrl>, NUM_PORTS> cpu_data_socket;
+	//tlm_utils::simple_target_socket_tagged<BusCtrl> cpu_data_socket[NUM_PORTS];
 
 	/**
 	 * @brief TLM initiator socket Main memory bus

@@ -32,7 +32,7 @@ public:
 	// TLM-2 socket, defaults to 32-bits wide, base protocol
 	tlm_utils::simple_target_socket<Timer> socket;
 
-	tlm_utils::simple_initiator_socket<Timer> irq_line[2];
+	tlm_utils::simple_initiator_socket<Timer> irq_line[4];
 
 	/**
 	 *

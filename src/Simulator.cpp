@@ -35,6 +35,8 @@ std::string filename;
 SC_MODULE(Simulator) {
 	CPU *cpuA;
 	CPU *cpuB;
+	CPU *cpuC;
+	CPU *cpuD;
 
 	Memory *MainMemory;
 	BusCtrl *Bus;
@@ -49,6 +51,8 @@ SC_MODULE(Simulator) {
 
 		cpuA = new CPU("cpuA", start_PC);
 		cpuB = new CPU("cpuB", start_PC);
+		cpuC = new CPU("cpuC", start_PC);
+		cpuD = new CPU("cpuD", start_PC);
 
 		Bus = new BusCtrl("BusCtrl");
 		trace = new Trace("Trace");
@@ -60,6 +64,12 @@ SC_MODULE(Simulator) {
 		cpuB->instr_bus.bind(Bus->cpu_instr_socket[1]);
 		cpuB->mem_intf->data_bus.bind(Bus->cpu_data_socket[1]);
 
+		cpuC->instr_bus.bind(Bus->cpu_instr_socket[2]);
+		cpuC->mem_intf->data_bus.bind(Bus->cpu_data_socket[2]);
+
+		cpuD->instr_bus.bind(Bus->cpu_instr_socket[3]);
+		cpuD->mem_intf->data_bus.bind(Bus->cpu_data_socket[3]);
+
 		Bus->memory_socket.bind(MainMemory->socket);
 		Bus->trace_socket.bind(trace->socket);
 		Bus->timer_socket.bind(timer->socket);
@@ -68,6 +78,8 @@ SC_MODULE(Simulator) {
 		// cpu->interrupt.bind(IRQ);
 		timer->irq_line[0].bind(cpuA->irq_line_socket);
 		timer->irq_line[1].bind(cpuB->irq_line_socket);
+		timer->irq_line[2].bind(cpuC->irq_line_socket);
+		timer->irq_line[3].bind(cpuD->irq_line_socket);
 	}
 
 	~Simulator() {

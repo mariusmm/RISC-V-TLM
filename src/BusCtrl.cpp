@@ -13,12 +13,17 @@ BusCtrl::BusCtrl(sc_core::sc_module_name name) :
 		sc_module(name), memory_socket("memory_socket"), trace_socket(
 				"trace_socket") {
 
-
-	cpu_instr_socket[0].register_b_transport(this, &BusCtrl::b_transport, 0);
-	cpu_data_socket[0].register_b_transport(this, &BusCtrl::b_transport, 0);
-
-	cpu_instr_socket[1].register_b_transport(this, &BusCtrl::b_transport, 0);
-	cpu_data_socket[1].register_b_transport(this, &BusCtrl::b_transport, 0);
+#if 1
+	//for (auto i{0}; i < cpu_instr_socket.size(); i++) {
+	for (std::size_t i{0}; i < cpu_instr_socket.size(); i++) {
+		cpu_instr_socket[i].register_b_transport(this, &BusCtrl::b_transport, i);
+		cpu_data_socket[i].register_b_transport(this, &BusCtrl::b_transport, i);
+	}
+#else
+	for (auto iter: cpu_instr_socket) {
+		iter.register_b_transport(this, &BusCtrl::b_transport, 0);
+	}
+ #endif
 
 	log = Log::getInstance();
 	cpu_instr_socket[0].register_get_direct_mem_ptr(this,
@@ -65,7 +70,8 @@ bool BusCtrl::instr_direct_mem_ptr(int id, tlm::tlm_generic_payload &gp,
 
 void BusCtrl::invalidate_direct_mem_ptr(sc_dt::uint64 start,
 		sc_dt::uint64 end) {
-	cpu_instr_socket[0]->invalidate_direct_mem_ptr(start, end);
-	cpu_instr_socket[1]->invalidate_direct_mem_ptr(start, end);
+	for (int i = 0; i < NUM_PORTS; i++) {
+		cpu_instr_socket[i]->invalidate_direct_mem_ptr(start, end);
+	}
 }
 
