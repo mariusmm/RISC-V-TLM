@@ -66,6 +66,12 @@ uint32_t MemoryInterfaceAT::readDataMem(uint32_t addr, int size) {
 		// Allow the memory manager to free the transaction object
 		trans->release();
 	}
+
+	// need to wait to protocol to finish before return
+	sc_core::wait(end_protocol);
+	// Allow the memory manager to free the transaction object
+	trans->release();
+
 	return data;
 }
 
@@ -114,6 +120,10 @@ void MemoryInterfaceAT::writeDataMem(uint32_t addr, uint32_t data, int size) {
 		trans->release();
 	}
 
+	sc_core::wait(end_protocol);
+	// Allow the memory manager to free the transaction object
+	trans->release();
+
 }
 
 tlm::tlm_sync_enum MemoryInterfaceAT::nb_transport_bw(
@@ -145,8 +155,8 @@ void MemoryInterfaceAT::peq_cb(tlm::tlm_generic_payload &trans, const tlm::tlm_p
            data_bus->nb_transport_fw( trans, fw_phase, delay );
            // Ignore return value
 
-           // Allow the memory manager to free the transaction object
-           trans.release();
+           end_protocol.notify();
+
        }
    }
 

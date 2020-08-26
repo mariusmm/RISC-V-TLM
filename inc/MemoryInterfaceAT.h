@@ -104,6 +104,7 @@ public:
 			sc_core::sc_time &delay);
 
     sc_core::sc_event end_request_event;
+    sc_core::sc_event end_protocol;
 
 	void peq_cb(tlm::tlm_generic_payload &trans, const tlm::tlm_phase &phase);
 
