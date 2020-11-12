@@ -60,6 +60,10 @@ public:
 	 */
 	void setLogLevel(enum LogLevel newLevel);
 
+	/**
+	 * @brief Returns log level
+	 * @return Current log level
+	 */
 	enum LogLevel getLogLevel();
 
 private:
