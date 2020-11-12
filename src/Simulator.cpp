@@ -49,10 +49,10 @@ SC_MODULE(Simulator) {
 		MainMemory = new Memory("Main_Memory", filename);
 		start_PC = MainMemory->getPCfromHEX();
 
-		cpuA = new CPU("cpuA", start_PC);
-		cpuB = new CPU("cpuB", start_PC);
-		cpuC = new CPU("cpuC", start_PC);
-		cpuD = new CPU("cpuD", start_PC);
+		cpuA = new CPU("cpuA", start_PC, 0);
+		cpuB = new CPU("cpuB", start_PC, 1);
+		cpuC = new CPU("cpuC", start_PC, 2);
+		cpuD = new CPU("cpuD", start_PC, 3);
 
 		Bus = new BusCtrl("BusCtrl");
 		trace = new Trace("Trace");
