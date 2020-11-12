@@ -1,7 +1,7 @@
 /**
  @file BusCtrl.h
  @brief Basic TLM-2 Bus controller
- @author Marius Monton
+ @author Màrius Montón
  @date September 2018
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -49,13 +49,11 @@ public:
 	 * @brief TLM target socket CPU instruction memory bus
 	 */
 	std::array<tlm_utils::simple_target_socket_tagged<BusCtrl>, NUM_PORTS> cpu_instr_socket;
-	//tlm_utils::simple_target_socket_tagged<BusCtrl> cpu_instr_socket[NUM_PORTS];
 
 	/**
 	 * @brief TLM target socket CPU data memory bus
 	 */
 	std::array<tlm_utils::simple_target_socket_tagged<BusCtrl>, NUM_PORTS> cpu_data_socket;
-	//tlm_utils::simple_target_socket_tagged<BusCtrl> cpu_data_socket[NUM_PORTS];
 
 	/**
 	 * @brief TLM initiator socket Main memory bus

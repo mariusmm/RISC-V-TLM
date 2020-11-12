@@ -5,13 +5,10 @@
  \date May 2020
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
-
 #include "MemoryInterface.h"
-
 
 MemoryInterface::MemoryInterface() :
 		data_bus("data_bus") {
-
 }
 
 /**

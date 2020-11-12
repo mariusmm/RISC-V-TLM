@@ -5,7 +5,6 @@
  \date May 2020
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
-
 #ifndef INC_MEMORYINTERFACE_H_
 #define INC_MEMORYINTERFACE_H_
 
@@ -15,6 +14,7 @@
 #include "tlm_utils/simple_initiator_socket.h"
 #include "tlm_utils/tlm_quantumkeeper.h"
 
+#include "MemoryInterface.h"
 #include "memory.h"
 #include "Log.h"
 

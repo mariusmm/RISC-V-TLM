@@ -1,11 +1,10 @@
 /**
  @file BusCtrl.cpp
  @brief Basic TLM-2 Bus controller
- @author Marius Monton
+ @author Màrius Montón
  @date September 2018
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
-
 #include "BusCtrl.h"
 
 SC_HAS_PROCESS(BusCtrl);
@@ -14,20 +13,21 @@ BusCtrl::BusCtrl(sc_core::sc_module_name name) :
 				"trace_socket") {
 
 #if 1
-	//for (auto i{0}; i < cpu_instr_socket.size(); i++) {
-	for (std::size_t i{0}; i < cpu_instr_socket.size(); i++) {
-		cpu_instr_socket[i].register_b_transport(this, &BusCtrl::b_transport, i);
+	for (std::size_t i { 0 }; i < cpu_instr_socket.size(); i++) {
+		cpu_instr_socket[i].register_b_transport(this, &BusCtrl::b_transport,
+				i);
 		cpu_data_socket[i].register_b_transport(this, &BusCtrl::b_transport, i);
 	}
 #else
-	for (auto iter: cpu_instr_socket) {
-		iter.register_b_transport(this, &BusCtrl::b_transport, 0);
-	}
- #endif
+for (auto iter: cpu_instr_socket) {
+               iter.register_b_transport(this, &BusCtrl::b_transport, 0);
+       }
+#endif
 
-	log = Log::getInstance();
 	cpu_instr_socket[0].register_get_direct_mem_ptr(this,
 			&BusCtrl::instr_direct_mem_ptr, 0);
+
+	log = Log::getInstance();
 	memory_socket.register_invalidate_direct_mem_ptr(this,
 			&BusCtrl::invalidate_direct_mem_ptr);
 }
@@ -47,7 +47,7 @@ void BusCtrl::b_transport(int id, tlm::tlm_generic_payload &trans,
 	case TRACE_MEMORY_ADDRESS / 4:
 		trace_socket->b_transport(trans, delay);
 		break;
-	default:
+	[[likely]] default:
 		memory_socket->b_transport(trans, delay);
 		break;
 	}
@@ -73,5 +73,6 @@ void BusCtrl::invalidate_direct_mem_ptr(sc_dt::uint64 start,
 	for (int i = 0; i < NUM_PORTS; i++) {
 		cpu_instr_socket[i]->invalidate_direct_mem_ptr(start, end);
 	}
+
 }
 
