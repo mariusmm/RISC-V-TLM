@@ -49,11 +49,21 @@ public:
 	tlm_utils::simple_target_socket<CPU> irq_line_socket;
 
 	/**
+	 * This constructor defaults mhtartid to value 0
 	 * @brief Constructor
 	 * @param name Module name
 	 * @param PC   Program Counter initialize value
 	 */
 	CPU(sc_core::sc_module_name name, uint32_t PC);
+
+	/**
+	 * @brief Constructor
+	 * @param name Module name
+	 * @param PC Program Counter initial value
+	 * @param mhartid Hart ID for this instance
+	 */
+	CPU(sc_core::sc_module_name name, uint32_t PC, uint32_t mhartid);
+
 
 	/**
 	 * @brief Destructor

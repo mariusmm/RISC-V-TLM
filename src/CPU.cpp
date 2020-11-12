@@ -9,7 +9,7 @@
 #include "CPU.h"
 
 SC_HAS_PROCESS(CPU);
-CPU::CPU(sc_core::sc_module_name name, uint32_t PC) :
+CPU::CPU(sc_core::sc_module_name name, uint32_t PC, uint32_t mhartid) :
 		sc_module(name), instr_bus("instr_bus"), default_time(10,
 				sc_core::SC_NS) {
 	register_bank = new Registers();
@@ -41,8 +41,14 @@ CPU::CPU(sc_core::sc_module_name name, uint32_t PC) :
 
 	m_qk = new tlm_utils::tlm_quantumkeeper();
 
+	register_bank->setCSR(CSR_MHARTID, mhartid);
+
 	SC_THREAD(CPU_thread);
 }
+
+CPU::CPU(sc_core::sc_module_name name, uint32_t PC) : CPU(name, PC, 0) {
+}
+
 
 CPU::~CPU() {
 	std::cout << "*********************************************" << std::endl;
