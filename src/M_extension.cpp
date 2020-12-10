@@ -60,7 +60,7 @@ bool M_extension::Exec_M_MUL() {
 	regs->setValue(rd, result);
 
 	log->SC_log(Log::INFO) << std::dec << "MUL: x" << rs1 << " * x" << rs2
-			<< " -> x" << rd << "(" << result << ")" << std::endl;
+			<< " -> x" << rd << "(" << result << ")" << "\n";
 
 	return true;
 }
@@ -84,7 +84,7 @@ bool M_extension::Exec_M_MULH() {
 	regs->setValue(rd, ret_value);
 
 	log->SC_log(Log::INFO) << std::dec << "MULH: x" << rs1 << " * x" << rs2
-			<< " -> x" << rd << "(" << result << ")" << std::endl;
+			<< " -> x" << rd << "(" << result << ")" << "\n";
 
 	return true;
 }
@@ -107,7 +107,7 @@ bool M_extension::Exec_M_MULHSU() {
 	regs->setValue(rd, result);
 
 	log->SC_log(Log::INFO) << std::dec << "MULHSU: x" << rs1 << " * x" << rs2
-			<< " -> x" << rd << "(" << result << ")" << std::endl;
+			<< " -> x" << rd << "(" << result << ")" << "\n";
 
 	return true;
 }
@@ -130,7 +130,7 @@ bool M_extension::Exec_M_MULHU() {
 	regs->setValue(rd, ret_value);
 
 	log->SC_log(Log::INFO) << std::dec << "MULHU: x" << rs1 << " * x" << rs2
-			<< " -> x" << rd << "(" << ret_value << ")" << std::endl;
+			<< " -> x" << rd << "(" << ret_value << ")" << "\n";
 
 	return true;
 }
@@ -159,7 +159,7 @@ bool M_extension::Exec_M_DIV() {
 	regs->setValue(rd, result);
 
 	log->SC_log(Log::INFO) << std::dec << "DIV: x" << rs1 << " / x" << rs2
-			<< " -> x" << rd << "(" << result << ")" << std::endl;
+			<< " -> x" << rd << "(" << result << ")" << "\n";
 
 	return true;
 }
@@ -186,7 +186,7 @@ bool M_extension::Exec_M_DIVU() {
 	regs->setValue(rd, result);
 
 	log->SC_log(Log::INFO) << std::dec << "DIVU: x" << rs1 << " / x" << rs2
-			<< " -> x" << rd << "(" << result << ")" << std::endl;
+			<< " -> x" << rd << "(" << result << ")" << "\n";
 
 	return true;
 }
@@ -214,7 +214,7 @@ bool M_extension::Exec_M_REM() {
 	regs->setValue(rd, result);
 
 	log->SC_log(Log::INFO) << std::dec << "REM: x" << rs1 << " / x" << rs2
-			<< " -> x" << rd << "(" << result << ")" << std::endl;
+			<< " -> x" << rd << "(" << result << ")" << "\n";
 
 	return true;
 }
@@ -240,7 +240,7 @@ bool M_extension::Exec_M_REMU() {
 	regs->setValue(rd, result);
 
 	log->SC_log(Log::INFO) << std::dec << "REMU: x" << rs1 << " / x" << rs2
-			<< " -> x" << rd << "(" << result << ")" << std::endl;
+			<< " -> x" << rd << "(" << result << ")" << "\n";
 
 	return true;
 }
@@ -276,7 +276,7 @@ bool M_extension::process_instruction(Instruction &inst) {
 		Exec_M_REMU();
 		break;
 	[[unlikely]] default:
-		std::cout << "M instruction not implemented yet" << std::endl;
+		std::cout << "M instruction not implemented yet" << "\n";
 		inst.dump();
 		//NOP(inst);
 		sc_core::sc_stop();

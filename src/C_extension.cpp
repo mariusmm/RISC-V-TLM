@@ -158,7 +158,7 @@ bool C_extension::Exec_C_JR() {
 	regs->setPC(new_pc);
 
 	if (log->getLogLevel() >= Log::INFO) {
-		log->SC_log(Log::INFO) << "JR: PC <- 0x" << std::hex << new_pc << std::endl;
+		log->SC_log(Log::INFO) << "JR: PC <- 0x" << std::hex << new_pc << "\n";
 	}
 
 	return true;
@@ -179,7 +179,7 @@ bool C_extension::Exec_C_MV() {
 		log->SC_log(Log::INFO) << "C.MV: x" << std::dec << rs1 << "(0x" << std::hex
 			<< regs->getValue(rs1) << ") + x" << std::dec << rs2 << "(0x"
 			<< std::hex << regs->getValue(rs2) << ") -> x" << std::dec << rd
-			<< "(0x" << std::hex << calc << ")" << std::endl;
+			<< "(0x" << std::hex << calc << ")" << "\n";
 	}
 
 	return true;
@@ -198,7 +198,7 @@ bool C_extension::Exec_C_ADD() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.ADD: x" << std::dec << rs1 << " + x" << rs2
-			<< " -> x" << rd << "(0x" << std::hex << calc << ")" << std::endl;
+			<< " -> x" << rd << "(0x" << std::hex << calc << ")" << "\n";
 	}
 
 	return true;
@@ -224,7 +224,7 @@ bool C_extension::Exec_C_LWSP() {
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.LWSP: x" << std::dec << rs1 << " + " << imm
 			<< " (@0x" << std::hex << mem_addr << std::dec << ") -> x" << rd
-			<< "(" << std::hex << data << ")" << std::dec << std::endl;
+			<< "(" << std::hex << data << ")" << std::dec << "\n";
 	}
 
 	return true;
@@ -250,7 +250,7 @@ bool C_extension::Exec_C_ADDI4SPN() {
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << std::dec << "C.ADDI4SPN: x" << rs1 << "(0x"
 			<< std::hex << regs->getValue(rs1) << ") + " << std::dec << imm
-			<< " -> x" << rd << "(0x" << std::hex << calc << ")" << std::endl;
+			<< " -> x" << rd << "(0x" << std::hex << calc << ")" << "\n";
 	}
 
 	return true;
@@ -272,14 +272,14 @@ bool C_extension::Exec_C_ADDI16SP() {
 
 		log->SC_log(Log::INFO) << std::dec << "C.ADDI16SP: x" << rs1 << " + "
 				<< std::dec << imm << " -> x" << rd << "(0x" << std::hex << calc
-				<< ")" << std::endl;
+				<< ")" << "\n";
 	} else {
 		/* C.LUI OPCODE */
 		rd = get_rd();
 		imm = get_imm_LUI();
 		regs->setValue(rd, imm);
 		log->SC_log(Log::INFO) << std::dec << "C.LUI x" << rd << " <- 0x"
-				<< std::hex << imm << std::endl;
+				<< std::hex << imm << "\n";
 	}
 
 	return true;
@@ -304,7 +304,7 @@ bool C_extension::Exec_C_SWSP() {
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << std::dec << "C.SWSP: x" << rs2 << "(0x"
 			<< std::hex << data << ") -> x" << std::dec << rs1 << " + " << imm
-			<< " (@0x" << std::hex << mem_addr << std::dec << ")" << std::endl;
+			<< " (@0x" << std::hex << mem_addr << std::dec << ")" << "\n";
 	}
 
 	return true;
@@ -329,7 +329,7 @@ bool C_extension::Exec_C_BEQZ() {
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.BEQZ: x" << std::dec << rs1 << "(" << val1
 			<< ") == 0? -> PC (0x" << std::hex << new_pc << ")" << std::dec
-			<< std::endl;
+			<< "\n";
 	}
 
 	return true;
@@ -354,7 +354,7 @@ bool C_extension::Exec_C_BNEZ() {
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.BNEZ: x" << std::dec << rs1 << "(0x"
 			<< std::hex << val1 << ") != 0? -> PC (0x" << std::hex << new_pc
-			<< ")" << std::dec << std::endl;
+			<< ")" << std::dec << "\n";
 	}
 
 	return true;
@@ -375,7 +375,7 @@ bool C_extension::Exec_C_LI() {
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << std::dec << "C.LI: x" << rs1 << "("
 			<< regs->getValue(rs1) << ") + " << imm << " -> x" << rd << "("
-			<< calc << ")" << std::endl;
+			<< calc << ")" << "\n";
 	}
 
 	return true;
@@ -397,7 +397,7 @@ bool C_extension::Exec_C_SRLI() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.SRLI: x" << rs1 << " >> " << shift << " -> x"
-			<< rd << std::endl;
+			<< rd << "\n";
 	}
 
 	return true;
@@ -419,7 +419,7 @@ bool C_extension::Exec_C_SRAI() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.SRAI: x" << rs1 << " >> " << std::dec << shift
-			<< " -> x" << rd << "(" << calc << ")" << std::endl;
+			<< " -> x" << rd << "(" << calc << ")" << "\n";
 	}
 
 	return true;
@@ -441,7 +441,7 @@ bool C_extension::Exec_C_SLLI() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.SLLI: x" << std::dec << rs1 << " << " << shift
-			<< " -> x" << rd << "(0x" << calc << ")" << std::endl;
+			<< " -> x" << rd << "(0x" << calc << ")" << "\n";
 	}
 
 	return true;
@@ -463,7 +463,7 @@ bool C_extension::Exec_C_ANDI() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.ANDI: x" << rs1 << "(" << aux << ") AND "
-			<< imm << " -> x" << rd << std::endl;
+			<< imm << " -> x" << rd << "\n";
 	}
 
 	return true;
@@ -482,7 +482,7 @@ bool C_extension::Exec_C_SUB() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.SUB: x" << std::dec << rs1 << " - x" << rs2
-			<< " -> x" << rd << std::endl;
+			<< " -> x" << rd << "\n";
 	}
 
 	return true;
@@ -501,7 +501,7 @@ bool C_extension::Exec_C_XOR() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.XOR: x" << std::dec << rs1 << " XOR x" << rs2
-			<< "-> x" << rd << std::endl;
+			<< "-> x" << rd << "\n";
 	}
 
 	return true;
@@ -520,7 +520,7 @@ bool C_extension::Exec_C_OR() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C_OR: x" << std::dec << rs1 << " OR x" << rs2
-			<< "-> x" << rd << std::endl;
+			<< "-> x" << rd << "\n";
 	}
 
 	return true;
@@ -539,7 +539,7 @@ bool C_extension::Exec_C_AND() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.AND: x" << std::dec << rs1 << " AND x" << rs2
-			<< "-> x" << rd << std::endl;
+			<< "-> x" << rd << "\n";
 	}
 
 	return true;
@@ -560,7 +560,7 @@ bool C_extension::Exec_C_ADDI() {
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.ADDI: x" << std::dec << rs1 << " + " << imm
 			<< " -> x" << std::dec << rd << "(0x" << std::hex << calc << ")"
-			<< std::endl;
+			<< "\n";
 	}
 
 	return true;
@@ -583,7 +583,7 @@ bool C_extension::Exec_C_JALR() {
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.JALR: x" << std::dec << rd << " <- 0x"
 			<< std::hex << old_pc + 4 << " PC <- 0x" << std::hex << new_pc
-			<< std::endl;
+			<< "\n";
 	}
 
 	return true;
@@ -607,7 +607,7 @@ bool C_extension::Exec_C_LW() {
 		log->SC_log(Log::INFO) << std::dec << "C.LW: x" << rs1 << "(0x" << std::hex
 			<< regs->getValue(rs1) << ") + " << std::dec << imm << " (@0x"
 			<< std::hex << mem_addr << std::dec << ") -> x" << rd << std::hex
-			<< " (0x" << data << ")" << std::endl;
+			<< " (0x" << data << ")" << "\n";
 	}
 
 	return true;
@@ -631,7 +631,7 @@ bool C_extension::Exec_C_SW() {
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.SW: x" << std::dec << rs2 << "(0x" << std::hex
 			<< data << ") -> x" << std::dec << rs1 << " + 0x" << std::hex << imm
-			<< " (@0x" << std::hex << mem_addr << std::dec << ")" << std::endl;
+			<< " (@0x" << std::hex << mem_addr << std::dec << ")" << "\n";
 	}
 
 	return true;
@@ -655,7 +655,7 @@ bool C_extension::Exec_C_JAL(int m_rd) {
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.JAL: x" << std::dec << rd << " <- 0x"
 			<< std::hex << old_pc << std::dec << ". PC + 0x" << std::hex
-			<< mem_addr << " -> PC (0x" << new_pc << ")" << std::endl;
+			<< mem_addr << " -> PC (0x" << new_pc << ")" << "\n";
 	}
 
 	return true;
@@ -746,7 +746,7 @@ bool C_extension::process_instruction(Instruction &inst) {
 		Exec_C_AND();
 		break;
 	[[unlikely]] default:
-		std::cout << "C instruction not implemented yet" << std::endl;
+		std::cout << "C instruction not implemented yet" << "\n";
 		inst.dump();
 		NOP();
 		break;

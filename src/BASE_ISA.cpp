@@ -92,7 +92,7 @@ bool BASE_ISA::Exec_LUI() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "LUI x" << std::dec << rd << " <- 0x" << std::hex
-			<< imm << std::endl;
+			<< imm << "\n";
 	}
 
 	return true;
@@ -111,7 +111,7 @@ bool BASE_ISA::Exec_AUIPC() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "AUIPC x" << std::dec << rd << " <- 0x"
-			<< std::hex << imm << " + PC (0x" << new_pc << ")" << std::endl;
+			<< std::hex << imm << " + PC (0x" << new_pc << ")" << "\n";
 	}
 
 	return true;
@@ -135,7 +135,7 @@ bool BASE_ISA::Exec_JAL() {
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "JAL: x" << std::dec << rd << " <- 0x" << std::hex
 			<< old_pc << std::dec << ". PC + 0x" << std::hex << mem_addr
-			<< " -> PC (0x" << new_pc << ")" << std::endl;
+			<< " -> PC (0x" << new_pc << ")" << "\n";
 	}
 
 	return true;
@@ -158,7 +158,7 @@ bool BASE_ISA::Exec_JALR() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "JALR: x" << std::dec << rd << " <- 0x"
-			<< std::hex << old_pc + 4 << " PC <- 0x" << new_pc << std::endl;
+			<< std::hex << old_pc + 4 << " PC <- 0x" << new_pc << "\n";
 	}
 	return true;
 }
@@ -182,7 +182,7 @@ bool BASE_ISA::Exec_BEQ() {
 		log->SC_log(Log::INFO) << "BEQ x" << std::dec << rs1 << "(0x" << std::hex
 			<< regs->getValue(rs1) << ") == x" << std::dec << rs2 << "(0x"
 			<< std::hex << regs->getValue(rs2) << ")? -> PC (0x" << std::hex
-			<< new_pc << ")" << std::dec << std::endl;
+			<< new_pc << ")" << std::dec << "\n";
 	}
 
 	return true;
@@ -211,7 +211,7 @@ bool BASE_ISA::Exec_BNE() {
 		log->SC_log(Log::INFO) << "BNE: x" << std::dec << rs1 << "(0x" << std::hex
 			<< val1 << ") == x" << std::dec << rs2 << "(0x" << std::hex << val2
 			<< ")? -> PC (0x" << std::hex << new_pc << ")" << std::dec
-			<< std::endl;
+			<< "\n";
 	}
 
 	return true;
@@ -236,7 +236,7 @@ bool BASE_ISA::Exec_BLT() {
 			<< (int32_t) regs->getValue(rs1) << ") < x" << std::dec << rs2
 			<< "(0x" << std::hex << (int32_t) regs->getValue(rs2)
 			<< ")? -> PC (0x" << std::hex << new_pc << ")" << std::dec
-			<< std::endl;
+			<< "\n";
 	}
 
 	return true;
@@ -261,7 +261,7 @@ bool BASE_ISA::Exec_BGE() {
 			<< (int32_t) regs->getValue(rs1) << ") > x" << std::dec << rs2
 			<< "(0x" << std::hex << (int32_t) regs->getValue(rs2)
 			<< ")? -> PC (0x" << std::hex << new_pc << ")" << std::dec
-			<< std::endl;
+			<< "\n";
 	}
 
 	return true;
@@ -286,7 +286,7 @@ bool BASE_ISA::Exec_BLTU() {
 		log->SC_log(Log::INFO) << "BLTU x" << std::dec << rs1 << "(0x" << std::hex
 			<< regs->getValue(rs1) << ") < x" << std::dec << rs2 << "(0x"
 			<< std::hex << regs->getValue(rs2) << ")? -> PC (0x" << std::hex
-			<< new_pc << ")" << std::dec << std::endl;
+			<< new_pc << ")" << std::dec << "\n";
 	}
 
 	return true;
@@ -310,7 +310,7 @@ bool BASE_ISA::Exec_BGEU() {
 		log->SC_log(Log::INFO) << "BGEU x" << std::dec << rs1 << "(0x" << std::hex
 			<< regs->getValue(rs1) << ") > x" << std::dec << rs2 << "(0x"
 			<< std::hex << regs->getValue(rs2) << ")? -> PC (0x" << std::hex
-			<< new_pc << ")" << std::dec << std::endl;
+			<< new_pc << ")" << std::dec << "\n";
 	}
 
 	return true;
@@ -332,7 +332,7 @@ bool BASE_ISA::Exec_LB() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "LB: x" << rs1 << " + " << imm << " (@0x"
-			<< std::hex << mem_addr << std::dec << ") -> x" << rd << std::endl;
+			<< std::hex << mem_addr << std::dec << ") -> x" << rd << "\n";
 	}
 
 	return true;
@@ -354,7 +354,7 @@ bool BASE_ISA::Exec_LH() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "LH: x" << rs1 << " + " << imm << " (@0x"
-			<< std::hex << mem_addr << std::dec << ") -> x" << rd << std::endl;
+			<< std::hex << mem_addr << std::dec << ") -> x" << rd << "\n";
 	}
 
 	return true;
@@ -378,7 +378,7 @@ bool BASE_ISA::Exec_LW() {
 		log->SC_log(Log::INFO) << std::dec << "LW: x" << rs1 << "(0x" << std::hex
 			<< regs->getValue(rs1) << ") + " << std::dec << imm << " (@0x"
 			<< std::hex << mem_addr << std::dec << ") -> x" << rd << std::hex
-			<< " (0x" << data << ")" << std::endl;
+			<< " (0x" << data << ")" << "\n";
 	}
 	return true;
 }
@@ -399,7 +399,7 @@ bool BASE_ISA::Exec_LBU() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "LBU: x" << rs1 << " + " << imm << " (@0x"
-			<< std::hex << mem_addr << std::dec << ") -> x" << rd << std::endl;
+			<< std::hex << mem_addr << std::dec << ") -> x" << rd << "\n";
 	}
 	return true;
 }
@@ -421,7 +421,7 @@ bool BASE_ISA::Exec_LHU() {
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "LHU: x" << std::dec << rs1 << " + " << imm
 			<< " (@0x" << std::hex << mem_addr << std::dec << ") -> x" << rd
-			<< "(0x" << std::hex << data << ")" << std::endl;
+			<< "(0x" << std::hex << data << ")" << "\n";
 	}
 
 	return true;
@@ -445,7 +445,7 @@ bool BASE_ISA::Exec_SB() {
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "SB: x" << std::dec << rs2 << " -> x" << rs1
 			<< " + 0x" << std::hex << imm << " (@0x" << std::hex << mem_addr
-			<< std::dec << ")" << std::endl;
+			<< std::dec << ")" << "\n";
 	}
 
 	return true;
@@ -469,7 +469,7 @@ bool BASE_ISA::Exec_SH() {
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "SH: x" << std::dec << rs2 << " -> x" << rs1
 			<< " + 0x" << std::hex << imm << " (@0x" << std::hex << mem_addr
-			<< std::dec << ")" << std::endl;
+			<< std::dec << ")" << "\n";
 	}
 
 	return true;
@@ -493,7 +493,7 @@ bool BASE_ISA::Exec_SW() {
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "SW: x" << std::dec << rs2 << "(0x" << std::hex
 			<< data << ") -> x" << std::dec << rs1 << " + 0x" << std::hex << imm
-			<< " (@0x" << std::hex << mem_addr << std::dec << ")" << std::endl;
+			<< " (@0x" << std::hex << mem_addr << std::dec << ")" << "\n";
 	}
 	return true;
 }
@@ -513,7 +513,7 @@ bool BASE_ISA::Exec_ADDI() {
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "ADDI: x" << std::dec << rs1 << " + " << imm
 			<< " -> x" << std::dec << rd << "(0x" << std::hex << calc << ")"
-			<< std::endl;
+			<< "\n";
 	}
 
 	return true;
@@ -530,11 +530,11 @@ bool BASE_ISA::Exec_SLTI() {
 	if (regs->getValue(rs1) < imm) {
 		regs->setValue(rd, 1);
 		log->SC_log(Log::INFO) << "SLTI: x" << rs1 << " < " << imm << " => "
-				<< "1 -> x" << rd << std::endl;
+				<< "1 -> x" << rd << "\n";
 	} else {
 		regs->setValue(rd, 0);
 		log->SC_log(Log::INFO) << "SLTI: x" << rs1 << " < " << imm << " => "
-				<< "0 -> x" << rd << std::endl;
+				<< "0 -> x" << rd << "\n";
 	}
 
 	return true;
@@ -551,11 +551,11 @@ bool BASE_ISA::Exec_SLTIU() {
 	if ((uint32_t) regs->getValue(rs1) < (uint32_t) imm) {
 		regs->setValue(rd, 1);
 		log->SC_log(Log::INFO) << "SLTIU: x" << rs1 << " < " << imm << " => "
-				<< "1 -> x" << rd << std::endl;
+				<< "1 -> x" << rd << "\n";
 	} else {
 		regs->setValue(rd, 0);
 		log->SC_log(Log::INFO) << "SLTIU: x" << rs1 << " < " << imm << " => "
-				<< "0 -> x" << rd << std::endl;
+				<< "0 -> x" << rd << "\n";
 	}
 
 	return true;
@@ -575,7 +575,7 @@ bool BASE_ISA::Exec_XORI() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "XORI: x" << rs1 << " XOR " << imm << "-> x" << rd
-			<< std::endl;
+			<< "\n";
 	}
 
 	return true;
@@ -595,7 +595,7 @@ bool BASE_ISA::Exec_ORI() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "ORI: x" << rs1 << " OR " << imm << "-> x" << rd
-			<< std::endl;
+			<< "\n";
 	}
 
 	return true;
@@ -618,7 +618,7 @@ bool BASE_ISA::Exec_ANDI() {
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "ANDI: x" << rs1 << "(0x" << std::hex << aux
 			<< ") AND 0x" << imm << " -> x" << std::dec << rd << "(0x"
-			<< std::hex << calc << ")" << std::endl;
+			<< std::hex << calc << ")" << "\n";
 	}
 
 	return true;
@@ -634,7 +634,7 @@ bool BASE_ISA::Exec_SLLI() {
 	rs2 = get_shamt();
 
 	if (rs2 >= 0x20) {
-		std::cout << "ILEGAL INSTRUCTION, shamt[5] != 0" << std::endl;
+		std::cout << "ILEGAL INSTRUCTION, shamt[5] != 0" << "\n";
 		RaiseException(EXCEPTION_CAUSE_ILLEGAL_INSTRUCTION, m_instr);
 
 		return false;
@@ -647,7 +647,7 @@ bool BASE_ISA::Exec_SLLI() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "SLLI: x" << std::dec << rs1 << " << " << shift
-			<< " -> x" << rd << "(0x" << std::hex << calc << ")" << std::endl;
+			<< " -> x" << rd << "(0x" << std::hex << calc << ")" << "\n";
 	}
 
 	return true;
@@ -669,7 +669,7 @@ bool BASE_ISA::Exec_SRLI() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "SRLI: x" << std::dec << rs1 << " >> " << shift
-			<< " -> x" << rd << std::endl;
+			<< " -> x" << rd << "\n";
 	}
 
 	return true;
@@ -691,7 +691,7 @@ bool BASE_ISA::Exec_SRAI() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "SRAI: x" << std::dec << rs1 << " >> " << shift
-			<< " -> x" << rd << std::endl;
+			<< " -> x" << rd << "\n";
 	}
 
 	return true;
@@ -710,7 +710,7 @@ bool BASE_ISA::Exec_ADD() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "ADD: x" << std::dec << rs1 << " + x" << rs2
-			<< " -> x" << rd << std::hex << "(0x" << calc << ")" << std::endl;
+			<< " -> x" << rd << std::hex << "(0x" << calc << ")" << "\n";
 	}
 
 	return true;
@@ -728,7 +728,7 @@ bool BASE_ISA::Exec_SUB() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "SUB: x" << rs1 << " - x" << rs2 << " -> x" << rd
-			<< "(" << calc << ")" << std::endl;
+			<< "(" << calc << ")" << "\n";
 	}
 
 	return true;
@@ -750,7 +750,7 @@ bool BASE_ISA::Exec_SLL() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "SLL: x" << rs1 << " << " << shift << " -> x"
-			<< rd << std::endl;
+			<< rd << "\n";
 	}
 
 	return true;
@@ -766,11 +766,11 @@ bool BASE_ISA::Exec_SLT() {
 	if (regs->getValue(rs1) < regs->getValue(rs2)) {
 		regs->setValue(rd, 1);
 		log->SC_log(Log::INFO) << "SLT: x" << rs1 << " < x" << rs2 << " => "
-				<< "1 -> x" << rd << std::endl;
+				<< "1 -> x" << rd << "\n";
 	} else {
 		regs->setValue(rd, 0);
 		log->SC_log(Log::INFO) << "SLT: x" << rs1 << " < x" << rs2 << " => "
-				<< "0 -> x" << rd << std::endl;
+				<< "0 -> x" << rd << "\n";
 	}
 
 	return true;
@@ -786,11 +786,11 @@ bool BASE_ISA::Exec_SLTU() {
 	if ((uint32_t) regs->getValue(rs1) < (uint32_t) regs->getValue(rs2)) {
 		regs->setValue(rd, 1);
 		log->SC_log(Log::INFO) << "SLTU: x" << rs1 << " < x" << rs2 << " => "
-				<< "1 -> x" << rd << std::endl;
+				<< "1 -> x" << rd << "\n";
 	} else {
 		regs->setValue(rd, 0);
 		log->SC_log(Log::INFO) << "SLTU: x" << rs1 << " < x" << rs2 << " => "
-				<< "0 -> x" << rd << std::endl;
+				<< "0 -> x" << rd << "\n";
 	}
 
 	return true;
@@ -809,7 +809,7 @@ bool BASE_ISA::Exec_XOR() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "XOR: x" << rs1 << " XOR x" << rs2 << "-> x" << rd
-			<< std::endl;
+			<< "\n";
 	}
 
 	return true;
@@ -831,7 +831,7 @@ bool BASE_ISA::Exec_SRL() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "SRL: x" << rs1 << " >> " << shift << " -> x"
-			<< rd << std::endl;
+			<< rd << "\n";
 	}
 
 	return true;
@@ -853,7 +853,7 @@ bool BASE_ISA::Exec_SRA() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "SRA: x" << rs1 << " >> " << shift << " -> x"
-			<< rd << std::endl;
+			<< rd << "\n";
 	}
 
 	return true;
@@ -872,7 +872,7 @@ bool BASE_ISA::Exec_OR() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "OR: x" << rs1 << " OR x" << rs2 << "-> x" << rd
-			<< std::endl;
+			<< "\n";
 	}
 
 	return true;
@@ -891,32 +891,32 @@ bool BASE_ISA::Exec_AND() {
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "AND: x" << rs1 << " AND x" << rs2 << "-> x" << rd
-			<< std::endl;
+			<< "\n";
 	}
 
 	return true;
 }
 
 bool BASE_ISA::Exec_FENCE() {
-	log->SC_log(Log::INFO) << "FENCE" << std::endl;
+	log->SC_log(Log::INFO) << "FENCE" << "\n";
 
 	return true;
 }
 
 bool BASE_ISA::Exec_ECALL() {
 
-	log->SC_log(Log::INFO) << "ECALL" << std::endl;
-	std::cout << std::endl << "ECALL Instruction called, stopping simulation"
-			<< std::endl;
+	log->SC_log(Log::INFO) << "ECALL" << "\n";
+	std::cout << "\n" << "ECALL Instruction called, stopping simulation"
+			<< "\n";
 	regs->dump();
-	std::cout << "Simulation time " << sc_core::sc_time_stamp() << std::endl;
+	std::cout << "Simulation time " << sc_core::sc_time_stamp() << "\n";
 	perf->dump();
 
 	uint32_t gp_value = regs->getValue(Registers::gp);
 	if (gp_value == 1) {
-		std::cout << "GP value is 1, test result is OK" << std::endl;
+		std::cout << "GP value is 1, test result is OK" << "\n";
 	} else {
-		std::cout << "GP value is " << gp_value << std::endl;
+		std::cout << "GP value is " << gp_value << "\n";
 	}
 	//SC_REPORT_ERROR("Execute", "ECALL");
 	sc_core::sc_stop();
@@ -925,11 +925,11 @@ bool BASE_ISA::Exec_ECALL() {
 
 bool BASE_ISA::Exec_EBREAK() {
 
-	log->SC_log(Log::INFO) << "EBREAK" << std::endl;
-	std::cout << std::endl << "EBRAK  Instruction called, dumping information"
-			<< std::endl;
+	log->SC_log(Log::INFO) << "EBREAK" << "\n";
+	std::cout << "\n" << "EBRAK  Instruction called, dumping information"
+			<< "\n";
 	regs->dump();
-	std::cout << "Simulation time " << sc_core::sc_time_stamp() << std::endl;
+	std::cout << "Simulation time " << sc_core::sc_time_stamp() << "\n";
 	perf->dump();
 
 	RaiseException(EXCEPTION_CAUSE_BREAKPOINT, m_instr);
@@ -957,7 +957,7 @@ bool BASE_ISA::Exec_CSRRW() {
 
 	log->SC_log(Log::INFO) << std::hex << "CSRRW: CSR #" << csr << " -> x"
 			<< std::dec << rd << ". x" << rs1 << "-> CSR #" << std::hex << csr
-			<< " (0x" << aux << ")" << std::endl;
+			<< " (0x" << aux << ")" << "\n";
 
 	return true;
 }
@@ -973,7 +973,7 @@ bool BASE_ISA::Exec_CSRRS() {
 
 	if (rd == 0) {
 		log->SC_log(Log::INFO) << "CSRRS with rd1 == 0, doing nothing."
-				<< std::endl;
+				<< "\n";
 		return false;
 	}
 
@@ -988,7 +988,7 @@ bool BASE_ISA::Exec_CSRRS() {
 
 	log->SC_log(Log::INFO) << "CSRRS: CSR #" << csr << "(0x" << std::hex << aux
 			<< ") -> x" << std::dec << rd << ". x" << rs1 << " & CSR #" << csr
-			<< " <- 0x" << std::hex << aux2 << std::endl;
+			<< " <- 0x" << std::hex << aux2 << "\n";
 
 	return true;
 }
@@ -1004,7 +1004,7 @@ bool BASE_ISA::Exec_CSRRC() {
 
 	if (rd == 0) {
 		log->SC_log(Log::INFO) << "CSRRC with rd1 == 0, doing nothing."
-				<< std::endl;
+				<< "\n";
 		return true;
 	}
 
@@ -1019,7 +1019,7 @@ bool BASE_ISA::Exec_CSRRC() {
 
 	log->SC_log(Log::INFO) << "CSRRC: CSR #" << csr << "(0x" << std::hex << aux
 			<< ") -> x" << std::dec << rd << ". x" << rs1 << " & CSR #" << csr
-			<< " <- 0x" << std::hex << aux2 << std::endl;
+			<< " <- 0x" << std::hex << aux2 << "\n";
 
 	return true;
 }
@@ -1042,7 +1042,7 @@ bool BASE_ISA::Exec_CSRRWI() {
 	regs->setCSR(csr, aux);
 
 	log->SC_log(Log::INFO) << "CSRRWI: CSR #" << csr << " -> x" << rd << ". x"
-			<< rs1 << "-> CSR #" << csr << std::endl;
+			<< rs1 << "-> CSR #" << csr << "\n";
 
 	return true;
 }
@@ -1070,7 +1070,7 @@ bool BASE_ISA::Exec_CSRRSI() {
 
 	log->SC_log(Log::INFO) << "CSRRSI: CSR #" << csr << " -> x" << rd << ". x"
 			<< rs1 << " & CSR #" << csr << "(0x" << std::hex << aux << ")"
-			<< std::endl;
+			<< "\n";
 
 	return true;
 }
@@ -1098,7 +1098,7 @@ bool BASE_ISA::Exec_CSRRCI() {
 
 	log->SC_log(Log::INFO) << "CSRRCI: CSR #" << csr << " -> x" << rd << ". x"
 			<< rs1 << " & CSR #" << csr << "(0x" << std::hex << aux << ")"
-			<< std::endl;
+			<< "\n";
 
 	return true;
 }
@@ -1112,7 +1112,7 @@ bool BASE_ISA::Exec_MRET() {
 	regs->setPC(new_pc);
 
 	log->SC_log(Log::INFO) << "MRET: PC <- 0x" << std::hex << new_pc
-			<< std::endl;
+			<< "\n";
 
 	// update mstatus
 	uint32_t csr_temp;
@@ -1133,19 +1133,19 @@ bool BASE_ISA::Exec_SRET() {
 	regs->setPC(new_pc);
 
 	log->SC_log(Log::INFO) << "SRET: PC <- 0x" << std::hex << new_pc
-			<< std::endl;
+			<< "\n";
 
 	return true;
 }
 
 bool BASE_ISA::Exec_WFI() {
-	log->SC_log(Log::INFO) << "WFI" << std::endl;
+	log->SC_log(Log::INFO) << "WFI" << "\n";
 
 	return true;
 }
 
 bool BASE_ISA::Exec_SFENCE() {
-	log->SC_log(Log::INFO) << "SFENCE" << std::endl;
+	log->SC_log(Log::INFO) << "SFENCE" << "\n";
 
 	return true;
 }
@@ -1317,7 +1317,7 @@ bool BASE_ISA::process_instruction(Instruction &inst) {
 		Exec_SFENCE();
 		break;
 	[[unlikely]] default:
-		std::cout << "Wrong instruction" << std::endl;
+		std::cout << "Wrong instruction" << "\n";
 		inst.dump();
 		NOP();
 		//sc_stop();

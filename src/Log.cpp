@@ -25,7 +25,7 @@ void Log::SC_log(std::string msg, enum LogLevel level) {
 
 	if (level <= currentLogLevel) {
 		m_stream << "time " << sc_core::sc_time_stamp() << ": " << msg
-				<< std::endl;
+				<< "\n";
 	}
 }
 
@@ -41,7 +41,7 @@ std::ofstream& Log::SC_log(enum LogLevel level) {
 }
 
 void Log::setLogLevel(enum LogLevel newLevel) {
-	std::cout << "LogLevel set to " << newLevel << std::endl;
+	std::cout << "LogLevel set to " << newLevel << "\n";
 	currentLogLevel = newLevel;
 }
 
