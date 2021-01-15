@@ -10,8 +10,6 @@
 
 Registers::Registers() {
 
-	memset(register_bank, 0, sizeof(uint32_t) * 32); // 32 registers of 32 bits each
-	//memset(CSR, 0, sizeof(uint32_t) * 4096);
 	perf = Performance::getInstance();
 
 	initCSR();

@@ -35,7 +35,7 @@ typedef enum {
 class Instruction {
 public:
 
-	Instruction(sc_dt::sc_uint<32> instr);
+	Instruction(uint32_t instr);
 
 	/**
 	 * @brief returns what instruction extension
@@ -59,7 +59,7 @@ public:
 	}
 
 private:
-	sc_dt::sc_uint<32> m_instr;
+	uint32_t m_instr;
 };
 
 #endif

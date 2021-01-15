@@ -87,13 +87,13 @@ private:
 	static Performance *instance;
 	Performance();
 
-	uint64_t data_memory_read;
-	uint64_t data_memory_write;
-	uint64_t code_memory_read;
-	uint64_t code_memory_write;
-	uint64_t register_read;
-	uint64_t register_write;
-	uint64_t instructions_executed;
+	uint_fast64_t data_memory_read;
+	uint_fast64_t data_memory_write;
+	uint_fast64_t code_memory_read;
+	uint_fast64_t code_memory_write;
+	uint_fast64_t register_read;
+	uint_fast64_t register_write;
+	uint_fast64_t instructions_executed;
 };
 
 #endif

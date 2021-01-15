@@ -661,10 +661,10 @@ bool C_extension::Exec_C_JAL(int m_rd) {
 	return true;
 }
 
-bool C_extension::process_instruction(Instruction &inst) {
+bool C_extension::process_instruction(Instruction *inst) {
 	bool PC_not_affected = true;
 
-	setInstr(inst.getInstr());
+	setInstr(inst->getInstr());
 
 	switch (decode()) {
 	case OP_C_ADDI4SPN:
@@ -747,7 +747,7 @@ bool C_extension::process_instruction(Instruction &inst) {
 		break;
 	[[unlikely]] default:
 		std::cout << "C instruction not implemented yet" << "\n";
-		inst.dump();
+		inst->dump();
 		NOP();
 		break;
 	}

@@ -69,7 +69,7 @@ public:
 	bool Exec_M_REM();
 	bool Exec_M_REMU();
 
-	bool process_instruction(Instruction &inst);
+	bool process_instruction(Instruction *inst);
 
 private:
 

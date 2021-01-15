@@ -367,10 +367,10 @@ bool A_extension::TLB_reserved(uint32_t address) {
 	}
 }
 
-bool A_extension::process_instruction(Instruction &inst) {
+bool A_extension::process_instruction(Instruction *inst) {
 	bool PC_not_affected = true;
 
-	setInstr(inst.getInstr());
+	setInstr(inst->getInstr());
 
 	switch (decode()) {
 	case OP_A_LR:
@@ -408,7 +408,7 @@ bool A_extension::process_instruction(Instruction &inst) {
 		break;
 	[[unlikely]] default:
 		std::cout << "A instruction not implemented yet" << std::endl;
-		inst.dump();
+		inst->dump();
 		NOP();
 		break;
 	}

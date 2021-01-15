@@ -163,19 +163,19 @@ void CPU::CPU_thread(void) {
 		/* check what type of instruction is and execute it */
 		switch (inst->check_extension()) {
 		[[likely]] case BASE_EXTENSION:
-			PC_not_affected = exec->process_instruction(*inst);
+			PC_not_affected = exec->process_instruction(inst);
 			incPCby2 = false;
 			break;
 		case C_EXTENSION:
-			PC_not_affected = c_inst->process_instruction(*inst);
+			PC_not_affected = c_inst->process_instruction(inst);
 			incPCby2 = true;
 			break;
 		case M_EXTENSION:
-			PC_not_affected = m_inst->process_instruction(*inst);
+			PC_not_affected = m_inst->process_instruction(inst);
 			incPCby2 = false;
 			break;
 		case A_EXTENSION:
-			PC_not_affected = a_inst->process_instruction(*inst);
+			PC_not_affected = a_inst->process_instruction(inst);
 			incPCby2 = false;
 			break;
 		[[unlikely]] default:
@@ -202,10 +202,8 @@ void CPU::CPU_thread(void) {
 			m_qk->sync();
 		}
 #else
-		sc_core::wait(10, sc_core::SC_NS);
-
+		//sc_core::wait(10, sc_core::SC_NS);
 #endif
-
 	} // while(1)
 } // CPU_thread
 

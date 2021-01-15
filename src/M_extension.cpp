@@ -245,10 +245,10 @@ bool M_extension::Exec_M_REMU() {
 	return true;
 }
 
-bool M_extension::process_instruction(Instruction &inst) {
+bool M_extension::process_instruction(Instruction *inst) {
 	bool PC_not_affected = true;
 
-	setInstr(inst.getInstr());
+	setInstr(inst->getInstr());
 
 	switch (decode()) {
 	case OP_M_MUL:
@@ -277,7 +277,7 @@ bool M_extension::process_instruction(Instruction &inst) {
 		break;
 	[[unlikely]] default:
 		std::cout << "M instruction not implemented yet" << "\n";
-		inst.dump();
+		inst->dump();
 		//NOP(inst);
 		sc_core::sc_stop();
 		break;
