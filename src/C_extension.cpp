@@ -258,11 +258,13 @@ bool C_extension::Exec_C_ADDI4SPN() {
 
 bool C_extension::Exec_C_ADDI16SP() {
 	// addi x2, x2, nzimm[9:4]
-	int rd, rs1;
+	int rd;
 	int32_t imm = 0;
-	int32_t calc;
 
 	if (get_rd() == 2) {
+	  int rs1;
+	  int32_t calc;
+
 		rd = 2;
 		rs1 = 2;
 		imm = get_imm_ADDI16SP();

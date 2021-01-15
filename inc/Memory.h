@@ -36,7 +36,7 @@ public:
 	const sc_core::sc_time LATENCY;
 
 	Memory(sc_core::sc_module_name name, std::string filename);
-	Memory(sc_core::sc_module_name name, bool use_file);
+	Memory(sc_core::sc_module_name name);
 
 	~Memory(void);
 

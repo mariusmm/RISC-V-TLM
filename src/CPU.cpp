@@ -62,7 +62,7 @@ CPU::~CPU() {
 
 bool CPU::cpu_process_IRQ() {
 	uint32_t csr_temp;
-	uint32_t new_pc, old_pc;
+	uint32_t new_pc;
 	bool ret_value = false;
 
 	if (interrupt == true) {
@@ -80,7 +80,7 @@ bool CPU::cpu_process_IRQ() {
 			log->SC_log(Log::DEBUG) << "Interrupt!" << std::endl;
 
 			/* updated MEPC register */
-			old_pc = register_bank->getPC();
+			uint32_t old_pc = register_bank->getPC();
 			register_bank->setCSR(CSR_MEPC, old_pc);
 			log->SC_log(Log::INFO) << "Old PC Value 0x" << std::hex << old_pc
 					<< std::endl;
@@ -212,8 +212,11 @@ void CPU::call_interrupt(tlm::tlm_generic_payload &trans,
 	interrupt = true;
 	/* Socket caller send a cause (its id) */
 	memcpy(&int_cause, trans.get_data_ptr(), sizeof(uint32_t));
+	delay = sc_core::SC_ZERO_TIME;
 }
 
 void CPU::invalidate_direct_mem_ptr(sc_dt::uint64 start, sc_dt::uint64 end) {
+  (void) start;
+  (void) end;
 	dmi_ptr_valid = false;
 }

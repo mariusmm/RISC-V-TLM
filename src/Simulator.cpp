@@ -37,9 +37,11 @@ SC_MODULE(Simulator) {
 	Trace *trace;
 	Timer *timer;
 
-	uint32_t start_PC;
+
 
 	SC_CTOR(Simulator) {
+	  uint32_t start_PC;
+
 		MainMemory = new Memory("Main_Memory", filename);
 		start_PC = MainMemory->getPCfromHEX();
 
@@ -74,6 +76,7 @@ Simulator *top;
 
 void intHandler(int dummy) {
 	delete top;
+	(void) dummy;
 	//sc_stop();
 	exit(-1);
 }

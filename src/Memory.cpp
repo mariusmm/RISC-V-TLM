@@ -26,7 +26,7 @@ Memory::Memory(sc_core::sc_module_name name, std::string filename) :
 	log->SC_log(Log::INFO) << "Using file: " << filename << std::endl;
 }
 
-Memory::Memory(sc_core::sc_module_name name, bool use_file) :
+Memory::Memory(sc_core::sc_module_name name) :
 		sc_module(name), socket("socket"), LATENCY(sc_core::SC_ZERO_TIME) {
 	socket.register_b_transport(this, &Memory::b_transport);
 	socket.register_get_direct_mem_ptr(this, &Memory::get_direct_mem_ptr);
@@ -37,7 +37,7 @@ Memory::Memory(sc_core::sc_module_name name, bool use_file) :
 	mem = new uint8_t[SIZE];
 
 	log = Log::getInstance();
-	log->SC_log(Log::INFO) << "Memory instantiated wihtout file" << std::endl;
+	log->SC_log(Log::INFO) << "Memory instantiated without file" << std::endl;
 }
 
 Memory::~Memory() {
@@ -108,6 +108,8 @@ void Memory::b_transport(tlm::tlm_generic_payload &trans,
 
 bool Memory::get_direct_mem_ptr(tlm::tlm_generic_payload &trans,
 		tlm::tlm_dmi &dmi_data) {
+  (void) trans;
+
 	if (memory_offset != 0) {
 		return false;
 	}
@@ -145,9 +147,7 @@ unsigned int Memory::transport_dbg(tlm::tlm_generic_payload &trans) {
 void Memory::readHexFile(std::string filename) {
 	std::ifstream hexfile;
 	std::string line;
-	int byte_count;
-	uint32_t address;
-	int i = 0;
+
 	uint32_t extended_address = 0;
 
 	hexfile.open(filename);
@@ -157,11 +157,13 @@ void Memory::readHexFile(std::string filename) {
 			if (line[0] == ':') {
 				if (line.substr(7, 2) == "00") {
 					/* Data */
+				  int byte_count;
+				  uint32_t address;
 					byte_count = stol(line.substr(1, 2), nullptr, 16);
 					address = stol(line.substr(3, 4), nullptr, 16);
 					address = address + extended_address;
 					//cout << "00 address 0x" << hex << address << endl;
-					for (i = 0; i < byte_count; i++) {
+					for (int i = 0; i < byte_count; i++) {
 						mem[address + i] = stol(line.substr(9 + (i * 2), 2),
 								nullptr, 16);
 					}
