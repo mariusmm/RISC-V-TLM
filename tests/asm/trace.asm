@@ -32,3 +32,4 @@ _start:
   sb t0, 0(a2)
   li t0, '\n'
   sb t0, 0(a2)
+  ecall

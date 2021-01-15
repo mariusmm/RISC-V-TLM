@@ -6,8 +6,6 @@ CC       = riscv32-unknown-elf-gcc
 # compiling flags here
 CFLAGS = -Wall -I. -O0 -march=rv32i -mabi=ilp32 
 
-
-LINKER   = riscv32-unknown-linux-gnu-gcc
 # linking flags here
 LFLAGS   = -I. --entry main
 LIBS   = $(EXTRA_LIBS)
@@ -28,8 +26,7 @@ rm       = rm -f
 
 
 $(BINDIR)/$(TARGET): $(OBJECTS)
-#	$(LINKER) $(OBJECTS) $(LFLAGS) $(LIBS) $(LIBDIR) -o $@
-	riscv32-unknown-linux-gnu-objdump -d $< > dump
+	riscv32-unknown-elf-objdump -d $< > dump
 	objcopy -Oihex $< $(TARGET).hex
 #	@echo "Linking complete!"
 

@@ -6,10 +6,10 @@
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "CPU.h"
+#include "CPU64.h"
 
-SC_HAS_PROCESS(CPU);
-CPU::CPU(sc_core::sc_module_name name, uint32_t PC) :
+SC_HAS_PROCESS(CPU64);
+CPU64::CPU64(sc_core::sc_module_name name, uint32_t PC) :
 		sc_module(name), instr_bus("instr_bus"), default_time(10,
 				sc_core::SC_NS) {
 	register_bank = new Registers();
@@ -23,7 +23,7 @@ CPU::CPU(sc_core::sc_module_name name, uint32_t PC) :
 	//register_bank->setValue(Registers::sp, (0xD0000 / 4) - 1);
 	register_bank->setValue(Registers::sp, (0x10000000 / 4) - 1);
 
-	irq_line_socket.register_b_transport(this, &CPU::call_interrupt);
+	irq_line_socket.register_b_transport(this, &CPU64::call_interrupt);
 	interrupt = false;
 
 	int_cause = 0;
@@ -31,7 +31,7 @@ CPU::CPU(sc_core::sc_module_name name, uint32_t PC) :
 
 	dmi_ptr_valid = false;
 	instr_bus.register_invalidate_direct_mem_ptr(this,
-			&CPU::invalidate_direct_mem_ptr);
+			&CPU64::invalidate_direct_mem_ptr);
 
 	inst = new Instruction(0);
 	exec = new BASE_ISA(0, register_bank, mem_intf);
@@ -44,7 +44,7 @@ CPU::CPU(sc_core::sc_module_name name, uint32_t PC) :
 	SC_THREAD(CPU_thread);
 }
 
-CPU::~CPU() {
+CPU64::~CPU64() {
 	std::cout << "*********************************************" << std::endl;
 	register_bank->dump();
 	std::cout << "end time: " << sc_core::sc_time_stamp() << std::endl;
@@ -60,7 +60,7 @@ CPU::~CPU() {
 	delete m_qk;
 }
 
-bool CPU::cpu_process_IRQ() {
+bool CPU64::cpu_process_IRQ() {
 	uint32_t csr_temp;
 	uint32_t new_pc, old_pc;
 	bool ret_value = false;
@@ -111,7 +111,7 @@ bool CPU::cpu_process_IRQ() {
 	return ret_value;
 }
 
-void CPU::CPU_thread(void) {
+void CPU64::CPU_thread(void) {
 
 	tlm::tlm_generic_payload *trans = new tlm::tlm_generic_payload;
 	uint32_t INSTR;
@@ -202,18 +202,20 @@ void CPU::CPU_thread(void) {
 			m_qk->sync();
 		}
 #else
-		//sc_core::wait(10, sc_core::SC_NS);
+		sc_core::wait(10, sc_core::SC_NS);
+
 #endif
+
 	} // while(1)
 } // CPU_thread
 
-void CPU::call_interrupt(tlm::tlm_generic_payload &trans,
+void CPU64::call_interrupt(tlm::tlm_generic_payload &trans,
 		sc_core::sc_time &delay) {
 	interrupt = true;
 	/* Socket caller send a cause (its id) */
 	memcpy(&int_cause, trans.get_data_ptr(), sizeof(uint32_t));
 }
 
-void CPU::invalidate_direct_mem_ptr(sc_dt::uint64 start, sc_dt::uint64 end) {
+void CPU64::invalidate_direct_mem_ptr(sc_dt::uint64 start, sc_dt::uint64 end) {
 	dmi_ptr_valid = false;
 }

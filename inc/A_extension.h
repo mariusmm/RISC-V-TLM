@@ -11,7 +11,7 @@
 
 #include "systemc"
 
-#include <set>
+#include <unordered_set>
 
 #include "Log.h"
 #include "Registers.h"
@@ -133,13 +133,13 @@ public:
 	bool Exec_A_AMOMINU();
 	bool Exec_A_AMOMAXU();
 
-	bool process_instruction(Instruction &inst);
+	bool process_instruction(Instruction *inst);
 
 	void TLB_reserve(uint32_t address);
 	bool TLB_reserved(uint32_t address);
 
 private:
-	std::set<uint32_t> TLB_A_Entries;
+	std::unordered_set<uint32_t> TLB_A_Entries;
 };
 
 #endif

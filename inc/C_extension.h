@@ -416,7 +416,7 @@ public:
 	bool Exec_C_SW();
 	bool Exec_C_JAL(int m_rd);
 
-	bool process_instruction(Instruction &inst);
+	bool process_instruction(Instruction *inst);
 };
 
 #endif

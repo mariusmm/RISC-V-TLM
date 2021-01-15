@@ -44,7 +44,7 @@ op_A_Codes A_extension::decode() {
 	case A_AMOMAXU:
 		return OP_A_AMOMAXU;
 		break;
-	default:
+	[[unlikely]] default:
 		return OP_A_ERROR;
 		break;
 
@@ -235,6 +235,7 @@ bool A_extension::Exec_A_AMOOR() {
 	log->SC_log(Log::INFO) << std::dec << "AMOOR " << std::endl;
 	return true;
 }
+
 bool A_extension::Exec_A_AMOMIN() {
 	uint32_t mem_addr = 0;
 	int rd, rs1, rs2;
@@ -366,10 +367,10 @@ bool A_extension::TLB_reserved(uint32_t address) {
 	}
 }
 
-bool A_extension::process_instruction(Instruction &inst) {
+bool A_extension::process_instruction(Instruction *inst) {
 	bool PC_not_affected = true;
 
-	setInstr(inst.getInstr());
+	setInstr(inst->getInstr());
 
 	switch (decode()) {
 	case OP_A_LR:
@@ -405,9 +406,9 @@ bool A_extension::process_instruction(Instruction &inst) {
 	case OP_A_AMOMAXU:
 		Exec_A_AMOMAXU();
 		break;
-	default:
+	[[unlikely]] default:
 		std::cout << "A instruction not implemented yet" << std::endl;
-		inst.dump();
+		inst->dump();
 		NOP();
 		break;
 	}

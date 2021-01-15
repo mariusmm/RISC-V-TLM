@@ -24,7 +24,7 @@ BusCtrl::BusCtrl(sc_core::sc_module_name name) :
 
 void BusCtrl::b_transport(tlm::tlm_generic_payload &trans,
 		sc_core::sc_time &delay) {
-	//tlm::tlm_command cmd = trans.get_command();
+
 	sc_dt::uint64 adr = trans.get_address() / 4;
 
 	switch (adr) {
@@ -37,7 +37,7 @@ void BusCtrl::b_transport(tlm::tlm_generic_payload &trans,
 	case TRACE_MEMORY_ADDRESS / 4:
 		trace_socket->b_transport(trans, delay);
 		break;
-	default:
+	[[likely]] default:
 		memory_socket->b_transport(trans, delay);
 		break;
 	}

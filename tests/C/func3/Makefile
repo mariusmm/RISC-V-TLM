@@ -7,7 +7,6 @@ CC = riscv32-unknown-elf-gcc
 # compiling flags here
 CFLAGS = -Wall -I. -O0 -static   -march=rv32imac -mabi=ilp32 --specs=nosys.specs
 
-LINKER   = riscv32-unknown-linux-gnu-gcc
 LIBS   = $(EXTRA_LIBS)
 
 # change these to proper directories where each file should be
@@ -24,7 +23,7 @@ rm       = rm -f
 
 $(BINDIR)/$(TARGET): $(OBJECTS)
 #	$(LINKER) $(OBJECTS) $(LDFLAGS) $(LIBS) $(LIBDIR) -o $@
-	riscv32-unknown-linux-gnu-objdump -d $< > dump
+	riscv32-unknown-elf-objdump -d $< > dump
 	objcopy -Oihex $< $(TARGET).hex
 	@echo "Linking complete!"
 

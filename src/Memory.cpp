@@ -58,6 +58,7 @@ void Memory::b_transport(tlm::tlm_generic_payload &trans,
 	unsigned int wid = trans.get_streaming_width();
 
 	adr = adr - memory_offset;
+
 	// Obliged to check address range and check for unsupported features,
 	//   i.e. byte enables, streaming, and bursts
 	// Can ignore extensions
@@ -65,7 +66,6 @@ void Memory::b_transport(tlm::tlm_generic_payload &trans,
 	// *********************************************
 	// Generate the appropriate error response
 	// *********************************************
-
 	if (adr >= sc_dt::uint64(SIZE)) {
 		trans.set_response_status(tlm::TLM_ADDRESS_ERROR_RESPONSE);
 		return;
@@ -79,6 +79,7 @@ void Memory::b_transport(tlm::tlm_generic_payload &trans,
 		return;
 	}
 
+
 	// Obliged to implement read and write commands
 	if (cmd == tlm::TLM_READ_COMMAND)
 		memcpy(ptr, &mem[adr], len);
@@ -86,7 +87,7 @@ void Memory::b_transport(tlm::tlm_generic_payload &trans,
 		memcpy(&mem[adr], ptr, len);
 
 	// Illustrates that b_transport may block
-	wait(delay);
+	//sc_core::wait(delay);
 
 	// Reset timing annotation after waiting
 	delay = sc_core::SC_ZERO_TIME;

@@ -411,7 +411,7 @@ public:
 	 * @param  inst instruction to execute
 	 * @return  true if PC is affected by instruction
 	 */
-	bool process_instruction(Instruction &inst);
+	bool process_instruction(Instruction *inst);
 
 	/**
 	 * @brief Decodes opcode of instruction

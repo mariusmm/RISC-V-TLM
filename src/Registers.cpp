@@ -10,8 +10,6 @@
 
 Registers::Registers() {
 
-	memset(register_bank, 0, sizeof(uint32_t) * 32); // 32 registers of 32 bits each
-	memset(CSR, 0, sizeof(uint32_t) * 4096);
 	perf = Performance::getInstance();
 
 	initCSR();
@@ -156,7 +154,7 @@ uint32_t Registers::getCSR(int csr) {
 						- sc_core::sc_time(sc_core::SC_ZERO_TIME)).to_double())
 				>> 32 & 0x00000000FFFFFFFF);
 		break;
-	default:
+	[[likely]] default:
 		ret_value = CSR[csr];
 		break;
 	}
@@ -165,7 +163,7 @@ uint32_t Registers::getCSR(int csr) {
 
 void Registers::setCSR(int csr, uint32_t value) {
 	/* @FIXME: rv32mi-p-ma_fetch tests doesn't allow MISA to writable,
-	 * but Volume II: Privileged Architectura v1.10 says MISRA is writable (?)
+	 * but Volume II: Privileged Architecture v1.10 says MISA is writable (?)
 	 */
 	if (csr != CSR_MISA) {
 		CSR[csr] = value;
@@ -176,5 +174,4 @@ void Registers::initCSR() {
 	CSR[CSR_MISA] = MISA_MXL | MISA_M_EXTENSION | MISA_C_EXTENSION
 			| MISA_A_EXTENSION | MISA_I_BASE;
 	CSR[CSR_MSTATUS] = MISA_MXL;
-
 }
