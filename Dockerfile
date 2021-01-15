@@ -39,7 +39,8 @@ RUN ssh-keyscan github.com > /root/.ssh/known_hosts
 
 
 
-RUN mkdir -p /usr/src/riscv64 \
+RUN rm -fr /usr/src/riscv64 \ 
+&& mkdir -p /usr/src/riscv64 \
 && cd /usr/src/riscv64 \
 && git config --global http.sslVerify false \
 && git clone https://github.com/mariusmm/RISC-V-TLM.git \
