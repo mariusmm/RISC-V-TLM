@@ -35,14 +35,14 @@ public:
 	bool NOP();
 
 	/* pure virtual functions */
-	virtual int32_t opcode() = 0;
-	virtual int32_t get_rd() = 0;
+	virtual int32_t opcode() const = 0;
+	virtual int32_t get_rd() const = 0;
 	virtual void set_rd(int32_t value) = 0;
-	virtual int32_t get_rs1() = 0;
+	virtual int32_t get_rs1() const = 0;
 	virtual void set_rs1(int32_t value) = 0;
-	virtual int32_t get_rs2() = 0;
+	virtual int32_t get_rs2() const = 0;
 	virtual void set_rs2(int32_t value) = 0;
-	virtual int32_t get_funct3() = 0;
+	virtual int32_t get_funct3() const = 0;
 	virtual void set_funct3(int32_t value) = 0;
 
 	void dump();

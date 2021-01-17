@@ -63,7 +63,7 @@ public:
 	 * @brief Access to opcode field
 	 * @return return opcode field
 	 */
-	inline int32_t opcode() {
+	inline int32_t opcode() const {
 		return m_instr.range(31, 27);
 	}
 
@@ -71,7 +71,7 @@ public:
 	 * @brief Access to rd field
 	 * @return rd field
 	 */
-	inline int32_t get_rd() {
+	inline int32_t get_rd() const {
 		return m_instr.range(11, 7);
 	}
 
@@ -83,7 +83,7 @@ public:
 	 * @brief Access to rs1 field
 	 * @return rs1 field
 	 */
-	inline int32_t get_rs1() {
+	inline int32_t get_rs1() const {
 		return m_instr.range(19, 15);
 	}
 
@@ -95,7 +95,7 @@ public:
 	 * @brief Access to rs2 field
 	 * @return rs2 field
 	 */
-	inline int32_t get_rs2() {
+	inline int32_t get_rs2() const {
 		return m_instr.range(24, 20);
 	}
 
@@ -103,7 +103,7 @@ public:
 		m_instr.range(24, 20) = value;
 	}
 
-	inline int32_t get_funct3() {
+	inline int32_t get_funct3() const {
 		return m_instr.range(14, 12);
 	}
 
@@ -115,23 +115,23 @@ public:
 	 * @brief Decodes opcode of instruction
 	 * @return opcode of instruction
 	 */
-	op_A_Codes decode();
+	op_A_Codes decode() const;
 
-	inline void dump() {
+	inline void dump()  const{
 		std::cout << std::hex << "0x" << m_instr << std::dec << std::endl;
 	}
 
 	bool Exec_A_LR();
 	bool Exec_A_SC();
-	bool Exec_A_AMOSWAP();
-	bool Exec_A_AMOADD();
-	bool Exec_A_AMOXOR();
-	bool Exec_A_AMOAND();
-	bool Exec_A_AMOOR();
-	bool Exec_A_AMOMIN();
-	bool Exec_A_AMOMAX();
-	bool Exec_A_AMOMINU();
-	bool Exec_A_AMOMAXU();
+	bool Exec_A_AMOSWAP() const;
+	bool Exec_A_AMOADD() const;
+	bool Exec_A_AMOXOR() const;
+	bool Exec_A_AMOAND() const;
+	bool Exec_A_AMOOR() const;
+	bool Exec_A_AMOMIN() const;
+	bool Exec_A_AMOMAX() const;
+	bool Exec_A_AMOMINU() const;
+	bool Exec_A_AMOMAXU() const;
 
 	bool process_instruction(Instruction *inst);
 

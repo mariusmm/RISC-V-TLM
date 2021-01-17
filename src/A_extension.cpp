@@ -8,7 +8,7 @@
 
 #include "A_extension.h"
 
-op_A_Codes A_extension::decode() {
+op_A_Codes A_extension::decode() const {
 
 	switch (opcode()) {
 	case A_LR:
@@ -107,7 +107,7 @@ bool A_extension::Exec_A_SC() {
 	return true;
 }
 
-bool A_extension::Exec_A_AMOSWAP() {
+bool A_extension::Exec_A_AMOSWAP() const {
 	uint32_t mem_addr = 0;
 	int rd, rs1, rs2;
 	uint32_t data;
@@ -134,7 +134,7 @@ bool A_extension::Exec_A_AMOSWAP() {
 	return true;
 }
 
-bool A_extension::Exec_A_AMOADD() {
+bool A_extension::Exec_A_AMOADD() const {
 	uint32_t mem_addr = 0;
 	int rd, rs1, rs2;
 	uint32_t data;
@@ -160,7 +160,7 @@ bool A_extension::Exec_A_AMOADD() {
 	return true;
 }
 
-bool A_extension::Exec_A_AMOXOR() {
+bool A_extension::Exec_A_AMOXOR() const {
 	uint32_t mem_addr = 0;
 	int rd, rs1, rs2;
 	uint32_t data;
@@ -185,7 +185,7 @@ bool A_extension::Exec_A_AMOXOR() {
 
 	return true;
 }
-bool A_extension::Exec_A_AMOAND() {
+bool A_extension::Exec_A_AMOAND() const {
 	uint32_t mem_addr = 0;
 	int rd, rs1, rs2;
 	uint32_t data;
@@ -211,7 +211,7 @@ bool A_extension::Exec_A_AMOAND() {
 	return true;
 }
 
-bool A_extension::Exec_A_AMOOR() {
+bool A_extension::Exec_A_AMOOR() const {
 	uint32_t mem_addr = 0;
 	int rd, rs1, rs2;
 	uint32_t data;
@@ -236,7 +236,7 @@ bool A_extension::Exec_A_AMOOR() {
 	return true;
 }
 
-bool A_extension::Exec_A_AMOMIN() {
+bool A_extension::Exec_A_AMOMIN() const {
 	uint32_t mem_addr = 0;
 	int rd, rs1, rs2;
 	uint32_t data;
@@ -265,7 +265,7 @@ bool A_extension::Exec_A_AMOMIN() {
 
 	return true;
 }
-bool A_extension::Exec_A_AMOMAX() {
+bool A_extension::Exec_A_AMOMAX() const {
 	uint32_t mem_addr = 0;
 	int rd, rs1, rs2;
 	uint32_t data;
@@ -294,7 +294,7 @@ bool A_extension::Exec_A_AMOMAX() {
 
 	return true;
 }
-bool A_extension::Exec_A_AMOMINU() {
+bool A_extension::Exec_A_AMOMINU() const {
 	uint32_t mem_addr = 0;
 	int rd, rs1, rs2;
 	uint32_t data;
@@ -323,7 +323,7 @@ bool A_extension::Exec_A_AMOMINU() {
 
 	return true;
 }
-bool A_extension::Exec_A_AMOMAXU() {
+bool A_extension::Exec_A_AMOMAXU() const {
 	uint32_t mem_addr = 0;
 	int rd, rs1, rs2;
 	uint32_t data;

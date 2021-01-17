@@ -8,7 +8,7 @@
 
 #include "M_extension.h"
 
-op_M_Codes M_extension::decode() {
+op_M_Codes M_extension::decode() const {
 
 	switch (opcode()) {
 	case M_MUL:
@@ -43,7 +43,7 @@ op_M_Codes M_extension::decode() {
 	return OP_M_ERROR;
 }
 
-bool M_extension::Exec_M_MUL() {
+bool M_extension::Exec_M_MUL() const {
 	int rd, rs1, rs2;
 	int32_t multiplier, multiplicand;
 	int64_t result;
@@ -65,7 +65,7 @@ bool M_extension::Exec_M_MUL() {
 	return true;
 }
 
-bool M_extension::Exec_M_MULH() {
+bool M_extension::Exec_M_MULH() const {
 	int rd, rs1, rs2;
 	int32_t multiplier, multiplicand;
 	int64_t result;
@@ -89,7 +89,7 @@ bool M_extension::Exec_M_MULH() {
 	return true;
 }
 
-bool M_extension::Exec_M_MULHSU() {
+bool M_extension::Exec_M_MULHSU() const {
 	int rd, rs1, rs2;
 	int32_t multiplier;
 	uint32_t multiplicand;
@@ -112,7 +112,7 @@ bool M_extension::Exec_M_MULHSU() {
 	return true;
 }
 
-bool M_extension::Exec_M_MULHU() {
+bool M_extension::Exec_M_MULHU() const {
 	int rd, rs1, rs2;
 	uint32_t multiplier, multiplicand;
 	uint64_t result;
@@ -135,7 +135,7 @@ bool M_extension::Exec_M_MULHU() {
 	return true;
 }
 
-bool M_extension::Exec_M_DIV() {
+bool M_extension::Exec_M_DIV() const {
 	int rd, rs1, rs2;
 	int32_t divisor, dividend;
 	int64_t result;
@@ -164,7 +164,7 @@ bool M_extension::Exec_M_DIV() {
 	return true;
 }
 
-bool M_extension::Exec_M_DIVU() {
+bool M_extension::Exec_M_DIVU() const {
 	int rd, rs1, rs2;
 	uint32_t divisor, dividend;
 	uint64_t result;
@@ -191,7 +191,7 @@ bool M_extension::Exec_M_DIVU() {
 	return true;
 }
 
-bool M_extension::Exec_M_REM() {
+bool M_extension::Exec_M_REM() const {
 	int rd, rs1, rs2;
 	int32_t divisor, dividend;
 	int32_t result;
@@ -219,7 +219,7 @@ bool M_extension::Exec_M_REM() {
 	return true;
 }
 
-bool M_extension::Exec_M_REMU() {
+bool M_extension::Exec_M_REMU() const {
 	int rd, rs1, rs2;
 	uint32_t divisor, dividend;
 	uint32_t result;

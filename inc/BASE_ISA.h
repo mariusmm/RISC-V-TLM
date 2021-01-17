@@ -104,7 +104,7 @@ public:
 	 * @brief Access to rd field
 	 * @return rd field
 	 */
-	inline int32_t get_rd() {
+	inline int32_t get_rd() const {
 		return m_instr.range(11, 7);
 	}
 
@@ -120,7 +120,7 @@ public:
 	 * @brief Access to rs1 field
 	 * @return rs1 field
 	 */
-	inline int32_t get_rs1() {
+	inline int32_t get_rs1() const {
 		return m_instr.range(19, 15);
 	}
 
@@ -136,7 +136,7 @@ public:
 	 * @brief Access to rs2 field
 	 * @return rs2 field
 	 */
-	inline int32_t get_rs2() {
+	inline int32_t get_rs2() const {
 		return m_instr.range(24, 20);
 	}
 
@@ -152,7 +152,7 @@ public:
 	 * @brief Access to funct3 field
 	 * @return funct3 field
 	 */
-	inline int32_t get_funct3() {
+	inline int32_t get_funct3() const {
 		return m_instr.range(14, 12);
 	}
 
@@ -168,7 +168,7 @@ public:
 	 * @brief Access to funct7 field
 	 * @return funct7 field
 	 */
-	inline int32_t get_funct7() {
+	inline int32_t get_funct7() const {
 		return m_instr.range(31, 25);
 	}
 
@@ -184,7 +184,7 @@ public:
 	 * @brief Gets immediate field value for I-type
 	 * @return immediate_I field
 	 */
-	inline int32_t get_imm_I() {
+	inline int32_t get_imm_I() const {
 		int32_t aux = 0;
 
 		aux = m_instr.range(31, 20);
@@ -209,7 +209,7 @@ public:
 	 * @brief Gets immediate field value for S-type
 	 * @return immediate_S field
 	 */
-	inline int32_t get_imm_S() {
+	inline int32_t get_imm_S() const {
 		int32_t aux = 0;
 
 		aux = m_instr.range(31, 25) << 5;
@@ -237,7 +237,7 @@ public:
 	 * @brief Gets immediate field value for U-type
 	 * @return immediate_U field
 	 */
-	inline int32_t get_imm_U() {
+	inline int32_t get_imm_U() const {
 		return m_instr.range(31, 12);
 	}
 
@@ -253,7 +253,7 @@ public:
 	 * @brief Gets immediate field value for B-type
 	 * @return immediate_B field
 	 */
-	inline int32_t get_imm_B() {
+	inline int32_t get_imm_B() const {
 		int32_t aux = 0;
 
 		aux |= m_instr[7] << 11;
@@ -285,7 +285,7 @@ public:
 	 * @brief Gets immediate field value for J-type
 	 * @return immediate_J field
 	 */
-	inline int32_t get_imm_J() {
+	inline int32_t get_imm_J() const {
 		int32_t aux = 0;
 
 		aux = m_instr[31] << 20;
@@ -318,7 +318,7 @@ public:
 	 * @brief Returns shamt field for Shifts instructions
 	 * @return value corresponding to inst(25:20)
 	 */
-	inline int32_t get_shamt() {
+	inline int32_t get_shamt() const {
 		return m_instr.range(25, 20);
 	}
 
@@ -326,7 +326,7 @@ public:
 	 * @brief Returns CSR field for CSR instructions
 	 * @return value corresponding to instr(31:20)
 	 */
-	inline int32_t get_csr() {
+	inline int32_t get_csr() const {
 		int32_t aux = 0;
 
 		aux = m_instr.range(31, 20);
@@ -338,73 +338,73 @@ public:
 	 * @brief Access to opcode field
 	 * @return return opcode field
 	 */
-	inline int32_t opcode() {
+	inline int32_t opcode() const {
 		return m_instr.range(6, 0);
 	}
 
-	bool Exec_LUI();
-	bool Exec_AUIPC();
+	bool Exec_LUI() const;
+	bool Exec_AUIPC() const;
 
-	bool Exec_JAL();
-	bool Exec_JALR();
+	bool Exec_JAL() const;
+	bool Exec_JALR() const;
 
-	bool Exec_BEQ();
-	bool Exec_BNE();
-	bool Exec_BLT();
-	bool Exec_BGE();
-	bool Exec_BLTU();
-	bool Exec_BGEU();
+	bool Exec_BEQ() const;
+	bool Exec_BNE() const;
+	bool Exec_BLT() const;
+	bool Exec_BGE() const;
+	bool Exec_BLTU() const;
+	bool Exec_BGEU() const;
 
-	bool Exec_LB();
-	bool Exec_LH();
-	bool Exec_LW();
-	bool Exec_LBU();
-	bool Exec_LHU();
+	bool Exec_LB() const;
+	bool Exec_LH() const;
+	bool Exec_LW() const;
+	bool Exec_LBU() const;
+	bool Exec_LHU() const;
 
-	bool Exec_SB();
-	bool Exec_SH();
-	bool Exec_SW();
-	bool Exec_SBU();
-	bool Exec_SHU();
+	bool Exec_SB() const;
+	bool Exec_SH() const;
+	bool Exec_SW() const;
+	bool Exec_SBU() const;
+	bool Exec_SHU() const;
 
-	bool Exec_ADDI();
-	bool Exec_SLTI();
-	bool Exec_SLTIU();
-	bool Exec_XORI();
-	bool Exec_ORI();
-	bool Exec_ANDI();
+	bool Exec_ADDI() const;
+	bool Exec_SLTI() const;
+	bool Exec_SLTIU() const;
+	bool Exec_XORI() const;
+	bool Exec_ORI() const;
+	bool Exec_ANDI() const;
 	bool Exec_SLLI();
-	bool Exec_SRLI();
-	bool Exec_SRAI();
+	bool Exec_SRLI() const;
+	bool Exec_SRAI() const;
 
-	bool Exec_ADD();
-	bool Exec_SUB();
-	bool Exec_SLL();
-	bool Exec_SLT();
-	bool Exec_SLTU();
+	bool Exec_ADD() const;
+	bool Exec_SUB() const;
+	bool Exec_SLL() const;
+	bool Exec_SLT() const;
+	bool Exec_SLTU() const;
 
-	bool Exec_XOR();
-	bool Exec_SRL();
-	bool Exec_SRA();
-	bool Exec_OR();
-	bool Exec_AND();
+	bool Exec_XOR() const;
+	bool Exec_SRL() const;
+	bool Exec_SRA() const;
+	bool Exec_OR() const;
+	bool Exec_AND() const;
 
-	bool Exec_FENCE();
-	bool Exec_ECALL();
+	bool Exec_FENCE() const;
+	bool Exec_ECALL() const;
 	bool Exec_EBREAK();
 
-	bool Exec_CSRRW();
-	bool Exec_CSRRS();
-	bool Exec_CSRRC();
-	bool Exec_CSRRWI();
-	bool Exec_CSRRSI();
-	bool Exec_CSRRCI();
+	bool Exec_CSRRW() const;
+	bool Exec_CSRRS() const;
+	bool Exec_CSRRC() const;
+	bool Exec_CSRRWI() const;
+	bool Exec_CSRRSI() const;
+	bool Exec_CSRRCI() const;
 
 	/*********************** Privileged Instructions ******************************/
-	bool Exec_MRET();
-	bool Exec_SRET();
-	bool Exec_WFI();
-	bool Exec_SFENCE();
+	bool Exec_MRET() const;
+	bool Exec_SRET() const;
+	bool Exec_WFI() const;
+	bool Exec_SFENCE() const;
 
 	/**
 	 * @brief Executes default ISA instruction

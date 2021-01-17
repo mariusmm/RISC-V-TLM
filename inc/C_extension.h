@@ -105,7 +105,7 @@ public:
 	 * @brief Access to opcode field
 	 * @return return opcode field
 	 */
-	inline int32_t opcode() {
+	inline int32_t opcode() const {
 		return m_instr.range(1, 0);
 	}
 
@@ -113,7 +113,7 @@ public:
 	 * @brief Access to rd field
 	 * @return rd field
 	 */
-	inline int32_t get_rd() {
+	inline int32_t get_rd () const {
 		return m_instr.range(11, 7);
 	}
 
@@ -121,7 +121,7 @@ public:
 		m_instr.range(11, 7) = value;
 	}
 
-	inline int32_t get_rdp() {
+	inline int32_t get_rdp() const {
 		return m_instr.range(4, 2) + 8;
 	}
 
@@ -129,7 +129,7 @@ public:
 	 * @brief Access to rs1 field
 	 * @return rs1 field
 	 */
-	inline int32_t get_rs1() {
+	inline int32_t get_rs1() const {
 		return m_instr.range(11, 7);
 	}
 
@@ -137,7 +137,7 @@ public:
 		m_instr.range(11, 7) = value;
 	}
 
-	inline int32_t get_rs1p() {
+	inline int32_t get_rs1p() const {
 		return m_instr.range(9, 7) + 8;
 	}
 
@@ -145,7 +145,7 @@ public:
 	 * @brief Access to rs2 field
 	 * @return rs2 field
 	 */
-	inline int32_t get_rs2() {
+	inline int32_t get_rs2() const {
 		return m_instr.range(6, 2);
 	}
 
@@ -153,11 +153,11 @@ public:
 		m_instr.range(6, 2) = value;
 	}
 
-	inline int32_t get_rs2p() {
+	inline int32_t get_rs2p() const {
 		return m_instr.range(4, 2) + 8;
 	}
 
-	inline int32_t get_funct3() {
+	inline int32_t get_funct3() const {
 		return m_instr.range(15, 13);
 	}
 
@@ -169,7 +169,7 @@ public:
 	 * @brief Access to immediate field for I-type
 	 * @return immediate_I field
 	 */
-	inline int32_t get_imm_I() {
+	inline int32_t get_imm_I() const {
 		int32_t aux = 0;
 
 		aux = m_instr.range(31, 20);
@@ -190,7 +190,7 @@ public:
 	 * @brief Access to immediate field for S-type
 	 * @return immediate_S field
 	 */
-	inline int32_t get_imm_S() {
+	inline int32_t get_imm_S() const {
 		int32_t aux = 0;
 
 		aux = m_instr.range(31, 25) << 5;
@@ -214,7 +214,7 @@ public:
 	 * @brief Access to immediate field for U-type
 	 * @return immediate_U field
 	 */
-	inline int32_t get_imm_U() {
+	inline int32_t get_imm_U() const {
 		return m_instr.range(31, 12);
 	}
 
@@ -226,7 +226,7 @@ public:
 	 * @brief Access to immediate field for B-type
 	 * @return immediate_B field
 	 */
-	inline int32_t get_imm_B() {
+	inline int32_t get_imm_B() const {
 		int32_t aux = 0;
 
 		aux |= m_instr[7] << 11;
@@ -253,7 +253,7 @@ public:
 	 * @brief Access to immediate field for J-type
 	 * @return immediate_J field
 	 */
-	inline int32_t get_imm_J() {
+	inline int32_t get_imm_J() const {
 		int32_t aux = 0;
 
 		aux = m_instr[12] << 11;
@@ -282,7 +282,7 @@ public:
 		m_instr.range(19, 12) = aux.range(19, 12);
 	}
 
-	inline int32_t get_imm_L() {
+	inline int32_t get_imm_L() const {
 		int32_t aux = 0;
 
 		aux = m_instr.range(12, 10) << 3;
@@ -292,7 +292,7 @@ public:
 		return aux;
 	}
 
-	inline int32_t get_imm_LWSP() {
+	inline int32_t get_imm_LWSP() const {
 		int32_t aux = 0;
 
 		aux = m_instr[12] << 5;
@@ -302,7 +302,7 @@ public:
 		return aux;
 	}
 
-	inline int32_t get_imm_ADDI() {
+	inline int32_t get_imm_ADDI () const {
 		int32_t aux = 0;
 
 		aux = m_instr[12] << 5;
@@ -314,7 +314,7 @@ public:
 		return aux;
 	}
 
-	inline int32_t get_imm_ADDI4SPN() {
+	inline int32_t get_imm_ADDI4SPN() const {
 		int32_t aux = 0;
 
 		aux = m_instr.range(12, 11) << 4;
@@ -325,7 +325,7 @@ public:
 		return aux;
 	}
 
-	inline int32_t get_imm_ADDI16SP() {
+	inline int32_t get_imm_ADDI16SP() const {
 		int32_t aux = 0;
 
 		aux = m_instr[12] << 9;
@@ -341,7 +341,7 @@ public:
 		return aux;
 	}
 
-	inline int32_t get_imm_CSS() {
+	inline int32_t get_imm_CSS() const {
 		int32_t aux = 0;
 		aux = m_instr.range(12, 9) << 2;
 		aux |= m_instr.range(8, 7) << 6;
@@ -349,7 +349,7 @@ public:
 		return aux;
 	}
 
-	inline int32_t get_imm_CB() {
+	inline int32_t get_imm_CB() const {
 		int32_t aux = 0;
 
 		aux = m_instr[12] << 8;
@@ -368,7 +368,7 @@ public:
 		return aux;
 	}
 
-	inline int32_t get_imm_LUI() {
+	inline int32_t get_imm_LUI() const {
 		int32_t aux = 0;
 
 		aux = m_instr[12] << 17;
@@ -381,7 +381,7 @@ public:
 		return aux;
 	}
 
-	inline int32_t get_csr() {
+	inline int32_t get_csr() const {
 		return get_imm_I();
 	}
 
@@ -389,7 +389,7 @@ public:
 	 * @brief Decodes opcode of instruction
 	 * @return opcode of instruction
 	 */
-	op_C_Codes decode();
+	op_C_Codes decode() const;
 
 	bool Exec_C_JR();
 	bool Exec_C_MV();
@@ -410,7 +410,7 @@ public:
 	bool Exec_C_OR();
 	bool Exec_C_AND();
 
-	bool Exec_C_ADDI();
+	bool Exec_C_ADDI() const;
 	bool Exec_C_JALR();
 	bool Exec_C_LW();
 	bool Exec_C_SW();

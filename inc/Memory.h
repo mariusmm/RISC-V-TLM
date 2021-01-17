@@ -83,6 +83,6 @@ private:
 	 * @brief Read Intel hex file
 	 * @param filename file name to read
 	 */
-	virtual void readHexFile(std::string filename);
+	void readHexFile(std::string filename);
 };
 #endif /* __MEMORY_H__ */

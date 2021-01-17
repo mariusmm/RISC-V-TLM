@@ -6,7 +6,7 @@
 */
 #include "C_extension.h"
 
-op_C_Codes C_extension::decode() {
+op_C_Codes C_extension::decode() const {
 
 	switch (opcode()) {
 
@@ -547,7 +547,7 @@ bool C_extension::Exec_C_AND() {
 	return true;
 }
 
-bool C_extension::Exec_C_ADDI() {
+bool C_extension::Exec_C_ADDI() const {
 	int rd, rs1;
 	int32_t imm = 0;
 	int32_t calc;

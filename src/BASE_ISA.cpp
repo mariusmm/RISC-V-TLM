@@ -82,7 +82,7 @@ typedef enum {
 	CSRRCI = 0b111,
 } Codes;
 
-bool BASE_ISA::Exec_LUI() {
+bool BASE_ISA::Exec_LUI() const {
 	int rd;
 	uint32_t imm = 0;
 
@@ -98,7 +98,7 @@ bool BASE_ISA::Exec_LUI() {
 	return true;
 }
 
-bool BASE_ISA::Exec_AUIPC() {
+bool BASE_ISA::Exec_AUIPC() const {
 	int rd;
 	uint32_t imm = 0;
 	int new_pc;
@@ -117,7 +117,7 @@ bool BASE_ISA::Exec_AUIPC() {
 	return true;
 }
 
-bool BASE_ISA::Exec_JAL() {
+bool BASE_ISA::Exec_JAL() const {
 	int32_t mem_addr = 0;
 	int rd;
 	int new_pc, old_pc;
@@ -141,7 +141,7 @@ bool BASE_ISA::Exec_JAL() {
 	return true;
 }
 
-bool BASE_ISA::Exec_JALR() {
+bool BASE_ISA::Exec_JALR() const {
 	uint32_t mem_addr = 0;
 	int rd, rs1;
 	int new_pc, old_pc;
@@ -163,7 +163,7 @@ bool BASE_ISA::Exec_JALR() {
 	return true;
 }
 
-bool BASE_ISA::Exec_BEQ() {
+bool BASE_ISA::Exec_BEQ() const {
 	int rs1, rs2;
 	int new_pc = 0;
 
@@ -188,7 +188,7 @@ bool BASE_ISA::Exec_BEQ() {
 	return true;
 }
 
-bool BASE_ISA::Exec_BNE() {
+bool BASE_ISA::Exec_BNE() const {
 	int rs1, rs2;
 	int new_pc = 0;
 	uint32_t val1, val2;
@@ -217,7 +217,7 @@ bool BASE_ISA::Exec_BNE() {
 	return true;
 }
 
-bool BASE_ISA::Exec_BLT() {
+bool BASE_ISA::Exec_BLT() const {
 	int rs1, rs2;
 	int new_pc = 0;
 
@@ -242,7 +242,7 @@ bool BASE_ISA::Exec_BLT() {
 	return true;
 }
 
-bool BASE_ISA::Exec_BGE() {
+bool BASE_ISA::Exec_BGE() const {
 	int rs1, rs2;
 	int new_pc = 0;
 
@@ -267,7 +267,7 @@ bool BASE_ISA::Exec_BGE() {
 	return true;
 }
 
-bool BASE_ISA::Exec_BLTU() {
+bool BASE_ISA::Exec_BLTU() const {
 	int rs1, rs2;
 	int new_pc = 0;
 
@@ -292,7 +292,7 @@ bool BASE_ISA::Exec_BLTU() {
 	return true;
 }
 
-bool BASE_ISA::Exec_BGEU() {
+bool BASE_ISA::Exec_BGEU() const {
 	int rs1, rs2;
 	int new_pc = 0;
 
@@ -316,7 +316,7 @@ bool BASE_ISA::Exec_BGEU() {
 	return true;
 }
 
-bool BASE_ISA::Exec_LB() {
+bool BASE_ISA::Exec_LB() const {
 	uint32_t mem_addr = 0;
 	int rd, rs1;
 	int32_t imm = 0;
@@ -338,7 +338,7 @@ bool BASE_ISA::Exec_LB() {
 	return true;
 }
 
-bool BASE_ISA::Exec_LH() {
+bool BASE_ISA::Exec_LH() const {
 	uint32_t mem_addr = 0;
 	int rd, rs1;
 	int32_t imm = 0;
@@ -360,7 +360,7 @@ bool BASE_ISA::Exec_LH() {
 	return true;
 }
 
-bool BASE_ISA::Exec_LW() {
+bool BASE_ISA::Exec_LW() const {
 	uint32_t mem_addr = 0;
 	int rd, rs1;
 	int32_t imm = 0;
@@ -383,7 +383,7 @@ bool BASE_ISA::Exec_LW() {
 	return true;
 }
 
-bool BASE_ISA::Exec_LBU() {
+bool BASE_ISA::Exec_LBU() const {
 	uint32_t mem_addr = 0;
 	int rd, rs1;
 	int32_t imm = 0;
@@ -404,7 +404,7 @@ bool BASE_ISA::Exec_LBU() {
 	return true;
 }
 
-bool BASE_ISA::Exec_LHU() {
+bool BASE_ISA::Exec_LHU() const {
 	uint32_t mem_addr = 0;
 	int rd, rs1;
 	int32_t imm = 0;
@@ -427,7 +427,7 @@ bool BASE_ISA::Exec_LHU() {
 	return true;
 }
 
-bool BASE_ISA::Exec_SB() {
+bool BASE_ISA::Exec_SB() const {
 	uint32_t mem_addr = 0;
 	int rs1, rs2;
 	int32_t imm = 0;
@@ -451,7 +451,7 @@ bool BASE_ISA::Exec_SB() {
 	return true;
 }
 
-bool BASE_ISA::Exec_SH() {
+bool BASE_ISA::Exec_SH() const {
 	uint32_t mem_addr = 0;
 	int rs1, rs2;
 	int32_t imm = 0;
@@ -475,7 +475,7 @@ bool BASE_ISA::Exec_SH() {
 	return true;
 }
 
-bool BASE_ISA::Exec_SW() {
+bool BASE_ISA::Exec_SW() const {
 	uint32_t mem_addr = 0;
 	int rs1, rs2;
 	int32_t imm = 0;
@@ -498,7 +498,7 @@ bool BASE_ISA::Exec_SW() {
 	return true;
 }
 
-bool BASE_ISA::Exec_ADDI() {
+bool BASE_ISA::Exec_ADDI() const {
 	int rd, rs1;
 	int32_t imm = 0;
 	int32_t calc;
@@ -519,7 +519,7 @@ bool BASE_ISA::Exec_ADDI() {
 	return true;
 }
 
-bool BASE_ISA::Exec_SLTI() {
+bool BASE_ISA::Exec_SLTI() const {
 	int rd, rs1;
 	int32_t imm;
 
@@ -540,7 +540,7 @@ bool BASE_ISA::Exec_SLTI() {
 	return true;
 }
 
-bool BASE_ISA::Exec_SLTIU() {
+bool BASE_ISA::Exec_SLTIU() const {
 	int rd, rs1;
 	int32_t imm;
 
@@ -561,7 +561,7 @@ bool BASE_ISA::Exec_SLTIU() {
 	return true;
 }
 
-bool BASE_ISA::Exec_XORI() {
+bool BASE_ISA::Exec_XORI() const {
 	int rd, rs1;
 	int32_t imm;
 	uint32_t calc;
@@ -581,7 +581,7 @@ bool BASE_ISA::Exec_XORI() {
 	return true;
 }
 
-bool BASE_ISA::Exec_ORI() {
+bool BASE_ISA::Exec_ORI() const {
 	int rd, rs1;
 	int32_t imm;
 	uint32_t calc;
@@ -601,7 +601,7 @@ bool BASE_ISA::Exec_ORI() {
 	return true;
 }
 
-bool BASE_ISA::Exec_ANDI() {
+bool BASE_ISA::Exec_ANDI() const {
 	int rd, rs1;
 	uint32_t imm;
 	uint32_t calc;
@@ -653,7 +653,7 @@ bool BASE_ISA::Exec_SLLI() {
 	return true;
 }
 
-bool BASE_ISA::Exec_SRLI() {
+bool BASE_ISA::Exec_SRLI() const {
 	int rd, rs1, rs2;
 	uint32_t shift;
 	uint32_t calc;
@@ -675,7 +675,7 @@ bool BASE_ISA::Exec_SRLI() {
 	return true;
 }
 
-bool BASE_ISA::Exec_SRAI() {
+bool BASE_ISA::Exec_SRAI() const {
 	int rd, rs1, rs2;
 	uint32_t shift;
 	int32_t calc;
@@ -697,7 +697,7 @@ bool BASE_ISA::Exec_SRAI() {
 	return true;
 }
 
-bool BASE_ISA::Exec_ADD() {
+bool BASE_ISA::Exec_ADD() const {
 	int rd, rs1, rs2;
 	uint32_t calc;
 	rd = get_rd();
@@ -716,7 +716,7 @@ bool BASE_ISA::Exec_ADD() {
 	return true;
 }
 
-bool BASE_ISA::Exec_SUB() {
+bool BASE_ISA::Exec_SUB() const {
 	int rd, rs1, rs2;
 	uint32_t calc;
 	rd = get_rd();
@@ -734,7 +734,7 @@ bool BASE_ISA::Exec_SUB() {
 	return true;
 }
 
-bool BASE_ISA::Exec_SLL() {
+bool BASE_ISA::Exec_SLL() const {
 	int rd, rs1, rs2;
 	uint32_t shift;
 	uint32_t calc;
@@ -756,7 +756,7 @@ bool BASE_ISA::Exec_SLL() {
 	return true;
 }
 
-bool BASE_ISA::Exec_SLT() {
+bool BASE_ISA::Exec_SLT() const {
 	int rd, rs1, rs2;
 
 	rd = get_rd();
@@ -776,7 +776,7 @@ bool BASE_ISA::Exec_SLT() {
 	return true;
 }
 
-bool BASE_ISA::Exec_SLTU() {
+bool BASE_ISA::Exec_SLTU() const {
 	int rd, rs1, rs2;
 
 	rd = get_rd();
@@ -796,7 +796,7 @@ bool BASE_ISA::Exec_SLTU() {
 	return true;
 }
 
-bool BASE_ISA::Exec_XOR() {
+bool BASE_ISA::Exec_XOR() const {
 	int rd, rs1, rs2;
 	uint32_t calc;
 
@@ -815,7 +815,7 @@ bool BASE_ISA::Exec_XOR() {
 	return true;
 }
 
-bool BASE_ISA::Exec_SRL() {
+bool BASE_ISA::Exec_SRL() const {
 	int rd, rs1, rs2;
 	uint32_t shift;
 	uint32_t calc;
@@ -837,7 +837,7 @@ bool BASE_ISA::Exec_SRL() {
 	return true;
 }
 
-bool BASE_ISA::Exec_SRA() {
+bool BASE_ISA::Exec_SRA() const {
 	int rd, rs1, rs2;
 	uint32_t shift;
 	int32_t calc;
@@ -859,7 +859,7 @@ bool BASE_ISA::Exec_SRA() {
 	return true;
 }
 
-bool BASE_ISA::Exec_OR() {
+bool BASE_ISA::Exec_OR() const {
 	int rd, rs1, rs2;
 	uint32_t calc;
 
@@ -878,7 +878,7 @@ bool BASE_ISA::Exec_OR() {
 	return true;
 }
 
-bool BASE_ISA::Exec_AND() {
+bool BASE_ISA::Exec_AND() const {
 	int rd, rs1, rs2;
 	uint32_t calc;
 
@@ -897,13 +897,13 @@ bool BASE_ISA::Exec_AND() {
 	return true;
 }
 
-bool BASE_ISA::Exec_FENCE() {
+bool BASE_ISA::Exec_FENCE() const {
 	log->SC_log(Log::INFO) << "FENCE" << "\n";
 
 	return true;
 }
 
-bool BASE_ISA::Exec_ECALL() {
+bool BASE_ISA::Exec_ECALL() const {
 
 	log->SC_log(Log::INFO) << "ECALL" << "\n";
 	std::cout << "\n" << "ECALL Instruction called, stopping simulation"
@@ -937,7 +937,7 @@ bool BASE_ISA::Exec_EBREAK() {
 	return true;
 }
 
-bool BASE_ISA::Exec_CSRRW() {
+bool BASE_ISA::Exec_CSRRW() const {
 	int rd, rs1;
 	int csr;
 	uint32_t aux;
@@ -962,7 +962,7 @@ bool BASE_ISA::Exec_CSRRW() {
 	return true;
 }
 
-bool BASE_ISA::Exec_CSRRS() {
+bool BASE_ISA::Exec_CSRRS() const {
 	int rd, rs1;
 	int csr;
 	uint32_t bitmask, aux, aux2;
@@ -993,7 +993,7 @@ bool BASE_ISA::Exec_CSRRS() {
 	return true;
 }
 
-bool BASE_ISA::Exec_CSRRC() {
+bool BASE_ISA::Exec_CSRRC() const {
 	int rd, rs1;
 	int csr;
 	uint32_t bitmask, aux, aux2;
@@ -1024,7 +1024,7 @@ bool BASE_ISA::Exec_CSRRC() {
 	return true;
 }
 
-bool BASE_ISA::Exec_CSRRWI() {
+bool BASE_ISA::Exec_CSRRWI() const {
 	int rd, rs1;
 	int csr;
 	uint32_t aux;
@@ -1047,7 +1047,7 @@ bool BASE_ISA::Exec_CSRRWI() {
 	return true;
 }
 
-bool BASE_ISA::Exec_CSRRSI() {
+bool BASE_ISA::Exec_CSRRSI() const {
 	int rd, rs1;
 	int csr;
 	uint32_t bitmask, aux;
@@ -1075,7 +1075,7 @@ bool BASE_ISA::Exec_CSRRSI() {
 	return true;
 }
 
-bool BASE_ISA::Exec_CSRRCI() {
+bool BASE_ISA::Exec_CSRRCI() const {
 	int rd, rs1;
 	int csr;
 	uint32_t bitmask, aux;
@@ -1105,7 +1105,7 @@ bool BASE_ISA::Exec_CSRRCI() {
 
 /*********************** Privileged Instructions ******************************/
 
-bool BASE_ISA::Exec_MRET() {
+bool BASE_ISA::Exec_MRET() const {
 	uint32_t new_pc = 0;
 
 	new_pc = regs->getCSR(CSR_MEPC);
@@ -1126,7 +1126,7 @@ bool BASE_ISA::Exec_MRET() {
 	return true;
 }
 
-bool BASE_ISA::Exec_SRET() {
+bool BASE_ISA::Exec_SRET() const {
 	uint32_t new_pc = 0;
 
 	new_pc = regs->getCSR(CSR_SEPC);
@@ -1138,13 +1138,13 @@ bool BASE_ISA::Exec_SRET() {
 	return true;
 }
 
-bool BASE_ISA::Exec_WFI() {
+bool BASE_ISA::Exec_WFI() const {
 	log->SC_log(Log::INFO) << "WFI" << "\n";
 
 	return true;
 }
 
-bool BASE_ISA::Exec_SFENCE() {
+bool BASE_ISA::Exec_SFENCE() const {
 	log->SC_log(Log::INFO) << "SFENCE" << "\n";
 
 	return true;
@@ -1411,8 +1411,9 @@ opCodes BASE_ISA::decode() {
 				return OP_ADD;
 			case SUB_F7:
 				return OP_SUB;
+			default:
+				return OP_ADD;
 			}
-			;
 			break;
 		case SLL_F:
 			return OP_SLL;
@@ -1428,11 +1429,15 @@ opCodes BASE_ISA::decode() {
 				return OP_SRL;
 			case SRA_F7:
 				return OP_SRA;
+			default:
+				return OP_ERROR;
 			}
 		case OR_F:
 			return OP_OR;
 		case AND_F:
 			return OP_AND;
+		default:
+			return OP_ERROR;
 		}
 	} /* ADD */
 	case FENCE:
