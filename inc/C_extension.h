@@ -415,6 +415,7 @@ public:
 	bool Exec_C_LW();
 	bool Exec_C_SW();
 	bool Exec_C_JAL(int m_rd);
+	bool Exec_C_EBREAK();
 
 	bool process_instruction(Instruction *inst);
 };

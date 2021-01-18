@@ -138,11 +138,11 @@ op_C_Codes C_extension::decode() const {
 		break;
 
 	[[unlikely]] default:
+
 		return OP_C_ERROR;
 		break;
 
 	}
-
 	return OP_C_ERROR;
 }
 
@@ -663,6 +663,20 @@ bool C_extension::Exec_C_JAL(int m_rd) {
 	return true;
 }
 
+bool C_extension::Exec_C_EBREAK() {
+
+	log->SC_log(Log::INFO) << "C.EBREAK" << "\n";
+	std::cout << "\n" << "C.EBRAK  Instruction called, dumping information"
+			<< "\n";
+	regs->dump();
+	std::cout << "Simulation time " << sc_core::sc_time_stamp() << "\n";
+	perf->dump();
+
+	RaiseException(EXCEPTION_CAUSE_BREAKPOINT, m_instr);
+	NOP();
+	return true;
+}
+
 bool C_extension::process_instruction(Instruction *inst) {
 	bool PC_not_affected = true;
 
@@ -746,6 +760,9 @@ bool C_extension::process_instruction(Instruction *inst) {
 		break;
 	case OP_C_AND:
 		Exec_C_AND();
+		break;
+	case OP_C_EBREAK:
+		Exec_C_EBREAK();
 		break;
 	[[unlikely]] default:
 		std::cout << "C instruction not implemented yet" << "\n";

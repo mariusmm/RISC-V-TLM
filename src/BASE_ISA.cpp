@@ -933,7 +933,7 @@ bool BASE_ISA::Exec_EBREAK() {
 	perf->dump();
 
 	RaiseException(EXCEPTION_CAUSE_BREAKPOINT, m_instr);
-
+	NOP();
 	return true;
 }
 
