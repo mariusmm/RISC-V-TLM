@@ -81,7 +81,7 @@ public:
 	/**
 	 * @brief Dump counters to cout
 	 */
-	void dump();
+	void dump() const;
 
 private:
 	static Performance *instance;

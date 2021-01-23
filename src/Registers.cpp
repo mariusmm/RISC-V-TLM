@@ -116,7 +116,7 @@ int32_t Registers::getValue(int reg_num) {
 	}
 }
 
-uint32_t Registers::getPC() {
+uint32_t Registers::getPC() const {
 	return register_PC;
 }
 

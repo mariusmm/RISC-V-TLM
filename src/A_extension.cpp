@@ -355,7 +355,6 @@ bool A_extension::Exec_A_AMOMAXU() const {
 
 void A_extension::TLB_reserve(uint32_t address) {
 	TLB_A_Entries.insert(address);
-	return;
 }
 
 bool A_extension::TLB_reserved(uint32_t address) {

@@ -203,7 +203,7 @@ public:
 	 * Returns PC value
 	 * @return PC value
 	 */
-	uint32_t getPC();
+	uint32_t getPC() const;
 
 	/**
 	 * Sets arbitraty value to PC

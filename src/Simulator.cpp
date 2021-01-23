@@ -92,7 +92,7 @@ void process_arguments(int argc, char *argv[]) {
 	while ((c = getopt(argc, argv, "D:f:?")) != -1) {
 		switch (c) {
 		case 'D':
-			debug_level = atoi(optarg);
+			debug_level = std::atoi(optarg);
 
 			switch (debug_level) {
 			case 3:

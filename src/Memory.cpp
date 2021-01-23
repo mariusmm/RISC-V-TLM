@@ -9,7 +9,7 @@
 #include "Memory.h"
 
 SC_HAS_PROCESS(Memory);
-Memory::Memory(sc_core::sc_module_name name, std::string filename) :
+Memory::Memory(sc_core::sc_module_name const &name, std::string const &filename) :
 		sc_module(name), socket("socket"), LATENCY(sc_core::SC_ZERO_TIME) {
 	// Register callbacks for incoming interface method calls
 	socket.register_b_transport(this, &Memory::b_transport);
@@ -26,7 +26,7 @@ Memory::Memory(sc_core::sc_module_name name, std::string filename) :
 	log->SC_log(Log::INFO) << "Using file: " << filename << std::endl;
 }
 
-Memory::Memory(sc_core::sc_module_name name) :
+Memory::Memory(sc_core::sc_module_name const& name) :
 		sc_module(name), socket("socket"), LATENCY(sc_core::SC_ZERO_TIME) {
 	socket.register_b_transport(this, &Memory::b_transport);
 	socket.register_get_direct_mem_ptr(this, &Memory::get_direct_mem_ptr);
@@ -70,7 +70,7 @@ void Memory::b_transport(tlm::tlm_generic_payload &trans,
 		trans.set_response_status(tlm::TLM_ADDRESS_ERROR_RESPONSE);
 		return;
 	}
-	if (byt != 0) {
+	if (byt != nullptr) {
 		trans.set_response_status(tlm::TLM_BYTE_ENABLE_ERROR_RESPONSE);
 		return;
 	}
@@ -144,7 +144,7 @@ unsigned int Memory::transport_dbg(tlm::tlm_generic_payload &trans) {
 	return num_bytes;
 }
 
-void Memory::readHexFile(std::string filename) {
+void Memory::readHexFile(std::string const& filename) {
 	std::ifstream hexfile;
 	std::string line;
 
@@ -159,8 +159,8 @@ void Memory::readHexFile(std::string filename) {
 					/* Data */
 				  int byte_count;
 				  uint32_t address;
-					byte_count = stol(line.substr(1, 2), nullptr, 16);
-					address = stol(line.substr(3, 4), nullptr, 16);
+					byte_count = std::stoi(line.substr(1, 2), nullptr, 16);
+					address = std::stoi(line.substr(3, 4), nullptr, 16);
 					address = address + extended_address;
 					//cout << "00 address 0x" << hex << address << endl;
 					for (int i = 0; i < byte_count; i++) {

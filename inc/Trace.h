@@ -36,7 +36,7 @@ public:
 	 * @brief Constructor
 	 * @param name Module name
 	 */
-	Trace(sc_core::sc_module_name name);
+	Trace(sc_core::sc_module_name const &name);
 
 	/**
 	 * @brief Destructor
@@ -49,7 +49,7 @@ private:
 	virtual void b_transport(tlm::tlm_generic_payload &trans,
 			sc_core::sc_time &delay);
 
-	void xtermLaunch(char *slaveName);
+	void xtermLaunch(char *slaveName) const;
 	void xtermKill(const char *mess);
 	void xtermSetup(void);
 

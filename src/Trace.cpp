@@ -6,16 +6,13 @@
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include <stdio.h>
-#include <fstream>
+#include <cstdio>
 #include <iostream>
 #include <termios.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include <unistd.h>
 #include <fcntl.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+#include <cstring>
 #include <sys/wait.h>
 
 // Code partially taken from
@@ -23,11 +20,11 @@
 
 #include "Trace.h"
 
-void Trace::xtermLaunch(char *slaveName) {
+void Trace::xtermLaunch(char *slaveName) const {
 	char *arg;
 	char *fin = &(slaveName[strlen(slaveName) - 2]);
 
-	if ( NULL == strchr(fin, '/')) {
+	if ( nullptr == strchr(fin, '/')) {
 		arg = new char[2 + 1 + 1 + 20 + 1];
 		sprintf(arg, "-S%c%c%d", fin[0], fin[1], ptMaster);
 	} else {
@@ -39,7 +36,7 @@ void Trace::xtermLaunch(char *slaveName) {
 	char *argv[3];
 	argv[0] = (char*) ("xterm");
 	argv[1] = arg;
-	argv[2] = NULL;
+	argv[2] = nullptr;
 
 	execvp("xterm", argv);
 }
@@ -58,10 +55,10 @@ void Trace::xtermKill(const char *mess) {
 
 	if (xtermPid > 0) {			// Kill the terminal
 		kill(xtermPid, SIGKILL);
-		waitpid(xtermPid, NULL, 0);
+		waitpid(xtermPid, nullptr, 0);
 	}
 
-	if ( NULL != mess) {		// If we really want a message
+	if ( nullptr != mess) {		// If we really want a message
 		perror(mess);
 	}
 
@@ -78,7 +75,7 @@ void Trace::xtermSetup(void) {
 		char *ptSlaveName = ptsname(ptMaster);
 		ptSlave = open(ptSlaveName, O_RDWR);	// In and out are the same
 
-		struct termios termInfo;
+		struct termios termInfo{};
 		tcgetattr(ptSlave, &termInfo);
 
 		termInfo.c_lflag &= ~ECHO;
@@ -94,7 +91,7 @@ void Trace::xtermSetup(void) {
 }
 
 SC_HAS_PROCESS(Trace);
-Trace::Trace(sc_core::sc_module_name name) :
+Trace::Trace(sc_core::sc_module_name const &name) :
 		sc_module(name), socket("socket") {
 
 	socket.register_b_transport(this, &Trace::b_transport);
@@ -103,7 +100,7 @@ Trace::Trace(sc_core::sc_module_name name) :
 }
 
 Trace::~Trace() {
-	xtermKill( NULL);
+	xtermKill( nullptr);
 }
 
 void Trace::b_transport(tlm::tlm_generic_payload &trans,

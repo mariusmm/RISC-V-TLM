@@ -40,7 +40,7 @@ public:
 	 * @param msg   mesasge string
 	 * @param level level of the log (LogLevel)
 	 */
-	void SC_log(std::string msg, enum LogLevel level);
+	void SC_log(const std::string& msg, enum LogLevel level);
 
 	/**
 	 * @brief method to log some string
@@ -64,7 +64,7 @@ public:
 	 * @brief Returns log level
 	 * @return Current log level
 	 */
-	enum LogLevel getLogLevel();
+	enum LogLevel getLogLevel() const;
 
 private:
 	static Log *instance;

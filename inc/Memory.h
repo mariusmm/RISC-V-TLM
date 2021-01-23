@@ -35,8 +35,8 @@ public:
 	};
 	const sc_core::sc_time LATENCY;
 
-	Memory(sc_core::sc_module_name name, std::string filename);
-	Memory(sc_core::sc_module_name name);
+	Memory(sc_core::sc_module_name const &name, std::string const &filename);
+	Memory(const sc_core::sc_module_name& name);
 
 	~Memory(void);
 
@@ -83,6 +83,6 @@ private:
 	 * @brief Read Intel hex file
 	 * @param filename file name to read
 	 */
-	void readHexFile(std::string filename);
+	void readHexFile(const std::string& filename);
 };
 #endif /* __MEMORY_H__ */

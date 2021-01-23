@@ -9,7 +9,7 @@
 #include "Performance.h"
 
 Performance* Performance::getInstance() {
-	if (instance == 0) {
+	if (instance == nullptr) {
 		instance = new Performance();
 	}
 
@@ -26,7 +26,7 @@ Performance::Performance() {
 	instructions_executed = 0;
 }
 
-void Performance::dump() {
+void Performance::dump() const {
 	std::cout << std::dec << "# data memory reads: " << data_memory_read
 			<< std::endl;
 	std::cout << "# data memory writes: " << data_memory_write << std::endl;
@@ -38,4 +38,4 @@ void Performance::dump() {
 			<< std::endl;
 }
 
-Performance *Performance::instance = 0;
+Performance *Performance::instance = nullptr;

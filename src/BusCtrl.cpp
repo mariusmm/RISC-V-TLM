@@ -9,7 +9,7 @@
 #include "BusCtrl.h"
 
 SC_HAS_PROCESS(BusCtrl);
-BusCtrl::BusCtrl(sc_core::sc_module_name name) :
+BusCtrl::BusCtrl(sc_core::sc_module_name const name) :
 		sc_module(name), cpu_instr_socket("cpu_instr_socket"), cpu_data_socket(
 				"cpu_data_socket"), memory_socket("memory_socket"), trace_socket(
 				"trace_socket") {

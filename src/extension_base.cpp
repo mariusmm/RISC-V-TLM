@@ -8,7 +8,7 @@
 
 #include "extension_base.h"
 
-extension_base::extension_base(sc_dt::sc_uint<32> instr,
+extension_base::extension_base(sc_dt::sc_uint<32> const instr,
 		Registers *register_bank, MemoryInterface *mem_interface) :
 		m_instr(instr), regs(register_bank), mem_intf(mem_interface) {
 
@@ -16,9 +16,8 @@ extension_base::extension_base(sc_dt::sc_uint<32> instr,
 	log = Log::getInstance();
 }
 
-extension_base::~extension_base() {
+extension_base::~extension_base() =default;
 
-}
 void extension_base::setInstr(uint32_t p_instr) {
 	m_instr = sc_dt::sc_uint<32>(p_instr);
 }

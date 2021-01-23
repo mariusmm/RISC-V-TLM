@@ -9,7 +9,7 @@
 #include "Log.h"
 
 Log* Log::getInstance() {
-	if (instance == 0) {
+	if (instance == nullptr) {
 		instance = new Log("Log.txt");
 	}
 
@@ -21,7 +21,7 @@ Log::Log(const char *filename) {
 	currentLogLevel = Log::INFO;
 }
 
-void Log::SC_log(std::string msg, enum LogLevel level) {
+void Log::SC_log(std::string const& msg, enum LogLevel level) {
 
 	if (level <= currentLogLevel) {
 		m_stream << "time " << sc_core::sc_time_stamp() << ": " << msg
@@ -45,8 +45,8 @@ void Log::setLogLevel(enum LogLevel newLevel) {
 	currentLogLevel = newLevel;
 }
 
-enum Log::LogLevel Log::getLogLevel() {
+enum Log::LogLevel Log::getLogLevel() const {
 	return currentLogLevel;
 }
 
-Log *Log::instance = 0;
+Log *Log::instance = nullptr;

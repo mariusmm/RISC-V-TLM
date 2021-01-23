@@ -41,7 +41,7 @@ public:
 	 * @brief returns what instruction extension
 	 * @return extension
 	 */
-	extension_t check_extension();
+	extension_t check_extension() const;
 
 	void setInstr(uint32_t p_instr) {
 		m_instr = p_instr;

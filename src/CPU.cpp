@@ -9,7 +9,7 @@
 #include "CPU.h"
 
 SC_HAS_PROCESS(CPU);
-CPU::CPU(sc_core::sc_module_name name, uint32_t PC) :
+CPU::CPU(sc_core::sc_module_name const name, uint32_t PC) :
 		sc_module(name), instr_bus("instr_bus"), default_time(10,
 				sc_core::SC_NS) {
 	register_bank = new Registers();
@@ -119,7 +119,7 @@ void CPU::CPU_thread(void) {
 	bool PC_not_affected = false;
 	bool incPCby2 = false;
 	tlm::tlm_dmi dmi_data;
-	unsigned char *dmi_ptr = NULL;
+	unsigned char *dmi_ptr = nullptr;
 
 	trans->set_command(tlm::TLM_READ_COMMAND);
 	trans->set_data_ptr(reinterpret_cast<unsigned char*>(&INSTR));
