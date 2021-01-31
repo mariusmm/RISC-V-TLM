@@ -45,11 +45,6 @@ CPU::CPU(sc_core::sc_module_name const name, uint32_t PC) :
 }
 
 CPU::~CPU() {
-	std::cout << "*********************************************" << std::endl;
-	register_bank->dump();
-	std::cout << "end time: " << sc_core::sc_time_stamp() << std::endl;
-	perf->dump();
-	std::cout << "*********************************************" << std::endl;
 	delete register_bank;
 	delete mem_intf;
 	delete inst;
