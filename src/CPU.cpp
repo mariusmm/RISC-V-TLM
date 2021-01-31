@@ -57,7 +57,6 @@ CPU::~CPU() {
 
 bool CPU::cpu_process_IRQ() {
 	uint32_t csr_temp;
-	uint32_t new_pc;
 	bool ret_value = false;
 
 	if (interrupt == true) {
@@ -84,7 +83,7 @@ bool CPU::cpu_process_IRQ() {
 			register_bank->setCSR(CSR_MCAUSE, 0x80000000);
 
 			/* set new PC address */
-			new_pc = register_bank->getCSR(CSR_MTVEC);
+			uint32_t new_pc = register_bank->getCSR(CSR_MTVEC);
 			//new_pc = new_pc & 0xFFFFFFFC; // last two bits always to 0
 			log->SC_log(Log::DEBUG) << "NEW PC Value 0x" << std::hex << new_pc
 					<< std::endl;
