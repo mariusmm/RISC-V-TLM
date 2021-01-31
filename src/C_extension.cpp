@@ -218,7 +218,7 @@ bool C_extension::Exec_C_LWSP() {
 
 	mem_addr = imm + regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 4);
-
+	perf->dataMemoryRead();
 	regs->setValue(rd, data);
 
 	if (log->getLogLevel() >= Log::INFO) {
@@ -302,6 +302,7 @@ bool C_extension::Exec_C_SWSP() {
 	data = regs->getValue(rs2);
 
 	mem_intf->writeDataMem(mem_addr, data, 4);
+	perf->dataMemoryWrite();
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << std::dec << "C.SWSP: x" << rs2 << "(0x"
@@ -603,6 +604,7 @@ bool C_extension::Exec_C_LW() {
 
 	mem_addr = imm + regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 4);
+	perf->dataMemoryRead();
 	regs->setValue(rd, data);
 
 	if (log->getLogLevel() >= Log::INFO) {
@@ -629,6 +631,7 @@ bool C_extension::Exec_C_SW() {
 	data = regs->getValue(rs2);
 
 	mem_intf->writeDataMem(mem_addr, data, 4);
+	perf->dataMemoryWrite();
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.SW: x" << std::dec << rs2 << "(0x" << std::hex

@@ -71,6 +71,7 @@ bool A_extension::Exec_A_LR() {
 
 	mem_addr = regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 4);
+	perf->dataMemoryRead();
 	regs->setValue(rd, data);
 
 	TLB_reserve(mem_addr);
@@ -95,6 +96,7 @@ bool A_extension::Exec_A_SC() {
 
 	if (TLB_reserved(mem_addr) == true) {
 		mem_intf->writeDataMem(mem_addr, data, 4);
+		perf->dataMemoryWrite();
 		regs->setValue(rd, 0);  // SC writes 0 to rd on success
 	} else {
 		regs->setValue(rd, 1);  // SC writes nonzero on failure
@@ -121,7 +123,7 @@ bool A_extension::Exec_A_AMOSWAP() const {
 
 	mem_addr = regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 4);
-
+	perf->dataMemoryRead();
 	regs->setValue(rd, data);
 
 	// swap
@@ -129,6 +131,7 @@ bool A_extension::Exec_A_AMOSWAP() const {
 	regs->setValue(rs2, data);
 
 	mem_intf->writeDataMem(mem_addr, aux, 4);
+	perf->dataMemoryWrite();
 
 	log->SC_log(Log::INFO) << std::dec << "AMOSWAP " << std::endl;
 	return true;
@@ -147,6 +150,7 @@ bool A_extension::Exec_A_AMOADD() const {
 
 	mem_addr = regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 4);
+	perf->dataMemoryRead();
 
 	regs->setValue(rd, data);
 
@@ -154,6 +158,7 @@ bool A_extension::Exec_A_AMOADD() const {
 	data = data + regs->getValue(rs2);
 
 	mem_intf->writeDataMem(mem_addr, data, 4);
+	perf->dataMemoryWrite();
 
 	log->SC_log(Log::INFO) << std::dec << "AMOADD " << std::endl;
 
@@ -173,6 +178,7 @@ bool A_extension::Exec_A_AMOXOR() const {
 
 	mem_addr = regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 4);
+	perf->dataMemoryRead();
 
 	regs->setValue(rd, data);
 
@@ -180,6 +186,7 @@ bool A_extension::Exec_A_AMOXOR() const {
 	data = data ^ regs->getValue(rs2);
 
 	mem_intf->writeDataMem(mem_addr, data, 4);
+	perf->dataMemoryWrite();
 
 	log->SC_log(Log::INFO) << std::dec << "AMOXOR " << std::endl;
 
@@ -198,6 +205,7 @@ bool A_extension::Exec_A_AMOAND() const {
 
 	mem_addr = regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 4);
+	perf->dataMemoryRead();
 
 	regs->setValue(rd, data);
 
@@ -205,6 +213,7 @@ bool A_extension::Exec_A_AMOAND() const {
 	data = data & regs->getValue(rs2);
 
 	mem_intf->writeDataMem(mem_addr, data, 4);
+	perf->dataMemoryWrite();
 
 	log->SC_log(Log::INFO) << std::dec << "AMOAND " << std::endl;
 
@@ -224,6 +233,7 @@ bool A_extension::Exec_A_AMOOR() const {
 
 	mem_addr = regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 4);
+	perf->dataMemoryRead();
 
 	regs->setValue(rd, data);
 
@@ -231,6 +241,7 @@ bool A_extension::Exec_A_AMOOR() const {
 	data = data | regs->getValue(rs2);
 
 	mem_intf->writeDataMem(mem_addr, data, 4);
+	perf->dataMemoryWrite();
 
 	log->SC_log(Log::INFO) << std::dec << "AMOOR " << std::endl;
 	return true;
@@ -250,6 +261,7 @@ bool A_extension::Exec_A_AMOMIN() const {
 
 	mem_addr = regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 4);
+	perf->dataMemoryRead();
 
 	regs->setValue(rd, data);
 
@@ -260,6 +272,7 @@ bool A_extension::Exec_A_AMOMIN() const {
 	}
 
 	mem_intf->writeDataMem(mem_addr, aux, 4);
+	perf->dataMemoryWrite();
 
 	log->SC_log(Log::INFO) << std::dec << "AMOMIN " << std::endl;
 
@@ -279,6 +292,7 @@ bool A_extension::Exec_A_AMOMAX() const {
 
 	mem_addr = regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 4);
+	perf->dataMemoryRead();
 
 	regs->setValue(rd, data);
 
@@ -289,6 +303,7 @@ bool A_extension::Exec_A_AMOMAX() const {
 	}
 
 	mem_intf->writeDataMem(mem_addr, aux, 4);
+	perf->dataMemoryWrite();
 
 	log->SC_log(Log::INFO) << std::dec << "AMOMAX " << std::endl;
 
@@ -308,6 +323,7 @@ bool A_extension::Exec_A_AMOMINU() const {
 
 	mem_addr = regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 4);
+	perf->dataMemoryRead();
 
 	regs->setValue(rd, data);
 
@@ -318,6 +334,7 @@ bool A_extension::Exec_A_AMOMINU() const {
 	}
 
 	mem_intf->writeDataMem(mem_addr, aux, 4);
+	perf->dataMemoryWrite();
 
 	log->SC_log(Log::INFO) << std::dec << "AMOMINU " << std::endl;
 
@@ -337,6 +354,7 @@ bool A_extension::Exec_A_AMOMAXU() const {
 
 	mem_addr = regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 4);
+	perf->dataMemoryRead();
 
 	regs->setValue(rd, data);
 
@@ -347,6 +365,7 @@ bool A_extension::Exec_A_AMOMAXU() const {
 	}
 
 	mem_intf->writeDataMem(mem_addr, aux, 4);
+	perf->dataMemoryWrite();
 
 	log->SC_log(Log::INFO) << std::dec << "AMOMAXU " << std::endl;
 

@@ -328,6 +328,7 @@ bool BASE_ISA::Exec_LB() const {
 
 	mem_addr = imm + regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 1);
+	perf->dataMemoryRead();
 	regs->setValue(rd, data);
 
 	if (log->getLogLevel() >= Log::INFO) {
@@ -350,6 +351,7 @@ bool BASE_ISA::Exec_LH() const {
 
 	mem_addr = imm + regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 2);
+	perf->dataMemoryRead();
 	regs->setValue(rd, data);
 
 	if (log->getLogLevel() >= Log::INFO) {
@@ -372,6 +374,7 @@ bool BASE_ISA::Exec_LW() const {
 
 	mem_addr = imm + regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 4);
+	perf->dataMemoryRead();
 	regs->setValue(rd, data);
 
 	if (log->getLogLevel() >= Log::INFO) {
@@ -395,6 +398,7 @@ bool BASE_ISA::Exec_LBU() const {
 
 	mem_addr = imm + regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 1);
+	perf->dataMemoryRead();
 	regs->setValue(rd, data);
 
 	if (log->getLogLevel() >= Log::INFO) {
@@ -416,6 +420,8 @@ bool BASE_ISA::Exec_LHU() const {
 
 	mem_addr = imm + regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 2);
+	perf->dataMemoryRead();
+
 	regs->setValue(rd, data);
 
 	if (log->getLogLevel() >= Log::INFO) {
@@ -441,6 +447,7 @@ bool BASE_ISA::Exec_SB() const {
 	data = regs->getValue(rs2);
 
 	mem_intf->writeDataMem(mem_addr, data, 1);
+	perf->dataMemoryWrite();
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "SB: x" << std::dec << rs2 << " -> x" << rs1
@@ -465,6 +472,7 @@ bool BASE_ISA::Exec_SH() const {
 	data = regs->getValue(rs2);
 
 	mem_intf->writeDataMem(mem_addr, data, 2);
+	perf->dataMemoryWrite();
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "SH: x" << std::dec << rs2 << " -> x" << rs1
@@ -489,6 +497,7 @@ bool BASE_ISA::Exec_SW() const {
 	data = regs->getValue(rs2);
 
 	mem_intf->writeDataMem(mem_addr, data, 4);
+	perf->dataMemoryWrite();
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "SW: x" << std::dec << rs2 << "(0x" << std::hex
