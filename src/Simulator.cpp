@@ -12,8 +12,9 @@
 #include "tlm_utils/simple_initiator_socket.h"
 #include "tlm_utils/simple_target_socket.h"
 
-#include <signal.h>
+#include <csignal>
 #include <unistd.h>
+#include <chrono>
 
 #include "CPU.h"
 #include "Memory.h"
@@ -37,10 +38,8 @@ SC_MODULE(Simulator) {
 	Trace *trace;
 	Timer *timer;
 
-
-
 	SC_CTOR(Simulator) {
-	  uint32_t start_PC;
+		uint32_t start_PC;
 
 		MainMemory = new Memory("Main_Memory", filename);
 		start_PC = MainMemory->getPCfromHEX();
@@ -58,8 +57,6 @@ SC_MODULE(Simulator) {
 		Bus->trace_socket.bind(trace->socket);
 		Bus->timer_socket.bind(timer->socket);
 
-		//timer->timer_irq.bind(IRQ);
-		// cpu->interrupt.bind(IRQ);
 		timer->irq_line.bind(cpu->irq_line_socket);
 	}
 
@@ -119,6 +116,9 @@ void process_arguments(int argc, char *argv[]) {
 			std::cout << "Call ./RISCV_TLM -D <debuglevel> (0..3) filename.hex"
 					<< std::endl;
 			break;
+		default:
+			std::cout << "unknown" << std::endl;
+
 		}
 	}
 
@@ -139,8 +139,13 @@ int sc_main(int argc, char *argv[]) {
 	process_arguments(argc, argv);
 
 	top = new Simulator("top");
+
+	auto start = std::chrono::steady_clock::now();
 	sc_core::sc_start();
 
+	auto end = std::chrono::steady_clock::now();
+	std::chrono::duration<double> elapsed_seconds = end - start;
+	std::cout << "Total elapsed time: " << elapsed_seconds.count() << "s" << std::endl;
 	std::cout << "Press Enter to finish" << std::endl;
 	std::cin.ignore();
 

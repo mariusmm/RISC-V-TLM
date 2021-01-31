@@ -54,16 +54,13 @@ void extension_base::RaiseException(uint32_t cause, uint32_t inst) {
 	regs->dump();
 	std::cout << "Simulation time " << sc_core::sc_time_stamp() << std::endl;
 	perf->dump();
-	SC_REPORT_ERROR("Exception", "Exception");
+
+	sc_core::sc_stop();
 }
 
 bool extension_base::NOP() {
-	std::cout << std::endl;
-	regs->dump();
-	std::cout << "Simulation time " << sc_core::sc_time_stamp() << std::endl;
-	perf->dump();
 
-	SC_REPORT_ERROR("Execute", "NOP");
+	log->SC_log(Log::INFO) << "NOP" << "\n";
 
 	return true;
 }

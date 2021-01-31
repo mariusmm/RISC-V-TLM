@@ -672,9 +672,9 @@ bool C_extension::Exec_C_EBREAK() {
 	std::cout << "Simulation time " << sc_core::sc_time_stamp() << "\n";
 	perf->dump();
 
-	RaiseException(EXCEPTION_CAUSE_BREAKPOINT, m_instr);
-	NOP();
-	return true;
+    sc_core::sc_stop();
+
+    return true;
 }
 
 bool C_extension::process_instruction(Instruction *inst) {

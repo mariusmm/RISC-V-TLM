@@ -918,8 +918,9 @@ bool BASE_ISA::Exec_ECALL() const {
 	} else {
 		std::cout << "GP value is " << gp_value << "\n";
 	}
-	//SC_REPORT_ERROR("Execute", "ECALL");
+
 	sc_core::sc_stop();
+
 	return true;
 }
 
@@ -932,8 +933,8 @@ bool BASE_ISA::Exec_EBREAK() {
 	std::cout << "Simulation time " << sc_core::sc_time_stamp() << "\n";
 	perf->dump();
 
-	RaiseException(EXCEPTION_CAUSE_BREAKPOINT, m_instr);
-	NOP();
+	sc_core::sc_stop();
+
 	return true;
 }
 
