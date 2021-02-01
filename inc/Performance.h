@@ -83,6 +83,10 @@ public:
 	 */
 	void dump() const;
 
+	inline uint_fast64_t getInstructions() {
+	  return instructions_executed;
+	}
+
 private:
 	static Performance *instance;
 	Performance();

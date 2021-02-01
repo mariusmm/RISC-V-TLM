@@ -104,7 +104,7 @@ public:
 	 * @brief Access to rd field
 	 * @return rd field
 	 */
-	inline int32_t get_rd() const {
+	inline int32_t get_rd() const override {
 		return m_instr.range(11, 7);
 	}
 
@@ -112,7 +112,7 @@ public:
 	 * @brief Sets rd field
 	 * @param value desired rd value
 	 */
-	inline void set_rd(int32_t value) {
+	inline void set_rd(int32_t value) override {
 		m_instr.range(11, 7) = value;
 	}
 
@@ -120,7 +120,7 @@ public:
 	 * @brief Access to rs1 field
 	 * @return rs1 field
 	 */
-	inline int32_t get_rs1() const {
+	inline int32_t get_rs1() const override {
 		return m_instr.range(19, 15);
 	}
 
@@ -128,7 +128,7 @@ public:
 	 * @brief Sets rs1 field
 	 * @param value desired rs1 value
 	 */
-	inline void set_rs1(int32_t value) {
+	inline void set_rs1(int32_t value) override {
 		m_instr.range(19, 15) = value;
 	}
 
@@ -136,7 +136,7 @@ public:
 	 * @brief Access to rs2 field
 	 * @return rs2 field
 	 */
-	inline int32_t get_rs2() const {
+	inline int32_t get_rs2() const override {
 		return m_instr.range(24, 20);
 	}
 
@@ -144,7 +144,7 @@ public:
 	 * @brief Sets rs2 field
 	 * @param value desired rs2 value
 	 */
-	inline void set_rs2(int32_t value) {
+	inline void set_rs2(int32_t value) override {
 		m_instr.range(24, 10) = value;
 	}
 
@@ -152,7 +152,7 @@ public:
 	 * @brief Access to funct3 field
 	 * @return funct3 field
 	 */
-	inline int32_t get_funct3() const {
+	inline int32_t get_funct3() const override {
 		return m_instr.range(14, 12);
 	}
 
@@ -160,7 +160,7 @@ public:
 	 * @brief Sets func3 field
 	 * @param value desired func3 value
 	 */
-	inline void set_funct3(int32_t value) {
+	inline void set_funct3(int32_t value) override {
 		m_instr.range(14, 12) = value;
 	}
 
@@ -338,7 +338,7 @@ public:
 	 * @brief Access to opcode field
 	 * @return return opcode field
 	 */
-	inline int32_t opcode() const {
+	inline int32_t opcode() const override {
 		return m_instr.range(6, 0);
 	}
 

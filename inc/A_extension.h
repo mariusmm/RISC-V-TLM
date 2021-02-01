@@ -63,7 +63,7 @@ public:
 	 * @brief Access to opcode field
 	 * @return return opcode field
 	 */
-	inline int32_t opcode() const {
+	inline int32_t opcode() const override {
 		return m_instr.range(31, 27);
 	}
 
@@ -71,11 +71,11 @@ public:
 	 * @brief Access to rd field
 	 * @return rd field
 	 */
-	inline int32_t get_rd() const {
+	inline int32_t get_rd() const override {
 		return m_instr.range(11, 7);
 	}
 
-	inline void set_rd(int32_t value) {
+	inline void set_rd(int32_t value) override {
 		m_instr.range(11, 7) = value;
 	}
 
@@ -83,11 +83,11 @@ public:
 	 * @brief Access to rs1 field
 	 * @return rs1 field
 	 */
-	inline int32_t get_rs1() const {
+	inline int32_t get_rs1() const override {
 		return m_instr.range(19, 15);
 	}
 
-	inline void set_rs1(int32_t value) {
+	inline void set_rs1(int32_t value) override {
 		m_instr.range(19, 15) = value;
 	}
 
@@ -95,19 +95,19 @@ public:
 	 * @brief Access to rs2 field
 	 * @return rs2 field
 	 */
-	inline int32_t get_rs2() const {
+	inline int32_t get_rs2() const override {
 		return m_instr.range(24, 20);
 	}
 
-	inline void set_rs2(int32_t value) {
+	inline void set_rs2(int32_t value) override {
 		m_instr.range(24, 20) = value;
 	}
 
-	inline int32_t get_funct3() const {
+	inline int32_t get_funct3() const override {
 		return m_instr.range(14, 12);
 	}
 
-	inline void set_funct3(int32_t value) {
+	inline void set_funct3(int32_t value) override {
 		m_instr.range(14, 12) = value;
 	}
 
@@ -117,7 +117,7 @@ public:
 	 */
 	op_A_Codes decode() const;
 
-	inline void dump()  const{
+	inline void dump() const override {
 		std::cout << std::hex << "0x" << m_instr << std::dec << std::endl;
 	}
 

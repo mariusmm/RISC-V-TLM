@@ -45,7 +45,7 @@ public:
 	virtual int32_t get_funct3() const = 0;
 	virtual void set_funct3(int32_t value) = 0;
 
-	void dump();
+	virtual void dump() const;
 
 protected:
 	sc_dt::sc_uint<32> m_instr;

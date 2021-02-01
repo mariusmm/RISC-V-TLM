@@ -56,7 +56,7 @@ public:
 	 */
 	op_M_Codes decode() const;
 
-	inline void dump() const{
+	inline virtual void dump() const override {
 		std::cout << std::hex << "0x" << m_instr << std::dec << std::endl;
 	}
 
