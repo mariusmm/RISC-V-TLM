@@ -81,37 +81,6 @@ private:
 		return m_instr.range(14, 12);
 	}
 
-	/**
-	 * @brief Access to rs1 field
-	 * @return rs1 field
-	 */
-	inline int32_t get_rs1() const {
-		return m_instr.range(19, 15);
-	}
-
-	inline void set_rs1(int32_t value) {
-		m_instr.range(19, 15) = value;
-	}
-
-	/**
-	 * @brief Access to rs2 field
-	 * @return rs2 field
-	 */
-	inline int32_t get_rs2() const {
-		return m_instr.range(24, 20);
-	}
-
-	inline void set_rs2(int32_t value) {
-		m_instr.range(24, 20) = value;
-	}
-
-	inline int32_t get_funct3() const {
-		return m_instr.range(14, 12);
-	}
-
-	inline void set_funct3(int32_t value) {
-		m_instr.range(14, 12) = value;
-	}
 };
 
 #endif
