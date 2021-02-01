@@ -109,18 +109,6 @@ public:
 		return m_instr.range(1, 0);
 	}
 
-	/**
-	 * @brief Access to rd field
-	 * @return rd field
-	 */
-	inline int32_t get_rd () const override {
-		return m_instr.range(11, 7);
-	}
-
-	inline void set_rd(int32_t value) override {
-		m_instr.range(11, 7) = value;
-	}
-
 	inline int32_t get_rdp() const {
 		return m_instr.range(4, 2) + 8;
 	}

@@ -101,22 +101,6 @@ public:
 	using extension_base::extension_base;
 
 	/**
-	 * @brief Access to rd field
-	 * @return rd field
-	 */
-	inline int32_t get_rd() const override {
-		return m_instr.range(11, 7);
-	}
-
-	/**
-	 * @brief Sets rd field
-	 * @param value desired rd value
-	 */
-	inline void set_rd(int32_t value) override {
-		m_instr.range(11, 7) = value;
-	}
-
-	/**
 	 * @brief Access to rs1 field
 	 * @return rs1 field
 	 */

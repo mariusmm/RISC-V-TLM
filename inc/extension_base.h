@@ -36,8 +36,12 @@ public:
 
 	/* pure virtual functions */
 	virtual int32_t opcode() const = 0;
-	virtual int32_t get_rd() const = 0;
-	virtual void set_rd(int32_t value) = 0;
+	virtual int32_t get_rd() const {
+	    return m_instr.range(11, 7);
+	}
+	virtual void set_rd(int32_t value) {
+    m_instr.range(11, 7) = value;
+	}
 	virtual int32_t get_rs1() const = 0;
 	virtual void set_rs1(int32_t value) = 0;
 	virtual int32_t get_rs2() const = 0;
