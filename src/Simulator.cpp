@@ -86,6 +86,7 @@ void process_arguments(int argc, char *argv[]) {
 
 	log = Log::getInstance();
 	log->setLogLevel(Log::ERROR);
+
 	while ((c = getopt(argc, argv, "D:f:?")) != -1) {
 		switch (c) {
 		case 'D':
@@ -129,6 +130,8 @@ void process_arguments(int argc, char *argv[]) {
 
 int sc_main(int argc, char *argv[]) {
 
+  Performance *perf = Performance::getInstance();
+
 	/* Capture Ctrl+C and finish the simulation */
 	signal(SIGINT, intHandler);
 
@@ -142,10 +145,13 @@ int sc_main(int argc, char *argv[]) {
 
 	auto start = std::chrono::steady_clock::now();
 	sc_core::sc_start();
-
 	auto end = std::chrono::steady_clock::now();
+
 	std::chrono::duration<double> elapsed_seconds = end - start;
+	double instructions = perf->getInstructions() / elapsed_seconds.count();
+
 	std::cout << "Total elapsed time: " << elapsed_seconds.count() << "s" << std::endl;
+	std::cout << "Simulated " << int(std::round(instructions)) << " instr/sec" << std::endl;
 	std::cout << "Press Enter to finish" << std::endl;
 	std::cin.ignore();
 

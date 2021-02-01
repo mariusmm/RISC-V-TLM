@@ -22,7 +22,7 @@ void extension_base::setInstr(uint32_t p_instr) {
 	m_instr = sc_dt::sc_uint<32>(p_instr);
 }
 
-void extension_base::dump() {
+void extension_base::dump() const {
 	std::cout << std::hex << "0x" << m_instr << std::dec << std::endl;
 }
 
