@@ -159,17 +159,6 @@ public:
 	}
 
 	/**
-	 * @brief Sets immediate field for S-type
-	 * @param value desired S value
-	 */
-	inline void set_imm_S(int32_t value) {
-		sc_dt::sc_uint<32> aux = value;
-
-		m_instr.range(31, 25) = aux.range(11, 5);
-		m_instr.range(11, 7) = aux.range(4, 0);
-	}
-
-	/**
 	 * @brief Gets immediate field value for U-type
 	 * @return immediate_U field
 	 */
