@@ -196,7 +196,7 @@ void CPU::CPU_thread(void) {
 			m_qk->sync();
 		}
 #else
-		sc_core::wait(10, sc_core::SC_NS);
+		sc_core::wait(default_time);
 #endif
 	} // while(1)
 } // CPU_thread

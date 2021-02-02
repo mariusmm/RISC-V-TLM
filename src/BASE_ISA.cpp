@@ -8,7 +8,7 @@
 
 #include "BASE_ISA.h"
 
-typedef enum {
+enum {
 	LUI = 0b0110111,
 	AUIPC = 0b0010111,
 	JAL = 0b1101111,
