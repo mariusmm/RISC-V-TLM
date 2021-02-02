@@ -5,7 +5,8 @@ TARGET_ARCH=linux64
 
 CC       = g++
 # compiling flags here
-CFLAGS   = -Wall -I. -O3 -std=c++11 -g -Wall -Wextra 
+CFLAGS   = -Wall -I. -O3 -std=c++11 -g -Wall -Wextra -Wunused-function
+
 
 
 LINKER   = g++
