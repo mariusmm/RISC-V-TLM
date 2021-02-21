@@ -54,6 +54,7 @@ Brief description of the modules:
 * BusCtrl: Simple bus manager
 * Trace: Simple trace peripheral
 * Timer: Simple IRQ programable real-time counter peripheral
+* Debug: GDB server for remote debugging (Beta)
 
 Helper classes:
 * Performance: Performance indicators stores here (singleton class)
@@ -121,9 +122,11 @@ $ ./RISCV_TLM asm/BasicLoop.hex
 ```
 
 ### Arguments
--D loglevel: 3 for detailed (INFO) log, 0 to ERROR log level
+-L loglevel: 3 for detailed (INFO) log, 0 to ERROR log level
 
 -f filename .hex filename to use
+
+-D Enter in Debug mode, simulator starts gdb server (Beta)
 
 ## Cross-compiler
 It is possible to use gcc as risc-v compiler. Follow the instructions (from https://github.com/riscv/riscv-gnu-toolchain):
