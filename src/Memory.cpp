@@ -114,6 +114,7 @@ bool Memory::get_direct_mem_ptr(tlm::tlm_generic_payload &trans,
 		return false;
 	}
 
+
 	// Permit read and write access
 	dmi_data.allow_read_write();
 
@@ -132,6 +133,11 @@ unsigned int Memory::transport_dbg(tlm::tlm_generic_payload &trans) {
 	sc_dt::uint64 adr = trans.get_address();
 	unsigned char *ptr = trans.get_data_ptr();
 	unsigned int len = trans.get_data_length();
+
+	if (adr >= sc_dt::uint64(SIZE)) {
+		trans.set_response_status(tlm::TLM_ADDRESS_ERROR_RESPONSE);
+		return 0;
+	}
 
 	// Calculate the number of bytes to be actually copied
 	unsigned int num_bytes = (len < (SIZE - adr) * 4) ? len : (SIZE - adr) * 4;
