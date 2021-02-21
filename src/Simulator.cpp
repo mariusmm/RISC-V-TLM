@@ -21,8 +21,10 @@
 #include "BusCtrl.h"
 #include "Trace.h"
 #include "Timer.h"
+#include "Debug.h"
 
 std::string filename;
+bool debug_session = false;
 
 /**
  * @class Simulator
@@ -44,7 +46,7 @@ SC_MODULE(Simulator) {
 		MainMemory = new Memory("Main_Memory", filename);
 		start_PC = MainMemory->getPCfromHEX();
 
-		cpu = new CPU("cpu", start_PC);
+		cpu = new CPU("cpu", start_PC, debug_session);
 
 		Bus = new BusCtrl("BusCtrl");
 		trace = new Trace("Trace");
@@ -58,6 +60,10 @@ SC_MODULE(Simulator) {
 		Bus->timer_socket.bind(timer->socket);
 
 		timer->irq_line.bind(cpu->irq_line_socket);
+
+		if (debug_session) {
+			Debug debug("Debug", start_PC, cpu, MainMemory);
+		}
 	}
 
 	~Simulator() {
@@ -87,9 +93,14 @@ void process_arguments(int argc, char *argv[]) {
 	log = Log::getInstance();
 	log->setLogLevel(Log::ERROR);
 
-	while ((c = getopt(argc, argv, "D:f:?")) != -1) {
+	debug_session = false;
+
+	while ((c = getopt(argc, argv, "DL:f:?")) != -1) {
 		switch (c) {
 		case 'D':
+			debug_session = true;
+			break;
+		case 'L':
 			debug_level = std::atoi(optarg);
 
 			switch (debug_level) {
@@ -114,7 +125,7 @@ void process_arguments(int argc, char *argv[]) {
 			filename = std::string(optarg);
 			break;
 		case '?':
-			std::cout << "Call ./RISCV_TLM -D <debuglevel> (0..3) filename.hex"
+			std::cout << "Call ./RISCV_TLM -D -L <debuglevel> (0..3) filename.hex"
 					<< std::endl;
 			break;
 		default:
@@ -126,6 +137,8 @@ void process_arguments(int argc, char *argv[]) {
 	if (filename.empty()) {
 		filename = std::string(argv[optind]);
 	}
+
+	std::cout << "file: " << filename << '\n';
 }
 
 int sc_main(int argc, char *argv[]) {

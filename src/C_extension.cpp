@@ -680,8 +680,10 @@ bool C_extension::Exec_C_EBREAK() {
     return true;
 }
 
-bool C_extension::process_instruction(Instruction *inst) {
+bool C_extension::process_instruction(Instruction *inst, bool *breakpoint) {
 	bool PC_not_affected = true;
+
+	*breakpoint = false;
 
 	setInstr(inst->getInstr());
 
@@ -766,6 +768,8 @@ bool C_extension::process_instruction(Instruction *inst) {
 		break;
 	case OP_C_EBREAK:
 		Exec_C_EBREAK();
+		std::cout << "C_EBREAK" << std::endl;
+		*breakpoint = true;
 		break;
 	[[unlikely]] default:
 		std::cout << "C instruction not implemented yet" << "\n";

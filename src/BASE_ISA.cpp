@@ -1160,9 +1160,10 @@ bool BASE_ISA::Exec_SFENCE() const {
 	return true;
 }
 
-bool BASE_ISA::process_instruction(Instruction *inst) {
+bool BASE_ISA::process_instruction(Instruction *inst, bool *breakpoint) {
 	bool PC_not_affected = true;
 
+	*breakpoint = false;
 	setInstr(inst->getInstr());
 
 	switch (decode()) {
@@ -1290,9 +1291,13 @@ bool BASE_ISA::process_instruction(Instruction *inst) {
 		break;
 	case OP_ECALL:
 		Exec_ECALL();
+		*breakpoint = true;
+		std::cout << "ECALL" << std::endl;
 		break;
 	case OP_EBREAK:
 		Exec_EBREAK();
+		*breakpoint = true;
+		std::cout << "EBREAK" << std::endl;
 		break;
 	case OP_CSRRW:
 		Exec_CSRRW();
