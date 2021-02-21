@@ -5,13 +5,12 @@
  \date August 2018
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
-
 #include "CPU.h"
 
 SC_HAS_PROCESS(CPU);
-CPU::CPU(sc_core::sc_module_name const name, uint32_t PC) :
+CPU::CPU(sc_core::sc_module_name const name, uint32_t PC, bool debug) :
 		sc_module(name), instr_bus("instr_bus"), default_time(10,
-				sc_core::SC_NS) {
+				sc_core::SC_NS), INSTR(0) {
 	register_bank = new Registers();
 	mem_intf = new MemoryInterface();
 
@@ -19,8 +18,6 @@ CPU::CPU(sc_core::sc_module_name const name, uint32_t PC) :
 	log = Log::getInstance();
 
 	register_bank->setPC(PC);
-
-	//register_bank->setValue(Registers::sp, (0xD0000 / 4) - 1);
 	register_bank->setValue(Registers::sp, (0x10000000 / 4) - 1);
 
 	irq_line_socket.register_b_transport(this, &CPU::call_interrupt);
@@ -40,8 +37,19 @@ CPU::CPU(sc_core::sc_module_name const name, uint32_t PC) :
 	a_inst = new A_extension(0, register_bank, mem_intf);
 
 	m_qk = new tlm_utils::tlm_quantumkeeper();
+	m_qk->reset();
 
-	SC_THREAD(CPU_thread);
+	trans.set_command(tlm::TLM_READ_COMMAND);
+	trans.set_data_ptr(reinterpret_cast<unsigned char*>(&INSTR));
+	trans.set_data_length(4);
+	trans.set_streaming_width(4); // = data_length to indicate no streaming
+	trans.set_byte_enable_ptr(0); // 0 indicates unused
+	trans.set_dmi_allowed(false); // Mandatory initial value
+	trans.set_response_status(tlm::TLM_INCOMPLETE_RESPONSE);
+
+	if (!debug) {
+		SC_THREAD(CPU_thread);
+	}
 }
 
 CPU::~CPU() {
@@ -105,84 +113,87 @@ bool CPU::cpu_process_IRQ() {
 	return ret_value;
 }
 
+bool CPU::CPU_step(void) {
+
+	bool incPCby2 = false;
+	bool PC_not_affected = false;
+
+	/* Get new PC value */
+	if (dmi_ptr_valid == true) {
+		/* if memory_offset at Memory module is set, this won't work */
+		memcpy(&INSTR, dmi_ptr + register_bank->getPC(), 4);
+	} else {
+		sc_core::sc_time delay = sc_core::SC_ZERO_TIME;
+		tlm::tlm_dmi dmi_data;
+		trans.set_address(register_bank->getPC());
+		instr_bus->b_transport(trans, delay);
+
+		if (trans.is_response_error()) {
+			SC_REPORT_ERROR("CPU base", "Read memory");
+		}
+
+		if (trans.is_dmi_allowed()) {
+			dmi_ptr_valid = instr_bus->get_direct_mem_ptr(trans, dmi_data);
+			if (dmi_ptr_valid) {
+				std::cout << "Get DMI_PTR " << std::endl;
+				dmi_ptr = dmi_data.get_dmi_ptr();
+			}
+		}
+	}
+
+	perf->codeMemoryRead();
+
+	log->SC_log(Log::INFO) << "PC: 0x" << std::hex << register_bank->getPC()
+			<< ". ";
+
+	inst->setInstr(INSTR);
+	bool breakpoint  =  false;
+
+	/* check what type of instruction is and execute it */
+	switch (inst->check_extension()) {
+	[[likely]] case BASE_EXTENSION:
+		PC_not_affected = exec->process_instruction(inst, &breakpoint);
+		incPCby2 = false;
+		break;
+	case C_EXTENSION:
+		PC_not_affected = c_inst->process_instruction(inst, &breakpoint);
+		incPCby2 = true;
+		break;
+	case M_EXTENSION:
+		PC_not_affected = m_inst->process_instruction(inst);
+		incPCby2 = false;
+		break;
+	case A_EXTENSION:
+		PC_not_affected = a_inst->process_instruction(inst);
+		incPCby2 = false;
+		break;
+	[[unlikely]] default:
+		std::cout << "Extension not implemented yet" << std::endl;
+		inst->dump();
+		exec->NOP();
+	}
+
+	if (breakpoint == true) {
+		std::cout << "Breakpoint set to true\n";
+	}
+
+	perf->instructionsInc();
+
+	if (PC_not_affected == true) {
+		register_bank->incPC(incPCby2);
+	}
+
+	return breakpoint;
+}
+
 void CPU::CPU_thread(void) {
 
-	tlm::tlm_generic_payload *trans = new tlm::tlm_generic_payload;
-	uint32_t INSTR;
-	sc_core::sc_time delay = sc_core::SC_ZERO_TIME;
-	bool PC_not_affected = false;
-	bool incPCby2 = false;
-	tlm::tlm_dmi dmi_data;
-	unsigned char *dmi_ptr = nullptr;
-
-	trans->set_command(tlm::TLM_READ_COMMAND);
-	trans->set_data_ptr(reinterpret_cast<unsigned char*>(&INSTR));
-	trans->set_data_length(4);
-	trans->set_streaming_width(4); // = data_length to indicate no streaming
-	trans->set_byte_enable_ptr(0); // 0 indicates unused
-	trans->set_dmi_allowed(false); // Mandatory initial value
-	trans->set_response_status(tlm::TLM_INCOMPLETE_RESPONSE);
-
-	m_qk->reset();
+	sc_core::sc_time instr_time = default_time;
 
 	while (1) {
-		/* Get new PC value */
-		if (dmi_ptr_valid == true) {
-			/* if memory_offset at Memory module is set, this won't work */
-			memcpy(&INSTR, dmi_ptr + register_bank->getPC(), 4);
-		} else {
-			trans->set_address(register_bank->getPC());
-			instr_bus->b_transport(*trans, delay);
 
-			if (trans->is_response_error()) {
-				SC_REPORT_ERROR("CPU base", "Read memory");
-			}
-
-			if (trans->is_dmi_allowed()) {
-				dmi_ptr_valid = instr_bus->get_direct_mem_ptr(*trans, dmi_data);
-				if (dmi_ptr_valid) {
-					std::cout << "Get DMI_PTR " << std::endl;
-					dmi_ptr = dmi_data.get_dmi_ptr();
-				}
-			}
-		}
-
-		perf->codeMemoryRead();
-
-		log->SC_log(Log::INFO) << "PC: 0x" << std::hex << register_bank->getPC()
-				<< ". ";
-
-		inst->setInstr(INSTR);
-
-		/* check what type of instruction is and execute it */
-		switch (inst->check_extension()) {
-		[[likely]] case BASE_EXTENSION:
-			PC_not_affected = exec->process_instruction(inst);
-			incPCby2 = false;
-			break;
-		case C_EXTENSION:
-			PC_not_affected = c_inst->process_instruction(inst);
-			incPCby2 = true;
-			break;
-		case M_EXTENSION:
-			PC_not_affected = m_inst->process_instruction(inst);
-			incPCby2 = false;
-			break;
-		case A_EXTENSION:
-			PC_not_affected = a_inst->process_instruction(inst);
-			incPCby2 = false;
-			break;
-		[[unlikely]] default:
-			std::cout << "Extension not implemented yet" << std::endl;
-			inst->dump();
-			exec->NOP();
-		}
-
-		perf->instructionsInc();
-
-		if (PC_not_affected == true) {
-			register_bank->incPC(incPCby2);
-		}
+		/* Process one instruction */
+		CPU_step();
 
 		/* Process IRQ (if any) */
 		cpu_process_IRQ();
@@ -196,7 +207,7 @@ void CPU::CPU_thread(void) {
 			m_qk->sync();
 		}
 #else
-		sc_core::wait(default_time);
+		sc_core::wait(instr_time);
 #endif
 	} // while(1)
 } // CPU_thread
@@ -210,7 +221,7 @@ void CPU::call_interrupt(tlm::tlm_generic_payload &trans,
 }
 
 void CPU::invalidate_direct_mem_ptr(sc_dt::uint64 start, sc_dt::uint64 end) {
-  (void) start;
-  (void) end;
+	(void) start;
+	(void) end;
 	dmi_ptr_valid = false;
 }

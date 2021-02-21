@@ -52,8 +52,9 @@ public:
 	 * @brief Constructor
 	 * @param name Module name
 	 * @param PC   Program Counter initialize value
+	 * @param debug To start debugging
 	 */
-	CPU(sc_core::sc_module_name name, uint32_t PC);
+	CPU(sc_core::sc_module_name name, uint32_t PC, bool debug);
 
 	/**
 	 * @brief Destructor
@@ -61,6 +62,11 @@ public:
 	~CPU();
 
 	MemoryInterface *mem_intf;
+
+	bool CPU_step(void);
+
+
+	Registers *getRegisterBank() {return register_bank;}
 
 private:
 	Registers *register_bank;
@@ -79,6 +85,12 @@ private:
 	bool irq_already_down;
 	sc_core::sc_time default_time;
 	bool dmi_ptr_valid;
+
+	tlm::tlm_generic_payload trans;
+	uint32_t INSTR;
+	unsigned char *dmi_ptr = nullptr;
+
+
 
 	/**
 	 *
