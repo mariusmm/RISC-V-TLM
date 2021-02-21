@@ -23,7 +23,7 @@
 class Debug: sc_core::sc_module {
 public:
 
-	Debug(sc_core::sc_module_name name, uint32_t PC, CPU *cpu, Memory* mem);
+	Debug(CPU *cpu, Memory* mem);
 	~Debug();
 
 private:

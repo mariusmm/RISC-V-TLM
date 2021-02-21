@@ -62,7 +62,7 @@ SC_MODULE(Simulator) {
 		timer->irq_line.bind(cpu->irq_line_socket);
 
 		if (debug_session) {
-			Debug debug("Debug", start_PC, cpu, MainMemory);
+			Debug debug(cpu, MainMemory);
 		}
 	}
 

@@ -20,17 +20,14 @@
 constexpr char nibble_to_hex[16] = { '0', '1', '2', '3', '4', '5', '6', '7',
 		'8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
-Debug::Debug(sc_core::sc_module_name name, uint32_t PC, CPU *cpu, Memory* mem) {
-
-	std::cout << "Debug constructor\n";
-
+Debug::Debug(CPU *cpu, Memory* mem) {
 	dbg_cpu = cpu;
 	dbg_mem = mem;
 
 	int sock = socket(AF_INET, SOCK_STREAM, 0);
 
 	int optval = 1;
-	int ans = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &optval,
+	setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &optval,
 			sizeof(optval));
 
 	sockaddr_in addr;
@@ -38,9 +35,8 @@ Debug::Debug(sc_core::sc_module_name name, uint32_t PC, CPU *cpu, Memory* mem) {
 	addr.sin_addr.s_addr = INADDR_ANY;
 	addr.sin_port = htons(1234);
 
-	ans = bind(sock, (struct sockaddr *) &addr, sizeof(addr));
-
-	ans = listen(sock, 1);
+	bind(sock, (struct sockaddr *) &addr, sizeof(addr));
+	listen(sock, 1);
 
 	socklen_t len = sizeof(addr);
 	conn = accept(sock, (struct sockaddr *) &addr, &len);
@@ -57,7 +53,7 @@ void Debug::send_packet(int conn, const std::string &msg) {
 
 	memcpy(iobuf, frame.c_str(), frame.size());
 
-	int nbytes = ::send(conn, iobuf, frame.size(), 0);
+	::send(conn, iobuf, frame.size(), 0);
 }
 
 std::string Debug::receive_packet() {
