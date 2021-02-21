@@ -64,20 +64,10 @@ std::string Debug::receive_packet() {
 	} else if (nbytes == 1) {
 		return std::string("+");
 	} else {
-		// 1) find $
-		// 2) find #
-		// 3) assert that two chars follow #
-
 		char *start = strchr(iobuf, '$');
 		char *end = strchr(iobuf, '#');
 
 		std::string message(start + 1, end - (start + 1));
-
-		{
-			//std::string local_checksum = compute_checksum_string(message);
-			//std::string recv_checksum(end + 1, 2);
-			//assert(local_checksum == recv_checksum);
-		}
 
 		return message;
 	}
@@ -91,7 +81,6 @@ void Debug::handle_gdb_loop() {
 	while (true) {
 		std::string msg = receive_packet();
 
-//		std::cout << "msg: " << msg << std::endl;
 		if (msg.size() == 0) {
 			std::cout << "remote connection seems to be closed, terminating ..."
 					<< std::endl;
@@ -99,40 +88,28 @@ void Debug::handle_gdb_loop() {
 		} else if (msg == "+") {
 			// NOTE: just ignore this message, nothing to do in this case
 		} else if (boost::starts_with(msg, "qSupported")) {
-			printf("qSupported\n");
-			send_packet(conn, "PacketSize=1024;swbreak-;hwbreak+;vContSupported+");
+			send_packet(conn, "PacketSize=256;swbreak+;hwbreak+;vContSupported+;multiprocess-");
 		} else if (msg == "vMustReplyEmpty") {
-			printf("vMustReplyEmpty\n");
 			send_packet(conn, "");
 		} else if (msg == "Hg0") {
-			printf("Hq0\n");
 			send_packet(conn, "OK");
 		} else if (msg == "Hc0") {
-			printf("Hc0\n");
 			send_packet(conn, "");
 		} else if (msg == "qTStatus") {
-			printf("qTStatus\n");
 			send_packet(conn, "");
 		} else if (msg == "?") {
-			printf("?\n");
 			send_packet(conn, "S05");
 		} else if (msg == "qfThreadInfo") {
-			printf("qThreadInfo\n");
 			send_packet(conn, "");
 		} else if (boost::starts_with(msg, "qL")) {
-			printf("qL\n");
 			send_packet(conn, "");
 		} else if (msg == "Hc-1") {
-			printf("Hc-1\n");
 			send_packet(conn, "OK");
 		} else if (msg == "qC") {
-			printf("qC\n");
 			send_packet(conn, "-1");
 		} else if (msg == "qAttached") {
-			printf("qAttached\n");
 			send_packet(conn, "0");  // 0 process started, 1 attached to process
 		} else if (msg == "g") {
-//			std::cout << msg << '\n';
 
 			std::stringstream stream;
 			stream << std::setfill('0') << std::hex;
@@ -141,9 +118,7 @@ void Debug::handle_gdb_loop() {
 			}
 			send_packet(conn, stream.str());
 		} else if (boost::starts_with(msg, "p")) {
-			std::cout << "P :  "  << msg << std::endl;
 			long n = strtol(msg.c_str() + 1, 0, 16);
-
 			int reg_value;
 			if (n < 32) {
 				reg_value = register_bank->getValue(n);
@@ -159,22 +134,15 @@ void Debug::handle_gdb_loop() {
 			stream << std::setw(8) << htonl(reg_value);
 			send_packet(conn, stream.str());
 		} else if (boost::starts_with(msg, "P")) {
-			printf("P\n");
 			char * pEnd;
 			long reg = strtol(msg.c_str() + 1, &pEnd, 16);
-			std::cout << "n: " << reg;
 			int val = strtol(pEnd + 1, 0, 16);
-			std::cout << "= " << val << std::endl;
 			register_bank->setValue(reg + 1, val);
 			send_packet(conn, "OK");
 		} else if (boost::starts_with(msg, "m")) {
-			printf("m\n");
-
 			char * pEnd;
 			long addr = strtol(msg.c_str() + 1, &pEnd, 16);;
 			int len = strtol(pEnd + 1, &pEnd, 16);
-			std::cout << "msg m: " << msg << std::endl;
-			std::cout << std::hex << "addr: " << addr << " , " << len << std::endl;
 
 			dbg_trans.set_data_ptr(pyld_array);
 			dbg_trans.set_command(tlm::TLM_READ_COMMAND);
@@ -191,44 +159,20 @@ void Debug::handle_gdb_loop() {
 			send_packet(conn, stream.str());
 
 		} else if (boost::starts_with(msg, "M")) {
-			printf("M\n");
-			//memory_access_t m = parse_memory_access(msg);
-			//std::string data = msg.substr(msg.find(":") + 1);
-			//write_memory(m.start, m.nbytes, data);
+			printf("M TBD\n");
 			send_packet(conn, "OK");
 		} else if (boost::starts_with(msg, "X")) {
-			printf("X\n");
-			send_packet(conn, "");  // binary data unsupported, gdb will send
-			// text based message M
+			send_packet(conn, "");  // binary data unsupported
 		} else if (msg == "qOffsets") {
-			printf("qOffsets\n");
-			// NOTE: seems to be additional offsets wrt. the exec. elf file
 			send_packet(conn, "Text=0;Data=0;Bss=0");
 		} else if (msg == "qSymbol::") {
-			printf("qSymbol\n");
 			send_packet(conn, "OK");
 		} else if (msg == "vCont?") {
-			printf("vCont?\n");
 			send_packet(conn, "vCont;cs");
 		} else if (msg == "c") {
-			printf("c\n");
-			//try {
-				//  core.run();
-				//if (core.status == CoreExecStatus::HitBreakpoint) {
-				//    send_packet(conn, "S05");
-				//    core.status = CoreExecStatus::Runnable;
-				//} else if (core.status == CoreExecStatus::Terminated) {
-				//send_packet(conn, "S03");
-				//} else {
-				//   assert(false && "invalid core status (apparently still marked as runnable)");
-				//}
-			//} catch (std::exception &e) {
-			//	send_packet(conn, "S04");
-			//}
 			bool breakpoint_hit = false;
 			bool bkpt = false;
 			do {
-//				std::cout << "PC: " << std::hex <<  register_bank->getPC() << std::endl;
 				bkpt =  dbg_cpu->CPU_step();
 				uint32_t currentPC = register_bank->getPC();
 
@@ -239,13 +183,10 @@ void Debug::handle_gdb_loop() {
 			} while ((breakpoint_hit == false) && (bkpt == false));
 
 			std::cout << "Breakpoint hit at 0x" << std::hex << register_bank->getPC() << std::endl;
-
-			//send_packet(conn, "S05");
-			send_packet(conn, "S03");
+			send_packet(conn, "S05");
 		} else if (msg == "s") {
-			printf("s\n");
-			bool breakpoint;
 
+			bool breakpoint;
 			dbg_cpu->CPU_step();
 
 			uint32_t currentPC = register_bank->getPC();
@@ -263,24 +204,27 @@ void Debug::handle_gdb_loop() {
 			}
 
 		} else if (boost::starts_with(msg, "vKill")) {
-			printf("vKill\n");
 			send_packet(conn, "OK");
 			break;
 		} else if (boost::starts_with(msg, "Z1")) {
 			char * pEnd;
 			long addr = strtol(msg.c_str() + 3, &pEnd, 16);;
-			std::cout << "msg m: " << msg << std::endl;
 			breakpoints.insert(addr);
-			std::cout << "Breakpoint set to addres 0x"<< std::hex << addr << std::endl;
+			std::cout << "Breakpoint set to address 0x"<< std::hex << addr << std::endl;
 			send_packet(conn, "OK");
 		} else if (boost::starts_with(msg, "z1")) {
+			char * pEnd;
+			long addr = strtol(msg.c_str() + 3, &pEnd, 16);;
+			breakpoints.erase(addr);
 			send_packet(conn, "OK");
 		} else if (boost::starts_with(msg, "z0")) {
-
+			char * pEnd;
+			long addr = strtol(msg.c_str() + 3, &pEnd, 16);;
+			breakpoints.erase(addr);
+			send_packet(conn, "");
 		} else if (boost::starts_with(msg, "Z0")) {
 			char * pEnd;
 			long addr = strtol(msg.c_str() + 3, &pEnd, 16);;
-			std::cout << "msg m: " << msg << std::endl;
 			breakpoints.insert(addr);
 			std::cout << "Breakpoint set to address 0x"<< std::hex << addr << std::endl;
 			send_packet(conn, "OK");
