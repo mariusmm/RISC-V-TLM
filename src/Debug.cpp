@@ -20,7 +20,7 @@
 constexpr char nibble_to_hex[16] = { '0', '1', '2', '3', '4', '5', '6', '7',
 		'8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
-Debug::Debug(CPU *cpu, Memory* mem) {
+Debug::Debug(CPU *cpu, Memory* mem): sc_module(std::string("Debug")) {
 	dbg_cpu = cpu;
 	dbg_mem = mem;
 
