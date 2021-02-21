@@ -8,7 +8,7 @@
 
 #include "BASE_ISA.h"
 
-enum {
+enum Codes {
 	LUI = 0b0110111,
 	AUIPC = 0b0010111,
 	JAL = 0b1101111,
@@ -80,7 +80,7 @@ enum {
 	CSRRWI = 0b101,
 	CSRRSI = 0b110,
 	CSRRCI = 0b111,
-} Codes;
+};
 
 bool BASE_ISA::Exec_LUI() const {
 	int rd;
