@@ -109,7 +109,8 @@ void Trace::b_transport(tlm::tlm_generic_payload &trans,
 	unsigned char *ptr = trans.get_data_ptr();
 	delay = sc_core::SC_ZERO_TIME;
 
-	(void) write(ptSlave, ptr, 1);
+	int a = write(ptSlave, ptr, 1);
+	(void) a;
 
 	trans.set_response_status(tlm::TLM_OK_RESPONSE);
 }
