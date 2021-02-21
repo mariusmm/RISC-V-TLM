@@ -5,11 +5,12 @@ TARGET_ARCH = riscv32
 CC       = riscv32-unknown-elf-gcc
 
 # compiling flags here
-CFLAGS = -Wall -I. -O0 -static -march=rv32imac -mabi=ilp32 --specs=nosys.specs
+CFLAGS = -Wall -I. -O0 -static -march=rv32imac -mabi=ilp32 --specs=nosys.specs -ggdb
+
 
 LINKER   = riscv32-unknown-elf-gcc
 # linking flags here
-LDFLAGS   = -I. -static 
+LDFLAGS   = -I. -static -g
 LIBS   = $(EXTRA_LIBS)
 
 
@@ -48,3 +49,5 @@ clean:
 remove: clean
 	@$(rm) $(BINDIR)/$(TARGET)
 	@echo "Executable removed!"
+
+all: $(BINDIR)/$(TARGET)
