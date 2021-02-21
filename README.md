@@ -24,6 +24,7 @@ Table of Contents
       * [TODO](./README.md#todo)
       * [Compile](./README.md#compile)
       * [Cross-compiler](./README.md#cross-compiler)
+      * [Debug](./README.md#debug)
       * [Docker container](./README.md#docker-container)
          * [How to use Docker](./README.md#how-to-use-docker)
       * [Test](./README.md#test)
@@ -66,7 +67,7 @@ i5-5200<span>@</span>2.2Ghz and about 3.000.000 instructions / sec in a Intel Co
 Trace perihperal creates a xterm window where it prints out all received data. 
 
 ### Structure
-![Modules' hierarchy](https://github.com/mariusmm/RISC-V-TLM/blob/master/doc/Hierarchy.png)
+![Modules' hierarchy](doc/Hierarchy.png)
 
 
 ### Memory map
@@ -99,8 +100,9 @@ Task to do:
 - [x] Test, test, test & test. I'm sure there are a ~~lot of~~ some bugs in the code
      - [x] riscv-test almost complete (see [Test](https://github.com/mariusmm/RISC-V-TLM/wiki/Tests))
      - [x] riscv-compliance 
-* Improve structure and modules hierarchy
-* Add 64 & 128 bits architecture (RV64I, RV128I)
+* [ ] Improve structure and modules hierarchy
+* [ ] Add 64 & 128 bits architecture (RV64I, RV128I)
+* [x] Debug capabilities
 
 ## Compile
 In order to compile the project you need SystemC-2.3.2 installed in your system.
@@ -145,6 +147,22 @@ In test/C/long_test/ example there is a Makefile that compiles a project with an
 There is a Helper_functions.c file with defiitions of all missing functions needed by the library (**_read()**, **_close()**, **_fstat_r()**, 
 **_lseek_r()**, **_isatty_r()**, **_write()**). All of them are defined empty except **_write()** that is written to use the Trace perihperal. 
 The definition of the function **_write()** allows developer to use printf() as usual and the stdout will be redirected to the Trace perihperal.
+
+## Debug
+It is possible to debug an application running in RISC-V-TLM simulator. 
+It is tested with riscv32-unknown-elf-gdb version 8.3.0.20190516-git and eclipse.
+Configure a "C/C++ Remote Application" debug configuration as the figure
+
+![Modules' hierarchy](doc/DebugConfiguration.png)
+ 
+gdbinit.txt file must contain: 
+
+```
+set debug remote 1
+set arch riscv:rv32
+```
+
+With this configuration, eclipse debuggins is almost normal (I experienced some problems wiith "step-over" and "step-into" commands)
 
 ## Docker container
 
