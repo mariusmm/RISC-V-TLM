@@ -61,8 +61,8 @@ Helper classes:
 * Performance: Performance indicators stores here (singleton class)
 * Log: Log class to log them all (singleton class)
 
-Current performance is about 1.500.000 instructions / sec in a Intel Core
-i5-5200<span>@</span>2.2Ghz and about 3.000.000 instructions / sec in a Intel Core i7-8550U<span>@</span>1.8Ghz.
+Current performance is about 3.000.000 instructions / sec in a Intel Core
+i5-5200<span>@</span>2.2Ghz and about 4.500.000 instructions / sec in a Intel Core i7-8550U<span>@</span>1.8Ghz.
 
 Trace perihperal creates a xterm window where it prints out all received data. 
 
