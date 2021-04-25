@@ -83,7 +83,7 @@ public:
 	 */
 	void dump() const;
 
-	inline uint_fast64_t getInstructions() {
+	inline uint_fast64_t getInstructions() const {
 	  return instructions_executed;
 	}
 

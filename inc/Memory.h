@@ -36,9 +36,9 @@ public:
 	const sc_core::sc_time LATENCY;
 
 	Memory(sc_core::sc_module_name const &name, std::string const &filename);
-	Memory(const sc_core::sc_module_name& name);
+	explicit Memory(const sc_core::sc_module_name& name);
 
-	~Memory(void);
+	~Memory() override;
 
 	/**
 	 * @brief Returns Program Counter read from hexfile

@@ -17,16 +17,16 @@ Timer::Timer(sc_core::sc_module_name const &name) :
 	SC_THREAD(run);
 }
 
-void Timer::run() {
+[[noreturn]] void Timer::run() {
 
-	tlm::tlm_generic_payload *irq_trans = new tlm::tlm_generic_payload;
+	auto *irq_trans = new tlm::tlm_generic_payload;
 	sc_core::sc_time delay = sc_core::SC_ZERO_TIME;
 	uint32_t cause = 1 << 31 | 0x07;	 // Machine timer interrupt
 	irq_trans->set_command(tlm::TLM_WRITE_COMMAND);
 	irq_trans->set_data_ptr(reinterpret_cast<unsigned char*>(&cause));
 	irq_trans->set_data_length(4);
 	irq_trans->set_streaming_width(4);
-	irq_trans->set_byte_enable_ptr(0);
+	irq_trans->set_byte_enable_ptr(nullptr);
 	irq_trans->set_dmi_allowed(false);
 	irq_trans->set_response_status(tlm::TLM_INCOMPLETE_RESPONSE);
 	irq_trans->set_address(0);

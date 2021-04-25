@@ -39,7 +39,7 @@ public:
 	 * @brief Constructor
 	 * @param name module name
 	 */
-	Timer(sc_core::sc_module_name const &name);
+	explicit Timer(sc_core::sc_module_name const &name);
 
 	/**
 	 * @brief Waits for event timer_event and triggers an IRQ
@@ -50,7 +50,7 @@ public:
 	 * line.
 	 *
 	 */
-	void run();
+    [[noreturn]] void run();
 
 	/**
 	 *

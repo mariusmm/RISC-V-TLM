@@ -72,7 +72,7 @@ public:
 	 * @brief constructor
 	 * @param name module's name
 	 */
-	BusCtrl(sc_core::sc_module_name name);
+	explicit BusCtrl(sc_core::sc_module_name name);
 
 	/**
 	 * @brief TLM-2 blocking mechanism

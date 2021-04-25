@@ -56,7 +56,7 @@ public:
 	 */
 	op_M_Codes decode() const;
 
-	inline virtual void dump() const override {
+	inline void dump() const override {
 		std::cout << std::hex << "0x" << m_instr << std::dec << std::endl;
 	}
 
@@ -77,7 +77,7 @@ private:
 	 * @brief Access to opcode field
 	 * @return return opcode field
 	 */
-	inline int32_t opcode() const {
+	inline int32_t opcode() const override {
 		return m_instr.range(14, 12);
 	}
 

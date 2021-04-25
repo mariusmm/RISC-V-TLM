@@ -68,7 +68,7 @@ public:
 
 private:
 	static Log *instance;
-	Log(const char *filename);
+	explicit Log(const char *filename);
 	std::ofstream m_stream;
 	std::ofstream m_sink;
 };

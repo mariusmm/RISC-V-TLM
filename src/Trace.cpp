@@ -64,7 +64,7 @@ void Trace::xtermKill(const char *mess) {
 
 }
 
-void Trace::xtermSetup(void) {
+void Trace::xtermSetup() {
 	ptMaster = open("/dev/ptmx", O_RDWR);
 
 	if (ptMaster != -1) {

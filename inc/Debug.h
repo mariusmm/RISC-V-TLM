@@ -24,10 +24,10 @@ class Debug: sc_core::sc_module {
 public:
 
 	Debug(CPU *cpu, Memory* mem);
-	~Debug();
+	~Debug() override;
 
 private:
-	std::string compute_checksum_string(const std::string &msg);
+	static std::string compute_checksum_string(const std::string &msg);
 	void send_packet(int conn, const std::string &msg);
 	std::string receive_packet();
 	void handle_gdb_loop();

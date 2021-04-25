@@ -21,7 +21,7 @@ Registers::Registers() {
 	register_PC = 0x80000000;       // default _start address
 }
 
-void Registers::dump(void) {
+void Registers::dump() {
 	std::cout << "************************************" << std::endl;
 	std::cout << "Registers dump" << std::dec << std::endl;
 	std::cout << "x0 (zero):  " << std::right << std::setw(11)

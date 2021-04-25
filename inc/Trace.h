@@ -36,12 +36,12 @@ public:
 	 * @brief Constructor
 	 * @param name Module name
 	 */
-	Trace(sc_core::sc_module_name const &name);
+	explicit Trace(sc_core::sc_module_name const &name);
 
 	/**
 	 * @brief Destructor
 	 */
-	~Trace();
+	~Trace() override;
 
 private:
 
@@ -51,11 +51,11 @@ private:
 
 	void xtermLaunch(char *slaveName) const;
 	void xtermKill(const char *mess);
-	void xtermSetup(void);
+	void xtermSetup();
 
-	int ptSlave;
-	int ptMaster;
-	int xtermPid;
+	int ptSlave{};
+	int ptMaster{};
+	int xtermPid{};
 };
 
 #endif

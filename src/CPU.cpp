@@ -113,7 +113,7 @@ bool CPU::cpu_process_IRQ() {
 	return ret_value;
 }
 
-bool CPU::CPU_step(void) {
+bool CPU::CPU_step() {
 
 	bool incPCby2 = false;
 	bool PC_not_affected = false;
@@ -186,11 +186,11 @@ bool CPU::CPU_step(void) {
 	return breakpoint;
 }
 
-void CPU::CPU_thread(void) {
+[[noreturn]] void CPU::CPU_thread() {
 
 	sc_core::sc_time instr_time = default_time;
 
-	while (1) {
+	while (true) {
 
 		/* Process one instruction */
 		CPU_step();
@@ -212,11 +212,11 @@ void CPU::CPU_thread(void) {
 	} // while(1)
 } // CPU_thread
 
-void CPU::call_interrupt(tlm::tlm_generic_payload &trans,
+void CPU::call_interrupt(tlm::tlm_generic_payload &m_trans,
 		sc_core::sc_time &delay) {
 	interrupt = true;
 	/* Socket caller send a cause (its id) */
-	memcpy(&int_cause, trans.get_data_ptr(), sizeof(uint32_t));
+	memcpy(&int_cause, m_trans.get_data_ptr(), sizeof(uint32_t));
 	delay = sc_core::SC_ZERO_TIME;
 }
 

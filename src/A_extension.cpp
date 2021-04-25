@@ -94,7 +94,7 @@ bool A_extension::Exec_A_SC() {
 	mem_addr = regs->getValue(rs1);
 	data = regs->getValue(rs2);
 
-	if (TLB_reserved(mem_addr) == true) {
+	if (TLB_reserved(mem_addr)) {
 		mem_intf->writeDataMem(mem_addr, data, 4);
 		perf->dataMemoryWrite();
 		regs->setValue(rd, 0);  // SC writes 0 to rd on success

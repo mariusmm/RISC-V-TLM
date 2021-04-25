@@ -105,7 +105,7 @@ public:
 	 * @brief Access to opcode field
 	 * @return return opcode field
 	 */
-	inline int32_t opcode() const {
+	inline int32_t opcode() const override {
 		return m_instr.range(1, 0);
 	}
 

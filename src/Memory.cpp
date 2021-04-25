@@ -20,6 +20,7 @@ Memory::Memory(sc_core::sc_module_name const &name, std::string const &filename)
 	//memset(mem, 0, SIZE*sizeof(uint8_t));
 
 	memory_offset = 0;
+    program_counter = 0;
 	readHexFile(filename);
 
 	log = Log::getInstance();

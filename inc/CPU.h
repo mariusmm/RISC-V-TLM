@@ -59,11 +59,11 @@ public:
 	/**
 	 * @brief Destructor
 	 */
-	~CPU();
+	~CPU() override;
 
 	MemoryInterface *mem_intf;
 
-	bool CPU_step(void);
+	bool CPU_step();
 
 
 	Registers *getRegisterBank() {return register_bank;}
@@ -103,7 +103,7 @@ private:
 	 * main thread for CPU simulation
 	 * @brief CPU mai thread
 	 */
-	void CPU_thread(void);
+    [[noreturn]] void CPU_thread();
 
 	/**
 	 * @brief callback for IRQ simple socket

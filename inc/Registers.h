@@ -261,7 +261,7 @@ private:
 
 	Performance *perf;
 
-	void initCSR(void);
+	void initCSR();
 };
 
 #endif
