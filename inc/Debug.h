@@ -28,7 +28,7 @@ public:
 
 private:
 	static std::string compute_checksum_string(const std::string &msg);
-	void send_packet(int conn, const std::string &msg);
+	void send_packet(int m_conn, const std::string &msg);
 	std::string receive_packet();
 	void handle_gdb_loop();
 
@@ -38,7 +38,7 @@ private:
 	CPU *dbg_cpu;
 	Memory *dbg_mem;
 	tlm::tlm_generic_payload dbg_trans;
-	unsigned char pyld_array[128];
+	unsigned char pyld_array[128]{};
 	std::unordered_set<uint32_t> breakpoints;
 };
 

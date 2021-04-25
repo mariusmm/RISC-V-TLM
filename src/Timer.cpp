@@ -72,6 +72,9 @@ void Timer::b_transport(tlm::tlm_generic_payload &trans,
 
 			timer_event.notify(sc_core::sc_time(notify_time, sc_core::SC_NS));
 			break;
+		    default:
+                trans.set_response_status(tlm::TLM_ADDRESS_ERROR_RESPONSE);
+                return;
 		}
 	} else { // TLM_READ_COMMAND
 		switch (addr) {
@@ -88,6 +91,9 @@ void Timer::b_transport(tlm::tlm_generic_payload &trans,
 		case TIMERCMP_MEMORY_ADDRESS_HI:
 			aux_value = m_mtimecmp.range(63, 32);
 			break;
+            default:
+                trans.set_response_status(tlm::TLM_ADDRESS_ERROR_RESPONSE);
+                return;
 		}
 		memcpy(ptr, &aux_value, len);
 	}

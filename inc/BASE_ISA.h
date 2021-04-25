@@ -244,7 +244,7 @@ public:
 	 * @return value corresponding to inst(25:20)
 	 */
 	inline int32_t get_shamt() const {
-		return m_instr.range(25, 20);
+		return static_cast<int32_t>(m_instr.range(25, 20));
 	}
 
 	/**
@@ -254,7 +254,7 @@ public:
 	inline int32_t get_csr() const {
 		int32_t aux = 0;
 
-		aux = m_instr.range(31, 20);
+		aux = static_cast<int32_t>(m_instr.range(31, 20));
 
 		return aux;
 	}
@@ -264,7 +264,7 @@ public:
 	 * @return return opcode field
 	 */
 	inline int32_t opcode() const override {
-		return m_instr.range(6, 0);
+		return static_cast<int32_t>(m_instr.range(6, 0));
 	}
 
 	bool Exec_LUI() const;

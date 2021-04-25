@@ -41,7 +41,7 @@ void Trace::xtermLaunch(char *slaveName) const {
 	execvp("xterm", argv);
 }
 
-void Trace::xtermKill(const char *mess) {
+void Trace::xtermKill() {
 
 	if (-1 != ptSlave) {		// Close down the slave
 		close(ptSlave);			// Close the FD
@@ -57,11 +57,6 @@ void Trace::xtermKill(const char *mess) {
 		kill(xtermPid, SIGKILL);
 		waitpid(xtermPid, nullptr, 0);
 	}
-
-	if ( nullptr != mess) {		// If we really want a message
-		perror(mess);
-	}
-
 }
 
 void Trace::xtermSetup() {
@@ -100,7 +95,7 @@ Trace::Trace(sc_core::sc_module_name const &name) :
 }
 
 Trace::~Trace() {
-	xtermKill( nullptr);
+	xtermKill();
 }
 
 void Trace::b_transport(tlm::tlm_generic_payload &trans,
@@ -109,7 +104,7 @@ void Trace::b_transport(tlm::tlm_generic_payload &trans,
 	unsigned char *ptr = trans.get_data_ptr();
 	delay = sc_core::SC_ZERO_TIME;
 
-	int a = write(ptSlave, ptr, 1);
+	ssize_t a = write(ptSlave, ptr, 1);
 	(void) a;
 
 	trans.set_response_status(tlm::TLM_OK_RESPONSE);

@@ -57,7 +57,7 @@ bool M_extension::Exec_M_MUL() const {
 
 	result = (int64_t) multiplier * multiplicand;
 	result = result & 0x00000000FFFFFFFF;
-	regs->setValue(rd, result);
+	regs->setValue(rd, static_cast<int32_t>(result));
 
 	log->SC_log(Log::INFO) << std::dec << "MUL: x" << rs1 << " * x" << rs2
 			<< " -> x" << rd << "(" << result << ")" << "\n";
@@ -102,9 +102,9 @@ bool M_extension::Exec_M_MULHSU() const {
 	multiplier = regs->getValue(rs1);
 	multiplicand = regs->getValue(rs2);
 
-	result = (int64_t) multiplier * (uint64_t) multiplicand;
+	result = static_cast<int64_t>(multiplier * (uint64_t) multiplicand);
 	result = (result >> 32) & 0x00000000FFFFFFFF;
-	regs->setValue(rd, result);
+	regs->setValue(rd, static_cast<int32_t>(result));
 
 	log->SC_log(Log::INFO) << std::dec << "MULHSU: x" << rs1 << " * x" << rs2
 			<< " -> x" << rd << "(" << result << ")" << "\n";
@@ -126,7 +126,7 @@ bool M_extension::Exec_M_MULHU() const {
 	multiplicand = (uint32_t) regs->getValue(rs2);
 
 	result = (uint64_t) multiplier * (uint64_t) multiplicand;
-	ret_value = (uint32_t) (result >> 32) & 0x00000000FFFFFFFF;
+	ret_value = static_cast<int32_t>((result >> 32) & 0x00000000FFFFFFFF);
 	regs->setValue(rd, ret_value);
 
 	log->SC_log(Log::INFO) << std::dec << "MULHU: x" << rs1 << " * x" << rs2
@@ -156,7 +156,7 @@ bool M_extension::Exec_M_DIV() const {
 		result = result & 0x00000000FFFFFFFF;
 	}
 
-	regs->setValue(rd, result);
+	regs->setValue(rd, static_cast<int32_t>(result));
 
 	log->SC_log(Log::INFO) << std::dec << "DIV: x" << rs1 << " / x" << rs2
 			<< " -> x" << rd << "(" << result << ")" << "\n";
@@ -183,7 +183,7 @@ bool M_extension::Exec_M_DIVU() const {
 		result = result & 0x00000000FFFFFFFF;
 	}
 
-	regs->setValue(rd, result);
+	regs->setValue(rd, static_cast<int32_t>(result));
 
 	log->SC_log(Log::INFO) << std::dec << "DIVU: x" << rs1 << " / x" << rs2
 			<< " -> x" << rd << "(" << result << ")" << "\n";
@@ -237,7 +237,7 @@ bool M_extension::Exec_M_REMU() const {
 		result = dividend % divisor;
 	}
 
-	regs->setValue(rd, result);
+	regs->setValue(rd, static_cast<int32_t>(result));
 
 	log->SC_log(Log::INFO) << std::dec << "REMU: x" << rs1 << " / x" << rs2
 			<< " -> x" << rd << "(" << result << ")" << "\n";

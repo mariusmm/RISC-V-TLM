@@ -64,7 +64,7 @@ public:
 	 * @return return opcode field
 	 */
 	inline int32_t opcode() const override {
-		return m_instr.range(31, 27);
+		return static_cast<int32_t>(m_instr.range(31, 27));
 	}
 
 	/**

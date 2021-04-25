@@ -106,11 +106,11 @@ public:
 	 * @return return opcode field
 	 */
 	inline int32_t opcode() const override {
-		return m_instr.range(1, 0);
+		return static_cast<int32_t>(m_instr.range(1, 0));
 	}
 
 	inline int32_t get_rdp() const {
-		return m_instr.range(4, 2) + 8;
+		return static_cast<int32_t>(m_instr.range(4, 2) + 8);
 	}
 
 	/**
@@ -118,7 +118,7 @@ public:
 	 * @return rs1 field
 	 */
 	inline int32_t get_rs1() const override {
-		return m_instr.range(11, 7);
+		return static_cast<int32_t>(m_instr.range(11, 7));
 	}
 
 	inline void set_rs1(int32_t value) override {
@@ -126,7 +126,7 @@ public:
 	}
 
 	inline int32_t get_rs1p() const {
-		return m_instr.range(9, 7) + 8;
+		return static_cast<int32_t>(m_instr.range(9, 7) + 8);
 	}
 
 	/**
@@ -134,7 +134,7 @@ public:
 	 * @return rs2 field
 	 */
 	inline int32_t get_rs2() const override {
-		return m_instr.range(6, 2);
+		return static_cast<int32_t>(m_instr.range(6, 2));
 	}
 
 	inline void set_rs2(int32_t value) override {
@@ -142,11 +142,11 @@ public:
 	}
 
 	inline int32_t get_rs2p() const {
-		return m_instr.range(4, 2) + 8;
+		return static_cast<int32_t>(m_instr.range(4, 2) + 8);
 	}
 
 	inline int32_t get_funct3() const override {
-		return m_instr.range(15, 13);
+		return static_cast<int32_t>(m_instr.range(15, 13));
 	}
 
 	inline void set_funct3(int32_t value) override {
@@ -160,7 +160,7 @@ public:
 	inline int32_t get_imm_I() const {
 		int32_t aux = 0;
 
-		aux = m_instr.range(31, 20);
+		aux = static_cast<int32_t>(m_instr.range(31, 20));
 
 		/* sign extension (optimize) */
 		if (m_instr[31] == 1) {
@@ -181,8 +181,8 @@ public:
 	inline int32_t get_imm_S() const {
 		int32_t aux = 0;
 
-		aux = m_instr.range(31, 25) << 5;
-		aux |= m_instr.range(11, 7);
+		aux = static_cast<int32_t>(m_instr.range(31, 25) << 5);
+		aux |= static_cast<int32_t>(m_instr.range(11, 7));
 
 		if (m_instr[31] == 1) {
 			aux |= (0b11111111111111111111) << 12;
@@ -203,7 +203,7 @@ public:
 	 * @return immediate_U field
 	 */
 	inline int32_t get_imm_U() const {
-		return m_instr.range(31, 12);
+		return static_cast<int32_t>(m_instr.range(31, 12));
 	}
 
 	inline void set_imm_U(int32_t value) {
@@ -217,10 +217,10 @@ public:
 	inline int32_t get_imm_B() const {
 		int32_t aux = 0;
 
-		aux |= m_instr[7] << 11;
-		aux |= m_instr.range(30, 25) << 5;
-		aux |= m_instr[31] << 12;
-		aux |= m_instr.range(11, 8) << 1;
+		aux |= static_cast<int32_t>(m_instr[7] << 11);
+		aux |= static_cast<int32_t>(m_instr.range(30, 25) << 5);
+		aux |= static_cast<int32_t>(m_instr[31] << 12);
+		aux |= static_cast<int32_t>(m_instr.range(11, 8) << 1);
 
 		if (m_instr[31] == 1) {
 			aux |= (0b11111111111111111111) << 12;
@@ -244,15 +244,15 @@ public:
 	inline int32_t get_imm_J() const {
 		int32_t aux = 0;
 
-		aux = m_instr[12] << 11;
-		aux |= m_instr[11] << 4;
-		aux |= m_instr[10] << 9;
-		aux |= m_instr[9] << 8;
-		aux |= m_instr[8] << 10;
-		aux |= m_instr[7] << 6;
-		aux |= m_instr[6] << 7;
-		aux |= m_instr.range(5, 3) << 1;
-		aux |= m_instr[2] << 5;
+		aux = static_cast<int32_t>(m_instr[12] << 11);
+		aux |= static_cast<int32_t>(m_instr[11] << 4);
+		aux |= static_cast<int32_t>(m_instr[10] << 9);
+		aux |= static_cast<int32_t>(m_instr[9] << 8);
+		aux |= static_cast<int32_t>(m_instr[8] << 10);
+		aux |= static_cast<int32_t>(m_instr[7] << 6);
+		aux |= static_cast<int32_t>(m_instr[6] << 7);
+		aux |= static_cast<int32_t>(m_instr.range(5, 3) << 1);
+		aux |= static_cast<int32_t>(m_instr[2] << 5);
 
 		if (m_instr[12] == 1) {
 			aux |= 0b11111111111111111111 << 12;
@@ -273,9 +273,9 @@ public:
 	inline int32_t get_imm_L() const {
 		int32_t aux = 0;
 
-		aux = m_instr.range(12, 10) << 3;
-		aux |= m_instr[6] << 2;
-		aux |= m_instr[5] << 6;
+		aux = static_cast<int32_t>(m_instr.range(12, 10) << 3);
+		aux |= static_cast<int32_t>(m_instr[6] << 2);
+		aux |= static_cast<int32_t>(m_instr[5] << 6);
 
 		return aux;
 	}
@@ -283,9 +283,9 @@ public:
 	inline int32_t get_imm_LWSP() const {
 		int32_t aux = 0;
 
-		aux = m_instr[12] << 5;
-		aux |= m_instr.range(6, 4) << 2;
-		aux |= m_instr.range(3, 2) << 6;
+		aux = static_cast<int32_t>(m_instr[12] << 5);
+		aux |= static_cast<int32_t>(m_instr.range(6, 4) << 2);
+		aux |= static_cast<int32_t>(m_instr.range(3, 2) << 6);
 
 		return aux;
 	}
@@ -293,8 +293,8 @@ public:
 	inline int32_t get_imm_ADDI () const {
 		int32_t aux = 0;
 
-		aux = m_instr[12] << 5;
-		aux |= m_instr.range(6, 2);
+		aux = static_cast<int32_t>(m_instr[12] << 5);
+		aux |= static_cast<int32_t>(m_instr.range(6, 2));
 
 		if (m_instr[12] == 1) {
 			aux |= 0b11111111111111111111111111 << 6;
@@ -305,10 +305,10 @@ public:
 	inline int32_t get_imm_ADDI4SPN() const {
 		int32_t aux = 0;
 
-		aux = m_instr.range(12, 11) << 4;
-		aux |= m_instr.range(10, 7) << 6;
-		aux |= m_instr[6] << 2;
-		aux |= m_instr[5] << 3;
+		aux = static_cast<int32_t>(m_instr.range(12, 11) << 4);
+		aux |= static_cast<int32_t>(m_instr.range(10, 7) << 6);
+		aux |= static_cast<int32_t>(m_instr[6] << 2);
+		aux |= static_cast<int32_t>(m_instr[5] << 3);
 
 		return aux;
 	}
@@ -316,12 +316,12 @@ public:
 	inline int32_t get_imm_ADDI16SP() const {
 		int32_t aux = 0;
 
-		aux = m_instr[12] << 9;
-		aux |= m_instr[6] << 4;
-		aux |= m_instr[5] << 6;
-		aux |= m_instr[4] << 8;
-		aux |= m_instr[3] << 7;
-		aux |= m_instr[2] << 5;
+		aux = static_cast<int32_t>(m_instr[12] << 9);
+		aux |= static_cast<int32_t>(m_instr[6] << 4);
+		aux |= static_cast<int32_t>(m_instr[5] << 6);
+		aux |= static_cast<int32_t>(m_instr[4] << 8);
+		aux |= static_cast<int32_t>(m_instr[3] << 7);
+		aux |= static_cast<int32_t>(m_instr[2] << 5);
 
 		if (m_instr[12] == 1) {
 			aux |= 0b1111111111111111111111 << 10;
@@ -331,8 +331,8 @@ public:
 
 	inline int32_t get_imm_CSS() const {
 		int32_t aux = 0;
-		aux = m_instr.range(12, 9) << 2;
-		aux |= m_instr.range(8, 7) << 6;
+		aux = static_cast<int32_t>(m_instr.range(12, 9) << 2);
+		aux |= static_cast<int32_t>(m_instr.range(8, 7) << 6);
 
 		return aux;
 	}
@@ -340,14 +340,14 @@ public:
 	inline int32_t get_imm_CB() const {
 		int32_t aux = 0;
 
-		aux = m_instr[12] << 8;
-		aux |= m_instr[11] << 4;
-		aux |= m_instr[10] << 3;
-		aux |= m_instr[6] << 7;
-		aux |= m_instr[5] << 6;
-		aux |= m_instr[4] << 2;
-		aux |= m_instr[3] << 1;
-		aux |= m_instr[2] << 5;
+		aux = static_cast<int32_t>(m_instr[12] << 8);
+		aux |= static_cast<int32_t>(m_instr[11] << 4);
+		aux |= static_cast<int32_t>(m_instr[10] << 3);
+		aux |= static_cast<int32_t>(m_instr[6] << 7);
+		aux |= static_cast<int32_t>(m_instr[5] << 6);
+		aux |= static_cast<int32_t>(m_instr[4] << 2);
+		aux |= static_cast<int32_t>(m_instr[3] << 1);
+		aux |= static_cast<int32_t>(m_instr[2] << 5);
 
 		if (m_instr[12] == 1) {
 			aux |= 0b11111111111111111111111 << 9;
@@ -359,8 +359,8 @@ public:
 	inline int32_t get_imm_LUI() const {
 		int32_t aux = 0;
 
-		aux = m_instr[12] << 17;
-		aux |= m_instr.range(6, 2) << 12;
+		aux = static_cast<int32_t>(m_instr[12] << 17);
+		aux |= static_cast<int32_t>(m_instr.range(6, 2) << 12);
 
 		if (m_instr[12] == 1) {
 			aux |= 0b111111111111111 << 17;

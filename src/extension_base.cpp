@@ -8,7 +8,7 @@
 
 #include "extension_base.h"
 
-extension_base::extension_base(sc_dt::sc_uint<32> const instr,
+extension_base::extension_base(const sc_dt::sc_uint<32>  & instr,
 		Registers *register_bank, MemoryInterface *mem_interface) :
 		m_instr(instr), regs(register_bank), mem_intf(mem_interface) {
 

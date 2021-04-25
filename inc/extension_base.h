@@ -26,7 +26,7 @@
 class extension_base {
 
 public:
-	extension_base(sc_dt::sc_uint<32> instr, Registers *register_bank,
+	extension_base(const sc_dt::sc_uint<32> & instr, Registers *register_bank,
 			MemoryInterface *mem_interface);
 	virtual ~extension_base() = 0;
 

@@ -43,7 +43,7 @@ CPU::CPU(sc_core::sc_module_name const name, uint32_t PC, bool debug) :
 	trans.set_data_ptr(reinterpret_cast<unsigned char*>(&INSTR));
 	trans.set_data_length(4);
 	trans.set_streaming_width(4); // = data_length to indicate no streaming
-	trans.set_byte_enable_ptr(0); // 0 indicates unused
+	trans.set_byte_enable_ptr(nullptr); // 0 indicates unused
 	trans.set_dmi_allowed(false); // Mandatory initial value
 	trans.set_response_status(tlm::TLM_INCOMPLETE_RESPONSE);
 
@@ -67,7 +67,7 @@ bool CPU::cpu_process_IRQ() {
 	uint32_t csr_temp;
 	bool ret_value = false;
 
-	if (interrupt == true) {
+	if (interrupt) {
 		csr_temp = register_bank->getCSR(CSR_MSTATUS);
 		if ((csr_temp & MSTATUS_MIE) == 0) {
 			log->SC_log(Log::DEBUG) << "interrupt delayed" << std::endl;
@@ -102,7 +102,7 @@ bool CPU::cpu_process_IRQ() {
 			irq_already_down = false;
 		}
 	} else {
-		if (irq_already_down == false) {
+		if (!irq_already_down) {
 			csr_temp = register_bank->getCSR(CSR_MIP);
 			csr_temp &= ~MIP_MEIP;
 			register_bank->setCSR(CSR_MIP, csr_temp);
@@ -119,7 +119,7 @@ bool CPU::CPU_step() {
 	bool PC_not_affected = false;
 
 	/* Get new PC value */
-	if (dmi_ptr_valid == true) {
+	if (dmi_ptr_valid) {
 		/* if memory_offset at Memory module is set, this won't work */
 		memcpy(&INSTR, dmi_ptr + register_bank->getPC(), 4);
 	} else {
@@ -173,13 +173,13 @@ bool CPU::CPU_step() {
 		exec->NOP();
 	}
 
-	if (breakpoint == true) {
+	if (breakpoint) {
 		std::cout << "Breakpoint set to true\n";
 	}
 
 	perf->instructionsInc();
 
-	if (PC_not_affected == true) {
+	if (PC_not_affected) {
 		register_bank->incPC(incPCby2);
 	}
 

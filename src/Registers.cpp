@@ -112,7 +112,7 @@ int32_t Registers::getValue(int reg_num) {
 		perf->registerRead();
 		return register_bank[reg_num];
 	} else {
-		return 0xFFFFFFFF;
+		return static_cast<int32_t>(0xFFFFFFFF);
 	}
 }
 
@@ -125,7 +125,7 @@ void Registers::setPC(uint32_t new_pc) {
 }
 
 uint32_t Registers::getCSR(int csr) {
-	uint32_t ret_value = 0;
+	uint32_t ret_value;
 
 	switch (csr) {
 	case CSR_CYCLE:

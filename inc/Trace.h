@@ -50,7 +50,7 @@ private:
 			sc_core::sc_time &delay);
 
 	void xtermLaunch(char *slaveName) const;
-	void xtermKill(const char *mess);
+	void xtermKill();
 	void xtermSetup();
 
 	int ptSlave{};

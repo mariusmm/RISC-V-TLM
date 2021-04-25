@@ -72,7 +72,7 @@ bool A_extension::Exec_A_LR() {
 	mem_addr = regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 4);
 	perf->dataMemoryRead();
-	regs->setValue(rd, data);
+	regs->setValue(rd, static_cast<int32_t>(data));
 
 	TLB_reserve(mem_addr);
 
@@ -124,11 +124,11 @@ bool A_extension::Exec_A_AMOSWAP() const {
 	mem_addr = regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 4);
 	perf->dataMemoryRead();
-	regs->setValue(rd, data);
+	regs->setValue(rd, static_cast<int32_t>(data));
 
 	// swap
 	aux = regs->getValue(rs2);
-	regs->setValue(rs2, data);
+	regs->setValue(rs2, static_cast<int32_t>(data));
 
 	mem_intf->writeDataMem(mem_addr, aux, 4);
 	perf->dataMemoryWrite();
@@ -152,7 +152,7 @@ bool A_extension::Exec_A_AMOADD() const {
 	data = mem_intf->readDataMem(mem_addr, 4);
 	perf->dataMemoryRead();
 
-	regs->setValue(rd, data);
+	regs->setValue(rd, static_cast<int32_t>(data));
 
 	// add
 	data = data + regs->getValue(rs2);
@@ -180,7 +180,7 @@ bool A_extension::Exec_A_AMOXOR() const {
 	data = mem_intf->readDataMem(mem_addr, 4);
 	perf->dataMemoryRead();
 
-	regs->setValue(rd, data);
+	regs->setValue(rd, static_cast<int32_t>(data));
 
 	// add
 	data = data ^ regs->getValue(rs2);
@@ -207,7 +207,7 @@ bool A_extension::Exec_A_AMOAND() const {
 	data = mem_intf->readDataMem(mem_addr, 4);
 	perf->dataMemoryRead();
 
-	regs->setValue(rd, data);
+	regs->setValue(rd, static_cast<int32_t>(data));
 
 	// add
 	data = data & regs->getValue(rs2);
@@ -235,7 +235,7 @@ bool A_extension::Exec_A_AMOOR() const {
 	data = mem_intf->readDataMem(mem_addr, 4);
 	perf->dataMemoryRead();
 
-	regs->setValue(rd, data);
+	regs->setValue(rd, static_cast<int32_t>(data));
 
 	// add
 	data = data | regs->getValue(rs2);
@@ -263,7 +263,7 @@ bool A_extension::Exec_A_AMOMIN() const {
 	data = mem_intf->readDataMem(mem_addr, 4);
 	perf->dataMemoryRead();
 
-	regs->setValue(rd, data);
+	regs->setValue(rd, static_cast<int32_t>(data));
 
 	// min
 	aux = regs->getValue(rs2);
@@ -294,7 +294,7 @@ bool A_extension::Exec_A_AMOMAX() const {
 	data = mem_intf->readDataMem(mem_addr, 4);
 	perf->dataMemoryRead();
 
-	regs->setValue(rd, data);
+	regs->setValue(rd, static_cast<int32_t>(data));
 
 	// >
 	aux = regs->getValue(rs2);
@@ -325,7 +325,7 @@ bool A_extension::Exec_A_AMOMINU() const {
 	data = mem_intf->readDataMem(mem_addr, 4);
 	perf->dataMemoryRead();
 
-	regs->setValue(rd, data);
+	regs->setValue(rd, static_cast<int32_t>(data));
 
 	// min
 	aux = regs->getValue(rs2);
@@ -356,7 +356,7 @@ bool A_extension::Exec_A_AMOMAXU() const {
 	data = mem_intf->readDataMem(mem_addr, 4);
 	perf->dataMemoryRead();
 
-	regs->setValue(rd, data);
+	regs->setValue(rd, static_cast<int32_t>(data));
 
 	// max
 	aux = regs->getValue(rs2);

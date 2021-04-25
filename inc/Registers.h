@@ -215,7 +215,7 @@ public:
 	 * Increments PC couunter to next address
 	 */
 	inline void incPC(bool C_ext = false) {
-		if (C_ext == true) {
+		if (C_ext) {
 			register_PC += 2;
 		} else {
 			register_PC += 4;
