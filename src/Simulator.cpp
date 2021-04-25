@@ -8,9 +8,6 @@
 #define SC_INCLUDE_DYNAMIC_PROCESSES
 
 #include "systemc"
-#include "tlm.h"
-#include "tlm_utils/simple_initiator_socket.h"
-#include "tlm_utils/simple_target_socket.h"
 
 #include <csignal>
 #include <unistd.h>
@@ -66,7 +63,7 @@ SC_MODULE(Simulator) {
 		}
 	}
 
-	~Simulator() {
+	~Simulator() override {
 		delete MainMemory;
 		delete cpu;
 		delete Bus;
@@ -130,7 +127,6 @@ void process_arguments(int argc, char *argv[]) {
 			break;
 		default:
 			std::cout << "unknown" << std::endl;
-
 		}
 	}
 
@@ -161,7 +157,7 @@ int sc_main(int argc, char *argv[]) {
 	auto end = std::chrono::steady_clock::now();
 
 	std::chrono::duration<double> elapsed_seconds = end - start;
-	double instructions = perf->getInstructions() / elapsed_seconds.count();
+    double instructions = static_cast<double>(perf->getInstructions()) / elapsed_seconds.count();
 
 	std::cout << "Total elapsed time: " << elapsed_seconds.count() << "s" << std::endl;
 	std::cout << "Simulated " << int(std::round(instructions)) << " instr/sec" << std::endl;
