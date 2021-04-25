@@ -125,6 +125,25 @@ And then you can execute the simulator:
 $ ./RISCV_TLM asm/BasicLoop.hex
 ```
 
+### Using cmake
+
+It is possible to use cmake:
+```
+mkdir build
+cd build
+cmake ..
+make
+```
+
+note that SystemC must be compiled with cmake:
+```
+cd <systemc directory>
+mkdir build
+cd build
+cmake ../ -DCMAKE_CXX_STANDARD=17
+make
+```
+
 ### Arguments
 -L loglevel: 3 for detailed (INFO) log, 0 to ERROR log level
 
