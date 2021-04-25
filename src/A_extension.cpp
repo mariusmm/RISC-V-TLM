@@ -83,7 +83,7 @@ bool A_extension::Exec_A_LR() {
 }
 
 bool A_extension::Exec_A_SC() {
-	uint32_t mem_addr = 0;
+	uint32_t mem_addr;
 	int rd, rs1, rs2;
 	uint32_t data;
 
@@ -110,7 +110,7 @@ bool A_extension::Exec_A_SC() {
 }
 
 bool A_extension::Exec_A_AMOSWAP() const {
-	uint32_t mem_addr = 0;
+	uint32_t mem_addr;
 	int rd, rs1, rs2;
 	uint32_t data;
 	uint32_t aux;
@@ -138,7 +138,7 @@ bool A_extension::Exec_A_AMOSWAP() const {
 }
 
 bool A_extension::Exec_A_AMOADD() const {
-	uint32_t mem_addr = 0;
+	uint32_t mem_addr;
 	int rd, rs1, rs2;
 	uint32_t data;
 
@@ -166,7 +166,7 @@ bool A_extension::Exec_A_AMOADD() const {
 }
 
 bool A_extension::Exec_A_AMOXOR() const {
-	uint32_t mem_addr = 0;
+	uint32_t mem_addr;
 	int rd, rs1, rs2;
 	uint32_t data;
 
@@ -193,7 +193,7 @@ bool A_extension::Exec_A_AMOXOR() const {
 	return true;
 }
 bool A_extension::Exec_A_AMOAND() const {
-	uint32_t mem_addr = 0;
+	uint32_t mem_addr;
 	int rd, rs1, rs2;
 	uint32_t data;
 
@@ -221,7 +221,7 @@ bool A_extension::Exec_A_AMOAND() const {
 }
 
 bool A_extension::Exec_A_AMOOR() const {
-	uint32_t mem_addr = 0;
+	uint32_t mem_addr;
 	int rd, rs1, rs2;
 	uint32_t data;
 
@@ -248,7 +248,7 @@ bool A_extension::Exec_A_AMOOR() const {
 }
 
 bool A_extension::Exec_A_AMOMIN() const {
-	uint32_t mem_addr = 0;
+	uint32_t mem_addr;
 	int rd, rs1, rs2;
 	uint32_t data;
 	uint32_t aux;
@@ -279,7 +279,7 @@ bool A_extension::Exec_A_AMOMIN() const {
 	return true;
 }
 bool A_extension::Exec_A_AMOMAX() const {
-	uint32_t mem_addr = 0;
+	uint32_t mem_addr;
 	int rd, rs1, rs2;
 	uint32_t data;
 	uint32_t aux;
@@ -310,7 +310,7 @@ bool A_extension::Exec_A_AMOMAX() const {
 	return true;
 }
 bool A_extension::Exec_A_AMOMINU() const {
-	uint32_t mem_addr = 0;
+	uint32_t mem_addr;
 	int rd, rs1, rs2;
 	uint32_t data;
 	uint32_t aux;
@@ -341,7 +341,7 @@ bool A_extension::Exec_A_AMOMINU() const {
 	return true;
 }
 bool A_extension::Exec_A_AMOMAXU() const {
-	uint32_t mem_addr = 0;
+	uint32_t mem_addr;
 	int rd, rs1, rs2;
 	uint32_t data;
 	uint32_t aux;
