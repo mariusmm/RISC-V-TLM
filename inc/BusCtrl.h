@@ -72,7 +72,7 @@ public:
 	 * @brief constructor
 	 * @param name module's name
 	 */
-	explicit BusCtrl(sc_core::sc_module_name name);
+	explicit BusCtrl(sc_core::sc_module_name const &name);
 
 	/**
 	 * @brief TLM-2 blocking mechanism
@@ -83,7 +83,6 @@ public:
 			sc_core::sc_time &delay);
 
 private:
-	Log *log;
 
 	bool instr_direct_mem_ptr(tlm::tlm_generic_payload&,
 			tlm::tlm_dmi &dmi_data);

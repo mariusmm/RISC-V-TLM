@@ -9,13 +9,12 @@
 #include "BusCtrl.h"
 
 SC_HAS_PROCESS(BusCtrl);
-BusCtrl::BusCtrl(sc_core::sc_module_name const name) :
+BusCtrl::BusCtrl(sc_core::sc_module_name const &name) :
 		sc_module(name), cpu_instr_socket("cpu_instr_socket"), cpu_data_socket(
 				"cpu_data_socket"), memory_socket("memory_socket"), trace_socket(
 				"trace_socket") {
 	cpu_instr_socket.register_b_transport(this, &BusCtrl::b_transport);
 	cpu_data_socket.register_b_transport(this, &BusCtrl::b_transport);
-	log = Log::getInstance();
 	cpu_instr_socket.register_get_direct_mem_ptr(this,
 			&BusCtrl::instr_direct_mem_ptr);
 	memory_socket.register_invalidate_direct_mem_ptr(this,

@@ -54,7 +54,7 @@ public:
 	 * @param PC   Program Counter initialize value
 	 * @param debug To start debugging
 	 */
-	CPU(sc_core::sc_module_name name, uint32_t PC, bool debug);
+	CPU(sc_core::sc_module_name const &name, uint32_t PC, bool debug);
 
 	/**
 	 * @brief Destructor

@@ -8,7 +8,7 @@
 #include "CPU.h"
 
 SC_HAS_PROCESS(CPU);
-CPU::CPU(sc_core::sc_module_name const name, uint32_t PC, bool debug) :
+CPU::CPU(sc_core::sc_module_name const &name, uint32_t PC, bool debug) :
 		sc_module(name), instr_bus("instr_bus"), default_time(10,
 				sc_core::SC_NS), INSTR(0) {
 	register_bank = new Registers();

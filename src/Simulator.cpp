@@ -30,14 +30,15 @@ bool debug_session = false;
  *
  * @brief Top simulation entity
  */
-SC_MODULE(Simulator) {
-	CPU *cpu;
+class Simulator : sc_core::sc_module {
+public:
+    CPU *cpu;
 	Memory *MainMemory;
 	BusCtrl *Bus;
 	Trace *trace;
 	Timer *timer;
 
-	SC_CTOR(Simulator) {
+	explicit Simulator(sc_core::sc_module_name const &name): sc_module(name) {
 		uint32_t start_PC;
 
 		MainMemory = new Memory("Main_Memory", filename);
