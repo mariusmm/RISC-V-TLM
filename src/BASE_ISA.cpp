@@ -914,7 +914,7 @@ bool BASE_ISA::Exec_FENCE() const {
 
 bool BASE_ISA::Exec_ECALL() const {
 
-	log->SC_log(Log::INFO) << "ECALL" << "\n";
+	log->SC_log(Log::INFO) << "ECALL" << "\n" << std::flush ;
 	std::cout << "\n" << "ECALL Instruction called, stopping simulation"
 			<< "\n";
 	regs->dump();
