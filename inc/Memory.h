@@ -29,9 +29,8 @@ public:
 	// TLM-2 socket, defaults to 32-bits wide, base protocol
 	tlm_utils::simple_target_socket<Memory> socket;
 
-	//enum { SIZE = 0x90000000  };
 	enum {
-		SIZE = 0x10000000
+		SIZE = 0xFFFFFFFF
 	};
 	const sc_core::sc_time LATENCY;
 

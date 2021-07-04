@@ -58,12 +58,6 @@ void Memory::b_transport(tlm::tlm_generic_payload &trans,
 	unsigned char *byt = trans.get_byte_enable_ptr();
 	unsigned int wid = trans.get_streaming_width();
 
-	adr = adr - memory_offset;
-
-	// Obliged to check address range and check for unsupported features,
-	//   i.e. byte enables, streaming, and bursts
-	// Can ignore extensions
-
 	// *********************************************
 	// Generate the appropriate error response
 	// *********************************************
@@ -168,8 +162,8 @@ void Memory::readHexFile(std::string const& filename) {
 				  uint32_t address;
 					byte_count = std::stoi(line.substr(1, 2), nullptr, 16);
 					address = std::stoi(line.substr(3, 4), nullptr, 16);
-					address = address + extended_address;
-					//cout << "00 address 0x" << hex << address << endl;
+					address = address + extended_address + memory_offset;
+
 					for (int i = 0; i < byte_count; i++) {
 						mem[address + i] = stol(line.substr(9 + (i * 2), 2),
 								nullptr, 16);
@@ -191,8 +185,8 @@ void Memory::readHexFile(std::string const& filename) {
 				} else if (line.substr(7, 2) == "04") {
 					/* Start segment address */
 					memory_offset = stol(line.substr(9, 4), nullptr, 16) << 16;
-					extended_address = 0;
-					std::cout << "04 address set to 0x" << std::hex
+                    extended_address = 0;
+                    std::cout << "04 address set to 0x" << std::hex
 							<< extended_address << std::dec << std::endl;
 					std::cout << "04 offset set to 0x" << std::hex
 							<< memory_offset << std::dec << std::endl;
