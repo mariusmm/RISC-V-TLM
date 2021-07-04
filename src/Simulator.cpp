@@ -22,6 +22,9 @@
 
 std::string filename;
 bool debug_session = false;
+bool mem_dump = false;
+uint32_t dump_addr_st = 0;
+uint32_t dump_addr_end = 0;
 
 /**
  * @class Simulator
@@ -65,12 +68,50 @@ public:
 	}
 
 	~Simulator() override {
+	    if (mem_dump) {
+            MemoryDump();
+        }
 		delete MainMemory;
 		delete cpu;
 		delete Bus;
 		delete trace;
 		delete timer;
 	}
+
+private:
+    void MemoryDump() {
+	    std::cout << "********** MEMORY DUMP ***********\n";
+        tlm::tlm_generic_payload trans;
+        tlm::tlm_dmi dmi_data;
+        sc_core::sc_time delay;
+        uint32_t data[4];
+
+        trans.set_command(tlm::TLM_READ_COMMAND);
+        trans.set_data_ptr(reinterpret_cast<unsigned char*>(data));
+        trans.set_data_length(4);
+        trans.set_streaming_width(4); // = data_length to indicate no streaming
+        trans.set_byte_enable_ptr(nullptr); // 0 indicates unused
+        trans.set_dmi_allowed(false); // Mandatory initial value
+        trans.set_response_status(tlm::TLM_INCOMPLETE_RESPONSE);
+
+        /* Filename in format name.elf.hex should be name.signature_output */
+        std::string base_filename = filename.substr(filename.find_last_of("/\\") + 1);
+        std::string base_name = base_filename.substr(0, base_filename.find('.'));
+        std::string local_name = base_name + ".signature.output";
+        std::cout << "filename is " << local_name << '\n';
+
+        std::ofstream signature_file;
+        signature_file.open(local_name);
+
+        for(unsigned int i = dump_addr_st; i < dump_addr_end; i = i+4) {
+            //trans.set_address(dump_addr + (i*4));
+            trans.set_address(i);
+            MainMemory->b_transport(trans, delay);
+            signature_file << std::hex << std::setfill('0') << std::setw(8) << data[0] <<  "\n";
+        }
+
+        signature_file.close();
+       }
 };
 
 Simulator *top;
@@ -93,11 +134,20 @@ void process_arguments(int argc, char *argv[]) {
 
 	debug_session = false;
 
-	while ((c = getopt(argc, argv, "DL:f:?")) != -1) {
+	while ((c = getopt(argc, argv, "DTE:B:L:f:?")) != -1) {
 		switch (c) {
 		case 'D':
 			debug_session = true;
 			break;
+        case 'T':
+            mem_dump = true;
+            break;
+        case 'B':
+            dump_addr_st = std::strtoul (optarg, 0, 16);
+            break;
+        case 'E':
+            dump_addr_end = std::strtoul(optarg, 0, 16);
+            break;
 		case 'L':
 			debug_level = std::atoi(optarg);
 
@@ -162,8 +212,11 @@ int sc_main(int argc, char *argv[]) {
 
 	std::cout << "Total elapsed time: " << elapsed_seconds.count() << "s" << std::endl;
 	std::cout << "Simulated " << int(std::round(instructions)) << " instr/sec" << std::endl;
-	std::cout << "Press Enter to finish" << std::endl;
-	std::cin.ignore();
+
+	if (!mem_dump) {
+        std::cout << "Press Enter to finish" << std::endl;
+        std::cin.ignore();
+    }
 
 	// call all destructors, clean exit.
 	delete top;
