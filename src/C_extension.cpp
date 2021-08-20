@@ -280,7 +280,7 @@ bool C_extension::Exec_C_ADDI16SP() {
 		rd = get_rd();
 		imm = get_imm_LUI();
 		regs->setValue(rd, imm);
-		log->SC_log(Log::INFO) << std::dec << "C.LUI x" << rd << " <- 0x"
+		log->SC_log(Log::INFO) << std::dec << "C.LUI: x" << rd << " <- 0x"
 				<< std::hex << imm << "\n";
 	}
 
