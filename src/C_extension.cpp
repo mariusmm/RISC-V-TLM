@@ -668,7 +668,7 @@ bool C_extension::Exec_C_JAL(int m_rd) {
 
 bool C_extension::Exec_C_EBREAK() {
 
-	log->SC_log(Log::INFO) << "C.EBREAK" << "\n";
+	log->SC_log(Log::INFO) << "C.EBREAK" << "\n"  << std::flush;
 	std::cout << "\n" << "C.EBRAK  Instruction called, dumping information"
 			<< "\n";
 	regs->dump();
