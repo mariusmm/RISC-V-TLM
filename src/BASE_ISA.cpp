@@ -91,7 +91,7 @@ bool BASE_ISA::Exec_LUI() const {
 	regs->setValue(rd, static_cast<int32_t>(imm));
 
 	if (log->getLogLevel() >= Log::INFO) {
-		log->SC_log(Log::INFO) << "LUI x" << std::dec << rd << " <- 0x" << std::hex
+		log->SC_log(Log::INFO) << "LUI: x" << std::dec << rd << " <- 0x" << std::hex
 			<< imm << "\n";
 	}
 
@@ -110,7 +110,7 @@ bool BASE_ISA::Exec_AUIPC() const {
 	regs->setValue(rd, new_pc);
 
 	if (log->getLogLevel() >= Log::INFO) {
-		log->SC_log(Log::INFO) << "AUIPC x" << std::dec << rd << " <- 0x"
+		log->SC_log(Log::INFO) << "AUIPC: x" << std::dec << rd << " <- 0x"
 			<< std::hex << imm << " + PC (0x" << new_pc << ")" << "\n";
 	}
 
@@ -188,7 +188,7 @@ bool BASE_ISA::Exec_BEQ() const {
 	}
 
 	if (log->getLogLevel() >= Log::INFO) {
-		log->SC_log(Log::INFO) << "BEQ x" << std::dec << rs1 << "(0x" << std::hex
+		log->SC_log(Log::INFO) << "BEQ: x" << std::dec << rs1 << "(0x" << std::hex
 			<< regs->getValue(rs1) << ") == x" << std::dec << rs2 << "(0x"
 			<< std::hex << regs->getValue(rs2) << ")? -> PC (0x" << std::hex
 			<< new_pc << ")" << std::dec << "\n";
@@ -241,7 +241,7 @@ bool BASE_ISA::Exec_BLT() const {
 	}
 
 	if (log->getLogLevel() >= Log::INFO) {
-		log->SC_log(Log::INFO) << "BLT x" << std::dec << rs1 << "(0x" << std::hex
+		log->SC_log(Log::INFO) << "BLT: x" << std::dec << rs1 << "(0x" << std::hex
 			<< (int32_t) regs->getValue(rs1) << ") < x" << std::dec << rs2
 			<< "(0x" << std::hex << (int32_t) regs->getValue(rs2)
 			<< ")? -> PC (0x" << std::hex << new_pc << ")" << std::dec
@@ -266,7 +266,7 @@ bool BASE_ISA::Exec_BGE() const {
 	}
 
 	if (log->getLogLevel() >= Log::INFO) {
-		log->SC_log(Log::INFO) << "BGE x" << std::dec << rs1 << "(0x" << std::hex
+		log->SC_log(Log::INFO) << "BGE: x" << std::dec << rs1 << "(0x" << std::hex
 			<< (int32_t) regs->getValue(rs1) << ") > x" << std::dec << rs2
 			<< "(0x" << std::hex << (int32_t) regs->getValue(rs2)
 			<< ")? -> PC (0x" << std::hex << new_pc << ")" << std::dec
@@ -292,7 +292,7 @@ bool BASE_ISA::Exec_BLTU() const {
 	}
 
 	if (log->getLogLevel() >= Log::INFO) {
-		log->SC_log(Log::INFO) << "BLTU x" << std::dec << rs1 << "(0x" << std::hex
+		log->SC_log(Log::INFO) << "BLTU: x" << std::dec << rs1 << "(0x" << std::hex
 			<< regs->getValue(rs1) << ") < x" << std::dec << rs2 << "(0x"
 			<< std::hex << regs->getValue(rs2) << ")? -> PC (0x" << std::hex
 			<< new_pc << ")" << std::dec << "\n";
@@ -316,7 +316,7 @@ bool BASE_ISA::Exec_BGEU() const {
 	}
 
 	if (log->getLogLevel() >= Log::INFO) {
-		log->SC_log(Log::INFO) << "BGEU x" << std::dec << rs1 << "(0x" << std::hex
+		log->SC_log(Log::INFO) << "BGEU: x" << std::dec << rs1 << "(0x" << std::hex
 			<< regs->getValue(rs1) << ") > x" << std::dec << rs2 << "(0x"
 			<< std::hex << regs->getValue(rs2) << ")? -> PC (0x" << std::hex
 			<< new_pc << ")" << std::dec << "\n";
