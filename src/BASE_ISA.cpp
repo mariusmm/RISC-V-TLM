@@ -141,7 +141,7 @@ bool BASE_ISA::Exec_JAL() const {
 	return true;
 }
 
-bool BASE_ISA::Exec_JALR() const {
+bool BASE_ISA::Exec_JALR() {
 	uint32_t mem_addr = 0;
 	int rd, rs1;
 	int new_pc, old_pc;
@@ -154,12 +154,21 @@ bool BASE_ISA::Exec_JALR() const {
 	regs->setValue(rd, old_pc + 4);
 
 	new_pc = static_cast<int32_t>((regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE);
-	regs->setPC(new_pc);
 
-	if (log->getLogLevel() >= Log::INFO) {
-		log->SC_log(Log::INFO) << "JALR: x" << std::dec << rd << " <- 0x"
-			<< std::hex << old_pc + 4 << " PC <- 0x" << new_pc << "\n";
-	}
+	if( (new_pc & 0x00000003) != 0) {
+	    // not aligned
+        log->SC_log(Log::ERROR) << "JALR: x" << std::dec << rd << " <- 0x"
+                               << std::hex << old_pc + 4 << " PC <- 0x" << new_pc << "\n";
+	    log->SC_log(Log::ERROR) << "JALR : Exception\n";
+        RaiseException(EXCEPTION_CAUSE_LOAD_ADDR_MISALIGN, m_instr);
+	} else {
+        regs->setPC(new_pc);
+
+        if (log->getLogLevel() >= Log::INFO) {
+            log->SC_log(Log::INFO) << "JALR: x" << std::dec << rd << " <- 0x"
+                                   << std::hex << old_pc + 4 << " PC <- 0x" << new_pc << "\n";
+        }
+    }
 	return true;
 }
 
@@ -912,7 +921,7 @@ bool BASE_ISA::Exec_FENCE() const {
 	return true;
 }
 
-bool BASE_ISA::Exec_ECALL() const {
+bool BASE_ISA::Exec_ECALL()  {
 
 	log->SC_log(Log::INFO) << "ECALL" << "\n" << std::flush ;
 	std::cout << "\n" << "ECALL Instruction called, stopping simulation"
@@ -921,6 +930,7 @@ bool BASE_ISA::Exec_ECALL() const {
 	std::cout << "Simulation time " << sc_core::sc_time_stamp() << "\n";
 	perf->dump();
 
+#if 0
 	uint32_t gp_value = regs->getValue(Registers::gp);
 	if (gp_value == 1) {
 		std::cout << "GP value is 1, test result is OK" << "\n";
@@ -929,22 +939,24 @@ bool BASE_ISA::Exec_ECALL() const {
 	}
 
 	sc_core::sc_stop();
-
+#else
+    RaiseException(11, m_instr);
+#endif
 	return true;
 }
 
 bool BASE_ISA::Exec_EBREAK() {
 
-	log->SC_log(Log::INFO) << "EBREAK" << "\n";
-	std::cout << "\n" << "EBRAK  Instruction called, dumping information"
+	log->SC_log(Log::INFO) << "EBREAK" << "\n"  << std::flush;
+	std::cout << "\n" << "EBREAK Instruction called, dumping information"
 			<< "\n";
 	regs->dump();
 	std::cout << "Simulation time " << sc_core::sc_time_stamp() << "\n";
 	perf->dump();
 
-	sc_core::sc_stop();
+    RaiseException(11, m_instr);
 
-	return true;
+	return false;
 }
 
 bool BASE_ISA::Exec_CSRRW() const {
@@ -1295,9 +1307,8 @@ bool BASE_ISA::process_instruction(Instruction *inst, bool *breakpoint) {
 		std::cout << "ECALL" << std::endl;
 		break;
 	case OP_EBREAK:
-		Exec_EBREAK();
-		*breakpoint = true;
-		std::cout << "EBREAK" << std::endl;
+        PC_not_affected = Exec_EBREAK();
+//		*breakpoint = true;
 		break;
 	case OP_CSRRW:
 		Exec_CSRRW();
