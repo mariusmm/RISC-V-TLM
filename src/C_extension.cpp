@@ -244,7 +244,7 @@ bool C_extension::Exec_C_ADDI4SPN() {
 		return false;
 	}
 
-	calc = regs->getValue(rs1) + imm;
+	calc = static_cast<int32_t>(regs->getValue(rs1)) + imm;
 	regs->setValue(rd, calc);
 
 	if (log->getLogLevel() >= Log::INFO) {
@@ -269,7 +269,7 @@ bool C_extension::Exec_C_ADDI16SP() {
 		rs1 = 2;
 		imm = get_imm_ADDI16SP();
 
-		calc = regs->getValue(rs1) + imm;
+		calc = static_cast<int32_t>(regs->getValue(rs1)) + imm;
 		regs->setValue(rd, calc);
 
 		log->SC_log(Log::INFO) << std::dec << "C.ADDI16SP: x" << rs1 << " + "
@@ -372,7 +372,7 @@ bool C_extension::Exec_C_LI() {
 	rs1 = 0;
 	imm = get_imm_ADDI();
 
-	calc = regs->getValue(rs1) + imm;
+	calc = static_cast<int32_t>(regs->getValue(rs1)) + imm;
 	regs->setValue(rd, calc);
 
 	if (log->getLogLevel() >= Log::INFO) {
@@ -557,7 +557,7 @@ bool C_extension::Exec_C_ADDI() const {
 	rs1 = rd;
 	imm = get_imm_ADDI();
 
-	calc = regs->getValue(rs1) + imm;
+	calc = static_cast<int32_t>(regs->getValue(rs1)) + imm;
 	regs->setValue(rd, calc);
 
 	if (log->getLogLevel() >= Log::INFO) {

@@ -52,8 +52,8 @@ bool M_extension::Exec_M_MUL() const {
 	rs1 = get_rs1();
 	rs2 = get_rs2();
 
-	multiplier = regs->getValue(rs1);
-	multiplicand = regs->getValue(rs2);
+	multiplier = static_cast<int32_t>(regs->getValue(rs1));
+	multiplicand = static_cast<int32_t>(regs->getValue(rs2));
 
 	result = (int64_t) multiplier * multiplicand;
 	result = result & 0x00000000FFFFFFFF;
@@ -75,8 +75,8 @@ bool M_extension::Exec_M_MULH() const {
 	rs1 = get_rs1();
 	rs2 = get_rs2();
 
-	multiplier = regs->getValue(rs1);
-	multiplicand = regs->getValue(rs2);
+	multiplier = static_cast<int32_t>(regs->getValue(rs1));
+	multiplicand = static_cast<int32_t>(regs->getValue(rs2));
 
 	result = (int64_t) multiplier * (int64_t) multiplicand;
 
@@ -99,7 +99,7 @@ bool M_extension::Exec_M_MULHSU() const {
 	rs1 = get_rs1();
 	rs2 = get_rs2();
 
-	multiplier = regs->getValue(rs1);
+	multiplier = static_cast<int32_t>(regs->getValue(rs1));
 	multiplicand = regs->getValue(rs2);
 
 	result = static_cast<int64_t>(multiplier * (uint64_t) multiplicand);
@@ -122,8 +122,8 @@ bool M_extension::Exec_M_MULHU() const {
 	rs1 = get_rs1();
 	rs2 = get_rs2();
 
-	multiplier = (uint32_t) regs->getValue(rs1);
-	multiplicand = (uint32_t) regs->getValue(rs2);
+	multiplier =  static_cast<int32_t>(regs->getValue(rs1));
+	multiplicand = static_cast<int32_t>(regs->getValue(rs2));
 
 	result = (uint64_t) multiplier * (uint64_t) multiplicand;
 	ret_value = static_cast<int32_t>((result >> 32) & 0x00000000FFFFFFFF);
@@ -144,8 +144,8 @@ bool M_extension::Exec_M_DIV() const {
 	rs1 = get_rs1();
 	rs2 = get_rs2();
 
-	dividend = regs->getValue(rs1);
-	divisor = regs->getValue(rs2);
+	dividend = static_cast<int32_t>(regs->getValue(rs1));
+	divisor = static_cast<int32_t>(regs->getValue(rs2));
 
 	if (divisor == 0) {
 		result = -1;
@@ -200,8 +200,8 @@ bool M_extension::Exec_M_REM() const {
 	rs1 = get_rs1();
 	rs2 = get_rs2();
 
-	dividend = regs->getValue(rs1);
-	divisor = regs->getValue(rs2);
+	dividend = static_cast<int32_t>(regs->getValue(rs1));
+	divisor = static_cast<int32_t>(regs->getValue(rs2));
 
 	if (divisor == 0) {
 		result = dividend;
@@ -228,8 +228,8 @@ bool M_extension::Exec_M_REMU() const {
 	rs1 = get_rs1();
 	rs2 = get_rs2();
 
-	dividend = regs->getValue(rs1);
-	divisor = regs->getValue(rs2);
+	dividend = static_cast<int32_t>(regs->getValue(rs1));
+	divisor = static_cast<int32_t>(regs->getValue(rs2));
 
 	if (divisor == 0) {
 		result = dividend;

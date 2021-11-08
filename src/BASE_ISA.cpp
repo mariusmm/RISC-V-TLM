@@ -84,7 +84,7 @@ enum Codes {
 
 bool BASE_ISA::Exec_LUI() const {
 	int rd;
-	uint32_t imm = 0;
+	uint32_t imm;
 
 	rd = get_rd();
 	imm = get_imm_U() << 12;
@@ -100,7 +100,7 @@ bool BASE_ISA::Exec_LUI() const {
 
 bool BASE_ISA::Exec_AUIPC() const {
 	int rd;
-	uint32_t imm = 0;
+	uint32_t imm;
 	int new_pc;
 
 	rd = get_rd();
@@ -118,7 +118,7 @@ bool BASE_ISA::Exec_AUIPC() const {
 }
 
 bool BASE_ISA::Exec_JAL() const {
-	int32_t mem_addr = 0;
+	int32_t mem_addr;
 	int rd;
 	int new_pc, old_pc;
 
@@ -142,7 +142,7 @@ bool BASE_ISA::Exec_JAL() const {
 }
 
 bool BASE_ISA::Exec_JALR() {
-	uint32_t mem_addr = 0;
+	uint32_t mem_addr;
 	int rd, rs1;
 	int new_pc, old_pc;
 
@@ -174,7 +174,7 @@ bool BASE_ISA::Exec_JALR() {
 
 bool BASE_ISA::Exec_BEQ() const {
 	int rs1, rs2;
-	int new_pc = 0;
+	int new_pc;
 
 	rs1 = get_rs1();
 	rs2 = get_rs2();
@@ -199,7 +199,7 @@ bool BASE_ISA::Exec_BEQ() const {
 
 bool BASE_ISA::Exec_BNE() const {
 	int rs1, rs2;
-	int new_pc = 0;
+	int new_pc;
 	uint32_t val1, val2;
 
 	rs1 = get_rs1();
@@ -278,7 +278,7 @@ bool BASE_ISA::Exec_BGE() const {
 
 bool BASE_ISA::Exec_BLTU() const {
 	int rs1, rs2;
-	int new_pc = 0;
+	int new_pc;
 
 	rs1 = get_rs1();
 	rs2 = get_rs2();
@@ -326,9 +326,9 @@ bool BASE_ISA::Exec_BGEU() const {
 }
 
 bool BASE_ISA::Exec_LB() const {
-	uint32_t mem_addr = 0;
+	uint32_t mem_addr ;
 	int rd, rs1;
-	int32_t imm = 0;
+	int32_t imm;
 	int8_t data;
 
 	rd = get_rd();
@@ -349,9 +349,9 @@ bool BASE_ISA::Exec_LB() const {
 }
 
 bool BASE_ISA::Exec_LH() const {
-	uint32_t mem_addr = 0;
+	uint32_t mem_addr ;
 	int rd, rs1;
-	int32_t imm = 0;
+	int32_t imm;
 	int16_t data;
 
 	rd = get_rd();
@@ -372,9 +372,9 @@ bool BASE_ISA::Exec_LH() const {
 }
 
 bool BASE_ISA::Exec_LW() const {
-	uint32_t mem_addr = 0;
+	uint32_t mem_addr;
 	int rd, rs1;
-	int32_t imm = 0;
+	int32_t imm;
 	uint32_t data;
 
 	rd = get_rd();
@@ -396,9 +396,9 @@ bool BASE_ISA::Exec_LW() const {
 }
 
 bool BASE_ISA::Exec_LBU() const {
-	uint32_t mem_addr = 0;
+	uint32_t mem_addr;
 	int rd, rs1;
-	int32_t imm = 0;
+	int32_t imm;
 	uint8_t data;
 
 	rd = get_rd();
@@ -418,9 +418,9 @@ bool BASE_ISA::Exec_LBU() const {
 }
 
 bool BASE_ISA::Exec_LHU() const {
-	uint32_t mem_addr = 0;
+	uint32_t mem_addr;
 	int rd, rs1;
-	int32_t imm = 0;
+	int32_t imm;
 	uint16_t data;
 
 	rd = get_rd();
@@ -443,9 +443,9 @@ bool BASE_ISA::Exec_LHU() const {
 }
 
 bool BASE_ISA::Exec_SB() const {
-	uint32_t mem_addr = 0;
+	uint32_t mem_addr;
 	int rs1, rs2;
-	int32_t imm = 0;
+	int32_t imm;
 	uint32_t data;
 
 	rs1 = get_rs1();
@@ -468,9 +468,9 @@ bool BASE_ISA::Exec_SB() const {
 }
 
 bool BASE_ISA::Exec_SH() const {
-	uint32_t mem_addr = 0;
+	uint32_t mem_addr;
 	int rs1, rs2;
-	int32_t imm = 0;
+	int32_t imm;
 	uint32_t data;
 
 	rs1 = get_rs1();
@@ -493,9 +493,9 @@ bool BASE_ISA::Exec_SH() const {
 }
 
 bool BASE_ISA::Exec_SW() const {
-	uint32_t mem_addr = 0;
+	uint32_t mem_addr;
 	int rs1, rs2;
-	int32_t imm = 0;
+	int32_t imm;
 	uint32_t data;
 
 	rs1 = get_rs1();
@@ -518,14 +518,14 @@ bool BASE_ISA::Exec_SW() const {
 
 bool BASE_ISA::Exec_ADDI() const {
 	int rd, rs1;
-	int32_t imm = 0;
+	int32_t imm;
 	int32_t calc;
 
 	rd = get_rd();
 	rs1 = get_rs1();
 	imm = get_imm_I();
 
-	calc = regs->getValue(rs1) + imm;
+	calc = static_cast<int32_t>(regs->getValue(rs1)) + imm;
 	regs->setValue(rd, calc);
 
 	if (log->getLogLevel() >= Log::INFO) {
@@ -545,7 +545,7 @@ bool BASE_ISA::Exec_SLTI() const {
 	rs1 = get_rs1();
 	imm = get_imm_I();
 
-	if (regs->getValue(rs1) < imm) {
+	if (static_cast<int32_t>(regs->getValue(rs1)) < imm) {
 		regs->setValue(rd, 1);
 		log->SC_log(Log::INFO) << "SLTI: x" << rs1 << " < " << imm << " => "
 				<< "1 -> x" << rd << "\n";
@@ -704,7 +704,7 @@ bool BASE_ISA::Exec_SRAI() const {
 
 	shift = rs2 & 0x1F;
 
-	calc = regs->getValue(rs1) >> shift;
+	calc = static_cast<int32_t>(regs->getValue(rs1)) >> shift;
 	regs->setValue(rd, calc);
 
 	if (log->getLogLevel() >= Log::INFO) {
@@ -866,7 +866,7 @@ bool BASE_ISA::Exec_SRA() const {
 
 	shift = regs->getValue(rs2) & 0x1F;
 
-	calc = regs->getValue(rs1) >> shift;
+	calc = static_cast<int32_t>(regs->getValue(rs1)) >> shift;
 	regs->setValue(rd, calc);
 
 	if (log->getLogLevel() >= Log::INFO) {

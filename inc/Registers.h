@@ -197,7 +197,7 @@ public:
 	 * @param  reg_num register number
 	 * @return         register value
 	 */
-	int32_t getValue(int reg_num);
+	uint32_t getValue(int reg_num);
 
 	/**
 	 * Returns PC value
@@ -245,7 +245,7 @@ private:
 	/**
 	 * bank of registers (32 regs of 32bits each)
 	 */
-	std::array<unsigned int, 32> register_bank = { {0} };
+	std::array<uint32_t, 32> register_bank = { {0} };
 
 	/**
 	 * Program counter (32 bits width)

@@ -108,7 +108,7 @@ void Registers::setValue(int reg_num, int32_t value) {
 	}
 }
 
-int32_t Registers::getValue(int reg_num) {
+uint32_t Registers::getValue(int reg_num) {
 	if ((reg_num >= 0) && (reg_num < 32)) {
 		perf->registerRead();
 		return register_bank[reg_num];
