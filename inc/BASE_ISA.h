@@ -271,7 +271,7 @@ public:
 	bool Exec_AUIPC() const;
 
 	bool Exec_JAL() const;
-	bool Exec_JALR() const;
+	bool Exec_JALR();
 
 	bool Exec_BEQ() const;
 	bool Exec_BNE() const;
@@ -315,7 +315,7 @@ public:
 	bool Exec_AND() const;
 
 	bool Exec_FENCE() const;
-	bool Exec_ECALL() const;
+	bool Exec_ECALL();
 	bool Exec_EBREAK();
 
 	bool Exec_CSRRW() const;
