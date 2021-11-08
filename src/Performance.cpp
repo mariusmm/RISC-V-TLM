@@ -27,6 +27,7 @@ Performance::Performance() {
 }
 
 void Performance::dump() const {
+    std::cout << "************************************" << std::endl;
 	std::cout << std::dec << "# data memory reads: " << data_memory_read
 			<< std::endl;
 	std::cout << "# data memory writes: " << data_memory_write << std::endl;
@@ -36,6 +37,7 @@ void Performance::dump() const {
 	std::cout << "# registers write: " << register_write << std::endl;
 	std::cout << "# instructions executed: " << instructions_executed
 			<< std::endl;
+    std::cout << "************************************" << std::endl;
 }
 
 Performance *Performance::instance = nullptr;
