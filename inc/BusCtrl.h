@@ -32,6 +32,8 @@
 #define TIMERCMP_MEMORY_ADDRESS_LO 0x40004008
 #define TIMERCMP_MEMORY_ADDRESS_HI 0x4000400C
 
+#define TO_HOST_ADDRESS 0x90000000
+
 /**
  * @brief Simple bus controller
  *
@@ -87,6 +89,8 @@ private:
 	bool instr_direct_mem_ptr(tlm::tlm_generic_payload&,
 			tlm::tlm_dmi &dmi_data);
 	void invalidate_direct_mem_ptr(sc_dt::uint64 start, sc_dt::uint64 end);
+
+    Log *log;
 };
 
 #endif
