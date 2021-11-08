@@ -49,18 +49,12 @@ void extension_base::RaiseException(uint32_t cause, uint32_t inst) {
 	regs->setPC(new_pc);
 
 	log->SC_log(Log::ERROR) << "Exception! new PC 0x" << std::hex << new_pc
-			<< std::endl;
-
-	regs->dump();
-	std::cout << "Simulation time " << sc_core::sc_time_stamp() << std::endl;
-	perf->dump();
-
-	sc_core::sc_stop();
+			<< std::endl << std::flush;;
 }
 
 bool extension_base::NOP() {
 
 	log->SC_log(Log::INFO) << "NOP" << "\n";
-
+    sc_core::sc_stop();
 	return true;
 }
