@@ -44,8 +44,6 @@ void Timer::b_transport(tlm::tlm_generic_payload &trans,
 	sc_dt::uint64 addr = trans.get_address();
 	unsigned char *ptr = trans.get_data_ptr();
 	unsigned int len = trans.get_data_length();
-	//unsigned char*   byt = trans.get_byte_enable_ptr();
-	//unsigned int     wid = trans.get_streaming_width();
 	delay = sc_core::SC_ZERO_TIME;
 
 	uint32_t aux_value = 0;
