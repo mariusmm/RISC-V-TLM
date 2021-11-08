@@ -13,7 +13,7 @@ before_install:
  
 install:
  - cd ..
- - wget http://www.accellera.org/images/downloads/standards/systemc/systemc-2.3.2.tar.gz
+ - wget --no-check-certificate http://www.accellera.org/images/downloads/standards/systemc/systemc-2.3.2.tar.gz
  - tar xfvz systemc-2.3.2.tar.gz
  - cd systemc-2.3.2
  - mkdir build && cd build
