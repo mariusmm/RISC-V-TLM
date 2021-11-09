@@ -65,7 +65,7 @@ private:
 	/**
 	 * @brief Memory array in bytes
 	 */
-	uint8_t *mem;
+    std::array<uint8_t, Memory::SIZE> mem{};
 
 	/**
 	 * @brief Log class

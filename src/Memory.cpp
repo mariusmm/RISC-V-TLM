@@ -16,9 +16,6 @@ Memory::Memory(sc_core::sc_module_name const &name, std::string const &filename)
 	socket.register_get_direct_mem_ptr(this, &Memory::get_direct_mem_ptr);
 	socket.register_transport_dbg(this, &Memory::transport_dbg);
 
-	mem = new uint8_t[SIZE];
-	//memset(mem, 0, SIZE*sizeof(uint8_t));
-
 	memory_offset = 0;
     program_counter = 0;
 	readHexFile(filename);
@@ -35,15 +32,11 @@ Memory::Memory(sc_core::sc_module_name const& name) :
 	memory_offset = 0;
 	program_counter = 0;
 
-	mem = new uint8_t[SIZE];
-
 	log = Log::getInstance();
 	log->SC_log(Log::INFO) << "Memory instantiated without file" << std::endl;
 }
 
-Memory::~Memory() {
-	delete[] mem;
-}
+Memory::~Memory() = default;
 
 uint32_t Memory::getPCfromHEX() {
 	return program_counter;
@@ -61,7 +54,7 @@ void Memory::b_transport(tlm::tlm_generic_payload &trans,
 	// *********************************************
 	// Generate the appropriate error response
 	// *********************************************
-	if (adr >= sc_dt::uint64(SIZE)) {
+	if (adr >= sc_dt::uint64(Memory::SIZE)) {
 		trans.set_response_status(tlm::TLM_ADDRESS_ERROR_RESPONSE);
 		return;
 	}
@@ -76,10 +69,11 @@ void Memory::b_transport(tlm::tlm_generic_payload &trans,
 
 
 	// Obliged to implement read and write commands
-	if (cmd == tlm::TLM_READ_COMMAND)
-		memcpy(ptr, &mem[adr], len);
-	else if (cmd == tlm::TLM_WRITE_COMMAND)
-		memcpy(&mem[adr], ptr, len);
+	if (cmd == tlm::TLM_READ_COMMAND) {
+        std::copy_n(mem.cbegin() + adr, len, ptr);
+    } else if (cmd == tlm::TLM_WRITE_COMMAND) {
+        std::copy_n(ptr, len, mem.begin() + adr);
+    }
 
 	// Illustrates that b_transport may block
 	//sc_core::wait(delay);
@@ -116,7 +110,7 @@ bool Memory::get_direct_mem_ptr(tlm::tlm_generic_payload &trans,
 	// Set other details of DMI region
 	dmi_data.set_dmi_ptr(reinterpret_cast<unsigned char*>(&mem[0]));
 	dmi_data.set_start_address(0);
-	dmi_data.set_end_address(SIZE * 4 - 1);
+	dmi_data.set_end_address(Memory::SIZE * 4 - 1);
 	dmi_data.set_read_latency(LATENCY);
 	dmi_data.set_write_latency(LATENCY);
 
@@ -129,18 +123,19 @@ unsigned int Memory::transport_dbg(tlm::tlm_generic_payload &trans) {
 	unsigned char *ptr = trans.get_data_ptr();
 	unsigned int len = trans.get_data_length();
 
-	if (adr >= sc_dt::uint64(SIZE)) {
+	if (adr >= sc_dt::uint64(Memory::SIZE)) {
 		trans.set_response_status(tlm::TLM_ADDRESS_ERROR_RESPONSE);
 		return 0;
 	}
 
 	// Calculate the number of bytes to be actually copied
-	unsigned int num_bytes = (len < (SIZE - adr) * 4) ? len : (SIZE - adr) * 4;
+	unsigned int num_bytes = (len < (Memory::SIZE - adr) * 4) ? len : (Memory::SIZE - adr) * 4;
 
-	if (cmd == tlm::TLM_READ_COMMAND)
-		memcpy(ptr, &mem[adr], num_bytes);
-	else if (cmd == tlm::TLM_WRITE_COMMAND)
-		memcpy(&mem[adr], ptr, num_bytes);
+	if (cmd == tlm::TLM_READ_COMMAND) {
+        std::copy_n(mem.cbegin() + adr, len, ptr);
+    } else if (cmd == tlm::TLM_WRITE_COMMAND) {
+        std::copy_n(ptr, len, mem.begin() + adr);
+    }
 
 	return num_bytes;
 }
