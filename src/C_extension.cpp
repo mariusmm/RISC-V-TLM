@@ -325,7 +325,7 @@ bool C_extension::Exec_C_BEQZ() {
 		new_pc = static_cast<int32_t>(regs->getPC()) + get_imm_CB();
 		regs->setPC(new_pc);
 	} else {
-		regs->incPC(true); //PC <- PC + 2
+		regs->incPCby2();
 		new_pc = static_cast<int32_t>(regs->getPC());
 	}
 
@@ -350,7 +350,7 @@ bool C_extension::Exec_C_BNEZ() {
 		new_pc = static_cast<int32_t>(regs->getPC()) + get_imm_CB();
 		regs->setPC(new_pc);
 	} else {
-		regs->incPC(true); //PC <- PC +2
+		regs->incPCby2(); //PC <- PC +2
 		new_pc = static_cast<int32_t>(regs->getPC());
 	}
 

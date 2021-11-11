@@ -114,8 +114,6 @@ bool CPU::cpu_process_IRQ() {
 }
 
 bool CPU::CPU_step() {
-
-	bool incPCby2 = false;
 	bool PC_not_affected = false;
 
 	/* Get new PC value */
@@ -142,7 +140,6 @@ bool CPU::CPU_step() {
 	}
 
 	perf->codeMemoryRead();
-
 	log->SC_log(Log::INFO) << "PC: 0x" << std::hex << register_bank->getPC()
 			<< ". ";
 
@@ -153,20 +150,28 @@ bool CPU::CPU_step() {
 	switch (inst->check_extension()) {
 	[[likely]] case BASE_EXTENSION:
 		PC_not_affected = exec->process_instruction(inst, &breakpoint);
-		incPCby2 = false;
+        if (PC_not_affected) {
+            register_bank->incPC();
+        }
 		break;
 	case C_EXTENSION:
 		PC_not_affected = c_inst->process_instruction(inst, &breakpoint);
-		incPCby2 = true;
+        if (PC_not_affected) {
+            register_bank->incPCby2();
+        }
 		break;
 	case M_EXTENSION:
 		PC_not_affected = m_inst->process_instruction(inst);
-		incPCby2 = false;
+        if (PC_not_affected) {
+            register_bank->incPC();
+        }
 		break;
 	case A_EXTENSION:
 		PC_not_affected = a_inst->process_instruction(inst);
-		incPCby2 = false;
-		break;
+        if (PC_not_affected) {
+            register_bank->incPC();
+        }
+        break;
 	[[unlikely]] default:
 		std::cout << "Extension not implemented yet" << std::endl;
 		inst->dump();
@@ -178,10 +183,6 @@ bool CPU::CPU_step() {
 	}
 
 	perf->instructionsInc();
-
-	if (PC_not_affected) {
-		register_bank->incPC(incPCby2);
-	}
 
 	return breakpoint;
 }

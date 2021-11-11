@@ -9,14 +9,9 @@
 #include "Registers.h"
 
 Registers::Registers() {
-
 	perf = Performance::getInstance();
 
 	initCSR();
-
-	//std::cout << "Memory size: 0x" << std::hex << Memory::SIZE << std::endl;
-	//std::cout << "SP address: 0x" << std::hex << (0x10000000 / 4) - 1 << std::endl;
-
 	register_bank[sp] = Memory::SIZE - 4; // default stack at the end of the memory
 	register_PC = 0x80000000;       // default _start address
 }
@@ -108,7 +103,7 @@ void Registers::setValue(int reg_num, int32_t value) {
 	}
 }
 
-uint32_t Registers::getValue(int reg_num) {
+uint32_t Registers::getValue(int reg_num) const {
 	if ((reg_num >= 0) && (reg_num < 32)) {
 		perf->registerRead();
 		return register_bank[reg_num];
@@ -125,7 +120,7 @@ void Registers::setPC(uint32_t new_pc) {
 	register_PC = new_pc;
 }
 
-uint32_t Registers::getCSR(int csr) {
+uint32_t Registers::getCSR(const int csr)  {
 	uint32_t ret_value;
 
 	switch (csr) {
@@ -156,14 +151,14 @@ uint32_t Registers::getCSR(int csr) {
 				>> 32 & 0x00000000FFFFFFFF);
 		break;
 	[[likely]] default:
-		ret_value = CSR[csr];
+        ret_value = CSR[csr];
 		break;
 	}
 	return ret_value;
 }
 
 void Registers::setCSR(int csr, uint32_t value) {
-	/* @FIXME: rv32mi-p-ma_fetch tests doesn't allow MISA to writable,
+	/* @FIXME: rv32mi-p-ma_fetch tests doesn't allow MISA to be writable,
 	 * but Volume II: Privileged Architecture v1.10 says MISA is writable (?)
 	 */
 	if (csr != CSR_MISA) {

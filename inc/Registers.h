@@ -197,7 +197,7 @@ public:
 	 * @param  reg_num register number
 	 * @return         register value
 	 */
-	uint32_t getValue(int reg_num);
+	uint32_t getValue(int reg_num) const;
 
 	/**
 	 * Returns PC value
@@ -220,8 +220,11 @@ public:
 		} else {
 			register_PC += 4;
 		}
-
 	}
+
+    inline void incPCby2() {
+        register_PC += 2;
+    }
 
 	/**
 	 * @brief Get CSR value
@@ -255,9 +258,7 @@ private:
 	/**
 	 * CSR registers (4096 maximum)
 	 */
-	//uint32_t CSR[4096];
 	std::unordered_map<unsigned int, uint32_t> CSR{0};
-
 
 	Performance *perf;
 
