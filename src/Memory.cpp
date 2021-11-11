@@ -38,7 +38,7 @@ Memory::Memory(sc_core::sc_module_name const& name) :
 
 Memory::~Memory() = default;
 
-uint32_t Memory::getPCfromHEX() {
+std::uint32_t Memory::getPCfromHEX() {
 	return program_counter;
 
 }
@@ -146,14 +146,14 @@ void Memory::readHexFile(std::string const& filename) {
 	hexfile.open(filename);
 
 	if (hexfile.is_open()) {
-		uint32_t extended_address = 0;
+		std::uint32_t extended_address = 0;
 
 		while (getline(hexfile, line)) {
 			if (line[0] == ':') {
 				if (line.substr(7, 2) == "00") {
 					/* Data */
 				  int byte_count;
-				  uint32_t address;
+				  std::uint32_t address;
 					byte_count = std::stoi(line.substr(1, 2), nullptr, 16);
 					address = std::stoi(line.substr(3, 4), nullptr, 16);
 					address = address + extended_address + memory_offset;
@@ -170,7 +170,7 @@ void Memory::readHexFile(std::string const& filename) {
 							<< extended_address << std::dec << std::endl;
 				} else if (line.substr(7, 2) == "03") {
 					/* Start segment address */
-					uint32_t code_segment;
+					std::uint32_t code_segment;
 					code_segment = stol(line.substr(9, 4), nullptr, 16) * 16; /* ? */
 					program_counter = stol(line.substr(13, 4), nullptr, 16);
 					program_counter = program_counter + code_segment;
