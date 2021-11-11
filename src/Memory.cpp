@@ -67,7 +67,6 @@ void Memory::b_transport(tlm::tlm_generic_payload &trans,
 		return;
 	}
 
-
 	// Obliged to implement read and write commands
 	if (cmd == tlm::TLM_READ_COMMAND) {
         std::copy_n(mem.cbegin() + adr, len, ptr);
@@ -97,12 +96,12 @@ void Memory::b_transport(tlm::tlm_generic_payload &trans,
 
 bool Memory::get_direct_mem_ptr(tlm::tlm_generic_payload &trans,
 		tlm::tlm_dmi &dmi_data) {
-  (void) trans;
+
+    (void) trans;
 
 	if (memory_offset != 0) {
 		return false;
 	}
-
 
 	// Permit read and write access
 	dmi_data.allow_read_write();

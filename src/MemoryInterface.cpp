@@ -10,9 +10,7 @@
 
 
 MemoryInterface::MemoryInterface() :
-		data_bus("data_bus") {
-
-}
+		data_bus("data_bus") {}
 
 /**
  * Access data memory to get data
