@@ -91,11 +91,11 @@ public:
 
 	bool process_instruction(Instruction *inst);
 
-	void TLB_reserve(uint32_t address);
-	bool TLB_reserved(uint32_t address);
+	void TLB_reserve(std::uint32_t address);
+	bool TLB_reserved(std::uint32_t address);
 
 private:
-	std::unordered_set<uint32_t> TLB_A_Entries;
+	std::unordered_set<std::uint32_t> TLB_A_Entries;
 };
 
 #endif

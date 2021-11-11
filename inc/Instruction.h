@@ -35,7 +35,7 @@ typedef enum {
 class Instruction {
 public:
 
-	Instruction(uint32_t instr);
+	Instruction(std::uint32_t instr);
 
 	/**
 	 * @brief returns what instruction extension
@@ -43,14 +43,14 @@ public:
 	 */
 	extension_t check_extension() const;
 
-	void setInstr(uint32_t p_instr) {
+	void setInstr(std::uint32_t p_instr) {
 		m_instr = p_instr;
 	}
 	/**
 	 * @brief return instruction
 	 * @return all instruction bits (31:0)
 	 */
-	uint32_t getInstr() {
+	std::uint32_t getInstr() {
 		return m_instr;
 	}
 
@@ -59,7 +59,7 @@ public:
 	}
 
 private:
-	uint32_t m_instr;
+	std::uint32_t m_instr;
 };
 
 #endif

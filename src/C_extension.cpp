@@ -147,14 +147,14 @@ op_C_Codes C_extension::decode() const {
 }
 
 bool C_extension::Exec_C_JR() {
-	uint32_t mem_addr;
+	std::uint32_t mem_addr;
 	int rs1;
 	int new_pc;
 
 	rs1 = get_rs1();
 	mem_addr = 0;
 
-	new_pc = static_cast<int32_t>(static_cast<int32_t>((regs->getValue(rs1)) + static_cast<int32_t>(mem_addr)) & 0xFFFFFFFE);
+	new_pc = static_cast<std::int32_t>(static_cast<std::int32_t>((regs->getValue(rs1)) + static_cast<std::int32_t>(mem_addr)) & 0xFFFFFFFE);
 	regs->setPC(new_pc);
 
 	if (log->getLogLevel() >= Log::INFO) {
@@ -166,14 +166,14 @@ bool C_extension::Exec_C_JR() {
 
 bool C_extension::Exec_C_MV() {
 	int rd, rs1, rs2;
-	uint32_t calc;
+	std::uint32_t calc;
 
 	rd = get_rd();
 	rs1 = 0;
 	rs2 = get_rs2();
 
 	calc = regs->getValue(rs1) + regs->getValue(rs2);
-	regs->setValue(rd, static_cast<int32_t>(calc));
+	regs->setValue(rd, static_cast<std::int32_t>(calc));
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.MV: x" << std::dec << rs1 << "(0x" << std::hex
@@ -187,14 +187,14 @@ bool C_extension::Exec_C_MV() {
 
 bool C_extension::Exec_C_ADD() {
 	int rd, rs1, rs2;
-	uint32_t calc;
+	std::uint32_t calc;
 
 	rd = get_rs1();
 	rs1 = get_rs1();
 	rs2 = get_rs2();
 
 	calc = regs->getValue(rs1) + regs->getValue(rs2);
-	regs->setValue(rd, static_cast<int32_t>(calc));
+	regs->setValue(rd, static_cast<std::int32_t>(calc));
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.ADD: x" << std::dec << rs1 << " + x" << rs2
@@ -205,10 +205,10 @@ bool C_extension::Exec_C_ADD() {
 }
 
 bool C_extension::Exec_C_LWSP() {
-	uint32_t mem_addr;
+	std::uint32_t mem_addr;
 	int rd, rs1;
-	int32_t imm;
-	uint32_t data;
+	std::int32_t imm;
+	std::uint32_t data;
 
 	// lw rd, offset[7:2](x2)
 
@@ -219,7 +219,7 @@ bool C_extension::Exec_C_LWSP() {
 	mem_addr = imm + regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 4);
 	perf->dataMemoryRead();
-	regs->setValue(rd, static_cast<int32_t>(data));
+	regs->setValue(rd, static_cast<std::int32_t>(data));
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.LWSP: x" << std::dec << rs1 << " + " << imm
@@ -232,8 +232,8 @@ bool C_extension::Exec_C_LWSP() {
 
 bool C_extension::Exec_C_ADDI4SPN() {
 	int rd, rs1;
-	int32_t imm;
-	int32_t calc;
+	std::int32_t imm;
+	std::int32_t calc;
 
 	rd = get_rdp();
 	rs1 = 2;
@@ -244,7 +244,7 @@ bool C_extension::Exec_C_ADDI4SPN() {
 		return false;
 	}
 
-	calc = static_cast<int32_t>(regs->getValue(rs1)) + imm;
+	calc = static_cast<std::int32_t>(regs->getValue(rs1)) + imm;
 	regs->setValue(rd, calc);
 
 	if (log->getLogLevel() >= Log::INFO) {
@@ -259,17 +259,17 @@ bool C_extension::Exec_C_ADDI4SPN() {
 bool C_extension::Exec_C_ADDI16SP() {
 	// addi x2, x2, nzimm[9:4]
 	int rd;
-	int32_t imm;
+	std::int32_t imm;
 
 	if (get_rd() == 2) {
 	  int rs1;
-	  int32_t calc;
+	  std::int32_t calc;
 
 		rd = 2;
 		rs1 = 2;
 		imm = get_imm_ADDI16SP();
 
-		calc = static_cast<int32_t>(regs->getValue(rs1)) + imm;
+		calc = static_cast<std::int32_t>(regs->getValue(rs1)) + imm;
 		regs->setValue(rd, calc);
 
 		log->SC_log(Log::INFO) << std::dec << "C.ADDI16SP: x" << rs1 << " + "
@@ -289,10 +289,10 @@ bool C_extension::Exec_C_ADDI16SP() {
 
 bool C_extension::Exec_C_SWSP() {
 	// sw rs2, offset(x2)
-	uint32_t mem_addr;
+	std::uint32_t mem_addr;
 	int rs1, rs2;
-	int32_t imm;
-	uint32_t data;
+	std::int32_t imm;
+	std::uint32_t data;
 
 	rs1 = 2;
 	rs2 = get_rs2();
@@ -316,17 +316,17 @@ bool C_extension::Exec_C_SWSP() {
 bool C_extension::Exec_C_BEQZ() {
 	int rs1;
 	int new_pc;
-	uint32_t val1;
+	std::uint32_t val1;
 
 	rs1 = get_rs1p();
 	val1 = regs->getValue(rs1);
 
 	if (val1 == 0) {
-		new_pc = static_cast<int32_t>(regs->getPC()) + get_imm_CB();
+		new_pc = static_cast<std::int32_t>(regs->getPC()) + get_imm_CB();
 		regs->setPC(new_pc);
 	} else {
 		regs->incPCby2();
-		new_pc = static_cast<int32_t>(regs->getPC());
+		new_pc = static_cast<std::int32_t>(regs->getPC());
 	}
 
 	if (log->getLogLevel() >= Log::INFO) {
@@ -341,17 +341,17 @@ bool C_extension::Exec_C_BEQZ() {
 bool C_extension::Exec_C_BNEZ() {
 	int rs1;
 	int new_pc;
-	uint32_t val1;
+	std::uint32_t val1;
 
 	rs1 = get_rs1p();
 	val1 = regs->getValue(rs1);
 
 	if (val1 != 0) {
-		new_pc = static_cast<int32_t>(regs->getPC()) + get_imm_CB();
+		new_pc = static_cast<std::int32_t>(regs->getPC()) + get_imm_CB();
 		regs->setPC(new_pc);
 	} else {
 		regs->incPCby2(); //PC <- PC +2
-		new_pc = static_cast<int32_t>(regs->getPC());
+		new_pc = static_cast<std::int32_t>(regs->getPC());
 	}
 
 	if (log->getLogLevel() >= Log::INFO) {
@@ -365,14 +365,14 @@ bool C_extension::Exec_C_BNEZ() {
 
 bool C_extension::Exec_C_LI() {
 	int rd, rs1;
-	int32_t imm;
-	int32_t calc;
+	std::int32_t imm;
+	std::int32_t calc;
 
 	rd = get_rd();
 	rs1 = 0;
 	imm = get_imm_ADDI();
 
-	calc = static_cast<int32_t>(regs->getValue(rs1)) + imm;
+	calc = static_cast<std::int32_t>(regs->getValue(rs1)) + imm;
 	regs->setValue(rd, calc);
 
 	if (log->getLogLevel() >= Log::INFO) {
@@ -386,8 +386,8 @@ bool C_extension::Exec_C_LI() {
 
 bool C_extension::Exec_C_SRLI() {
 	int rd, rs1, rs2;
-	uint32_t shift;
-	uint32_t calc;
+	std::uint32_t shift;
+	std::uint32_t calc;
 
 	rd = get_rs1p();
 	rs1 = get_rs1p();
@@ -395,8 +395,8 @@ bool C_extension::Exec_C_SRLI() {
 
 	shift = rs2 & 0x1F;
 
-	calc = ((uint32_t) regs->getValue(rs1)) >> shift;
-	regs->setValue(rd, static_cast<int32_t>(calc));
+	calc = static_cast<std::uint32_t>(regs->getValue(rs1)) >> shift;
+	regs->setValue(rd, static_cast<std::int32_t>(calc));
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.SRLI: x" << rs1 << " >> " << shift << " -> x"
@@ -408,8 +408,8 @@ bool C_extension::Exec_C_SRLI() {
 
 bool C_extension::Exec_C_SRAI() {
 	int rd, rs1, rs2;
-	uint32_t shift;
-	int32_t calc;
+	std::uint32_t shift;
+	std::int32_t calc;
 
 	rd = get_rs1p();
 	rs1 = get_rs1p();
@@ -417,7 +417,7 @@ bool C_extension::Exec_C_SRAI() {
 
 	shift = rs2 & 0x1F;
 
-	calc = (int32_t) regs->getValue(rs1) >> shift;
+	calc = static_cast<std::int32_t>(regs->getValue(rs1)) >> shift;
 	regs->setValue(rd, calc);
 
 	if (log->getLogLevel() >= Log::INFO) {
@@ -430,8 +430,8 @@ bool C_extension::Exec_C_SRAI() {
 
 bool C_extension::Exec_C_SLLI() {
 	int rd, rs1, rs2;
-	uint32_t shift;
-	uint32_t calc;
+	std::uint32_t shift;
+	std::uint32_t calc;
 
 	rd = get_rs1p();
 	rs1 = get_rs1p();
@@ -439,8 +439,8 @@ bool C_extension::Exec_C_SLLI() {
 
 	shift = rs2 & 0x1F;
 
-	calc = ((uint32_t) regs->getValue(rs1)) << shift;
-	regs->setValue(rd, static_cast<int32_t>(calc));
+	calc = static_cast<std::uint32_t>(regs->getValue(rs1)) << shift;
+	regs->setValue(rd, static_cast<std::int32_t>(calc));
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.SLLI: x" << std::dec << rs1 << " << " << shift
@@ -452,9 +452,9 @@ bool C_extension::Exec_C_SLLI() {
 
 bool C_extension::Exec_C_ANDI() {
 	int rd, rs1;
-	uint32_t imm;
-	uint32_t aux;
-	uint32_t calc;
+	std::uint32_t imm;
+	std::uint32_t aux;
+	std::uint32_t calc;
 
 	rd = get_rs1p();
 	rs1 = get_rs1p();
@@ -462,7 +462,7 @@ bool C_extension::Exec_C_ANDI() {
 
 	aux = regs->getValue(rs1);
 	calc = aux & imm;
-	regs->setValue(rd, static_cast<int32_t>(calc));
+	regs->setValue(rd, static_cast<std::int32_t>(calc));
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.ANDI: x" << rs1 << "(" << aux << ") AND "
@@ -474,14 +474,14 @@ bool C_extension::Exec_C_ANDI() {
 
 bool C_extension::Exec_C_SUB() {
 	int rd, rs1, rs2;
-	uint32_t calc;
+	std::uint32_t calc;
 
 	rd = get_rs1p();
 	rs1 = get_rs1p();
 	rs2 = get_rs2p();
 
 	calc = regs->getValue(rs1) - regs->getValue(rs2);
-	regs->setValue(rd, static_cast<int32_t>(calc));
+	regs->setValue(rd, static_cast<std::int32_t>(calc));
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.SUB: x" << std::dec << rs1 << " - x" << rs2
@@ -493,14 +493,14 @@ bool C_extension::Exec_C_SUB() {
 
 bool C_extension::Exec_C_XOR() {
 	int rd, rs1, rs2;
-	uint32_t calc;
+	std::uint32_t calc;
 
 	rd = get_rs1p();
 	rs1 = get_rs1p();
 	rs2 = get_rs2p();
 
 	calc = regs->getValue(rs1) ^ regs->getValue(rs2);
-	regs->setValue(rd, static_cast<int32_t>(calc));
+	regs->setValue(rd, static_cast<std::int32_t>(calc));
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.XOR: x" << std::dec << rs1 << " XOR x" << rs2
@@ -512,14 +512,14 @@ bool C_extension::Exec_C_XOR() {
 
 bool C_extension::Exec_C_OR() {
 	int rd, rs1, rs2;
-	uint32_t calc;
+	std::uint32_t calc;
 
 	rd = get_rs1p();
 	rs1 = get_rs1p();
 	rs2 = get_rs2p();
 
 	calc = regs->getValue(rs1) | regs->getValue(rs2);
-	regs->setValue(rd, static_cast<int32_t>(calc));
+	regs->setValue(rd, static_cast<std::int32_t>(calc));
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C_OR: x" << std::dec << rs1 << " OR x" << rs2
@@ -531,14 +531,14 @@ bool C_extension::Exec_C_OR() {
 
 bool C_extension::Exec_C_AND() {
 	int rd, rs1, rs2;
-	uint32_t calc;
+	std::uint32_t calc;
 
 	rd = get_rs1p();
 	rs1 = get_rs1p();
 	rs2 = get_rs2p();
 
 	calc = regs->getValue(rs1) & regs->getValue(rs2);
-	regs->setValue(rd, static_cast<int32_t>(calc));
+	regs->setValue(rd, static_cast<std::int32_t>(calc));
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << "C.AND: x" << std::dec << rs1 << " AND x" << rs2
@@ -550,14 +550,14 @@ bool C_extension::Exec_C_AND() {
 
 bool C_extension::Exec_C_ADDI() const {
 	int rd, rs1;
-	int32_t imm;
-	int32_t calc;
+	std::int32_t imm;
+	std::int32_t calc;
 
 	rd = get_rd();
 	rs1 = rd;
 	imm = get_imm_ADDI();
 
-	calc = static_cast<int32_t>(regs->getValue(rs1)) + imm;
+	calc = static_cast<std::int32_t>(regs->getValue(rs1)) + imm;
 	regs->setValue(rd, calc);
 
 	if (log->getLogLevel() >= Log::INFO) {
@@ -570,17 +570,17 @@ bool C_extension::Exec_C_ADDI() const {
 }
 
 bool C_extension::Exec_C_JALR() {
-	uint32_t mem_addr = 0;
+	std::uint32_t mem_addr = 0;
 	int rd, rs1;
 	int new_pc, old_pc;
 
 	rd = 1;
 	rs1 = get_rs1();
 
-	old_pc = static_cast<int32_t>(regs->getPC());
+	old_pc = static_cast<std::int32_t>(regs->getPC());
 	regs->setValue(rd, old_pc + 2);
 
-	new_pc = static_cast<int32_t>((regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE);
+	new_pc = static_cast<std::int32_t>((regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE);
 	regs->setPC(new_pc);
 
 	if (log->getLogLevel() >= Log::INFO) {
@@ -593,10 +593,10 @@ bool C_extension::Exec_C_JALR() {
 }
 
 bool C_extension::Exec_C_LW() {
-	uint32_t mem_addr;
+	std::uint32_t mem_addr;
 	int rd, rs1;
-	int32_t imm;
-	uint32_t data;
+	std::int32_t imm;
+	std::uint32_t data;
 
 	rd = get_rdp();
 	rs1 = get_rs1p();
@@ -605,7 +605,7 @@ bool C_extension::Exec_C_LW() {
 	mem_addr = imm + regs->getValue(rs1);
 	data = mem_intf->readDataMem(mem_addr, 4);
 	perf->dataMemoryRead();
-	regs->setValue(rd, static_cast<int32_t>(data));
+	regs->setValue(rd, static_cast<std::int32_t>(data));
 
 	if (log->getLogLevel() >= Log::INFO) {
 		log->SC_log(Log::INFO) << std::dec << "C.LW: x" << rs1 << "(0x" << std::hex
@@ -618,10 +618,10 @@ bool C_extension::Exec_C_LW() {
 }
 
 bool C_extension::Exec_C_SW() {
-	uint32_t mem_addr;
+	std::uint32_t mem_addr;
 	int rs1, rs2;
-	int32_t imm;
-	uint32_t data;
+	std::int32_t imm;
+	std::uint32_t data;
 
 	rs1 = get_rs1p();
 	rs2 = get_rs2p();
@@ -643,13 +643,13 @@ bool C_extension::Exec_C_SW() {
 }
 
 bool C_extension::Exec_C_JAL(int m_rd) {
-	int32_t mem_addr;
+	std::int32_t mem_addr;
 	int rd;
 	int new_pc, old_pc;
 
 	rd = m_rd;
 	mem_addr = get_imm_J();
-	old_pc = static_cast<int32_t>(regs->getPC());
+	old_pc = static_cast<std::int32_t>(regs->getPC());
 
 	new_pc = old_pc + mem_addr;
 	regs->setPC(new_pc);

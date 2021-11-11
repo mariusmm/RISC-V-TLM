@@ -96,56 +96,56 @@ void Registers::dump() {
 	std::cout << "************************************" << std::endl;
 }
 
-void Registers::setValue(int reg_num, int32_t value) {
+void Registers::setValue(int reg_num, std::int32_t value) {
 	if ((reg_num != 0) && (reg_num < 32)) {
 		register_bank[reg_num] = value;
 		perf->registerWrite();
 	}
 }
 
-uint32_t Registers::getValue(int reg_num) const {
+std::uint32_t Registers::getValue(int reg_num) const {
 	if ((reg_num >= 0) && (reg_num < 32)) {
 		perf->registerRead();
 		return register_bank[reg_num];
 	} else {
-		return static_cast<int32_t>(0xFFFFFFFF);
+		return static_cast<std::int32_t>(0xFFFFFFFF);
 	}
 }
 
-uint32_t Registers::getPC() const {
+std::uint32_t Registers::getPC() const {
 	return register_PC;
 }
 
-void Registers::setPC(uint32_t new_pc) {
+void Registers::setPC(std::uint32_t new_pc) {
 	register_PC = new_pc;
 }
 
-uint32_t Registers::getCSR(const int csr)  {
-	uint32_t ret_value;
+std::uint32_t Registers::getCSR(const int csr)  {
+    std::uint32_t ret_value;
 
 	switch (csr) {
 	case CSR_CYCLE:
 	case CSR_MCYCLE:
-		ret_value = (uint64_t) (sc_core::sc_time(
+		ret_value = static_cast<std::uint64_t>(sc_core::sc_time(
 				sc_core::sc_time_stamp()
 						- sc_core::sc_time(sc_core::SC_ZERO_TIME)).to_double())
 				& 0x00000000FFFFFFFF;
 		break;
 	case CSR_CYCLEH:
 	case CSR_MCYCLEH:
-		ret_value = (uint32_t) ((uint64_t) (sc_core::sc_time(
+		ret_value = static_cast<std::uint32_t>((std::uint64_t) (sc_core::sc_time(
 				sc_core::sc_time_stamp()
 						- sc_core::sc_time(sc_core::SC_ZERO_TIME)).to_double())
 				>> 32 & 0x00000000FFFFFFFF);
 		break;
 	case CSR_TIME:
-		ret_value = (uint64_t) (sc_core::sc_time(
+		ret_value = static_cast<std::uint64_t>(sc_core::sc_time(
 				sc_core::sc_time_stamp()
 						- sc_core::sc_time(sc_core::SC_ZERO_TIME)).to_double())
 				& 0x00000000FFFFFFFF;
 		break;
 	case CSR_TIMEH:
-		ret_value = (uint32_t) ((uint64_t) (sc_core::sc_time(
+		ret_value = static_cast<std::uint32_t>((std::uint64_t) (sc_core::sc_time(
 				sc_core::sc_time_stamp()
 						- sc_core::sc_time(sc_core::SC_ZERO_TIME)).to_double())
 				>> 32 & 0x00000000FFFFFFFF);
@@ -157,7 +157,7 @@ uint32_t Registers::getCSR(const int csr)  {
 	return ret_value;
 }
 
-void Registers::setCSR(int csr, uint32_t value) {
+void Registers::setCSR(int csr, std::uint32_t value) {
 	/* @FIXME: rv32mi-p-ma_fetch tests doesn't allow MISA to be writable,
 	 * but Volume II: Privileged Architecture v1.10 says MISA is writable (?)
 	 */

@@ -6,6 +6,7 @@
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include <cstdint>
 #include "Timer.h"
 
 SC_HAS_PROCESS(Timer);
@@ -21,7 +22,7 @@ Timer::Timer(sc_core::sc_module_name const &name) :
 
 	auto *irq_trans = new tlm::tlm_generic_payload;
 	sc_core::sc_time delay = sc_core::SC_ZERO_TIME;
-	uint32_t cause = 1 << 31 | 0x07;	 // Machine timer interrupt
+    std::uint32_t cause = 1 << 31 | 0x07;	 // Machine timer interrupt
 	irq_trans->set_command(tlm::TLM_WRITE_COMMAND);
 	irq_trans->set_data_ptr(reinterpret_cast<unsigned char*>(&cause));
 	irq_trans->set_data_length(4);
@@ -46,7 +47,7 @@ void Timer::b_transport(tlm::tlm_generic_payload &trans,
 	unsigned int len = trans.get_data_length();
 	delay = sc_core::SC_ZERO_TIME;
 
-	uint32_t aux_value = 0;
+    std::uint32_t aux_value = 0;
 
 
 	if (cmd == tlm::TLM_WRITE_COMMAND) {
@@ -64,7 +65,7 @@ void Timer::b_transport(tlm::tlm_generic_payload &trans,
 		case TIMERCMP_MEMORY_ADDRESS_HI:
 			m_mtimecmp.range(63, 32) = aux_value;
 
-			uint64_t notify_time;
+            std::uint64_t notify_time;
 			// notify needs relative time, mtimecmp works in absolute time
 			notify_time = m_mtimecmp - m_mtime;
 

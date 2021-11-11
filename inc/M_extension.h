@@ -77,8 +77,8 @@ private:
 	 * @brief Access to opcode field
 	 * @return return opcode field
 	 */
-	inline int32_t opcode() const override {
-		return static_cast<int32_t>(m_instr.range(14, 12));
+	inline std::int32_t opcode() const override {
+		return static_cast<std::int32_t>(m_instr.range(14, 12));
 	}
 
 };

@@ -18,7 +18,7 @@ extension_base::extension_base(const sc_dt::sc_uint<32>  & instr,
 
 extension_base::~extension_base() =default;
 
-void extension_base::setInstr(uint32_t p_instr) {
+void extension_base::setInstr(std::uint32_t p_instr) {
 	m_instr = sc_dt::sc_uint<32>(p_instr);
 }
 
@@ -26,8 +26,8 @@ void extension_base::dump() const {
 	std::cout << std::hex << "0x" << m_instr << std::dec << std::endl;
 }
 
-void extension_base::RaiseException(uint32_t cause, uint32_t inst) {
-	uint32_t new_pc, current_pc, m_cause;
+void extension_base::RaiseException(std::uint32_t cause, std::uint32_t inst) {
+	std::uint32_t new_pc, current_pc, m_cause;
 
 	current_pc = regs->getPC();
 	m_cause = regs->getCSR(CSR_MSTATUS);

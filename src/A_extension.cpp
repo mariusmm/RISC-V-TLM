@@ -54,9 +54,9 @@ op_A_Codes A_extension::decode() const {
 }
 
 bool A_extension::Exec_A_LR() {
-	uint32_t mem_addr = 0;
+	std::uint32_t mem_addr = 0;
 	int rd, rs1, rs2;
-	uint32_t data;
+	std::uint32_t data;
 
 	rd = get_rd();
 	rs1 = get_rs1();
@@ -83,9 +83,9 @@ bool A_extension::Exec_A_LR() {
 }
 
 bool A_extension::Exec_A_SC() {
-	uint32_t mem_addr;
+	std::uint32_t mem_addr;
 	int rd, rs1, rs2;
-	uint32_t data;
+	std::uint32_t data;
 
 	rd = get_rd();
 	rs1 = get_rs1();
@@ -110,10 +110,10 @@ bool A_extension::Exec_A_SC() {
 }
 
 bool A_extension::Exec_A_AMOSWAP() const {
-	uint32_t mem_addr;
+	std::uint32_t mem_addr;
 	int rd, rs1, rs2;
-	uint32_t data;
-	uint32_t aux;
+	std::uint32_t data;
+	std::uint32_t aux;
 
 	/* These instructions must be atomic */
 
@@ -138,9 +138,9 @@ bool A_extension::Exec_A_AMOSWAP() const {
 }
 
 bool A_extension::Exec_A_AMOADD() const {
-	uint32_t mem_addr;
+	std::uint32_t mem_addr;
 	int rd, rs1, rs2;
-	uint32_t data;
+	std::uint32_t data;
 
 	/* These instructions must be atomic */
 
@@ -166,9 +166,9 @@ bool A_extension::Exec_A_AMOADD() const {
 }
 
 bool A_extension::Exec_A_AMOXOR() const {
-	uint32_t mem_addr;
+	std::uint32_t mem_addr;
 	int rd, rs1, rs2;
-	uint32_t data;
+	std::uint32_t data;
 
 	/* These instructions must be atomic */
 
@@ -193,9 +193,9 @@ bool A_extension::Exec_A_AMOXOR() const {
 	return true;
 }
 bool A_extension::Exec_A_AMOAND() const {
-	uint32_t mem_addr;
+	std::uint32_t mem_addr;
 	int rd, rs1, rs2;
-	uint32_t data;
+	std::uint32_t data;
 
 	/* These instructions must be atomic */
 
@@ -221,9 +221,9 @@ bool A_extension::Exec_A_AMOAND() const {
 }
 
 bool A_extension::Exec_A_AMOOR() const {
-	uint32_t mem_addr;
+	std::uint32_t mem_addr;
 	int rd, rs1, rs2;
-	uint32_t data;
+	std::uint32_t data;
 
 	/* These instructions must be atomic */
 
@@ -248,10 +248,10 @@ bool A_extension::Exec_A_AMOOR() const {
 }
 
 bool A_extension::Exec_A_AMOMIN() const {
-	uint32_t mem_addr;
+	std::uint32_t mem_addr;
 	int rd, rs1, rs2;
-	uint32_t data;
-	uint32_t aux;
+	std::uint32_t data;
+	std::uint32_t aux;
 
 	/* These instructions must be atomic */
 
@@ -279,10 +279,10 @@ bool A_extension::Exec_A_AMOMIN() const {
 	return true;
 }
 bool A_extension::Exec_A_AMOMAX() const {
-	uint32_t mem_addr;
+	std::uint32_t mem_addr;
 	int rd, rs1, rs2;
-	uint32_t data;
-	uint32_t aux;
+	std::uint32_t data;
+	std::uint32_t aux;
 
 	/* These instructions must be atomic */
 
@@ -310,10 +310,10 @@ bool A_extension::Exec_A_AMOMAX() const {
 	return true;
 }
 bool A_extension::Exec_A_AMOMINU() const {
-	uint32_t mem_addr;
+	std::uint32_t mem_addr;
 	int rd, rs1, rs2;
-	uint32_t data;
-	uint32_t aux;
+	std::uint32_t data;
+	std::uint32_t aux;
 
 	/* These instructions must be atomic */
 
@@ -341,10 +341,10 @@ bool A_extension::Exec_A_AMOMINU() const {
 	return true;
 }
 bool A_extension::Exec_A_AMOMAXU() const {
-	uint32_t mem_addr;
+	std::uint32_t mem_addr;
 	int rd, rs1, rs2;
-	uint32_t data;
-	uint32_t aux;
+	std::uint32_t data;
+	std::uint32_t aux;
 
 	/* These instructions must be atomic */
 
@@ -372,11 +372,11 @@ bool A_extension::Exec_A_AMOMAXU() const {
 	return true;
 }
 
-void A_extension::TLB_reserve(uint32_t address) {
+void A_extension::TLB_reserve(std::uint32_t address) {
 	TLB_A_Entries.insert(address);
 }
 
-bool A_extension::TLB_reserved(uint32_t address) {
+bool A_extension::TLB_reserved(std::uint32_t address) {
 	if (TLB_A_Entries.count(address) == 1) {
 		TLB_A_Entries.erase(address);
 		return true;

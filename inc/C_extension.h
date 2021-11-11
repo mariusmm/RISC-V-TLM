@@ -105,51 +105,51 @@ public:
 	 * @brief Access to opcode field
 	 * @return return opcode field
 	 */
-	inline int32_t opcode() const override {
-		return static_cast<int32_t>(m_instr.range(1, 0));
+	inline std::int32_t opcode() const override {
+		return static_cast<std::int32_t>(m_instr.range(1, 0));
 	}
 
-	inline int32_t get_rdp() const {
-		return static_cast<int32_t>(m_instr.range(4, 2) + 8);
+	inline std::int32_t get_rdp() const {
+		return static_cast<std::int32_t>(m_instr.range(4, 2) + 8);
 	}
 
 	/**
 	 * @brief Access to rs1 field
 	 * @return rs1 field
 	 */
-	inline int32_t get_rs1() const override {
-		return static_cast<int32_t>(m_instr.range(11, 7));
+	inline std::int32_t get_rs1() const override {
+		return static_cast<std::int32_t>(m_instr.range(11, 7));
 	}
 
-	inline void set_rs1(int32_t value) override {
+	inline void set_rs1(std::int32_t value) override {
 		m_instr.range(11, 7) = value;
 	}
 
-	inline int32_t get_rs1p() const {
-		return static_cast<int32_t>(m_instr.range(9, 7) + 8);
+	inline std::int32_t get_rs1p() const {
+		return static_cast<std::int32_t>(m_instr.range(9, 7) + 8);
 	}
 
 	/**
 	 * @brief Access to rs2 field
 	 * @return rs2 field
 	 */
-	inline int32_t get_rs2() const override {
-		return static_cast<int32_t>(m_instr.range(6, 2));
+	inline std::int32_t get_rs2() const override {
+		return static_cast<std::int32_t>(m_instr.range(6, 2));
 	}
 
-	inline void set_rs2(int32_t value) override {
+	inline void set_rs2(std::int32_t value) override {
 		m_instr.range(6, 2) = value;
 	}
 
-	inline int32_t get_rs2p() const {
-		return static_cast<int32_t>(m_instr.range(4, 2) + 8);
+	inline std::int32_t get_rs2p() const {
+		return static_cast<std::int32_t>(m_instr.range(4, 2) + 8);
 	}
 
-	inline int32_t get_funct3() const override {
-		return static_cast<int32_t>(m_instr.range(15, 13));
+	inline std::int32_t get_funct3() const override {
+		return static_cast<std::int32_t>(m_instr.range(15, 13));
 	}
 
-	inline void set_funct3(int32_t value) override {
+	inline void set_funct3(std::int32_t value) override {
 		m_instr.range(15, 13) = value;
 	}
 
@@ -157,10 +157,10 @@ public:
 	 * @brief Access to immediate field for I-type
 	 * @return immediate_I field
 	 */
-	inline int32_t get_imm_I() const {
-		int32_t aux = 0;
+	inline std::int32_t get_imm_I() const {
+		std::int32_t aux = 0;
 
-		aux = static_cast<int32_t>(m_instr.range(31, 20));
+		aux = static_cast<std::int32_t>(m_instr.range(31, 20));
 
 		/* sign extension (optimize) */
 		if (m_instr[31] == 1) {
@@ -170,7 +170,7 @@ public:
 		return aux;
 	}
 
-	inline void set_imm_I(int32_t value) {
+	inline void set_imm_I(std::int32_t value) {
 		m_instr.range(31, 20) = value;
 	}
 
@@ -178,11 +178,11 @@ public:
 	 * @brief Access to immediate field for S-type
 	 * @return immediate_S field
 	 */
-	inline int32_t get_imm_S() const {
-		int32_t aux = 0;
+	inline std::int32_t get_imm_S() const {
+		std::int32_t aux = 0;
 
-		aux = static_cast<int32_t>(m_instr.range(31, 25) << 5);
-		aux |= static_cast<int32_t>(m_instr.range(11, 7));
+		aux = static_cast<std::int32_t>(m_instr.range(31, 25) << 5);
+		aux |= static_cast<std::int32_t>(m_instr.range(11, 7));
 
 		if (m_instr[31] == 1) {
 			aux |= (0b11111111111111111111) << 12;
@@ -191,7 +191,7 @@ public:
 		return aux;
 	}
 
-	inline void set_imm_S(int32_t value) {
+	inline void set_imm_S(std::int32_t value) {
 		sc_dt::sc_uint<32> aux = value;
 
 		m_instr.range(31, 25) = aux.range(11, 5);
@@ -202,11 +202,11 @@ public:
 	 * @brief Access to immediate field for U-type
 	 * @return immediate_U field
 	 */
-	inline int32_t get_imm_U() const {
-		return static_cast<int32_t>(m_instr.range(31, 12));
+	inline std::int32_t get_imm_U() const {
+		return static_cast<std::int32_t>(m_instr.range(31, 12));
 	}
 
-	inline void set_imm_U(int32_t value) {
+	inline void set_imm_U(std::int32_t value) {
 		m_instr.range(31, 12) = (value << 12);
 	}
 
@@ -214,13 +214,13 @@ public:
 	 * @brief Access to immediate field for B-type
 	 * @return immediate_B field
 	 */
-	inline int32_t get_imm_B() const {
-		int32_t aux = 0;
+	inline std::int32_t get_imm_B() const {
+		std::int32_t aux = 0;
 
-		aux |= static_cast<int32_t>(m_instr[7] << 11);
-		aux |= static_cast<int32_t>(m_instr.range(30, 25) << 5);
-		aux |= static_cast<int32_t>(m_instr[31] << 12);
-		aux |= static_cast<int32_t>(m_instr.range(11, 8) << 1);
+		aux |= static_cast<std::int32_t>(m_instr[7] << 11);
+		aux |= static_cast<std::int32_t>(m_instr.range(30, 25) << 5);
+		aux |= static_cast<std::int32_t>(m_instr[31] << 12);
+		aux |= static_cast<std::int32_t>(m_instr.range(11, 8) << 1);
 
 		if (m_instr[31] == 1) {
 			aux |= (0b11111111111111111111) << 12;
@@ -229,7 +229,7 @@ public:
 		return aux;
 	}
 
-	inline void set_imm_B(int32_t value) {
+	inline void set_imm_B(std::int32_t value) {
 		sc_dt::sc_uint<32> aux = value;
 
 		m_instr[31] = aux[12];
@@ -241,18 +241,18 @@ public:
 	 * @brief Access to immediate field for J-type
 	 * @return immediate_J field
 	 */
-	inline int32_t get_imm_J() const {
-		int32_t aux = 0;
+	inline std::int32_t get_imm_J() const {
+		std::int32_t aux = 0;
 
-		aux = static_cast<int32_t>(m_instr[12] << 11);
-		aux |= static_cast<int32_t>(m_instr[11] << 4);
-		aux |= static_cast<int32_t>(m_instr[10] << 9);
-		aux |= static_cast<int32_t>(m_instr[9] << 8);
-		aux |= static_cast<int32_t>(m_instr[8] << 10);
-		aux |= static_cast<int32_t>(m_instr[7] << 6);
-		aux |= static_cast<int32_t>(m_instr[6] << 7);
-		aux |= static_cast<int32_t>(m_instr.range(5, 3) << 1);
-		aux |= static_cast<int32_t>(m_instr[2] << 5);
+		aux = static_cast<std::int32_t>(m_instr[12] << 11);
+		aux |= static_cast<std::int32_t>(m_instr[11] << 4);
+		aux |= static_cast<std::int32_t>(m_instr[10] << 9);
+		aux |= static_cast<std::int32_t>(m_instr[9] << 8);
+		aux |= static_cast<std::int32_t>(m_instr[8] << 10);
+		aux |= static_cast<std::int32_t>(m_instr[7] << 6);
+		aux |= static_cast<std::int32_t>(m_instr[6] << 7);
+		aux |= static_cast<std::int32_t>(m_instr.range(5, 3) << 1);
+		aux |= static_cast<std::int32_t>(m_instr[2] << 5);
 
 		if (m_instr[12] == 1) {
 			aux |= 0b11111111111111111111 << 12;
@@ -261,7 +261,7 @@ public:
 		return aux;
 	}
 
-	inline void set_imm_J(int32_t value) {
+	inline void set_imm_J(std::int32_t value) {
 		sc_dt::sc_uint<32> aux = (value << 20);
 
 		m_instr[31] = aux[20];
@@ -270,31 +270,31 @@ public:
 		m_instr.range(19, 12) = aux.range(19, 12);
 	}
 
-	inline int32_t get_imm_L() const {
-		int32_t aux = 0;
+	inline std::int32_t get_imm_L() const {
+		std::int32_t aux = 0;
 
-		aux = static_cast<int32_t>(m_instr.range(12, 10) << 3);
-		aux |= static_cast<int32_t>(m_instr[6] << 2);
-		aux |= static_cast<int32_t>(m_instr[5] << 6);
-
-		return aux;
-	}
-
-	inline int32_t get_imm_LWSP() const {
-		int32_t aux = 0;
-
-		aux = static_cast<int32_t>(m_instr[12] << 5);
-		aux |= static_cast<int32_t>(m_instr.range(6, 4) << 2);
-		aux |= static_cast<int32_t>(m_instr.range(3, 2) << 6);
+		aux = static_cast<std::int32_t>(m_instr.range(12, 10) << 3);
+		aux |= static_cast<std::int32_t>(m_instr[6] << 2);
+		aux |= static_cast<std::int32_t>(m_instr[5] << 6);
 
 		return aux;
 	}
 
-	inline int32_t get_imm_ADDI () const {
-		int32_t aux = 0;
+	inline std::int32_t get_imm_LWSP() const {
+		std::int32_t aux = 0;
 
-		aux = static_cast<int32_t>(m_instr[12] << 5);
-		aux |= static_cast<int32_t>(m_instr.range(6, 2));
+		aux = static_cast<std::int32_t>(m_instr[12] << 5);
+		aux |= static_cast<std::int32_t>(m_instr.range(6, 4) << 2);
+		aux |= static_cast<std::int32_t>(m_instr.range(3, 2) << 6);
+
+		return aux;
+	}
+
+	inline std::int32_t get_imm_ADDI () const {
+		std::int32_t aux = 0;
+
+		aux = static_cast<std::int32_t>(m_instr[12] << 5);
+		aux |= static_cast<std::int32_t>(m_instr.range(6, 2));
 
 		if (m_instr[12] == 1) {
 			aux |= 0b11111111111111111111111111 << 6;
@@ -302,26 +302,26 @@ public:
 		return aux;
 	}
 
-	inline int32_t get_imm_ADDI4SPN() const {
-		int32_t aux = 0;
+	inline std::int32_t get_imm_ADDI4SPN() const {
+		std::int32_t aux = 0;
 
-		aux = static_cast<int32_t>(m_instr.range(12, 11) << 4);
-		aux |= static_cast<int32_t>(m_instr.range(10, 7) << 6);
-		aux |= static_cast<int32_t>(m_instr[6] << 2);
-		aux |= static_cast<int32_t>(m_instr[5] << 3);
+		aux = static_cast<std::int32_t>(m_instr.range(12, 11) << 4);
+		aux |= static_cast<std::int32_t>(m_instr.range(10, 7) << 6);
+		aux |= static_cast<std::int32_t>(m_instr[6] << 2);
+		aux |= static_cast<std::int32_t>(m_instr[5] << 3);
 
 		return aux;
 	}
 
-	inline int32_t get_imm_ADDI16SP() const {
-		int32_t aux = 0;
+	inline std::int32_t get_imm_ADDI16SP() const {
+		std::int32_t aux = 0;
 
-		aux = static_cast<int32_t>(m_instr[12] << 9);
-		aux |= static_cast<int32_t>(m_instr[6] << 4);
-		aux |= static_cast<int32_t>(m_instr[5] << 6);
-		aux |= static_cast<int32_t>(m_instr[4] << 8);
-		aux |= static_cast<int32_t>(m_instr[3] << 7);
-		aux |= static_cast<int32_t>(m_instr[2] << 5);
+		aux = static_cast<std::int32_t>(m_instr[12] << 9);
+		aux |= static_cast<std::int32_t>(m_instr[6] << 4);
+		aux |= static_cast<std::int32_t>(m_instr[5] << 6);
+		aux |= static_cast<std::int32_t>(m_instr[4] << 8);
+		aux |= static_cast<std::int32_t>(m_instr[3] << 7);
+		aux |= static_cast<std::int32_t>(m_instr[2] << 5);
 
 		if (m_instr[12] == 1) {
 			aux |= 0b1111111111111111111111 << 10;
@@ -329,25 +329,25 @@ public:
 		return aux;
 	}
 
-	inline int32_t get_imm_CSS() const {
-		int32_t aux = 0;
-		aux = static_cast<int32_t>(m_instr.range(12, 9) << 2);
-		aux |= static_cast<int32_t>(m_instr.range(8, 7) << 6);
+	inline std::int32_t get_imm_CSS() const {
+		std::int32_t aux = 0;
+		aux = static_cast<std::int32_t>(m_instr.range(12, 9) << 2);
+		aux |= static_cast<std::int32_t>(m_instr.range(8, 7) << 6);
 
 		return aux;
 	}
 
-	inline int32_t get_imm_CB() const {
-		int32_t aux = 0;
+	inline std::int32_t get_imm_CB() const {
+		std::int32_t aux = 0;
 
-		aux = static_cast<int32_t>(m_instr[12] << 8);
-		aux |= static_cast<int32_t>(m_instr[11] << 4);
-		aux |= static_cast<int32_t>(m_instr[10] << 3);
-		aux |= static_cast<int32_t>(m_instr[6] << 7);
-		aux |= static_cast<int32_t>(m_instr[5] << 6);
-		aux |= static_cast<int32_t>(m_instr[4] << 2);
-		aux |= static_cast<int32_t>(m_instr[3] << 1);
-		aux |= static_cast<int32_t>(m_instr[2] << 5);
+		aux = static_cast<std::int32_t>(m_instr[12] << 8);
+		aux |= static_cast<std::int32_t>(m_instr[11] << 4);
+		aux |= static_cast<std::int32_t>(m_instr[10] << 3);
+		aux |= static_cast<std::int32_t>(m_instr[6] << 7);
+		aux |= static_cast<std::int32_t>(m_instr[5] << 6);
+		aux |= static_cast<std::int32_t>(m_instr[4] << 2);
+		aux |= static_cast<std::int32_t>(m_instr[3] << 1);
+		aux |= static_cast<std::int32_t>(m_instr[2] << 5);
 
 		if (m_instr[12] == 1) {
 			aux |= 0b11111111111111111111111 << 9;
@@ -356,11 +356,11 @@ public:
 		return aux;
 	}
 
-	inline int32_t get_imm_LUI() const {
-		int32_t aux = 0;
+	inline std::int32_t get_imm_LUI() const {
+		std::int32_t aux = 0;
 
-		aux = static_cast<int32_t>(m_instr[12] << 17);
-		aux |= static_cast<int32_t>(m_instr.range(6, 2) << 12);
+		aux = static_cast<std::int32_t>(m_instr[12] << 17);
+		aux |= static_cast<std::int32_t>(m_instr.range(6, 2) << 12);
 
 		if (m_instr[12] == 1) {
 			aux |= 0b111111111111111 << 17;
@@ -369,7 +369,7 @@ public:
 		return aux;
 	}
 
-	inline int32_t get_csr() const {
+	inline std::int32_t get_csr() const {
 		return get_imm_I();
 	}
 

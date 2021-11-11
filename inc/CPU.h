@@ -54,7 +54,7 @@ public:
 	 * @param PC   Program Counter initialize value
 	 * @param debug To start debugging
 	 */
-	CPU(sc_core::sc_module_name const &name, uint32_t PC, bool debug);
+	CPU(sc_core::sc_module_name const &name, std::uint32_t PC, bool debug);
 
 	/**
 	 * @brief Destructor
@@ -81,13 +81,13 @@ private:
 	tlm_utils::tlm_quantumkeeper *m_qk;
 
 	bool interrupt;
-	uint32_t int_cause;
+	std::uint32_t int_cause;
 	bool irq_already_down;
 	sc_core::sc_time default_time;
 	bool dmi_ptr_valid;
 
 	tlm::tlm_generic_payload trans;
-	uint32_t INSTR;
+	std::uint32_t INSTR;
 	unsigned char *dmi_ptr = nullptr;
 
 

@@ -8,7 +8,7 @@
 
 #include "Instruction.h"
 
-Instruction::Instruction(uint32_t instr) {
+Instruction::Instruction(std::uint32_t instr) {
 	m_instr = instr;
 }
 

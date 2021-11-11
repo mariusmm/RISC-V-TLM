@@ -190,36 +190,32 @@ public:
 	 * @param reg_num register number
 	 * @param value   register value
 	 */
-	void setValue(int reg_num, int32_t value);
+	void setValue(int reg_num, std::int32_t value);
 
 	/**
 	 * Returns register value
 	 * @param  reg_num register number
 	 * @return         register value
 	 */
-	uint32_t getValue(int reg_num) const;
+    std::uint32_t getValue(int reg_num) const;
 
 	/**
 	 * Returns PC value
 	 * @return PC value
 	 */
-	uint32_t getPC() const;
+    std::uint32_t getPC() const;
 
 	/**
 	 * Sets arbitraty value to PC
 	 * @param new_pc new address to PC
 	 */
-	void setPC(uint32_t new_pc);
+	void setPC(std::uint32_t new_pc);
 
 	/**
 	 * Increments PC couunter to next address
 	 */
-	inline void incPC(bool C_ext = false) {
-		if (C_ext) {
-			register_PC += 2;
-		} else {
-			register_PC += 4;
-		}
+	inline void incPC() {
+		register_PC += 4;
 	}
 
     inline void incPCby2() {
@@ -231,14 +227,14 @@ public:
 	 * @param csr CSR number to access
 	 * @return CSR value
 	 */
-	uint32_t getCSR(int csr);
+    std::uint32_t getCSR(int csr);
 
 	/**
 	 * @brief Set CSR value
 	 * @param csr   CSR number to access
 	 * @param value new value to register
 	 */
-	void setCSR(int csr, uint32_t value);
+	void setCSR(int csr, std::uint32_t value);
 
 	/**
 	 * Dump register data to console
@@ -248,17 +244,17 @@ private:
 	/**
 	 * bank of registers (32 regs of 32bits each)
 	 */
-	std::array<uint32_t, 32> register_bank = { {0} };
+	std::array<std::uint32_t, 32> register_bank = { {0} };
 
 	/**
 	 * Program counter (32 bits width)
 	 */
-	uint32_t register_PC;
+    std::uint32_t register_PC;
 
 	/**
 	 * CSR registers (4096 maximum)
 	 */
-	std::unordered_map<unsigned int, uint32_t> CSR{0};
+	std::unordered_map<unsigned int, std::uint32_t> CSR{0};
 
 	Performance *perf;
 

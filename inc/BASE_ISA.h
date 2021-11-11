@@ -104,7 +104,7 @@ public:
 	 * @brief Access to funct7 field
 	 * @return funct7 field
 	 */
-	inline int32_t get_funct7() const {
+	inline std::int32_t get_funct7() const {
 		return m_instr.range(31, 25);
 	}
 
@@ -112,7 +112,7 @@ public:
 	 * @brief Sets func7 field
 	 * @param value desired func7 value
 	 */
-	inline void set_func7(int32_t value) {
+	inline void set_func7(std::int32_t value) {
 		m_instr.range(31, 25) = value;
 	}
 
@@ -120,8 +120,8 @@ public:
 	 * @brief Gets immediate field value for I-type
 	 * @return immediate_I field
 	 */
-	inline int32_t get_imm_I() const {
-		int32_t aux = 0;
+	inline std::int32_t get_imm_I() const {
+		std::int32_t aux = 0;
 
 		aux = m_instr.range(31, 20);
 
@@ -137,7 +137,7 @@ public:
 	 * @brief Sets immediate field for I-type
 	 * @param value desired I value
 	 */
-	inline void set_imm_I(int32_t value) {
+	inline void set_imm_I(std::int32_t value) {
 		m_instr.range(31, 20) = value;
 	}
 
@@ -145,8 +145,8 @@ public:
 	 * @brief Gets immediate field value for S-type
 	 * @return immediate_S field
 	 */
-	inline int32_t get_imm_S() const {
-		int32_t aux = 0;
+	inline std::int32_t get_imm_S() const {
+		std::int32_t aux = 0;
 
 		aux = m_instr.range(31, 25) << 5;
 		aux |= m_instr.range(11, 7);
@@ -162,7 +162,7 @@ public:
 	 * @brief Gets immediate field value for U-type
 	 * @return immediate_U field
 	 */
-	inline int32_t get_imm_U() const {
+	inline std::int32_t get_imm_U() const {
 		return m_instr.range(31, 12);
 	}
 
@@ -170,7 +170,7 @@ public:
 	 * @brief Sets immediate field for U-type
 	 * @param value desired U value
 	 */
-	inline void set_imm_U(int32_t value) {
+	inline void set_imm_U(std::int32_t value) {
 		m_instr.range(31, 12) = (value << 12);
 	}
 
@@ -178,8 +178,8 @@ public:
 	 * @brief Gets immediate field value for B-type
 	 * @return immediate_B field
 	 */
-	inline int32_t get_imm_B() const {
-		int32_t aux = 0;
+	inline std::int32_t get_imm_B() const {
+		std::int32_t aux = 0;
 
 		aux |= m_instr[7] << 11;
 		aux |= m_instr.range(30, 25) << 5;
@@ -197,7 +197,7 @@ public:
 	 * @brief Sets immediate field for B-type
 	 * @param value desired B value
 	 */
-	inline void set_imm_B(int32_t value) {
+	inline void set_imm_B(std::int32_t value) {
 		sc_dt::sc_uint<32> aux = value;
 
 		m_instr[31] = aux[12];
@@ -210,8 +210,8 @@ public:
 	 * @brief Gets immediate field value for J-type
 	 * @return immediate_J field
 	 */
-	inline int32_t get_imm_J() const {
-		int32_t aux = 0;
+	inline std::int32_t get_imm_J() const {
+		std::int32_t aux = 0;
 
 		aux = m_instr[31] << 20;
 		aux |= m_instr.range(19, 12) << 12;
@@ -230,7 +230,7 @@ public:
 	 * @brief Sets immediate field for J-type
 	 * @param value desired J value
 	 */
-	inline void set_imm_J(int32_t value) {
+	inline void set_imm_J(std::int32_t value) {
 		sc_dt::sc_uint<32> aux = (value << 20);
 
 		m_instr[31] = aux[20];
@@ -243,18 +243,18 @@ public:
 	 * @brief Returns shamt field for Shifts instructions
 	 * @return value corresponding to inst(25:20)
 	 */
-	inline int32_t get_shamt() const {
-		return static_cast<int32_t>(m_instr.range(25, 20));
+	inline std::int32_t get_shamt() const {
+		return static_cast<std::int32_t>(m_instr.range(25, 20));
 	}
 
 	/**
 	 * @brief Returns CSR field for CSR instructions
 	 * @return value corresponding to instr(31:20)
 	 */
-	inline int32_t get_csr() const {
-		int32_t aux = 0;
+	inline std::int32_t get_csr() const {
+		std::int32_t aux = 0;
 
-		aux = static_cast<int32_t>(m_instr.range(31, 20));
+		aux = static_cast<std::int32_t>(m_instr.range(31, 20));
 
 		return aux;
 	}
@@ -263,8 +263,8 @@ public:
 	 * @brief Access to opcode field
 	 * @return return opcode field
 	 */
-	inline int32_t opcode() const override {
-		return static_cast<int32_t>(m_instr.range(6, 0));
+	inline std::int32_t opcode() const override {
+		return static_cast<std::int32_t>(m_instr.range(6, 0));
 	}
 
 	bool Exec_LUI() const;

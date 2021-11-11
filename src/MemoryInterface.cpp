@@ -18,8 +18,8 @@ MemoryInterface::MemoryInterface() :
  * @param size size of the data to read in bytes
  * @return data value read
  */
-uint32_t MemoryInterface::readDataMem(uint32_t addr, int size) {
-	uint32_t data;
+std::uint32_t MemoryInterface::readDataMem(std::uint32_t addr, int size) {
+	std::uint32_t data;
 	tlm::tlm_generic_payload trans;
 	sc_core::sc_time delay = sc_core::SC_ZERO_TIME;
 
@@ -47,7 +47,7 @@ uint32_t MemoryInterface::readDataMem(uint32_t addr, int size) {
  * @param data data to write
  * @param size size of the data to write in bytes
  */
-void MemoryInterface::writeDataMem(uint32_t addr, uint32_t data, int size) {
+void MemoryInterface::writeDataMem(std::uint32_t addr, std::uint32_t data, int size) {
 	tlm::tlm_generic_payload trans;
 	sc_core::sc_time delay = sc_core::SC_ZERO_TIME;
 

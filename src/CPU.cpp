@@ -8,7 +8,7 @@
 #include "CPU.h"
 
 SC_HAS_PROCESS(CPU);
-CPU::CPU(sc_core::sc_module_name const &name, uint32_t PC, bool debug) :
+CPU::CPU(sc_core::sc_module_name const &name, std::uint32_t PC, bool debug) :
 		sc_module(name), instr_bus("instr_bus"), default_time(10,
 				sc_core::SC_NS), INSTR(0) {
 	register_bank = new Registers();
@@ -64,7 +64,7 @@ CPU::~CPU() {
 }
 
 bool CPU::cpu_process_IRQ() {
-	uint32_t csr_temp;
+	std::uint32_t csr_temp;
 	bool ret_value = false;
 
 	if (interrupt) {
@@ -82,7 +82,7 @@ bool CPU::cpu_process_IRQ() {
 			log->SC_log(Log::DEBUG) << "Interrupt!" << std::endl;
 
 			/* updated MEPC register */
-			uint32_t old_pc = register_bank->getPC();
+			std::uint32_t old_pc = register_bank->getPC();
 			register_bank->setCSR(CSR_MEPC, old_pc);
 			log->SC_log(Log::INFO) << "Old PC Value 0x" << std::hex << old_pc
 					<< std::endl;
@@ -91,7 +91,7 @@ bool CPU::cpu_process_IRQ() {
 			register_bank->setCSR(CSR_MCAUSE, 0x80000000);
 
 			/* set new PC address */
-			uint32_t new_pc = register_bank->getCSR(CSR_MTVEC);
+			std::uint32_t new_pc = register_bank->getCSR(CSR_MTVEC);
 			//new_pc = new_pc & 0xFFFFFFFC; // last two bits always to 0
 			log->SC_log(Log::DEBUG) << "NEW PC Value 0x" << std::hex << new_pc
 					<< std::endl;
@@ -217,7 +217,7 @@ void CPU::call_interrupt(tlm::tlm_generic_payload &m_trans,
 		sc_core::sc_time &delay) {
 	interrupt = true;
 	/* Socket caller send a cause (its id) */
-	memcpy(&int_cause, m_trans.get_data_ptr(), sizeof(uint32_t));
+	memcpy(&int_cause, m_trans.get_data_ptr(), sizeof(std::uint32_t));
 	delay = sc_core::SC_ZERO_TIME;
 }
 

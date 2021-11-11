@@ -43,7 +43,7 @@ public:
 	 * @brief Returns Program Counter read from hexfile
 	 * @return Initial PC
 	 */
-	virtual uint32_t getPCfromHEX();
+	virtual std::uint32_t getPCfromHEX();
 
 	// TLM-2 blocking transport method
 	virtual void b_transport(tlm::tlm_generic_payload &trans,
@@ -75,9 +75,9 @@ private:
 	/**
 	 * @brief Program counter (PC) read from hex file
 	 */
-	uint32_t program_counter;
+	std::uint32_t program_counter;
 
-	uint32_t memory_offset;
+	std::uint32_t memory_offset;
 	/**
 	 * @brief Read Intel hex file
 	 * @param filename file name to read

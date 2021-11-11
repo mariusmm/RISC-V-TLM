@@ -12,6 +12,7 @@
 #include <csignal>
 #include <unistd.h>
 #include <chrono>
+#include <cstdint>
 
 #include "CPU.h"
 #include "Memory.h"
@@ -42,7 +43,7 @@ public:
 	Timer *timer;
 
 	explicit Simulator(sc_core::sc_module_name const &name): sc_module(name) {
-		uint32_t start_PC;
+		std::uint32_t start_PC;
 
 		MainMemory = new Memory("Main_Memory", filename);
 		start_PC = MainMemory->getPCfromHEX();
@@ -84,7 +85,7 @@ private:
         tlm::tlm_generic_payload trans;
         tlm::tlm_dmi dmi_data;
         sc_core::sc_time delay;
-        uint32_t data[4];
+        std::uint32_t data[4];
 
         trans.set_command(tlm::TLM_READ_COMMAND);
         trans.set_data_ptr(reinterpret_cast<unsigned char*>(data));

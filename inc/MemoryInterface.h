@@ -27,8 +27,8 @@ public:
 	tlm_utils::simple_initiator_socket<MemoryInterface> data_bus;
 
 	MemoryInterface();
-	uint32_t readDataMem(uint32_t addr, int size);
-	void writeDataMem(uint32_t addr, uint32_t data, int size);
+	std::uint32_t readDataMem(std::uint32_t addr, int size);
+	void writeDataMem(std::uint32_t addr, std::uint32_t data, int size);
 };
 
 #endif /* INC_MEMORYINTERFACE_H_ */
