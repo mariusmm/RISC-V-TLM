@@ -29,8 +29,9 @@ public:
 	// TLM-2 socket, defaults to 32-bits wide, base protocol
 	tlm_utils::simple_target_socket<Memory> socket;
 
+    /* 16 MBytes */
 	enum {
-		SIZE = 0xFFFFFFFF
+        SIZE = 0x1000000
 	};
 	const sc_core::sc_time LATENCY;
 
@@ -77,7 +78,11 @@ private:
 	 */
 	std::uint32_t program_counter;
 
-	std::uint32_t memory_offset;
+    /**
+     * @brief DMI can be used?
+     */
+    bool dmi_allowed;
+
 	/**
 	 * @brief Read Intel hex file
 	 * @param filename file name to read

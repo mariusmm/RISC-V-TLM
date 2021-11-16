@@ -16,7 +16,7 @@ Memory::Memory(sc_core::sc_module_name const &name, std::string const &filename)
 	socket.register_get_direct_mem_ptr(this, &Memory::get_direct_mem_ptr);
 	socket.register_transport_dbg(this, &Memory::transport_dbg);
 
-	memory_offset = 0;
+    dmi_allowed = false;
     program_counter = 0;
 	readHexFile(filename);
 
@@ -29,7 +29,7 @@ Memory::Memory(sc_core::sc_module_name const& name) :
 	socket.register_b_transport(this, &Memory::b_transport);
 	socket.register_get_direct_mem_ptr(this, &Memory::get_direct_mem_ptr);
 	socket.register_transport_dbg(this, &Memory::transport_dbg);
-	memory_offset = 0;
+
 	program_counter = 0;
 
 	log = Log::getInstance();
@@ -83,12 +83,7 @@ void Memory::b_transport(tlm::tlm_generic_payload &trans,
 	// *********************************************
 	// Set DMI hint to indicated that DMI is supported
 	// *********************************************
-
-	if (memory_offset == 0) {
-		trans.set_dmi_allowed(true);
-	} else {
-		trans.set_dmi_allowed(false);
-	}
+    trans.set_dmi_allowed(dmi_allowed);
 
 	// Obliged to set response status to indicate successful completion
 	trans.set_response_status(tlm::TLM_OK_RESPONSE);
@@ -99,7 +94,7 @@ bool Memory::get_direct_mem_ptr(tlm::tlm_generic_payload &trans,
 
     (void) trans;
 
-	if (memory_offset != 0) {
+	if (!dmi_allowed) {
 		return false;
 	}
 
@@ -142,6 +137,7 @@ unsigned int Memory::transport_dbg(tlm::tlm_generic_payload &trans) {
 void Memory::readHexFile(std::string const& filename) {
 	std::ifstream hexfile;
 	std::string line;
+    std::uint32_t memory_offset = 0;
 
 	hexfile.open(filename);
 
@@ -192,6 +188,13 @@ void Memory::readHexFile(std::string const& filename) {
 			}
 		}
 		hexfile.close();
+
+        if (memory_offset != 0) {
+            dmi_allowed = false;
+        } else {
+            dmi_allowed = true;
+        }
+
 	} else {
 		SC_REPORT_ERROR("Memory", "Open file error");
 	}
