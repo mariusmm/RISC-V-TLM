@@ -89,7 +89,7 @@ public:
 	bool Exec_A_AMOMINU() const;
 	bool Exec_A_AMOMAXU() const;
 
-	bool process_instruction(Instruction *inst);
+	bool process_instruction(Instruction &inst);
 
 	void TLB_reserve(std::uint32_t address);
 	bool TLB_reserved(std::uint32_t address);

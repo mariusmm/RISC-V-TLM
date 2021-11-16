@@ -680,12 +680,12 @@ bool C_extension::Exec_C_EBREAK() {
     return true;
 }
 
-bool C_extension::process_instruction(Instruction *inst, bool *breakpoint) {
+bool C_extension::process_instruction(Instruction &inst, bool *breakpoint) {
 	bool PC_not_affected = true;
 
 	*breakpoint = false;
 
-	setInstr(inst->getInstr());
+	setInstr(inst.getInstr());
 
 	switch (decode()) {
 	case OP_C_ADDI4SPN:
@@ -773,7 +773,7 @@ bool C_extension::process_instruction(Instruction *inst, bool *breakpoint) {
 		break;
 	[[unlikely]] default:
 		std::cout << "C instruction not implemented yet" << "\n";
-		inst->dump();
+		inst.dump();
 		NOP();
 		break;
 	}

@@ -1172,11 +1172,11 @@ bool BASE_ISA::Exec_SFENCE() const {
 	return true;
 }
 
-bool BASE_ISA::process_instruction(Instruction *inst, bool *breakpoint) {
+bool BASE_ISA::process_instruction(Instruction &inst, bool *breakpoint) {
 	bool PC_not_affected = true;
 
 	*breakpoint = false;
-	setInstr(inst->getInstr());
+	setInstr(inst.getInstr());
 
 	switch (decode()) {
 	case OP_LUI:
@@ -1344,7 +1344,7 @@ bool BASE_ISA::process_instruction(Instruction *inst, bool *breakpoint) {
 		break;
 	[[unlikely]] default:
 		std::cout << "Wrong instruction" << "\n";
-		inst->dump();
+		inst.dump();
 		NOP();
 		//sc_stop();
 		break;
