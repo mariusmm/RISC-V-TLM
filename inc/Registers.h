@@ -244,7 +244,7 @@ private:
 	/**
 	 * bank of registers (32 regs of 32bits each)
 	 */
-	std::array<std::uint32_t, 32> register_bank = { {0} };
+    std::array<std::uint32_t, 32> register_bank = { {0} };
 
 	/**
 	 * Program counter (32 bits width)
@@ -254,7 +254,8 @@ private:
 	/**
 	 * CSR registers (4096 maximum)
 	 */
-	std::unordered_map<unsigned int, std::uint32_t> CSR{0};
+    std::unordered_map<std::uint32_t, unsigned int> CSR;
+
 
 	Performance *perf;
 
