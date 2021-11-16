@@ -9,7 +9,7 @@
 
 SC_HAS_PROCESS(CPU);
 CPU::CPU(sc_core::sc_module_name const &name, std::uint32_t PC, bool debug) :
-		sc_module(name), instr_bus("instr_bus"), default_time(10,
+		sc_module(name), instr_bus("instr_bus"), inst(0), default_time(10,
 				sc_core::SC_NS), INSTR(0) {
 	register_bank = new Registers();
 	mem_intf = new MemoryInterface();
@@ -18,7 +18,7 @@ CPU::CPU(sc_core::sc_module_name const &name, std::uint32_t PC, bool debug) :
 	log = Log::getInstance();
 
 	register_bank->setPC(PC);
-	register_bank->setValue(Registers::sp, (0x10000000 / 4) - 1);
+    register_bank->setValue(Registers::sp, (Memory::SIZE / 4) - 1);
 
 	irq_line_socket.register_b_transport(this, &CPU::call_interrupt);
 	interrupt = false;
@@ -30,7 +30,6 @@ CPU::CPU(sc_core::sc_module_name const &name, std::uint32_t PC, bool debug) :
 	instr_bus.register_invalidate_direct_mem_ptr(this,
 			&CPU::invalidate_direct_mem_ptr);
 
-	inst = new Instruction(0);
 	exec = new BASE_ISA(0, register_bank, mem_intf);
 	c_inst = new C_extension(0, register_bank, mem_intf);
 	m_inst = new M_extension(0, register_bank, mem_intf);
@@ -55,7 +54,6 @@ CPU::CPU(sc_core::sc_module_name const &name, std::uint32_t PC, bool debug) :
 CPU::~CPU() {
 	delete register_bank;
 	delete mem_intf;
-	delete inst;
 	delete exec;
 	delete c_inst;
 	delete m_inst;
@@ -67,7 +65,7 @@ bool CPU::cpu_process_IRQ() {
 	std::uint32_t csr_temp;
 	bool ret_value = false;
 
-	if (interrupt) {
+    if (interrupt) {
 		csr_temp = register_bank->getCSR(CSR_MSTATUS);
 		if ((csr_temp & MSTATUS_MIE) == 0) {
 			log->SC_log(Log::DEBUG) << "interrupt delayed" << std::endl;
@@ -119,7 +117,7 @@ bool CPU::CPU_step() {
 	/* Get new PC value */
 	if (dmi_ptr_valid) {
 		/* if memory_offset at Memory module is set, this won't work */
-		memcpy(&INSTR, dmi_ptr + register_bank->getPC(), 4);
+		std::memcpy(&INSTR, dmi_ptr + register_bank->getPC(), 4);
 	} else {
 		sc_core::sc_time delay = sc_core::SC_ZERO_TIME;
 		tlm::tlm_dmi dmi_data;
@@ -143,11 +141,11 @@ bool CPU::CPU_step() {
 	log->SC_log(Log::INFO) << "PC: 0x" << std::hex << register_bank->getPC()
 			<< ". ";
 
-	inst->setInstr(INSTR);
+	inst.setInstr(INSTR);
 	bool breakpoint  =  false;
 
 	/* check what type of instruction is and execute it */
-	switch (inst->check_extension()) {
+	switch (inst.check_extension()) {
 	[[likely]] case BASE_EXTENSION:
 		PC_not_affected = exec->process_instruction(inst, &breakpoint);
         if (PC_not_affected) {
@@ -174,7 +172,7 @@ bool CPU::CPU_step() {
         break;
 	[[unlikely]] default:
 		std::cout << "Extension not implemented yet" << std::endl;
-		inst->dump();
+		inst.dump();
 		exec->NOP();
 	}
 

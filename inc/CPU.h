@@ -72,14 +72,13 @@ private:
 	Registers *register_bank;
 	Performance *perf;
 	Log *log;
-	Instruction *inst;
 	C_extension *c_inst;
 	M_extension *m_inst;
 	A_extension *a_inst;
 	BASE_ISA *exec;
-
 	tlm_utils::tlm_quantumkeeper *m_qk;
 
+    Instruction inst;
 	bool interrupt;
 	std::uint32_t int_cause;
 	bool irq_already_down;
