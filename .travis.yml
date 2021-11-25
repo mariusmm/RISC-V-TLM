@@ -22,6 +22,5 @@ install:
  - ../configure  CXXFLAGS="-std=c++11"
  - make -j 4 && make install
  - cd ../..
- - rm -r systemc-2.3.3/build
  - rm systemc-2.3.3.tar.gz
  - cd RISC-V-TLM
