@@ -154,9 +154,10 @@ bool C_extension::Exec_C_JR() {
 	mem_addr = 0;
 
 	new_pc = static_cast<std::int32_t>(static_cast<std::int32_t>((regs->getValue(rs1)) + static_cast<std::int32_t>(mem_addr)) & 0xFFFFFFFE);
-	regs->setPC(new_pc);
 
     logger->debug("{} ns. PC: 0x{:x}. C.JR: PC <- 0x{:x}", sc_core::sc_time_stamp().value(), regs->getPC(), new_pc);
+
+    regs->setPC(new_pc);
 
 	return true;
 }
@@ -433,7 +434,7 @@ bool C_extension::Exec_C_ANDI() {
 	calc = aux & imm;
 	regs->setValue(rd, static_cast<std::int32_t>(calc));
 
-    logger->debug("{} ns. PC: 0x{:x}. C.ANDI: x{:d}({:d}) AND {:d} -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+    logger->debug("{} ns. PC: 0x{:x}. C.ANDI: x{:d}(0x{:x}) AND 0x{:x} -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
                   rs1, aux, imm, rd);
 
 	return true;
@@ -450,8 +451,8 @@ bool C_extension::Exec_C_SUB() {
 	calc = regs->getValue(rs1) - regs->getValue(rs2);
 	regs->setValue(rd, static_cast<std::int32_t>(calc));
 
-    logger->debug("{} ns. PC: 0x{:x}. C.SUB: x{:d} - x{:d} -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, rs2, rd);
+    logger->debug("{} ns. PC: 0x{:x}. C.SUB: x{:d} - x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, rs2, rd, calc);
 
 	return true;
 }

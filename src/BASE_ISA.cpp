@@ -284,13 +284,16 @@ bool BASE_ISA::Exec_BGEU() const {
 
 	if ( static_cast<std::uint32_t>(regs->getValue(rs1)) >= static_cast<std::uint32_t>(regs->getValue(rs2)) ) {
 		new_pc = static_cast<std::int32_t>(regs->getPC() + get_imm_B());
+
+        logger->debug("{} ns. PC: 0x{:x}. BGEU: x{:d}(0x{:x}) > x{:d}(0x{:x}) -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                      rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), new_pc);
+
 		regs->setPC(new_pc);
 	} else {
+        logger->debug("{} ns. PC: 0x{:x}. BGEU: x{:d}(0x{:x}) > x{:d}(0x{:x}) -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                      rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), regs->getPC() + 4);
 		regs->incPC();
 	}
-
-    logger->debug("{} ns. PC: 0x{:x}. BGEU: x{:d}(0x{:x}) > x{:d}(0x{:x}) -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), new_pc);
 
 	return true;
 }
@@ -578,8 +581,8 @@ bool BASE_ISA::Exec_ANDI() const {
 	calc = aux & imm;
 	regs->setValue(rd, static_cast<std::int32_t>(calc));
 
-    logger->debug("{} ns. PC: 0x{:x}. ANDI: x{:d} AND x{:d} -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, imm, rd);
+    logger->debug("{} ns. PC: 0x{:x}. ANDI: x{:d}(0x{:x}) AND 0x{:x} -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, aux, imm, rd);
 
 	return true;
 }

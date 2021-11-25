@@ -142,9 +142,9 @@ bool CPU::CPU_step() {
 		}
 	}
 
-		perf->codeMemoryRead();
-		inst.setInstr(INSTR);
-        bool breakpoint  =  false;
+    perf->codeMemoryRead();
+    inst.setInstr(INSTR);
+    bool breakpoint = false;
 
 	/* check what type of instruction is and execute it */
 	switch (inst.check_extension()) {
