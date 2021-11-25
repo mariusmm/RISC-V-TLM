@@ -12,7 +12,6 @@
 #include "systemc"
 
 #include "extension_base.h"
-#include "Log.h"
 #include "Registers.h"
 
 typedef enum {

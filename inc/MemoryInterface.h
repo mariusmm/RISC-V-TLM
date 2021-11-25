@@ -16,7 +16,6 @@
 #include "tlm_utils/tlm_quantumkeeper.h"
 
 #include "memory.h"
-#include "Log.h"
 
 /**
  * @brief Memory Interface

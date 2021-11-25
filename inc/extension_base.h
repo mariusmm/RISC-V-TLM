@@ -13,8 +13,10 @@
 
 #include "Instruction.h"
 #include "Registers.h"
-#include "Log.h"
 #include "MemoryInterface.h"
+
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/basic_file_sink.h"
 
 #define EXCEPTION_CAUSE_INSTRUCTION_MISALIGN  0
 #define EXCEPTION_CAUSE_INSTRUCTION_ACCESS    1
@@ -51,8 +53,8 @@ protected:
 	sc_dt::sc_uint<32> m_instr;
 	Registers *regs;
 	Performance *perf;
-//	Log *log;
 	MemoryInterface *mem_intf;
+    std::shared_ptr<spdlog::logger> logger;
 };
 
 #endif /* INC_EXTENSION_BASE_H_ */

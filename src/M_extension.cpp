@@ -8,6 +8,7 @@
 
 #include "M_extension.h"
 
+
 op_M_Codes M_extension::decode() {
 
 	switch (opcode()) {
@@ -59,8 +60,8 @@ bool M_extension::Exec_M_MUL() {
 	result = result & 0x00000000FFFFFFFF;
 	regs->setValue(rd, result);
 
-	FILE_LOG(logDEBUG) << std::dec << "MUL: x" << rs1 << " * x" << rs2
-			<< " -> x" << rd << "(" << result << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. M.MUL: x{:d} * x{:d} -> x{:d}({:d})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, rs2, rd, result);
 
 	return true;
 }
@@ -83,8 +84,8 @@ bool M_extension::Exec_M_MULH() {
 	ret_value = (int32_t) ((result >> 32) & 0x00000000FFFFFFFF);
 	regs->setValue(rd, ret_value);
 
-	FILE_LOG(logDEBUG) << std::dec << "MULH: x" << rs1 << " * x" << rs2
-			<< " -> x" << rd << "(" << result << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. M.MULH: x{:d} * x{:d} -> x{:d}({:d})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, rs2, rd, result);
 
 	return true;
 }
@@ -106,8 +107,8 @@ bool M_extension::Exec_M_MULHSU() {
 	result = (result >> 32) & 0x00000000FFFFFFFF;
 	regs->setValue(rd, result);
 
-	FILE_LOG(logDEBUG) << std::dec << "MULHSU: x" << rs1 << " * x" << rs2
-			<< " -> x" << rd << "(" << result << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. M.MULHSU: x{:d} * x{:d} -> x{:d}({:d})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, rs2, rd, result);
 
 	return true;
 }
@@ -129,8 +130,8 @@ bool M_extension::Exec_M_MULHU() {
 	ret_value = (uint32_t) (result >> 32) & 0x00000000FFFFFFFF;
 	regs->setValue(rd, ret_value);
 
-	FILE_LOG(logDEBUG) << std::dec << "MULHU: x" << rs1 << " * x" << rs2
-			<< " -> x" << rd << "(" << ret_value << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. M.MULHU: x{:d} * x{:d} -> x{:d}({:d})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, rs2, rd, result);
 
 	return true;
 }
@@ -158,8 +159,8 @@ bool M_extension::Exec_M_DIV() {
 
 	regs->setValue(rd, result);
 
-	FILE_LOG(logDEBUG) << std::dec << "DIV: x" << rs1 << " / x" << rs2
-			<< " -> x" << rd << "(" << result << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. M.DIV: x{:d} / x{:d} -> x{:d}({:d})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, rs2, rd, result);
 
 	return true;
 }
@@ -185,8 +186,8 @@ bool M_extension::Exec_M_DIVU() {
 
 	regs->setValue(rd, result);
 
-	FILE_LOG(logDEBUG) << std::dec << "DIVU: x" << rs1 << " / x" << rs2
-			<< " -> x" << rd << "(" << result << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. M.DIVU: x{:d} / x{:d} -> x{:d}({:d})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, rs2, rd, result);
 
 	return true;
 }
@@ -213,8 +214,8 @@ bool M_extension::Exec_M_REM() {
 
 	regs->setValue(rd, result);
 
-	FILE_LOG(logDEBUG) << std::dec << "REM: x" << rs1 << " / x" << rs2
-			<< " -> x" << rd << "(" << result << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. M.REM: x{:d} / x{:d} -> x{:d}({:d})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, rs2, rd, result);
 
 	return true;
 }
@@ -239,8 +240,8 @@ bool M_extension::Exec_M_REMU() {
 
 	regs->setValue(rd, result);
 
-	FILE_LOG(logDEBUG) << std::dec << "REMU: x" << rs1 << " / x" << rs2
-			<< " -> x" << rd << "(" << result << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. M.REMU: x{:d} / x{:d} -> x{:d}({:d})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, rs2, rd, result);
 
 	return true;
 }

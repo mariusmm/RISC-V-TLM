@@ -140,7 +140,6 @@ op_C_Codes C_extension::decode() {
 	default:
 		return OP_C_ERROR;
 		break;
-
 	}
 
 	return OP_C_ERROR;
@@ -157,7 +156,7 @@ bool C_extension::Exec_C_JR() {
 	new_pc = (regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE;
 	regs->setPC(new_pc);
 
-		FILE_LOG(logINFO) << "JR: PC <- 0x" << std::hex << new_pc << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.JR: PC <- 0x{:x}", sc_core::sc_time_stamp().value(), regs->getPC(), new_pc);
 
 	return true;
 }
@@ -173,10 +172,8 @@ bool C_extension::Exec_C_MV() {
 	calc = regs->getValue(rs1) + regs->getValue(rs2);
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "C.MV: x" << std::dec << rs1 << "(0x" << std::hex
-			<< regs->getValue(rs1) << ") + x" << std::dec << rs2 << "(0x"
-			<< std::hex << regs->getValue(rs2) << ") -> x" << std::dec << rd
-			<< "(0x" << std::hex << calc << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.MV: x{:d}(0x{:x}) + x{:d}(0x{:x}) -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), rd, calc);
 
 	return true;
 }
@@ -192,8 +189,8 @@ bool C_extension::Exec_C_ADD() {
 	calc = regs->getValue(rs1) + regs->getValue(rs2);
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "C.ADD: x" << std::dec << rs1 << " + x" << rs2
-			<< " -> x" << rd << "(0x" << std::hex << calc << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.ADD: x{:d} + x{} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, rs2, rd, calc);
 
 	return true;
 }
@@ -215,9 +212,8 @@ bool C_extension::Exec_C_LWSP() {
 
 	regs->setValue(rd, data);
 
-		FILE_LOG(logINFO) << "C.LWSP: x" << std::dec << rs1 << " + " << imm
-			<< " (@0x" << std::hex << mem_addr << std::dec << ") -> x" << rd
-			<< "(" << std::hex << data << ")" << std::dec << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.LWSP: x{:d} + {:d}(@0x{:x}) -> x{:d}({:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, imm, mem_addr, rd, data);
 
 	return true;
 }
@@ -239,9 +235,8 @@ bool C_extension::Exec_C_ADDI4SPN() {
 	calc = regs->getValue(rs1) + imm;
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << std::dec << "C.ADDI4SPN: x" << rs1 << "(0x"
-			<< std::hex << regs->getValue(rs1) << ") + " << std::dec << imm
-			<< " -> x" << rd << "(0x" << std::hex << calc << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.ADDI4SN: x{:d} + (0x{:x}) + {:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, regs->getValue(rs1), imm, rd, calc);
 
 	return true;
 }
@@ -260,16 +255,16 @@ bool C_extension::Exec_C_ADDI16SP() {
 		calc = regs->getValue(rs1) + imm;
 		regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << std::dec << "C.ADDI16SP: x" << rs1 << " + "
-				<< std::dec << imm << " -> x" << rd << "(0x" << std::hex << calc
-				<< ")" << std::endl;
+        logger->debug("{} ns. PC: 0x{:x}. C.ADDI16SP: x{:d} + {:d} -> x{:d} (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                      rs1, imm, rd, calc);
 	} else {
 		/* C.LUI OPCODE */
 		rd = get_rd();
 		imm = get_imm_LUI();
 		regs->setValue(rd, imm);
-		FILE_LOG(logINFO) << std::dec << "C.LUI x" << rd << " <- 0x"
-				<< std::hex << imm << std::endl;
+
+        logger->debug("{} ns. PC: 0x{:x}. C.LUI: x{:d} <- 0x{:x}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                      rd, imm);
 	}
 
 	return true;
@@ -291,9 +286,8 @@ bool C_extension::Exec_C_SWSP() {
 
 	mem_intf->writeDataMem(mem_addr, data, 4);
 
-		FILE_LOG(logINFO) << std::dec << "C.SWSP: x" << rs2 << "(0x"
-			<< std::hex << data << ") -> x" << std::dec << rs1 << " + " << imm
-			<< " (@0x" << std::hex << mem_addr << std::dec << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.SWSP: x{:d}(0x{:x}) -> x{:d} + {} (@0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs2, data, rs1, imm, mem_addr);
 
 	return true;
 }
@@ -314,9 +308,8 @@ bool C_extension::Exec_C_BEQZ() {
 		new_pc = regs->getPC();
 	}
 
-		FILE_LOG(logINFO) << "C.BEQZ: x" << std::dec << rs1 << "(" << val1
-			<< ") == 0? -> PC (0x" << std::hex << new_pc << ")" << std::dec
-			<< std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.BEQZ: x{:d}(0x{:x}) == 0? -> PC (0xx{:d})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, val1, new_pc);
 
 	return true;
 }
@@ -337,10 +330,8 @@ bool C_extension::Exec_C_BNEZ() {
 		new_pc = regs->getPC();
 	}
 
-
-		FILE_LOG(logINFO) << "C.BNEZ: x" << std::dec << rs1 << "(0x"
-			<< std::hex << val1 << ") != 0? -> PC (0x" << std::hex << new_pc
-			<< ")" << std::dec << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.BNEZ: x{:d}(0x{:x}) != 0? -> PC (0xx{:d})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, val1, new_pc);
 
 	return true;
 }
@@ -357,9 +348,8 @@ bool C_extension::Exec_C_LI() {
 	calc = regs->getValue(rs1) + imm;
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << std::dec << "C.LI: x" << rs1 << "("
-			<< regs->getValue(rs1) << ") + " << imm << " -> x" << rd << "("
-			<< calc << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.LI: x{:d} ({:d}) + {:d} -> x{:d}(0x{:x}) ", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, regs->getValue(rs1), imm, rd, calc);
 
 	return true;
 }
@@ -378,8 +368,8 @@ bool C_extension::Exec_C_SRLI() {
 	calc = ((uint32_t) regs->getValue(rs1)) >> shift;
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "C.SRLI: x" << rs1 << " >> " << shift << " -> x"
-			<< rd << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.SRLI: x{:d} >> {} -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, shift, rd);
 
 	return true;
 }
@@ -398,9 +388,8 @@ bool C_extension::Exec_C_SRAI() {
 	calc = (int32_t) regs->getValue(rs1) >> shift;
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "C.SRAI: x" << rs1 << " >> " << std::dec << shift
-			<< " -> x" << rd << "(" << calc << ")" << std::endl;
-
+    logger->debug("{} ns. PC: 0x{:x}. C.SRAI: x{:d} >> {} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, shift, rd, calc);
 
 	return true;
 }
@@ -419,8 +408,8 @@ bool C_extension::Exec_C_SLLI() {
 	calc = ((uint32_t) regs->getValue(rs1)) << shift;
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "C.SLLI: x" << std::dec << rs1 << " << " << shift
-			<< " -> x" << rd << "(0x" << calc << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.SLLI: x{:d} << {} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, shift, rd, calc);
 
 	return true;
 }
@@ -439,8 +428,8 @@ bool C_extension::Exec_C_ANDI() {
 	calc = aux & imm;
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "C.ANDI: x" << rs1 << "(" << aux << ") AND "
-			<< imm << " -> x" << rd << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.ANDI: x{:d}({:d}) AND {:d} -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, aux, imm, rd);
 
 	return true;
 }
@@ -456,8 +445,8 @@ bool C_extension::Exec_C_SUB() {
 	calc = regs->getValue(rs1) - regs->getValue(rs2);
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "C.SUB: x" << std::dec << rs1 << " - x" << rs2
-			<< " -> x" << rd << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.SUB: x{:d} - x{:d} -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, rs2, rd);
 
 	return true;
 }
@@ -473,8 +462,8 @@ bool C_extension::Exec_C_XOR() {
 	calc = regs->getValue(rs1) ^ regs->getValue(rs2);
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "C.XOR: x" << std::dec << rs1 << " XOR x" << rs2
-			<< "-> x" << rd << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.XOR: x{:d} XOR x{:d} -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, rs2, rd);
 
 	return true;
 }
@@ -490,8 +479,8 @@ bool C_extension::Exec_C_OR() {
 	calc = regs->getValue(rs1) | regs->getValue(rs2);
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "C_OR: x" << std::dec << rs1 << " OR x" << rs2
-			<< "-> x" << rd << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.OR: x{:d} OR x{:d} -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, rs2, rd);
 
 	return true;
 }
@@ -507,8 +496,8 @@ bool C_extension::Exec_C_AND() {
 	calc = regs->getValue(rs1) & regs->getValue(rs2);
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "C.AND: x" << std::dec << rs1 << " AND x" << rs2
-			<< "-> x" << rd << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.AND: x{:d} AND x{:d} -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, rs2, rd);
 
 	return true;
 }
@@ -525,9 +514,7 @@ bool C_extension::Exec_C_ADDI() {
 	calc = regs->getValue(rs1) + imm;
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "C.ADDI: x" << std::dec << rs1 << " + " << imm
-			<< " -> x" << std::dec << rd << "(0x" << std::hex << calc << ")"
-			<< std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.ADDI: x{:d} + {} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(), rs1, imm, rd, calc);
 
 	return true;
 }
@@ -546,9 +533,8 @@ bool C_extension::Exec_C_JALR() {
 	new_pc = (regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE;
 	regs->setPC(new_pc);
 
-		FILE_LOG(logINFO) << "C.JALR: x" << std::dec << rd << " <- 0x"
-			<< std::hex << old_pc + 4 << " PC <- 0x" << std::hex << new_pc
-			<< std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.JALR: x{:d} <- 0x{:x} PC <- 0xx{:x}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rd, old_pc + 4, new_pc);
 
 	return true;
 }
@@ -567,10 +553,8 @@ bool C_extension::Exec_C_LW() {
 	data = mem_intf->readDataMem(mem_addr, 4);
 	regs->setValue(rd, data);
 
-		FILE_LOG(logINFO) << std::dec << "C.LW: x" << rs1 << "(0x" << std::hex
-			<< regs->getValue(rs1) << ") + " << std::dec << imm << " (@0x"
-			<< std::hex << mem_addr << std::dec << ") -> x" << rd << std::hex
-			<< " (0x" << data << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.LW: x{:d}(0x{:x}) + {:d} (@0x{:x}) -> {:d} (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, regs->getValue(rs1), imm, mem_addr, rd, data);
 
 	return true;
 }
@@ -590,9 +574,8 @@ bool C_extension::Exec_C_SW() {
 
 	mem_intf->writeDataMem(mem_addr, data, 4);
 
-		FILE_LOG(logINFO) << "C.SW: x" << std::dec << rs2 << "(0x" << std::hex
-			<< data << ") -> x" << std::dec << rs1 << " + 0x" << std::hex << imm
-			<< " (@0x" << std::hex << mem_addr << std::dec << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.SW: x{:d}(0x{:x}) -> x{:d} + 0x{:x}(@0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+        rs2, data, rs1, imm, mem_addr);
 
 	return true;
 }
@@ -612,9 +595,8 @@ bool C_extension::Exec_C_JAL(int m_rd) {
 	old_pc = old_pc + 2;
 	regs->setValue(rd, old_pc);
 
-		FILE_LOG(logINFO) << "C.JAL: x" << std::dec << rd << " <- 0x"
-			<< std::hex << old_pc << std::dec << ". PC + 0x" << std::hex
-			<< mem_addr << " -> PC (0x" << new_pc << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. C.JAL: x{:d} <- 0x{:x}. PC + 0x{:x} -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+        rd, old_pc, mem_addr, new_pc);
 
 	return true;
 }

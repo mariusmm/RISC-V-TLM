@@ -6,6 +6,9 @@
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "spdlog/spdlog.h"
+
+
 #include "BASE_ISA.h"
 
 typedef enum {
@@ -90,8 +93,8 @@ bool BASE_ISA::Exec_LUI() {
 	imm = get_imm_U() << 12;
 	regs->setValue(rd, imm);
 
-	FILE_LOG(logINFO) << "LUI x" << std::dec << rd << " <- 0x" << std::hex
-			<< imm << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. LUI: x{:d} <- 0x{:x}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rd, imm);
 
 	return true;
 }
@@ -107,8 +110,8 @@ bool BASE_ISA::Exec_AUIPC() {
 
 	regs->setValue(rd, new_pc);
 
-		FILE_LOG(logINFO) << "AUIPC x" << std::dec << rd << " <- 0x"
-			<< std::hex << imm << " + PC (0x" << new_pc << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. AUIPC: x{:d} <- 0x{:x} + PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rd, imm, new_pc);
 
 	return true;
 }
@@ -128,9 +131,8 @@ bool BASE_ISA::Exec_JAL() {
 	old_pc = old_pc + 4;
 	regs->setValue(rd, old_pc);
 
-		FILE_LOG(logINFO) << "JAL: x" << std::dec << rd << " <- 0x" << std::hex
-			<< old_pc << std::dec << ". PC + 0x" << std::hex << mem_addr
-			<< " -> PC (0x" << new_pc << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. JAL: x{:d} <- 0x{:x}. PC + 0x{:x} -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rd, old_pc, mem_addr, new_pc);
 
 	return true;
 }
@@ -150,10 +152,10 @@ bool BASE_ISA::Exec_JALR() {
 	new_pc = (regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE;
 	regs->setPC(new_pc);
 
-		FILE_LOG(logINFO) << "JALR: x" << std::dec << rd << " <- 0x"
-			<< std::hex << old_pc + 4 << " PC <- 0x" << new_pc << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. JALR: x{:d} <- 0x{:x}. PC <- 0x{:x}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rd, old_pc + 4, new_pc);
 
-		return true;
+	return true;
 }
 
 bool BASE_ISA::Exec_BEQ() {
@@ -171,11 +173,8 @@ bool BASE_ISA::Exec_BEQ() {
 		new_pc = regs->getPC();
 	}
 
-		FILE_LOG(logINFO) << "BEQ x" << std::dec << rs1 << "(0x" << std::hex
-			<< regs->getValue(rs1) << ") == x" << std::dec << rs2 << "(0x"
-			<< std::hex << regs->getValue(rs2) << ")? -> PC (0x" << std::hex
-			<< new_pc << ")" << std::dec << std::endl;
-
+    logger->debug("{} ns. PC: 0x{:x}. BEQ: x{:d}(0x{:x}) == x{:d}(0x{:x})? -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), new_pc);
 
 	return true;
 }
@@ -199,10 +198,8 @@ bool BASE_ISA::Exec_BNE() {
 		new_pc = regs->getPC();
 	}
 
-		FILE_LOG(logINFO) << "BNE: x" << std::dec << rs1 << "(0x" << std::hex
-			<< val1 << ") == x" << std::dec << rs2 << "(0x" << std::hex << val2
-			<< ")? -> PC (0x" << std::hex << new_pc << ")" << std::dec
-			<< std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. BNE: x{:d}(0x{:x}) != x{:d}(0x{:x})? -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, val1, rs2, val2, new_pc);
 
 	return true;
 }
@@ -221,11 +218,8 @@ bool BASE_ISA::Exec_BLT() {
 		regs->incPC();
 	}
 
-		FILE_LOG(logINFO) << "BLT x" << std::dec << rs1 << "(0x" << std::hex
-			<< (int32_t) regs->getValue(rs1) << ") < x" << std::dec << rs2
-			<< "(0x" << std::hex << (int32_t) regs->getValue(rs2)
-			<< ")? -> PC (0x" << std::hex << new_pc << ")" << std::dec
-			<< std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. BLT: x{:d}(0x{:x}) < x{:d}(0x{:x})? -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), new_pc);
 
 	return true;
 }
@@ -244,11 +238,8 @@ bool BASE_ISA::Exec_BGE() {
 		regs->incPC();
 	}
 
-		FILE_LOG(logINFO) << "BGE x" << std::dec << rs1 << "(0x" << std::hex
-			<< (int32_t) regs->getValue(rs1) << ") > x" << std::dec << rs2
-			<< "(0x" << std::hex << (int32_t) regs->getValue(rs2)
-			<< ")? -> PC (0x" << std::hex << new_pc << ")" << std::dec
-			<< std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. BGE: x{:d}(0x{:x}) > x{:d}(0x{:x})? -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), new_pc);
 
 	return true;
 }
@@ -268,10 +259,8 @@ bool BASE_ISA::Exec_BLTU() {
 		new_pc = regs->getPC();
 	}
 
-		FILE_LOG(logINFO) << "BLTU x" << std::dec << rs1 << "(0x" << std::hex
-			<< regs->getValue(rs1) << ") < x" << std::dec << rs2 << "(0x"
-			<< std::hex << regs->getValue(rs2) << ")? -> PC (0x" << std::hex
-			<< new_pc << ")" << std::dec << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. BLTU: x{:d}(0x{:x}) < x{:d}(0x{:x})? -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), new_pc);
 
 	return true;
 }
@@ -290,10 +279,8 @@ bool BASE_ISA::Exec_BGEU() {
 		regs->incPC();
 	}
 
-		FILE_LOG(logINFO) << "BGEU x" << std::dec << rs1 << "(0x" << std::hex
-			<< regs->getValue(rs1) << ") > x" << std::dec << rs2 << "(0x"
-			<< std::hex << regs->getValue(rs2) << ")? -> PC (0x" << std::hex
-			<< new_pc << ")" << std::dec << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. BGEU: x{:d}(0x{:x}) > x{:d}(0x{:x}) -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), new_pc);
 
 	return true;
 }
@@ -312,8 +299,8 @@ bool BASE_ISA::Exec_LB() {
 	data = mem_intf->readDataMem(mem_addr, 1);
 	regs->setValue(rd, data);
 
-		FILE_LOG(logINFO) << "LB: x" << rs1 << " + " << imm << " (@0x"
-			<< std::hex << mem_addr << std::dec << ") -> x" << rd << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. LB: x{:d} + x{:d}(0x{:x}) -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, imm, mem_addr, rd);
 
 	return true;
 }
@@ -332,8 +319,8 @@ bool BASE_ISA::Exec_LH() {
 	data = mem_intf->readDataMem(mem_addr, 2);
 	regs->setValue(rd, data);
 
-		FILE_LOG(logINFO) << "LH: x" << rs1 << " + " << imm << " (@0x"
-			<< std::hex << mem_addr << std::dec << ") -> x" << rd << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. LH: x{:d} + x{:d}(0x{:x}) -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, imm, mem_addr, rd);
 
 	return true;
 }
@@ -352,10 +339,9 @@ bool BASE_ISA::Exec_LW() {
 	data = mem_intf->readDataMem(mem_addr, 4);
 	regs->setValue(rd, data);
 
-		FILE_LOG(logINFO) << std::dec << "LW: x" << rs1 << "(0x" << std::hex
-			<< regs->getValue(rs1) << ") + " << std::dec << imm << " (@0x"
-			<< std::hex << mem_addr << std::dec << ") -> x" << rd << std::hex
-			<< " (0x" << data << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. LW: x{:d} + x{:d}(0x{:x}) -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, imm, mem_addr, rd);
+
 	return true;
 }
 
@@ -373,8 +359,9 @@ bool BASE_ISA::Exec_LBU() {
 	data = mem_intf->readDataMem(mem_addr, 1);
 	regs->setValue(rd, data);
 
-		FILE_LOG(logINFO) << "LBU: x" << rs1 << " + " << imm << " (@0x"
-			<< std::hex << mem_addr << std::dec << ") -> x" << rd << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. LBU: x{:d} + x{:d}(0x{:x}) -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, imm, mem_addr, rd);
+
 	return true;
 }
 
@@ -392,9 +379,8 @@ bool BASE_ISA::Exec_LHU() {
 	data = mem_intf->readDataMem(mem_addr, 2);
 	regs->setValue(rd, data);
 
-		FILE_LOG(logINFO) << "LHU: x" << std::dec << rs1 << " + " << imm
-			<< " (@0x" << std::hex << mem_addr << std::dec << ") -> x" << rd
-			<< "(0x" << std::hex << data << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. LHU: x{:d} + x{:d}(0x{:x}) -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, imm, mem_addr, rd);
 
 	return true;
 }
@@ -414,9 +400,8 @@ bool BASE_ISA::Exec_SB() {
 
 	mem_intf->writeDataMem(mem_addr, data, 1);
 
-		FILE_LOG(logINFO) << "SB: x" << std::dec << rs2 << " -> x" << rs1
-			<< " + 0x" << std::hex << imm << " (@0x" << std::hex << mem_addr
-			<< std::dec << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. SB: x{:d} -> x{:d} + 0x{:x}(@0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs2, rs1, imm, mem_addr);
 
 	return true;
 }
@@ -436,9 +421,8 @@ bool BASE_ISA::Exec_SH() {
 
 	mem_intf->writeDataMem(mem_addr, data, 2);
 
-		FILE_LOG(logINFO) << "SH: x" << std::dec << rs2 << " -> x" << rs1
-			<< " + 0x" << std::hex << imm << " (@0x" << std::hex << mem_addr
-			<< std::dec << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. SH: x{:d} -> x{:d} + 0x{:x}(@0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs2, rs1, imm, mem_addr);
 
 	return true;
 }
@@ -458,9 +442,9 @@ bool BASE_ISA::Exec_SW() {
 
 	mem_intf->writeDataMem(mem_addr, data, 4);
 
-		FILE_LOG(logINFO) << "SW: x" << std::dec << rs2 << "(0x" << std::hex
-			<< data << ") -> x" << std::dec << rs1 << " + 0x" << std::hex << imm
-			<< " (@0x" << std::hex << mem_addr << std::dec << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. SW: x{:d} -> x{:d} + 0x{:x}(@0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs2, rs1, imm, mem_addr);
+
 	return true;
 }
 
@@ -476,9 +460,8 @@ bool BASE_ISA::Exec_ADDI() {
 	calc = regs->getValue(rs1) + imm;
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "ADDI: x" << std::dec << rs1 << " + " << imm
-			<< " -> x" << std::dec << rd << "(0x" << std::hex << calc << ")"
-			<< std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. ADDI: x{:d} + x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, imm, rd, calc);
 
 	return true;
 }
@@ -493,12 +476,13 @@ bool BASE_ISA::Exec_SLTI() {
 
 	if (regs->getValue(rs1) < imm) {
 		regs->setValue(rd, 1);
-		FILE_LOG(logINFO) << "SLTI: x" << rs1 << " < " << imm << " => "
-				<< "1 -> x" << rd << std::endl;
+
+        logger->debug("{} ns. PC: 0x{:x}. SLTI: x{:d} < x{:d} => 1 -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                      rs1, imm, rd);
 	} else {
 		regs->setValue(rd, 0);
-		FILE_LOG(logINFO) << "SLTI: x" << rs1 << " < " << imm << " => "
-				<< "0 -> x" << rd << std::endl;
+        logger->debug("{} ns. PC: 0x{:x}. SLTI: x{:d} < x{:d} => 0 -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                      rs1, imm, rd);
 	}
 
 	return true;
@@ -514,12 +498,12 @@ bool BASE_ISA::Exec_SLTIU() {
 
 	if ((uint32_t) regs->getValue(rs1) < (uint32_t) imm) {
 		regs->setValue(rd, 1);
-		FILE_LOG(logINFO) << "SLTIU: x" << rs1 << " < " << imm << " => "
-				<< "1 -> x" << rd << std::endl;
+        logger->debug("{} ns. PC: 0x{:x}. SLTIU: x{:d} < x{:d} => 1 -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                      rs1, imm, rd);
 	} else {
 		regs->setValue(rd, 0);
-		FILE_LOG(logINFO) << "SLTIU: x" << rs1 << " < " << imm << " => "
-				<< "0 -> x" << rd << std::endl;
+        logger->debug("{} ns. PC: 0x{:x}. SLTIU: x{:d} < x{:d} => 0 -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                      rs1, imm, rd);
 	}
 
 	return true;
@@ -537,8 +521,8 @@ bool BASE_ISA::Exec_XORI() {
 	calc = regs->getValue(rs1) ^ imm;
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "XORI: x" << rs1 << " XOR " << imm << "-> x" << rd
-			<< std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. XORI: x{:d} XOR x{:d} -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, imm, rd);
 
 	return true;
 }
@@ -555,8 +539,8 @@ bool BASE_ISA::Exec_ORI() {
 	calc = regs->getValue(rs1) | imm;
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "ORI: x" << rs1 << " OR " << imm << "-> x" << rd
-			<< std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. ORI: x{:d} OR x{:d} -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, imm, rd);
 
 	return true;
 }
@@ -575,9 +559,8 @@ bool BASE_ISA::Exec_ANDI() {
 	calc = aux & imm;
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "ANDI: x" << rs1 << "(0x" << std::hex << aux
-			<< ") AND 0x" << imm << " -> x" << std::dec << rd << "(0x"
-			<< std::hex << calc << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. ANDI: x{:d} AND x{:d} -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, imm, rd);
 
 	return true;
 }
@@ -603,8 +586,8 @@ bool BASE_ISA::Exec_SLLI() {
 	calc = ((uint32_t) regs->getValue(rs1)) << shift;
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "SLLI: x" << std::dec << rs1 << " << " << shift
-			<< " -> x" << rd << "(0x" << std::hex << calc << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. SLLI: x{:d} << {:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, shift, rd, calc);
 
 	return true;
 }
@@ -623,8 +606,8 @@ bool BASE_ISA::Exec_SRLI() {
 	calc = ((uint32_t) regs->getValue(rs1)) >> shift;
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "SRLI: x" << std::dec << rs1 << " >> " << shift
-			<< " -> x" << rd << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. SRLI: x{:d} >> {:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, shift, rd, calc);
 
 	return true;
 }
@@ -643,8 +626,8 @@ bool BASE_ISA::Exec_SRAI() {
 	calc = regs->getValue(rs1) >> shift;
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "SRAI: x" << std::dec << rs1 << " >> " << shift
-			<< " -> x" << rd << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. SRAI: x{:d} >> {:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, shift, rd, calc);
 
 	return true;
 }
@@ -660,8 +643,8 @@ bool BASE_ISA::Exec_ADD() {
 
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "ADD: x" << std::dec << rs1 << " + x" << rs2
-			<< " -> x" << rd << std::hex << "(0x" << calc << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. ADD: x{:d} + x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, rs2, rd, calc);
 
 	return true;
 }
@@ -676,8 +659,8 @@ bool BASE_ISA::Exec_SUB() {
 	calc = regs->getValue(rs1) - regs->getValue(rs2);
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "SUB: x" << rs1 << " - x" << rs2 << " -> x" << rd
-			<< "(" << calc << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. SUB: x{:d} - x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, rs2, rd, calc);
 
 	return true;
 }
@@ -696,8 +679,8 @@ bool BASE_ISA::Exec_SLL() {
 	calc = ((uint32_t) regs->getValue(rs1)) << shift;
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "SLL: x" << rs1 << " << " << shift << " -> x"
-			<< rd << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. SLL: x{:d} << x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, shift, rd, calc);
 
 	return true;
 }
@@ -711,12 +694,12 @@ bool BASE_ISA::Exec_SLT() {
 
 	if (regs->getValue(rs1) < regs->getValue(rs2)) {
 		regs->setValue(rd, 1);
-		FILE_LOG(logINFO) << "SLT: x" << rs1 << " < x" << rs2 << " => "
-				<< "1 -> x" << rd << std::endl;
+        logger->debug("{} ns. PC: 0x{:x}. SLT: x{:d} < x{:d} => 1 -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                      rs1, rs2, rd);
 	} else {
 		regs->setValue(rd, 0);
-		FILE_LOG(logINFO) << "SLT: x" << rs1 << " < x" << rs2 << " => "
-				<< "0 -> x" << rd << std::endl;
+        logger->debug("{} ns. PC: 0x{:x}. SLT: x{:d} < x{:d} => 0 -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                      rs1, rs2, rd);
 	}
 
 	return true;
@@ -731,12 +714,12 @@ bool BASE_ISA::Exec_SLTU() {
 
 	if ((uint32_t) regs->getValue(rs1) < (uint32_t) regs->getValue(rs2)) {
 		regs->setValue(rd, 1);
-		FILE_LOG(logINFO) << "SLTU: x" << rs1 << " < x" << rs2 << " => "
-				<< "1 -> x" << rd << std::endl;
+        logger->debug("{} ns. PC: 0x{:x}. SLTU: x{:d} < x{:d} => 1 -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                      rs1, rs2, rd);
 	} else {
 		regs->setValue(rd, 0);
-		FILE_LOG(logINFO) << "SLTU: x" << rs1 << " < x" << rs2 << " => "
-				<< "0 -> x" << rd << std::endl;
+        logger->debug("{} ns. PC: 0x{:x}. SLTU: x{:d} < x{:d} => 0 -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                      rs1, rs2, rd);
 	}
 
 	return true;
@@ -753,8 +736,8 @@ bool BASE_ISA::Exec_XOR() {
 	calc = regs->getValue(rs1) ^ regs->getValue(rs2);
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "XOR: x" << rs1 << " XOR x" << rs2 << "-> x" << rd
-			<< std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. XOR: x{:d} XOR x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, rs2, rd, calc);
 
 	return true;
 }
@@ -773,8 +756,8 @@ bool BASE_ISA::Exec_SRL() {
 	calc = ((uint32_t) regs->getValue(rs1)) >> shift;
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "SRL: x" << rs1 << " >> " << shift << " -> x"
-			<< rd << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. SRL: x{:d} >> {:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, shift, rd, calc);
 
 	return true;
 }
@@ -793,8 +776,8 @@ bool BASE_ISA::Exec_SRA() {
 	calc = regs->getValue(rs1) >> shift;
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "SRA: x" << rs1 << " >> " << shift << " -> x"
-			<< rd << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. SRA: x{:d} >> {:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, shift, rd, calc);
 
 	return true;
 }
@@ -810,8 +793,8 @@ bool BASE_ISA::Exec_OR() {
 	calc = regs->getValue(rs1) | regs->getValue(rs2);
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "OR: x" << rs1 << " OR x" << rs2 << "-> x" << rd
-			<< std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. OR: x{:d} OR x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, rs2, rd, calc);
 
 	return true;
 }
@@ -827,21 +810,22 @@ bool BASE_ISA::Exec_AND() {
 	calc = regs->getValue(rs1) & regs->getValue(rs2);
 	regs->setValue(rd, calc);
 
-		FILE_LOG(logINFO) << "AND: x" << rs1 << " AND x" << rs2 << "-> x" << rd
-			<< std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. AND: x{:d} AND x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, rs2, rd, calc);
 
 	return true;
 }
 
 bool BASE_ISA::Exec_FENCE() {
-	FILE_LOG(logINFO) << "FENCE" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. FENCE");
 
 	return true;
 }
 
 bool BASE_ISA::Exec_ECALL() {
 
-	FILE_LOG(logINFO) << "ECALL" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. ECALL");
+
 	std::cout << std::endl << "ECALL Instruction called, stopping simulation"
 			<< std::endl;
 	regs->dump();
@@ -861,7 +845,7 @@ bool BASE_ISA::Exec_ECALL() {
 
 bool BASE_ISA::Exec_EBREAK() {
 
-	FILE_LOG(logINFO) << "EBREAK" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. EBREAK");
 	std::cout << std::endl << "EBRAK  Instruction called, dumping information"
 			<< std::endl;
 	regs->dump();
@@ -891,9 +875,8 @@ bool BASE_ISA::Exec_CSRRW() {
 	aux = regs->getValue(rs1);
 	regs->setCSR(csr, aux);
 
-	FILE_LOG(logINFO) << std::hex << "CSRRW: CSR #" << csr << " -> x"
-			<< std::dec << rd << ". x" << rs1 << "-> CSR #" << std::hex << csr
-			<< " (0x" << aux << ")" << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. CSRRW: CSR #{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  csr, rd, aux);
 
 	return true;
 }
@@ -908,8 +891,7 @@ bool BASE_ISA::Exec_CSRRS() {
 	csr = get_csr();
 
 	if (rd == 0) {
-		FILE_LOG(logINFO) << "CSRRS with rd1 == 0, doing nothing."
-				<< std::endl;
+        logger->debug("{} ns. PC: 0x{:x}. CSRRS with rd1 == 0, doing nothing.");
 		return false;
 	}
 
@@ -922,9 +904,8 @@ bool BASE_ISA::Exec_CSRRS() {
 	aux2 = aux | bitmask;
 	regs->setCSR(csr, aux2);
 
-	FILE_LOG(logINFO) << "CSRRS: CSR #" << csr << "(0x" << std::hex << aux
-			<< ") -> x" << std::dec << rd << ". x" << rs1 << " & CSR #" << csr
-			<< " <- 0x" << std::hex << aux2 << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. CSRRS: CSR #{:d}(0x{:x}) -> x{:d}(0x{:x}) & CSR #{:d} <- 0x{:x}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  csr, aux, rd, rs1, csr, aux2);
 
 	return true;
 }
@@ -939,8 +920,7 @@ bool BASE_ISA::Exec_CSRRC() {
 	csr = get_csr();
 
 	if (rd == 0) {
-		FILE_LOG(logINFO) << "CSRRC with rd1 == 0, doing nothing."
-				<< std::endl;
+        logger->debug("{} ns. PC: 0x{:x}. CSRRC with rd1 == 0, doing nothing.");
 		return true;
 	}
 
@@ -953,9 +933,8 @@ bool BASE_ISA::Exec_CSRRC() {
 	aux2 = aux & ~bitmask;
 	regs->setCSR(csr, aux2);
 
-	FILE_LOG(logINFO) << "CSRRC: CSR #" << csr << "(0x" << std::hex << aux
-			<< ") -> x" << std::dec << rd << ". x" << rs1 << " & CSR #" << csr
-			<< " <- 0x" << std::hex << aux2 << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. CSRRC: CSR #{:d}(0x{:x}) -> x{:d}(0x{:x}) & CSR #{:d} <- 0x{:x}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  csr, aux, rd, rs1, csr, aux2);
 
 	return true;
 }
@@ -977,8 +956,8 @@ bool BASE_ISA::Exec_CSRRWI() {
 	aux = rs1;
 	regs->setCSR(csr, aux);
 
-	FILE_LOG(logINFO) << "CSRRWI: CSR #" << csr << " -> x" << rd << ". x"
-			<< rs1 << "-> CSR #" << csr << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. CSRRWI: CSR #{:d} -> x{:d}. x{:d} -> CSR #{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  csr, rd, rs1, csr);
 
 	return true;
 }
@@ -1004,9 +983,8 @@ bool BASE_ISA::Exec_CSRRSI() {
 	aux = aux | bitmask;
 	regs->setCSR(csr, aux);
 
-	FILE_LOG(logINFO) << "CSRRSI: CSR #" << csr << " -> x" << rd << ". x"
-			<< rs1 << " & CSR #" << csr << "(0x" << std::hex << aux << ")"
-			<< std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. CSRRSI: CSR #{:d} -> x{:d}. x{:d} & CSR #{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  csr, rd, rs1, csr, aux);
 
 	return true;
 }
@@ -1032,9 +1010,8 @@ bool BASE_ISA::Exec_CSRRCI() {
 	aux = aux & ~bitmask;
 	regs->setCSR(csr, aux);
 
-	FILE_LOG(logINFO) << "CSRRCI: CSR #" << csr << " -> x" << rd << ". x"
-			<< rs1 << " & CSR #" << csr << "(0x" << std::hex << aux << ")"
-			<< std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. CSRRCI: CSR #{:d} -> x{:d}. x{:d} & CSR #{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  csr, rd, rs1, csr, aux);
 
 	return true;
 }
@@ -1047,8 +1024,7 @@ bool BASE_ISA::Exec_MRET() {
 	new_pc = regs->getCSR(CSR_MEPC);
 	regs->setPC(new_pc);
 
-	FILE_LOG(logINFO) << "MRET: PC <- 0x" << std::hex << new_pc
-			<< std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. MRET: PC <- 0x{:x}", sc_core::sc_time_stamp().value(), regs->getPC(), new_pc);
 
 	// update mstatus
 	uint32_t csr_temp;
@@ -1068,21 +1044,17 @@ bool BASE_ISA::Exec_SRET() {
 	new_pc = regs->getCSR(CSR_SEPC);
 	regs->setPC(new_pc);
 
-	FILE_LOG(logINFO) << "SRET: PC <- 0x" << std::hex << new_pc
-			<< std::endl;
-
+    logger->debug("{} ns. PC: 0x{:x}. SRET: PC <- 0x{:x}", sc_core::sc_time_stamp().value(), regs->getPC());
 	return true;
 }
 
 bool BASE_ISA::Exec_WFI() {
-	FILE_LOG(logINFO) << "WFI" << std::endl;
-
+    logger->debug("{} ns. PC: 0x{:x}. WFI");
 	return true;
 }
 
 bool BASE_ISA::Exec_SFENCE() {
-	FILE_LOG(logINFO) << "SFENCE" << std::endl;
-
+    logger->debug("{} ns. PC: 0x{:x}. SFENCE");
 	return true;
 }
 

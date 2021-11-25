@@ -13,6 +13,7 @@ extension_base::extension_base(sc_dt::sc_uint<32> instr,
 		m_instr(instr), regs(register_bank), mem_intf(mem_interface) {
 
 	perf = Performance::getInstance();
+    logger = spdlog::get("my_logger");
 }
 
 extension_base::~extension_base() {
@@ -48,8 +49,8 @@ void extension_base::RaiseException(uint32_t cause, uint32_t inst) {
 
 	regs->setPC(new_pc);
 
-	FILE_LOG(logERROR) << "Exception! new PC 0x" << std::hex << new_pc
-			<< std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. Exception! new PC 0x{:x} ", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  new_pc);
 
 	regs->dump();
 	std::cout << "Simulation time " << sc_core::sc_time_stamp() << std::endl;

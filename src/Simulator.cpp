@@ -21,6 +21,9 @@
 #include "Trace.h"
 #include "Timer.h"
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/basic_file_sink.h"
+
 std::string filename;
 
 /**
@@ -71,6 +74,7 @@ SC_MODULE(Simulator) {
 };
 
 Simulator *top;
+std::shared_ptr<spdlog::logger> logger;
 
 void intHandler(int dummy) {
 	delete top;
@@ -91,19 +95,19 @@ void process_arguments(int argc, char *argv[]) {
 
 			switch (debug_level) {
 			case 3:
-//				log->setLogLevel(Log::INFO);
+                logger->set_level(spdlog::level::info);
 				break;
 			case 2:
-//				log->setLogLevel(Log::WARNING);
+                logger->set_level(spdlog::level::warn);
 				break;
 			case 1:
-//				log->setLogLevel(Log::DEBUG);
+                logger->set_level(spdlog::level::debug);
 				break;
 			case 0:
-//				log->setLogLevel(Log::ERROR);
+                logger->set_level(spdlog::level::err);
 				break;
 			default:
-//				log->setLogLevel(Log::INFO);
+                logger->set_level(spdlog::level::info);
 				break;
 			}
 			break;
@@ -129,6 +133,11 @@ int sc_main(int argc, char *argv[]) {
 
 	/* SystemC time resolution set to 1 ns*/
 	sc_core::sc_set_time_resolution(1, sc_core::SC_NS);
+
+    spdlog::filename_t filename = SPDLOG_FILENAME_T("newlog.txt");
+    logger = spdlog::create<spdlog::sinks::basic_file_sink_mt>("my_logger", filename);
+    logger->set_pattern("%v");
+    logger->set_level(spdlog::level::info);
 
 	/* Parse and process program arguments. -f is mandatory */
 	process_arguments(argc, argv);
