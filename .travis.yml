@@ -2,14 +2,16 @@ language: cpp
 os:
  - linux
 script: 
- - make -j 4
+ - mkdir -p build && cd build
+ - cmake ..
+ - make -j 2
 compiler: 
  - gcc
 
  
 before_install:
  - sudo apt-get update
- - sudo apt-get -y install libboost-all-dev
+ - sudo apt-get -y install libboost-all-dev libspdlog-dev
  
 install:
  - cd ..
@@ -23,4 +25,3 @@ install:
  - rm -r systemc-2.3.2/build
  - rm systemc-2.3.2.tar.gz
  - cd RISC-V-TLM
- - mkdir obj

@@ -24,9 +24,10 @@ file(GLOB SRC "./src/*.cpp")
 find_package(SystemCLanguage CONFIG REQUIRED)
 set (CMAKE_CXX_STANDARD ${SystemC_CXX_STANDARD})
 
-
+find_package(spdlog CONFIG REQUIRED)
 add_executable(RISCV_TLM ${SRC} )
 target_link_libraries(RISCV_TLM SystemC::systemc)
+target_link_libraries(RISCV_TLM spdlog::spdlog)
 
 option(BUILD_DOC "Build documentation" ON)
 find_package(Doxygen)
