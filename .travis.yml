@@ -19,7 +19,7 @@ install:
  - tar xfvz systemc-2.3.3.tar.gz
  - cd systemc-2.3.3
  - mkdir build && cd build
- - ../configure  CXXFLAGS="-std=c++11"
+ - cmake .. -DCMAKE_CXX_STANDARD=17
  - make -j 4 && make install
  - cd ../..
  - rm systemc-2.3.3.tar.gz
