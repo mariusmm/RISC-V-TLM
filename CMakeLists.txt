@@ -8,14 +8,14 @@
 cmake_minimum_required(VERSION 3.1)
 project(RISCV_TLM)
 
-
 # specify the C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-#add_compile_options(-Wall -I. -O3 -std=c++17 -g -Wextra -Wunused-function -Wpedantic)
+set(CMAKE_PREFIX_PATH systemc/systemc-2.3.3/objdir/)
+
 add_compile_options(-O3 -g -Wall -Wextra -Wunused-function -Wpedantic)
 
 include_directories(./inc/)
@@ -43,6 +43,4 @@ if (DOXYGEN_FOUND)
 else (DOXYGEN_FOUND)
     message("Doxygen need to be installed to generate the doxygen documentation")
 endif (DOXYGEN_FOUND)
-
-
 
