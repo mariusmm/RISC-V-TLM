@@ -76,8 +76,8 @@ bool A_extension::Exec_A_LR() {
 
 	TLB_reserve(mem_addr);
 
-	log->SC_log(Log::INFO) << std::dec << "LR.W: x" << rs1 << " (@0x"
-			<< std::hex << mem_addr << std::dec << ") -> x" << rd << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. A.LR.W: x{:d}(0x{:x}) -> x{:d}(0x{:x}) ", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  rs1, mem_addr, rd, data);
 
 	return true;
 }
@@ -102,9 +102,8 @@ bool A_extension::Exec_A_SC() {
 		regs->setValue(rd, 1);  // SC writes nonzero on failure
 	}
 
-	log->SC_log(Log::INFO) << std::dec << "SC.W: (@0x" << std::hex << mem_addr
-			<< std::dec << ") <- x" << rs2 << std::hex << "(0x" << data << ")"
-			<< std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. A.SC.W: (0x{:x}) <- x{:d}(0x{:x}) ", sc_core::sc_time_stamp().value(), regs->getPC(),
+                  mem_addr, rs2, data);
 
 	return true;
 }
@@ -133,7 +132,8 @@ bool A_extension::Exec_A_AMOSWAP() const {
 	mem_intf->writeDataMem(mem_addr, aux, 4);
 	perf->dataMemoryWrite();
 
-	log->SC_log(Log::INFO) << std::dec << "AMOSWAP " << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. A.AMOSWAP");
+
 	return true;
 }
 
@@ -160,7 +160,7 @@ bool A_extension::Exec_A_AMOADD() const {
 	mem_intf->writeDataMem(mem_addr, data, 4);
 	perf->dataMemoryWrite();
 
-	log->SC_log(Log::INFO) << std::dec << "AMOADD " << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. A.AMOADD");
 
 	return true;
 }
@@ -188,7 +188,7 @@ bool A_extension::Exec_A_AMOXOR() const {
 	mem_intf->writeDataMem(mem_addr, data, 4);
 	perf->dataMemoryWrite();
 
-	log->SC_log(Log::INFO) << std::dec << "AMOXOR " << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. A.AMOXOR");
 
 	return true;
 }
@@ -215,7 +215,7 @@ bool A_extension::Exec_A_AMOAND() const {
 	mem_intf->writeDataMem(mem_addr, data, 4);
 	perf->dataMemoryWrite();
 
-	log->SC_log(Log::INFO) << std::dec << "AMOAND " << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. A.AMOAND");
 
 	return true;
 }
@@ -243,7 +243,8 @@ bool A_extension::Exec_A_AMOOR() const {
 	mem_intf->writeDataMem(mem_addr, data, 4);
 	perf->dataMemoryWrite();
 
-	log->SC_log(Log::INFO) << std::dec << "AMOOR " << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. A.AMOOR");
+
 	return true;
 }
 
@@ -274,7 +275,7 @@ bool A_extension::Exec_A_AMOMIN() const {
 	mem_intf->writeDataMem(mem_addr, aux, 4);
 	perf->dataMemoryWrite();
 
-	log->SC_log(Log::INFO) << std::dec << "AMOMIN " << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. A.AMOMIN");
 
 	return true;
 }
@@ -305,7 +306,7 @@ bool A_extension::Exec_A_AMOMAX() const {
 	mem_intf->writeDataMem(mem_addr, aux, 4);
 	perf->dataMemoryWrite();
 
-	log->SC_log(Log::INFO) << std::dec << "AMOMAX " << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. A.AMOMAX");
 
 	return true;
 }
@@ -336,7 +337,7 @@ bool A_extension::Exec_A_AMOMINU() const {
 	mem_intf->writeDataMem(mem_addr, aux, 4);
 	perf->dataMemoryWrite();
 
-	log->SC_log(Log::INFO) << std::dec << "AMOMINU " << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. A.AMOMINU");
 
 	return true;
 }
@@ -367,7 +368,7 @@ bool A_extension::Exec_A_AMOMAXU() const {
 	mem_intf->writeDataMem(mem_addr, aux, 4);
 	perf->dataMemoryWrite();
 
-	log->SC_log(Log::INFO) << std::dec << "AMOMAXU " << std::endl;
+    logger->debug("{} ns. PC: 0x{:x}. A.AMOMAXU");
 
 	return true;
 }

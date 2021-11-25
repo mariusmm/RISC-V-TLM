@@ -21,7 +21,6 @@
 #include "MemoryInterface.h"
 #include "BASE_ISA.h"
 #include "Registers.h"
-#include "Log.h"
 #include "Instruction.h"
 #include "C_extension.h"
 #include "M_extension.h"
@@ -71,7 +70,7 @@ public:
 private:
 	Registers *register_bank;
 	Performance *perf;
-	Log *log;
+    std::shared_ptr<spdlog::logger> logger;
 	C_extension *c_inst;
 	M_extension *m_inst;
 	A_extension *a_inst;

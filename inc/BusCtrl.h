@@ -20,8 +20,6 @@
 #include "tlm_utils/simple_initiator_socket.h"
 #include "tlm_utils/simple_target_socket.h"
 
-#include "Log.h"
-
 /**
  * Memory mapped Trace peripheral address
  */
@@ -85,12 +83,9 @@ public:
 			sc_core::sc_time &delay);
 
 private:
-
 	bool instr_direct_mem_ptr(tlm::tlm_generic_payload&,
 			tlm::tlm_dmi &dmi_data);
 	void invalidate_direct_mem_ptr(sc_dt::uint64 start, sc_dt::uint64 end);
-
-    Log *log;
 };
 
 #endif

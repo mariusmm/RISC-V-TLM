@@ -19,8 +19,8 @@
 #include "tlm.h"
 #include "tlm_utils/simple_target_socket.h"
 
-#include "Log.h"
-
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/basic_file_sink.h"
 /**
  * @brief Basic TLM-2 memory
  */
@@ -71,7 +71,7 @@ private:
 	/**
 	 * @brief Log class
 	 */
-	Log *log;
+    std::shared_ptr<spdlog::logger> logger;
 
 	/**
 	 * @brief Program counter (PC) read from hex file

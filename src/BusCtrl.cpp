@@ -15,11 +15,11 @@ BusCtrl::BusCtrl(sc_core::sc_module_name const &name) :
 				"trace_socket") {
 	cpu_instr_socket.register_b_transport(this, &BusCtrl::b_transport);
 	cpu_data_socket.register_b_transport(this, &BusCtrl::b_transport);
+
 	cpu_instr_socket.register_get_direct_mem_ptr(this,
 			&BusCtrl::instr_direct_mem_ptr);
 	memory_socket.register_invalidate_direct_mem_ptr(this,
 			&BusCtrl::invalidate_direct_mem_ptr);
-    log = Log::getInstance();
 }
 
 void BusCtrl::b_transport(tlm::tlm_generic_payload &trans,
@@ -29,7 +29,6 @@ void BusCtrl::b_transport(tlm::tlm_generic_payload &trans,
 
 	if (adr >= TO_HOST_ADDRESS / 4) {
 	    std::cout << "To host\n" << std::flush;
-        log->SC_log(Log::ERROR) << std::flush;
         sc_core::sc_stop();
         return;
 	}

@@ -10,6 +10,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <sstream>
 #include <iomanip>
 #include <sys/socket.h>
 #include <netinet/in.h>

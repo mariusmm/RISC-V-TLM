@@ -20,8 +20,8 @@ Memory::Memory(sc_core::sc_module_name const &name, std::string const &filename)
     program_counter = 0;
 	readHexFile(filename);
 
-	log = Log::getInstance();
-	log->SC_log(Log::INFO) << "Using file: " << filename << std::endl;
+    logger = spdlog::get("my_logger");
+    logger->debug("Using file {}", filename);
 }
 
 Memory::Memory(sc_core::sc_module_name const& name) :
@@ -32,8 +32,8 @@ Memory::Memory(sc_core::sc_module_name const& name) :
 
 	program_counter = 0;
 
-	log = Log::getInstance();
-	log->SC_log(Log::INFO) << "Memory instantiated without file" << std::endl;
+    logger = spdlog::get("my_logger");
+    logger->debug("Memory instantiated wihtout file");
 }
 
 Memory::~Memory() = default;

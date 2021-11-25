@@ -15,7 +15,6 @@ CPU::CPU(sc_core::sc_module_name const &name, std::uint32_t PC, bool debug) :
 	mem_intf = new MemoryInterface();
 
 	perf = Performance::getInstance();
-	log = Log::getInstance();
 
 	register_bank->setPC(PC);
     register_bank->setValue(Registers::sp, (Memory::SIZE / 4) - 1);
@@ -49,6 +48,8 @@ CPU::CPU(sc_core::sc_module_name const &name, std::uint32_t PC, bool debug) :
 	if (!debug) {
 		SC_THREAD(CPU_thread);
 	}
+
+    logger = spdlog::get("my_logger");
 }
 
 CPU::~CPU() {
@@ -68,7 +69,8 @@ bool CPU::cpu_process_IRQ() {
     if (interrupt) {
 		csr_temp = register_bank->getCSR(CSR_MSTATUS);
 		if ((csr_temp & MSTATUS_MIE) == 0) {
-			log->SC_log(Log::DEBUG) << "interrupt delayed" << std::endl;
+            logger->debug("{} ns. PC: 0x{:x}. Interrupt delayed", sc_core::sc_time_stamp().value(), register_bank->getPC());
+
 			return ret_value;
 		}
 
@@ -77,13 +79,16 @@ bool CPU::cpu_process_IRQ() {
 		if ((csr_temp & MIP_MEIP) == 0) {
 			csr_temp |= MIP_MEIP;  // MEIP bit in MIP register (11th bit)
 			register_bank->setCSR(CSR_MIP, csr_temp);
-			log->SC_log(Log::DEBUG) << "Interrupt!" << std::endl;
+
+            logger->debug("{} ns. PC: 0x{:x}. Interrupt!", sc_core::sc_time_stamp().value(), register_bank->getPC());
+
 
 			/* updated MEPC register */
 			std::uint32_t old_pc = register_bank->getPC();
 			register_bank->setCSR(CSR_MEPC, old_pc);
-			log->SC_log(Log::INFO) << "Old PC Value 0x" << std::hex << old_pc
-					<< std::endl;
+
+            logger->debug("{} ns. PC: 0x{:x}. Old PC Value 0x{:x}", sc_core::sc_time_stamp().value(), register_bank->getPC(),
+                          old_pc);
 
 			/* update MCAUSE register */
 			register_bank->setCSR(CSR_MCAUSE, 0x80000000);
@@ -91,8 +96,8 @@ bool CPU::cpu_process_IRQ() {
 			/* set new PC address */
 			std::uint32_t new_pc = register_bank->getCSR(CSR_MTVEC);
 			//new_pc = new_pc & 0xFFFFFFFC; // last two bits always to 0
-			log->SC_log(Log::DEBUG) << "NEW PC Value 0x" << std::hex << new_pc
-					<< std::endl;
+            logger->debug("{} ns. PC: 0x{:x}. NEW PC Value 0x{:x}", sc_core::sc_time_stamp().value(), register_bank->getPC(),
+                          new_pc);
 			register_bank->setPC(new_pc);
 
 			ret_value = true;
@@ -137,12 +142,9 @@ bool CPU::CPU_step() {
 		}
 	}
 
-	perf->codeMemoryRead();
-	log->SC_log(Log::INFO) << "PC: 0x" << std::hex << register_bank->getPC()
-			<< ". ";
-
-	inst.setInstr(INSTR);
-	bool breakpoint  =  false;
+		perf->codeMemoryRead();
+		inst.setInstr(INSTR);
+        bool breakpoint  =  false;
 
 	/* check what type of instruction is and execute it */
 	switch (inst.check_extension()) {

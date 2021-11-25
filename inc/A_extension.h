@@ -13,7 +13,6 @@
 
 #include <unordered_set>
 
-#include "Log.h"
 #include "Registers.h"
 #include "MemoryInterface.h"
 #include "extension_base.h"

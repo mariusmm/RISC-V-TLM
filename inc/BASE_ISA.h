@@ -22,8 +22,6 @@
 #include "M_extension.h"
 #include "A_extension.h"
 #include "Registers.h"
-#include "Log.h"
-
 
 typedef enum {
 	OP_LUI,
