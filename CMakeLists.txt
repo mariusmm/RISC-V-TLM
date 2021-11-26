@@ -15,7 +15,7 @@ set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_PREFIX_PATH ../systemc-2.3.3/build/)
-set(CMAKE_PREFIX_PATH /usr/lib/x86_64-linux-gnu/cmake/spdlog/)
+set(CMAKE_PREFIX_PATH ../spdlog/build/)
 
 add_compile_options(-O3 -g -Wall -Wextra -Wunused-function -Wpedantic)
 
