@@ -277,13 +277,13 @@ bool BASE_ISA::Exec_BLTU() const {
 
 bool BASE_ISA::Exec_BGEU() const {
 	int rs1, rs2;
-	int new_pc = 0;
 
 	rs1 = get_rs1();
 	rs2 = get_rs2();
 
 	if ( static_cast<std::uint32_t>(regs->getValue(rs1)) >= static_cast<std::uint32_t>(regs->getValue(rs2)) ) {
-		new_pc = static_cast<std::int32_t>(regs->getPC() + get_imm_B());
+        int new_pc;
+        new_pc = static_cast<std::int32_t>(regs->getPC() + get_imm_B());
 
         logger->debug("{} ns. PC: 0x{:x}. BGEU: x{:d}(0x{:x}) > x{:d}(0x{:x}) -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
                       rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), new_pc);
