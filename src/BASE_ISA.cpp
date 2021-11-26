@@ -102,11 +102,11 @@ bool BASE_ISA::Exec_LUI() const {
 bool BASE_ISA::Exec_AUIPC() const {
 	int rd;
 	std::uint32_t imm;
-	int new_pc;
+    std::uint32_t new_pc;
 
 	rd = get_rd();
 	imm = get_imm_U() << 12;
-	new_pc = static_cast<std::int32_t>(regs->getPC() + imm);
+	new_pc = static_cast<std::uint32_t>(regs->getPC() + imm);
 
 	regs->setValue(rd, new_pc);
 
@@ -119,11 +119,11 @@ bool BASE_ISA::Exec_AUIPC() const {
 bool BASE_ISA::Exec_JAL() const {
 	int32_t mem_addr;
 	int rd;
-	int new_pc, old_pc;
+    std::uint32_t new_pc, old_pc;
 
 	rd = get_rd();
 	mem_addr = get_imm_J();
-	old_pc = static_cast<std::int32_t>(regs->getPC());
+	old_pc = static_cast<std::uint32_t>(regs->getPC());
 	new_pc = old_pc + mem_addr;
 
 	regs->setPC(new_pc);
@@ -140,16 +140,16 @@ bool BASE_ISA::Exec_JAL() const {
 bool BASE_ISA::Exec_JALR() {
 	std::uint32_t mem_addr;
 	int rd, rs1;
-	int new_pc, old_pc;
+    std::uint32_t new_pc, old_pc;
 
 	rd = get_rd();
 	rs1 = get_rs1();
 	mem_addr = get_imm_I();
 
-	old_pc = static_cast<std::int32_t>(regs->getPC());
+	old_pc = static_cast<std::uint32_t>(regs->getPC());
 	regs->setValue(rd, old_pc + 4);
 
-	new_pc = static_cast<std::int32_t>((regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE);
+	new_pc = static_cast<std::uint32_t>((regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE);
 
 	if( (new_pc & 0x00000003) != 0) {
 	    // not aligned
@@ -170,17 +170,17 @@ bool BASE_ISA::Exec_JALR() {
 
 bool BASE_ISA::Exec_BEQ() const {
 	int rs1, rs2;
-	int new_pc;
+    std::uint32_t new_pc;
 
 	rs1 = get_rs1();
 	rs2 = get_rs2();
 
 	if (regs->getValue(rs1) == regs->getValue(rs2)) {
-		new_pc = static_cast<std::int32_t>(regs->getPC() + get_imm_B());
+		new_pc = static_cast<std::uint32_t>(regs->getPC() + get_imm_B());
 		regs->setPC(new_pc);
 	} else {
 		regs->incPC();
-		new_pc = static_cast<std::int32_t>(regs->getPC());
+		new_pc = static_cast<std::uint32_t>(regs->getPC());
 	}
 
     logger->debug("{} ns. PC: 0x{:x}. BEQ: x{:d}(0x{:x}) == x{:d}(0x{:x})? -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
@@ -191,7 +191,7 @@ bool BASE_ISA::Exec_BEQ() const {
 
 bool BASE_ISA::Exec_BNE() const {
 	int rs1, rs2;
-	int new_pc;
+    std::uint32_t new_pc;
 	std::uint32_t val1, val2;
 
 	rs1 = get_rs1();
@@ -201,11 +201,11 @@ bool BASE_ISA::Exec_BNE() const {
 	val2 = regs->getValue(rs2);
 
 	if (val1 != val2) {
-		new_pc = static_cast<std::int32_t>(regs->getPC() + get_imm_B());
+		new_pc = static_cast<std::uint32_t>(regs->getPC() + get_imm_B());
 		regs->setPC(new_pc);
 	} else {
 		regs->incPC();
-		new_pc = static_cast<std::int32_t>(regs->getPC());
+		new_pc = static_cast<std::uint32_t>(regs->getPC());
 	}
 
     logger->debug("{} ns. PC: 0x{:x}. BNE: x{:d}(0x{:x}) != x{:d}(0x{:x})? -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
@@ -216,13 +216,13 @@ bool BASE_ISA::Exec_BNE() const {
 
 bool BASE_ISA::Exec_BLT() const {
 	int rs1, rs2;
-	int new_pc = 0;
+    std::uint32_t new_pc = 0;
 
 	rs1 = get_rs1();
 	rs2 = get_rs2();
 
 	if ( static_cast<std::int32_t>(regs->getValue(rs1)) < static_cast<std::int32_t>(regs->getValue(rs2)) ) {
-		new_pc = static_cast<std::int32_t>(regs->getPC() + get_imm_B());
+		new_pc = static_cast<std::uint32_t>(regs->getPC() + get_imm_B());
 		regs->setPC(new_pc);
 	} else {
 		regs->incPC();
@@ -236,13 +236,13 @@ bool BASE_ISA::Exec_BLT() const {
 
 bool BASE_ISA::Exec_BGE() const {
 	int rs1, rs2;
-	int new_pc = 0;
+    std::uint32_t new_pc = 0;
 
 	rs1 = get_rs1();
 	rs2 = get_rs2();
 
 	if ( static_cast<std::int32_t>(regs->getValue(rs1)) >= static_cast<std::int32_t>( regs->getValue(rs2)) ) {
-		new_pc = static_cast<std::int32_t>(regs->getPC() + get_imm_B());
+		new_pc = static_cast<std::uint32_t>(regs->getPC() + get_imm_B());
 		regs->setPC(new_pc);
 	} else {
 		regs->incPC();
@@ -256,17 +256,17 @@ bool BASE_ISA::Exec_BGE() const {
 
 bool BASE_ISA::Exec_BLTU() const {
 	int rs1, rs2;
-	int new_pc;
+    std::uint32_t new_pc;
 
 	rs1 = get_rs1();
 	rs2 = get_rs2();
 
 	if ( static_cast<std::uint32_t>(regs->getValue(rs1)) < static_cast<std::uint32_t>(regs->getValue(rs2)) ) {
-		new_pc = static_cast<std::int32_t>(regs->getPC() + get_imm_B());
+		new_pc = static_cast<std::uint32_t>(regs->getPC() + get_imm_B());
 		regs->setPC(new_pc);
 	} else {
 		regs->incPC();
-		new_pc = static_cast<std::int32_t>(regs->getPC());
+		new_pc = static_cast<std::uint32_t>(regs->getPC());
 	}
 
     logger->debug("{} ns. PC: 0x{:x}. BLTU: x{:d}(0x{:x}) < x{:d}(0x{:x})? -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
@@ -282,8 +282,8 @@ bool BASE_ISA::Exec_BGEU() const {
 	rs2 = get_rs2();
 
 	if ( static_cast<std::uint32_t>(regs->getValue(rs1)) >= static_cast<std::uint32_t>(regs->getValue(rs2)) ) {
-        int new_pc;
-        new_pc = static_cast<std::int32_t>(regs->getPC() + get_imm_B());
+        std::uint32_t new_pc;
+        new_pc = static_cast<std::uint32_t>(regs->getPC() + get_imm_B());
 
         logger->debug("{} ns. PC: 0x{:x}. BGEU: x{:d}(0x{:x}) > x{:d}(0x{:x}) -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
                       rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), new_pc);
