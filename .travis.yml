@@ -24,10 +24,10 @@ install:
  - cd ../..
  - rm systemc-2.3.3.tar.gz
  - git clone https://github.com/gabime/spdlog.git
- - cd spdlog && mkdir build 
+ - cd spdlog 
  - cmake -H. -B_builds -DCMAKE_BUILD_TYPE=Release
  - cmake --build _builds --config Release
- - cmake -H. -B_builds -DCMAKE_INSTALL_PREFIX=build -DCMAKE_BUILD_TYPE=Release
+ - cmake -H. -B_builds -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release
  - cmake --build _builds --target install
- - cd ../..
+ - cd ..
  - cd RISC-V-TLM
