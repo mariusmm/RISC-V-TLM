@@ -20,27 +20,33 @@
 #include "CPU.h"
 #include "Memory.h"
 
-class Debug: sc_core::sc_module {
-public:
+namespace riscv_tlm {
 
-	Debug(CPU *cpu, Memory* mem);
-	~Debug() override;
+    class Debug : sc_core::sc_module {
+    public:
 
-private:
-	static std::string compute_checksum_string(const std::string &msg);
-	void send_packet(int m_conn, const std::string &msg);
-	std::string receive_packet();
-	void handle_gdb_loop();
+        Debug(riscv_tlm::CPU *cpu, Memory *mem);
 
-	static constexpr size_t bufsize = 1024 * 8;
-	char iobuf[bufsize]{};
-	int conn;
-	CPU *dbg_cpu;
-	Memory *dbg_mem;
-	tlm::tlm_generic_payload dbg_trans;
-	unsigned char pyld_array[128]{};
-	std::unordered_set<uint32_t> breakpoints;
-};
+        ~Debug() override;
 
+    private:
+        static std::string compute_checksum_string(const std::string &msg);
+
+        void send_packet(int m_conn, const std::string &msg);
+
+        std::string receive_packet();
+
+        void handle_gdb_loop();
+
+        static constexpr size_t bufsize = 1024 * 8;
+        char iobuf[bufsize]{};
+        int conn;
+        riscv_tlm::CPU *dbg_cpu;
+        Memory *dbg_mem;
+        tlm::tlm_generic_payload dbg_trans;
+        unsigned char pyld_array[128]{};
+        std::unordered_set<uint32_t> breakpoints;
+    };
+}
 
 #endif /* INC_DEBUG_H_ */
