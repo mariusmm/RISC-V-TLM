@@ -9,7 +9,8 @@
 #include <cstdint>
 #include "Timer.h"
 
-namespace riscv_tlm::peripherals {
+namespace riscv_tlm {
+namespace peripherals {
     SC_HAS_PROCESS(Timer);
 
     Timer::Timer(sc_core::sc_module_name const &name) :
@@ -101,5 +102,5 @@ namespace riscv_tlm::peripherals {
 
         trans.set_response_status(tlm::TLM_OK_RESPONSE);
     }
-
+  }
 }
