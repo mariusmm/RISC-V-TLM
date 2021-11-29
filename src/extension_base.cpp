@@ -8,53 +8,56 @@
 
 #include "extension_base.h"
 
-extension_base::extension_base(const sc_dt::sc_uint<32>  & instr,
-		Registers *register_bank, MemoryInterface *mem_interface) :
-		m_instr(instr), regs(register_bank), mem_intf(mem_interface) {
+namespace riscv_tlm {
 
-	perf = Performance::getInstance();
-    logger = spdlog::get("my_logger");
-}
+    extension_base::extension_base(const sc_dt::sc_uint<32> &instr,
+                                   Registers *register_bank, MemoryInterface *mem_interface) :
+            m_instr(instr), regs(register_bank), mem_intf(mem_interface) {
 
-extension_base::~extension_base() =default;
+        perf = Performance::getInstance();
+        logger = spdlog::get("my_logger");
+    }
 
-void extension_base::setInstr(std::uint32_t p_instr) {
-	m_instr = sc_dt::sc_uint<32>(p_instr);
-}
+    extension_base::~extension_base() = default;
 
-void extension_base::dump() const {
-	std::cout << std::hex << "0x" << m_instr << std::dec << std::endl;
-}
+    void extension_base::setInstr(std::uint32_t p_instr) {
+        m_instr = sc_dt::sc_uint<32>(p_instr);
+    }
 
-void extension_base::RaiseException(std::uint32_t cause, std::uint32_t inst) {
-	std::uint32_t new_pc, current_pc, m_cause;
+    void extension_base::dump() const {
+        std::cout << std::hex << "0x" << m_instr << std::dec << std::endl;
+    }
 
-	current_pc = regs->getPC();
-	m_cause = regs->getCSR(CSR_MSTATUS);
-	m_cause |= cause;
+    void extension_base::RaiseException(std::uint32_t cause, std::uint32_t inst) {
+        std::uint32_t new_pc, current_pc, m_cause;
 
-	new_pc = regs->getCSR(CSR_MTVEC);
+        current_pc = regs->getPC();
+        m_cause = regs->getCSR(CSR_MSTATUS);
+        m_cause |= cause;
 
-	regs->setCSR(CSR_MEPC, current_pc);
+        new_pc = regs->getCSR(CSR_MTVEC);
 
-	if (cause == EXCEPTION_CAUSE_ILLEGAL_INSTRUCTION) {
-		regs->setCSR(CSR_MTVAL, inst);
-	} else {
-		regs->setCSR(CSR_MTVAL, current_pc);
-	}
+        regs->setCSR(CSR_MEPC, current_pc);
 
-	regs->setCSR(CSR_MCAUSE, cause);
-	regs->setCSR(CSR_MSTATUS, m_cause);
+        if (cause == EXCEPTION_CAUSE_ILLEGAL_INSTRUCTION) {
+            regs->setCSR(CSR_MTVAL, inst);
+        } else {
+            regs->setCSR(CSR_MTVAL, current_pc);
+        }
 
-	regs->setPC(new_pc);
+        regs->setCSR(CSR_MCAUSE, cause);
+        regs->setCSR(CSR_MSTATUS, m_cause);
 
-    logger->debug("{} ns. PC: 0x{:x}. Exception! new PC 0x{:x} ", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  new_pc);
-}
+        regs->setPC(new_pc);
 
-bool extension_base::NOP() {
+        logger->debug("{} ns. PC: 0x{:x}. Exception! new PC 0x{:x} ", sc_core::sc_time_stamp().value(), regs->getPC(),
+                      new_pc);
+    }
 
-    logger->debug("{} ns. PC: 0x{:x}. NOP! new PC 0x{:x} ", sc_core::sc_time_stamp().value(), regs->getPC());
-    sc_core::sc_stop();
-	return true;
+    bool extension_base::NOP() {
+
+        logger->debug("{} ns. PC: 0x{:x}. NOP! new PC 0x{:x} ", sc_core::sc_time_stamp().value(), regs->getPC());
+        sc_core::sc_stop();
+        return true;
+    }
 }

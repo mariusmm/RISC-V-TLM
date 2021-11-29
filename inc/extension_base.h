@@ -26,60 +26,66 @@
 #define EXCEPTION_CAUSE_LOAD_ADDR_MISALIGN    4
 #define EXCEPTION_CAUSE_LOAD_ACCESS_FAULT     5
 
-class extension_base {
+namespace riscv_tlm {
 
-public:
-	extension_base(const sc_dt::sc_uint<32> & instr, Registers *register_bank,
-			MemoryInterface *mem_interface);
-	virtual ~extension_base() = 0;
+    class extension_base {
 
-	void setInstr(std::uint32_t p_instr);
-	void RaiseException(std::uint32_t cause, std::uint32_t inst);
-	bool NOP();
+    public:
+        extension_base(const sc_dt::sc_uint<32> &instr, Registers *register_bank,
+                       MemoryInterface *mem_interface);
 
-	/* pure virtual functions */
-	virtual std::int32_t opcode() const = 0;
+        virtual ~extension_base() = 0;
 
-	virtual std::int32_t get_rd() const {
-	    return m_instr.range(11, 7);
-	}
+        void setInstr(std::uint32_t p_instr);
 
-	virtual void set_rd(std::int32_t value) {
-    m_instr.range(11, 7) = value;
-	}
+        void RaiseException(std::uint32_t cause, std::uint32_t inst);
 
-	virtual std::int32_t get_rs1() const {
-    return m_instr.range(19, 15);
-	}
+        bool NOP();
 
-	virtual void set_rs1(std::int32_t value) {
-	  m_instr.range(19, 15) = value;
-	}
+        /* pure virtual functions */
+        virtual std::int32_t opcode() const = 0;
 
-	virtual std::int32_t get_rs2() const {
-	  return m_instr.range(24, 20);
-	}
+        virtual std::int32_t get_rd() const {
+            return m_instr.range(11, 7);
+        }
 
-	virtual void set_rs2(std::int32_t value) {
-    m_instr.range(24, 20) = value;
-	}
+        virtual void set_rd(std::int32_t value) {
+            m_instr.range(11, 7) = value;
+        }
 
-	virtual std::int32_t get_funct3() const {
-    return m_instr.range(14, 12);
-	}
+        virtual std::int32_t get_rs1() const {
+            return m_instr.range(19, 15);
+        }
 
-	virtual void set_funct3(std::int32_t value) {
-	  m_instr.range(14, 12) = value;
-	}
+        virtual void set_rs1(std::int32_t value) {
+            m_instr.range(19, 15) = value;
+        }
 
-	virtual void dump() const;
+        virtual std::int32_t get_rs2() const {
+            return m_instr.range(24, 20);
+        }
 
-protected:
-	sc_dt::sc_uint<32> m_instr;
-	Registers *regs;
-	Performance *perf;
-	MemoryInterface *mem_intf;
-    std::shared_ptr<spdlog::logger> logger;
-};
+        virtual void set_rs2(std::int32_t value) {
+            m_instr.range(24, 20) = value;
+        }
+
+        virtual std::int32_t get_funct3() const {
+            return m_instr.range(14, 12);
+        }
+
+        virtual void set_funct3(std::int32_t value) {
+            m_instr.range(14, 12) = value;
+        }
+
+        virtual void dump() const;
+
+    protected:
+        sc_dt::sc_uint<32> m_instr;
+        Registers *regs;
+        Performance *perf;
+        MemoryInterface *mem_intf;
+        std::shared_ptr<spdlog::logger> logger;
+    };
+}
 
 #endif /* INC_EXTENSION_BASE_H_ */

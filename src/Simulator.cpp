@@ -39,23 +39,23 @@ uint32_t dump_addr_end = 0;
  */
 class Simulator : sc_core::sc_module {
 public:
-    CPU *cpu;
-	Memory *MainMemory;
-	BusCtrl *Bus;
-	Trace *trace;
-	Timer *timer;
+    riscv_tlm::CPU *cpu;
+	riscv_tlm::Memory *MainMemory;
+    riscv_tlm::BusCtrl *Bus;
+    riscv_tlm::peripherals::Trace *trace;
+    riscv_tlm::peripherals::Timer *timer;
 
 	explicit Simulator(sc_core::sc_module_name const &name): sc_module(name) {
 		std::uint32_t start_PC;
 
-		MainMemory = new Memory("Main_Memory", filename);
+		MainMemory = new riscv_tlm::Memory("Main_Memory", filename);
 		start_PC = MainMemory->getPCfromHEX();
 
-		cpu = new CPU("cpu", start_PC, debug_session);
+		cpu = new riscv_tlm::CPU("cpu", start_PC, debug_session);
 
-		Bus = new BusCtrl("BusCtrl");
-		trace = new Trace("Trace");
-		timer = new Timer("Timer");
+		Bus = new riscv_tlm::BusCtrl("BusCtrl");
+		trace = new riscv_tlm::peripherals::Trace("Trace");
+		timer = new riscv_tlm::peripherals::Timer("Timer");
 
 		cpu->instr_bus.bind(Bus->cpu_instr_socket);
 		cpu->mem_intf->data_bus.bind(Bus->cpu_data_socket);
@@ -67,7 +67,7 @@ public:
 		timer->irq_line.bind(cpu->irq_line_socket);
 
 		if (debug_session) {
-			Debug debug(cpu, MainMemory);
+            riscv_tlm::Debug debug(cpu, MainMemory);
 		}
 	}
 

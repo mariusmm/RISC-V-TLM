@@ -8,64 +8,67 @@
 
 #include "BusCtrl.h"
 
-SC_HAS_PROCESS(BusCtrl);
-BusCtrl::BusCtrl(sc_core::sc_module_name const &name) :
-		sc_module(name), cpu_instr_socket("cpu_instr_socket"), cpu_data_socket(
-				"cpu_data_socket"), memory_socket("memory_socket"), trace_socket(
-				"trace_socket") {
-	cpu_instr_socket.register_b_transport(this, &BusCtrl::b_transport);
-	cpu_data_socket.register_b_transport(this, &BusCtrl::b_transport);
+namespace riscv_tlm {
 
-	cpu_instr_socket.register_get_direct_mem_ptr(this,
-			&BusCtrl::instr_direct_mem_ptr);
-	memory_socket.register_invalidate_direct_mem_ptr(this,
-			&BusCtrl::invalidate_direct_mem_ptr);
-}
+    SC_HAS_PROCESS(BusCtrl);
 
-void BusCtrl::b_transport(tlm::tlm_generic_payload &trans,
-		sc_core::sc_time &delay) {
+    BusCtrl::BusCtrl(sc_core::sc_module_name const &name) :
+            sc_module(name), cpu_instr_socket("cpu_instr_socket"), cpu_data_socket(
+            "cpu_data_socket"), memory_socket("memory_socket"), trace_socket(
+            "trace_socket") {
+        cpu_instr_socket.register_b_transport(this, &BusCtrl::b_transport);
+        cpu_data_socket.register_b_transport(this, &BusCtrl::b_transport);
 
-	sc_dt::uint64 adr = trans.get_address() / 4;
+        cpu_instr_socket.register_get_direct_mem_ptr(this,
+                                                     &BusCtrl::instr_direct_mem_ptr);
+        memory_socket.register_invalidate_direct_mem_ptr(this,
+                                                         &BusCtrl::invalidate_direct_mem_ptr);
+    }
 
-	if (adr >= TO_HOST_ADDRESS / 4) {
-	    std::cout << "To host\n" << std::flush;
-        sc_core::sc_stop();
-        return;
-	}
+    void BusCtrl::b_transport(tlm::tlm_generic_payload &trans,
+                              sc_core::sc_time &delay) {
 
-	switch (adr) {
-	case TIMER_MEMORY_ADDRESS_HI / 4:
-	case TIMER_MEMORY_ADDRESS_LO / 4:
-	case TIMERCMP_MEMORY_ADDRESS_HI / 4:
-	case TIMERCMP_MEMORY_ADDRESS_LO / 4:
-		timer_socket->b_transport(trans, delay);
-		break;
-	case TRACE_MEMORY_ADDRESS / 4:
-		trace_socket->b_transport(trans, delay);
-		break;
-	[[likely]] default:
-		memory_socket->b_transport(trans, delay);
-		break;
-	}
+        sc_dt::uint64 adr = trans.get_address() / 4;
+
+        if (adr >= TO_HOST_ADDRESS / 4) {
+            std::cout << "To host\n" << std::flush;
+            sc_core::sc_stop();
+            return;
+        }
+
+        switch (adr) {
+            case TIMER_MEMORY_ADDRESS_HI / 4:
+            case TIMER_MEMORY_ADDRESS_LO / 4:
+            case TIMERCMP_MEMORY_ADDRESS_HI / 4:
+            case TIMERCMP_MEMORY_ADDRESS_LO / 4:
+                timer_socket->b_transport(trans, delay);
+                break;
+            case TRACE_MEMORY_ADDRESS / 4:
+                trace_socket->b_transport(trans, delay);
+                break;
+                [[likely]] default:
+                memory_socket->b_transport(trans, delay);
+                break;
+        }
 
 #if 0
-    if (cmd == tlm::TLM_READ_COMMAND) {
-      log->SC_log(Log::DEBUG) << "RD Address: @0x" << hex << adr << dec << endl;
-    } else {
-      log->SC_log(Log::DEBUG) << "WR Address: @0x" << hex << adr << dec << endl;
-    }
+        if (cmd == tlm::TLM_READ_COMMAND) {
+          log->SC_log(Log::DEBUG) << "RD Address: @0x" << hex << adr << dec << endl;
+        } else {
+          log->SC_log(Log::DEBUG) << "WR Address: @0x" << hex << adr << dec << endl;
+        }
 #endif
 
-	trans.set_response_status(tlm::TLM_OK_RESPONSE);
-}
+        trans.set_response_status(tlm::TLM_OK_RESPONSE);
+    }
 
-bool BusCtrl::instr_direct_mem_ptr(tlm::tlm_generic_payload &gp,
-		tlm::tlm_dmi &dmi_data) {
-	return memory_socket->get_direct_mem_ptr(gp, dmi_data);
-}
+    bool BusCtrl::instr_direct_mem_ptr(tlm::tlm_generic_payload &gp,
+                                       tlm::tlm_dmi &dmi_data) {
+        return memory_socket->get_direct_mem_ptr(gp, dmi_data);
+    }
 
-void BusCtrl::invalidate_direct_mem_ptr(sc_dt::uint64 start,
-		sc_dt::uint64 end) {
-	cpu_instr_socket->invalidate_direct_mem_ptr(start, end);
+    void BusCtrl::invalidate_direct_mem_ptr(sc_dt::uint64 start,
+                                            sc_dt::uint64 end) {
+        cpu_instr_socket->invalidate_direct_mem_ptr(start, end);
+    }
 }
-

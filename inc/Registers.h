@@ -19,6 +19,8 @@
 #include "Performance.h"
 #include "Memory.h"
 
+namespace riscv_tlm {
+
 #define MISA_A_EXTENSION (1 << 0)
 #define MISA_B_EXTENSION (1 << 1)
 #define MISA_C_EXTENSION (1 << 2)
@@ -76,7 +78,7 @@
 #define MSTATUS_SPP (1 << 8)
 #define MSTATUS_MPP (1 << 11)
 #define MSTATUS_FS  (1 << 13)
-#define MSTATUS_XS	(1 << 15)
+#define MSTATUS_XS    (1 << 15)
 #define MSTATUS_MPRV (1 << 17)
 #define MSTATUS_SUM (1 << 18)
 #define MSTATUS_MXR (1 << 19)
@@ -110,156 +112,158 @@
 /**
  * @brief Register file implementation
  */
-class Registers {
-public:
+    class Registers {
+    public:
 
-	enum {
-		x0 = 0,
-		x1 = 1,
-		x2,
-		x3,
-		x4,
-		x5,
-		x6,
-		x7,
-		x8,
-		x9,
-		x10,
-		x11,
-		x12,
-		x13,
-		x14,
-		x15,
-		x16,
-		x17,
-		x18,
-		x19,
-		x20,
-		x21,
-		x22,
-		x23,
-		x24,
-		x25,
-		x26,
-		x27,
-		x28,
-		x29,
-		x30,
-		x31,
-		zero = x0,
-		ra = x1,
-		sp = x2,
-		gp = x3,
-		tp = x4,
-		t0 = x5,
-		t1 = x6,
-		t2 = x7,
-		s0 = x8,
-		fp = x8,
-		s1 = x9,
-		a0 = x10,
-		a1 = x11,
-		a2 = x12,
-		a3 = x13,
-		a4 = x14,
-		a5 = x15,
-		a6 = x16,
-		a7 = x17,
-		s2 = x18,
-		s3 = x19,
-		s4 = x20,
-		s5 = x21,
-		s6 = x22,
-		s7 = x23,
-		s8 = x24,
-		s9 = x25,
-		s10 = x26,
-		s11 = x27,
-		t3 = x28,
-		t4 = x29,
-		t5 = x30,
-		t6 = x31
-	};
-	/**
-	 * Default constructor
-	 */
-	Registers();
+        enum {
+            x0 = 0,
+            x1 = 1,
+            x2,
+            x3,
+            x4,
+            x5,
+            x6,
+            x7,
+            x8,
+            x9,
+            x10,
+            x11,
+            x12,
+            x13,
+            x14,
+            x15,
+            x16,
+            x17,
+            x18,
+            x19,
+            x20,
+            x21,
+            x22,
+            x23,
+            x24,
+            x25,
+            x26,
+            x27,
+            x28,
+            x29,
+            x30,
+            x31,
+            zero = x0,
+            ra = x1,
+            sp = x2,
+            gp = x3,
+            tp = x4,
+            t0 = x5,
+            t1 = x6,
+            t2 = x7,
+            s0 = x8,
+            fp = x8,
+            s1 = x9,
+            a0 = x10,
+            a1 = x11,
+            a2 = x12,
+            a3 = x13,
+            a4 = x14,
+            a5 = x15,
+            a6 = x16,
+            a7 = x17,
+            s2 = x18,
+            s3 = x19,
+            s4 = x20,
+            s5 = x21,
+            s6 = x22,
+            s7 = x23,
+            s8 = x24,
+            s9 = x25,
+            s10 = x26,
+            s11 = x27,
+            t3 = x28,
+            t4 = x29,
+            t5 = x30,
+            t6 = x31
+        };
 
-	/**
-	 * Set value for a register
-	 * @param reg_num register number
-	 * @param value   register value
-	 */
-	void setValue(int reg_num, std::int32_t value);
+        /**
+         * Default constructor
+         */
+        Registers();
 
-	/**
-	 * Returns register value
-	 * @param  reg_num register number
-	 * @return         register value
-	 */
-    std::uint32_t getValue(int reg_num) const;
+        /**
+         * Set value for a register
+         * @param reg_num register number
+         * @param value   register value
+         */
+        void setValue(int reg_num, std::int32_t value);
 
-	/**
-	 * Returns PC value
-	 * @return PC value
-	 */
-    std::uint32_t getPC() const;
+        /**
+         * Returns register value
+         * @param  reg_num register number
+         * @return         register value
+         */
+        std::uint32_t getValue(int reg_num) const;
 
-	/**
-	 * Sets arbitraty value to PC
-	 * @param new_pc new address to PC
-	 */
-	void setPC(std::uint32_t new_pc);
+        /**
+         * Returns PC value
+         * @return PC value
+         */
+        std::uint32_t getPC() const;
 
-	/**
-	 * Increments PC couunter to next address
-	 */
-	inline void incPC() {
-		register_PC += 4;
-	}
+        /**
+         * Sets arbitraty value to PC
+         * @param new_pc new address to PC
+         */
+        void setPC(std::uint32_t new_pc);
 
-    inline void incPCby2() {
-        register_PC += 2;
-    }
+        /**
+         * Increments PC couunter to next address
+         */
+        inline void incPC() {
+            register_PC += 4;
+        }
 
-	/**
-	 * @brief Get CSR value
-	 * @param csr CSR number to access
-	 * @return CSR value
-	 */
-    std::uint32_t getCSR(int csr);
+        inline void incPCby2() {
+            register_PC += 2;
+        }
 
-	/**
-	 * @brief Set CSR value
-	 * @param csr   CSR number to access
-	 * @param value new value to register
-	 */
-	void setCSR(int csr, std::uint32_t value);
+        /**
+         * @brief Get CSR value
+         * @param csr CSR number to access
+         * @return CSR value
+         */
+        std::uint32_t getCSR(int csr);
 
-	/**
-	 * Dump register data to console
-	 */
-	void dump();
-private:
-	/**
-	 * bank of registers (32 regs of 32bits each)
-	 */
-    std::array<std::uint32_t, 32> register_bank = { {0} };
+        /**
+         * @brief Set CSR value
+         * @param csr   CSR number to access
+         * @param value new value to register
+         */
+        void setCSR(int csr, std::uint32_t value);
 
-	/**
-	 * Program counter (32 bits width)
-	 */
-    std::uint32_t register_PC;
+        /**
+         * Dump register data to console
+         */
+        void dump();
 
-	/**
-	 * CSR registers (4096 maximum)
-	 */
-    std::unordered_map<std::uint32_t, unsigned int> CSR;
+    private:
+        /**
+         * bank of registers (32 regs of 32bits each)
+         */
+        std::array<std::uint32_t, 32> register_bank = {{0}};
+
+        /**
+         * Program counter (32 bits width)
+         */
+        std::uint32_t register_PC;
+
+        /**
+         * CSR registers (4096 maximum)
+         */
+        std::unordered_map<std::uint32_t, unsigned int> CSR;
 
 
-	Performance *perf;
+        Performance *perf;
 
-	void initCSR();
-};
-
+        void initCSR();
+    };
+}
 #endif

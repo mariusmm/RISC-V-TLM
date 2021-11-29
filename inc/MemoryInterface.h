@@ -17,17 +17,21 @@
 
 #include "memory.h"
 
+namespace riscv_tlm {
+
 /**
  * @brief Memory Interface
  */
-class MemoryInterface {
-public:
+    class MemoryInterface {
+    public:
 
-	tlm_utils::simple_initiator_socket<MemoryInterface> data_bus;
+        tlm_utils::simple_initiator_socket<MemoryInterface> data_bus;
 
-	MemoryInterface();
-	std::uint32_t readDataMem(std::uint32_t addr, int size);
-	void writeDataMem(std::uint32_t addr, std::uint32_t data, int size);
-};
+        MemoryInterface();
 
+        std::uint32_t readDataMem(std::uint32_t addr, int size);
+
+        void writeDataMem(std::uint32_t addr, std::uint32_t data, int size);
+    };
+}
 #endif /* INC_MEMORYINTERFACE_H_ */

@@ -11,1422 +11,1473 @@
 
 #include "BASE_ISA.h"
 
-enum Codes {
-	LUI = 0b0110111,
-	AUIPC = 0b0010111,
-	JAL = 0b1101111,
-	JALR = 0b1100111,
+namespace riscv_tlm {
 
-	BEQ = 0b1100011,
-	BEQ_F = 0b000,
-	BNE_F = 0b001,
-	BLT_F = 0b100,
-	BGE_F = 0b101,
-	BLTU_F = 0b110,
-	BGEU_F = 0b111,
+    enum Codes {
+        LUI = 0b0110111,
+        AUIPC = 0b0010111,
+        JAL = 0b1101111,
+        JALR = 0b1100111,
 
-	LB = 0b0000011,
-	LB_F = 0b000,
-	LH_F = 0b001,
-	LW_F = 0b010,
-	LBU_F = 0b100,
-	LHU_F = 0b101,
+        BEQ = 0b1100011,
+        BEQ_F = 0b000,
+        BNE_F = 0b001,
+        BLT_F = 0b100,
+        BGE_F = 0b101,
+        BLTU_F = 0b110,
+        BGEU_F = 0b111,
 
-	SB = 0b0100011,
-	SB_F = 0b000,
-	SH_F = 0b001,
-	SW_F = 0b010,
+        LB = 0b0000011,
+        LB_F = 0b000,
+        LH_F = 0b001,
+        LW_F = 0b010,
+        LBU_F = 0b100,
+        LHU_F = 0b101,
 
-	ADDI = 0b0010011,
-	ADDI_F = 0b000,
-	SLTI_F = 0b010,
-	SLTIU_F = 0b011,
-	XORI_F = 0b100,
-	ORI_F = 0b110,
-	ANDI_F = 0b111,
-	SLLI_F = 0b001,
-	SRLI_F = 0b101,
-	SRLI_F7 = 0b0000000,
-	SRAI_F7 = 0b0100000,
+        SB = 0b0100011,
+        SB_F = 0b000,
+        SH_F = 0b001,
+        SW_F = 0b010,
 
-	ADD = 0b0110011,
-	ADD_F = 0b000,
-	SUB_F = 0b000,
-	ADD_F7 = 0b0000000,
-	SUB_F7 = 0b0100000,
+        ADDI = 0b0010011,
+        ADDI_F = 0b000,
+        SLTI_F = 0b010,
+        SLTIU_F = 0b011,
+        XORI_F = 0b100,
+        ORI_F = 0b110,
+        ANDI_F = 0b111,
+        SLLI_F = 0b001,
+        SRLI_F = 0b101,
+        SRLI_F7 = 0b0000000,
+        SRAI_F7 = 0b0100000,
 
-	SLL_F = 0b001,
-	SLT_F = 0b010,
-	SLTU_F = 0b011,
-	XOR_F = 0b100,
-	SRL_F = 0b101,
-	SRA_F = 0b101,
-	SRL_F7 = 0b0000000,
-	SRA_F7 = 0b0100000,
-	OR_F = 0b110,
-	AND_F = 0b111,
+        ADD = 0b0110011,
+        ADD_F = 0b000,
+        SUB_F = 0b000,
+        ADD_F7 = 0b0000000,
+        SUB_F7 = 0b0100000,
 
-	FENCE = 0b0001111,
-	ECALL = 0b1110011,
-	ECALL_F = 0b000000000000,
-	EBREAK_F = 0b000000000001,
-	URET_F = 0b000000000010,
-	SRET_F = 0b000100000010,
-	MRET_F = 0b001100000010,
-	WFI_F = 0b000100000101,
-	SFENCE_F = 0b0001001,
+        SLL_F = 0b001,
+        SLT_F = 0b010,
+        SLTU_F = 0b011,
+        XOR_F = 0b100,
+        SRL_F = 0b101,
+        SRA_F = 0b101,
+        SRL_F7 = 0b0000000,
+        SRA_F7 = 0b0100000,
+        OR_F = 0b110,
+        AND_F = 0b111,
 
-	ECALL_F3 = 0b000,
-	CSRRW = 0b001,
-	CSRRS = 0b010,
-	CSRRC = 0b011,
-	CSRRWI = 0b101,
-	CSRRSI = 0b110,
-	CSRRCI = 0b111,
-};
+        FENCE = 0b0001111,
+        ECALL = 0b1110011,
+        ECALL_F = 0b000000000000,
+        EBREAK_F = 0b000000000001,
+        URET_F = 0b000000000010,
+        SRET_F = 0b000100000010,
+        MRET_F = 0b001100000010,
+        WFI_F = 0b000100000101,
+        SFENCE_F = 0b0001001,
 
-bool BASE_ISA::Exec_LUI() const {
-	int rd;
-	std::uint32_t imm;
+        ECALL_F3 = 0b000,
+        CSRRW = 0b001,
+        CSRRS = 0b010,
+        CSRRC = 0b011,
+        CSRRWI = 0b101,
+        CSRRSI = 0b110,
+        CSRRCI = 0b111,
+    };
 
-	rd = get_rd();
-	imm = get_imm_U() << 12;
-	regs->setValue(rd, static_cast<std::int32_t>(imm));
+    bool BASE_ISA::Exec_LUI() const {
+        int rd;
+        std::uint32_t imm;
 
-    logger->debug("{} ns. PC: 0x{:x}. LUI: x{:d} <- 0x{:x}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rd, imm);
+        rd = get_rd();
+        imm = get_imm_U() << 12;
+        regs->setValue(rd, static_cast<std::int32_t>(imm));
 
-	return true;
-}
+        logger->debug("{} ns. PC: 0x{:x}. LUI: x{:d} <- 0x{:x}", sc_core::sc_time_stamp().value(), regs->getPC(),
+                      rd, imm);
 
-bool BASE_ISA::Exec_AUIPC() const {
-	int rd;
-	std::uint32_t imm;
-    std::uint32_t new_pc;
-
-	rd = get_rd();
-	imm = get_imm_U() << 12;
-	new_pc = static_cast<std::uint32_t>(regs->getPC() + imm);
-
-	regs->setValue(rd, new_pc);
-
-    logger->debug("{} ns. PC: 0x{:x}. AUIPC: x{:d} <- 0x{:x} + PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rd, imm, new_pc);
-
-	return true;
-}
-
-bool BASE_ISA::Exec_JAL() const {
-	int32_t mem_addr;
-	int rd;
-    std::uint32_t new_pc, old_pc;
-
-	rd = get_rd();
-	mem_addr = get_imm_J();
-	old_pc = static_cast<std::uint32_t>(regs->getPC());
-	new_pc = old_pc + mem_addr;
-
-	regs->setPC(new_pc);
-
-	old_pc = old_pc + 4;
-	regs->setValue(rd, old_pc);
-
-    logger->debug("{} ns. PC: 0x{:x}. JAL: x{:d} <- 0x{:x}. PC + 0x{:x} -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rd, old_pc, mem_addr, new_pc);
-
-	return true;
-}
-
-bool BASE_ISA::Exec_JALR() {
-	std::uint32_t mem_addr;
-	int rd, rs1;
-    std::uint32_t new_pc, old_pc;
-
-	rd = get_rd();
-	rs1 = get_rs1();
-	mem_addr = get_imm_I();
-
-	old_pc = static_cast<std::uint32_t>(regs->getPC());
-	regs->setValue(rd, old_pc + 4);
-
-	new_pc = static_cast<std::uint32_t>((regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE);
-
-	if( (new_pc & 0x00000003) != 0) {
-	    // not aligned
-        logger->debug("{} ns. PC: 0x{:x}. JALR: x{:d} <- 0x{:x} PC <- 0x{:x}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                    rd, old_pc + 4, new_pc);
-
-        logger->debug("{} ns. PC: 0x{:x}. JALR : Exception");
-        RaiseException(EXCEPTION_CAUSE_LOAD_ADDR_MISALIGN, m_instr);
-	} else {
-        regs->setPC(new_pc);
+        return true;
     }
 
-    logger->debug("{} ns. PC: 0x{:x}. JALR: x{:d} <- 0x{:x}. PC <- 0x{:x}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rd, old_pc + 4, new_pc);
-
-	return true;
-}
-
-bool BASE_ISA::Exec_BEQ() const {
-	int rs1, rs2;
-    std::uint32_t new_pc;
-
-	rs1 = get_rs1();
-	rs2 = get_rs2();
-
-	if (regs->getValue(rs1) == regs->getValue(rs2)) {
-		new_pc = static_cast<std::uint32_t>(regs->getPC() + get_imm_B());
-		regs->setPC(new_pc);
-	} else {
-		regs->incPC();
-		new_pc = static_cast<std::uint32_t>(regs->getPC());
-	}
-
-    logger->debug("{} ns. PC: 0x{:x}. BEQ: x{:d}(0x{:x}) == x{:d}(0x{:x})? -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), new_pc);
-
-	return true;
-}
-
-bool BASE_ISA::Exec_BNE() const {
-	int rs1, rs2;
-    std::uint32_t new_pc;
-	std::uint32_t val1, val2;
-
-	rs1 = get_rs1();
-	rs2 = get_rs2();
-
-	val1 = regs->getValue(rs1);
-	val2 = regs->getValue(rs2);
-
-	if (val1 != val2) {
-		new_pc = static_cast<std::uint32_t>(regs->getPC() + get_imm_B());
-		regs->setPC(new_pc);
-	} else {
-		regs->incPC();
-		new_pc = static_cast<std::uint32_t>(regs->getPC());
-	}
-
-    logger->debug("{} ns. PC: 0x{:x}. BNE: x{:d}(0x{:x}) != x{:d}(0x{:x})? -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, val1, rs2, val2, new_pc);
-
-	return true;
-}
-
-bool BASE_ISA::Exec_BLT() const {
-	int rs1, rs2;
-    std::uint32_t new_pc = 0;
-
-	rs1 = get_rs1();
-	rs2 = get_rs2();
-
-	if ( static_cast<std::int32_t>(regs->getValue(rs1)) < static_cast<std::int32_t>(regs->getValue(rs2)) ) {
-		new_pc = static_cast<std::uint32_t>(regs->getPC() + get_imm_B());
-		regs->setPC(new_pc);
-	} else {
-		regs->incPC();
-	}
-
-    logger->debug("{} ns. PC: 0x{:x}. BLT: x{:d}(0x{:x}) < x{:d}(0x{:x})? -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), new_pc);
-
-	return true;
-}
-
-bool BASE_ISA::Exec_BGE() const {
-	int rs1, rs2;
-    std::uint32_t new_pc = 0;
-
-	rs1 = get_rs1();
-	rs2 = get_rs2();
-
-	if ( static_cast<std::int32_t>(regs->getValue(rs1)) >= static_cast<std::int32_t>( regs->getValue(rs2)) ) {
-		new_pc = static_cast<std::uint32_t>(regs->getPC() + get_imm_B());
-		regs->setPC(new_pc);
-	} else {
-		regs->incPC();
-	}
-
-    logger->debug("{} ns. PC: 0x{:x}. BGE: x{:d}(0x{:x}) > x{:d}(0x{:x})? -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), new_pc);
-
-	return true;
-}
-
-bool BASE_ISA::Exec_BLTU() const {
-	int rs1, rs2;
-    std::uint32_t new_pc;
-
-	rs1 = get_rs1();
-	rs2 = get_rs2();
-
-	if ( static_cast<std::uint32_t>(regs->getValue(rs1)) < static_cast<std::uint32_t>(regs->getValue(rs2)) ) {
-		new_pc = static_cast<std::uint32_t>(regs->getPC() + get_imm_B());
-		regs->setPC(new_pc);
-	} else {
-		regs->incPC();
-		new_pc = static_cast<std::uint32_t>(regs->getPC());
-	}
-
-    logger->debug("{} ns. PC: 0x{:x}. BLTU: x{:d}(0x{:x}) < x{:d}(0x{:x})? -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), new_pc);
-
-	return true;
-}
-
-bool BASE_ISA::Exec_BGEU() const {
-	int rs1, rs2;
-
-	rs1 = get_rs1();
-	rs2 = get_rs2();
-
-	if ( static_cast<std::uint32_t>(regs->getValue(rs1)) >= static_cast<std::uint32_t>(regs->getValue(rs2)) ) {
+    bool BASE_ISA::Exec_AUIPC() const {
+        int rd;
+        std::uint32_t imm;
         std::uint32_t new_pc;
-        new_pc = static_cast<std::uint32_t>(regs->getPC() + get_imm_B());
 
-        logger->debug("{} ns. PC: 0x{:x}. BGEU: x{:d}(0x{:x}) > x{:d}(0x{:x}) -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
+        rd = get_rd();
+        imm = get_imm_U() << 12;
+        new_pc = static_cast<std::uint32_t>(regs->getPC() + imm);
+
+        regs->setValue(rd, new_pc);
+
+        logger->debug("{} ns. PC: 0x{:x}. AUIPC: x{:d} <- 0x{:x} + PC (0x{:x})", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rd, imm, new_pc);
+
+        return true;
+    }
+
+    bool BASE_ISA::Exec_JAL() const {
+        std::int32_t mem_addr;
+        int rd;
+        std::uint32_t new_pc, old_pc;
+
+        rd = get_rd();
+        mem_addr = get_imm_J();
+        old_pc = static_cast<std::uint32_t>(regs->getPC());
+        new_pc = old_pc + mem_addr;
+
+        regs->setPC(new_pc);
+
+        old_pc = old_pc + 4;
+        regs->setValue(rd, old_pc);
+
+        logger->debug("{} ns. PC: 0x{:x}. JAL: x{:d} <- 0x{:x}. PC + 0x{:x} -> PC (0x{:x})",
+                      sc_core::sc_time_stamp().value(), regs->getPC(),
+                      rd, old_pc, mem_addr, new_pc);
+
+        return true;
+    }
+
+    bool BASE_ISA::Exec_JALR() {
+        std::uint32_t mem_addr;
+        int rd, rs1;
+        std::uint32_t new_pc, old_pc;
+
+        rd = get_rd();
+        rs1 = get_rs1();
+        mem_addr = get_imm_I();
+
+        old_pc = static_cast<std::uint32_t>(regs->getPC());
+        regs->setValue(rd, old_pc + 4);
+
+        new_pc = static_cast<std::uint32_t>((regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE);
+
+        if ((new_pc & 0x00000003) != 0) {
+            // not aligned
+            logger->debug("{} ns. PC: 0x{:x}. JALR: x{:d} <- 0x{:x} PC <- 0x{:x}", sc_core::sc_time_stamp().value(),
+                          regs->getPC(),
+                          rd, old_pc + 4, new_pc);
+
+            logger->debug("{} ns. PC: 0x{:x}. JALR : Exception");
+            RaiseException(EXCEPTION_CAUSE_LOAD_ADDR_MISALIGN, m_instr);
+        } else {
+            regs->setPC(new_pc);
+        }
+
+        logger->debug("{} ns. PC: 0x{:x}. JALR: x{:d} <- 0x{:x}. PC <- 0x{:x}", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rd, old_pc + 4, new_pc);
+
+        return true;
+    }
+
+    bool BASE_ISA::Exec_BEQ() const {
+        int rs1, rs2;
+        std::uint32_t new_pc;
+
+        rs1 = get_rs1();
+        rs2 = get_rs2();
+
+        if (regs->getValue(rs1) == regs->getValue(rs2)) {
+            new_pc = static_cast<std::uint32_t>(regs->getPC() + get_imm_B());
+            regs->setPC(new_pc);
+        } else {
+            regs->incPC();
+            new_pc = static_cast<std::uint32_t>(regs->getPC());
+        }
+
+        logger->debug("{} ns. PC: 0x{:x}. BEQ: x{:d}(0x{:x}) == x{:d}(0x{:x})? -> PC (0x{:x})",
+                      sc_core::sc_time_stamp().value(), regs->getPC(),
                       rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), new_pc);
 
-		regs->setPC(new_pc);
-	} else {
-        logger->debug("{} ns. PC: 0x{:x}. BGEU: x{:d}(0x{:x}) > x{:d}(0x{:x}) -> PC (0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                      rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), regs->getPC() + 4);
-		regs->incPC();
-	}
+        return true;
+    }
 
-	return true;
-}
+    bool BASE_ISA::Exec_BNE() const {
+        int rs1, rs2;
+        std::uint32_t new_pc;
+        std::uint32_t val1, val2;
 
-bool BASE_ISA::Exec_LB() const {
-	std::uint32_t mem_addr ;
-	int rd, rs1;
-	std::int32_t imm;
-	std::int8_t data;
+        rs1 = get_rs1();
+        rs2 = get_rs2();
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	imm = get_imm_I();
+        val1 = regs->getValue(rs1);
+        val2 = regs->getValue(rs2);
 
-	mem_addr = imm + regs->getValue(rs1);
-	data = static_cast<std::int8_t>(mem_intf->readDataMem(mem_addr, 1));
-	perf->dataMemoryRead();
-	regs->setValue(rd, data);
+        if (val1 != val2) {
+            new_pc = static_cast<std::uint32_t>(regs->getPC() + get_imm_B());
+            regs->setPC(new_pc);
+        } else {
+            regs->incPC();
+            new_pc = static_cast<std::uint32_t>(regs->getPC());
+        }
 
-    logger->debug("{} ns. PC: 0x{:x}. LB: x{:d} + x{:d}(0x{:x}) -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, imm, mem_addr, rd);
+        logger->debug("{} ns. PC: 0x{:x}. BNE: x{:d}(0x{:x}) != x{:d}(0x{:x})? -> PC (0x{:x})",
+                      sc_core::sc_time_stamp().value(), regs->getPC(),
+                      rs1, val1, rs2, val2, new_pc);
 
-	return true;
-}
+        return true;
+    }
 
-bool BASE_ISA::Exec_LH() const {
-	std::uint32_t mem_addr ;
-	int rd, rs1;
-	std::int32_t imm;
-	int16_t data;
+    bool BASE_ISA::Exec_BLT() const {
+        int rs1, rs2;
+        std::uint32_t new_pc = 0;
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	imm = get_imm_I();
+        rs1 = get_rs1();
+        rs2 = get_rs2();
 
-	mem_addr = imm + regs->getValue(rs1);
-	data = static_cast<int16_t>(mem_intf->readDataMem(mem_addr, 2));
-	perf->dataMemoryRead();
-	regs->setValue(rd, data);
+        if (static_cast<std::int32_t>(regs->getValue(rs1)) < static_cast<std::int32_t>(regs->getValue(rs2))) {
+            new_pc = static_cast<std::uint32_t>(regs->getPC() + get_imm_B());
+            regs->setPC(new_pc);
+        } else {
+            regs->incPC();
+        }
 
-    logger->debug("{} ns. PC: 0x{:x}. LH: x{:d} + x{:d}(0x{:x}) -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, imm, mem_addr, rd);
+        logger->debug("{} ns. PC: 0x{:x}. BLT: x{:d}(0x{:x}) < x{:d}(0x{:x})? -> PC (0x{:x})",
+                      sc_core::sc_time_stamp().value(), regs->getPC(),
+                      rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), new_pc);
 
-	return true;
-}
+        return true;
+    }
 
-bool BASE_ISA::Exec_LW() const {
-	std::uint32_t mem_addr;
-	int rd, rs1;
-	std::int32_t imm;
-	std::uint32_t data;
+    bool BASE_ISA::Exec_BGE() const {
+        int rs1, rs2;
+        std::uint32_t new_pc = 0;
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	imm = get_imm_I();
+        rs1 = get_rs1();
+        rs2 = get_rs2();
 
-	mem_addr = imm + regs->getValue(rs1);
-	data = mem_intf->readDataMem(mem_addr, 4);
-	perf->dataMemoryRead();
-	regs->setValue(rd, static_cast<std::int32_t>(data));
+        if (static_cast<std::int32_t>(regs->getValue(rs1)) >= static_cast<std::int32_t>( regs->getValue(rs2))) {
+            new_pc = static_cast<std::uint32_t>(regs->getPC() + get_imm_B());
+            regs->setPC(new_pc);
+        } else {
+            regs->incPC();
+        }
 
-    logger->debug("{} ns. PC: 0x{:x}. LW: x{:d} + x{:d}(0x{:x}) -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, imm, mem_addr, rd);
+        logger->debug("{} ns. PC: 0x{:x}. BGE: x{:d}(0x{:x}) > x{:d}(0x{:x})? -> PC (0x{:x})",
+                      sc_core::sc_time_stamp().value(), regs->getPC(),
+                      rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), new_pc);
 
-	return true;
-}
+        return true;
+    }
 
-bool BASE_ISA::Exec_LBU() const {
-	std::uint32_t mem_addr;
-	int rd, rs1;
-	std::int32_t imm;
-	std::uint8_t data;
+    bool BASE_ISA::Exec_BLTU() const {
+        int rs1, rs2;
+        std::uint32_t new_pc;
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	imm = get_imm_I();
+        rs1 = get_rs1();
+        rs2 = get_rs2();
 
-	mem_addr = imm + regs->getValue(rs1);
-	data = mem_intf->readDataMem(mem_addr, 1);
-	perf->dataMemoryRead();
-	regs->setValue(rd, static_cast<std::int32_t>(data));
+        if (static_cast<std::uint32_t>(regs->getValue(rs1)) < static_cast<std::uint32_t>(regs->getValue(rs2))) {
+            new_pc = static_cast<std::uint32_t>(regs->getPC() + get_imm_B());
+            regs->setPC(new_pc);
+        } else {
+            regs->incPC();
+            new_pc = static_cast<std::uint32_t>(regs->getPC());
+        }
 
-    logger->debug("{} ns. PC: 0x{:x}. LBU: x{:d} + x{:d}(0x{:x}) -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, imm, mem_addr, rd);
+        logger->debug("{} ns. PC: 0x{:x}. BLTU: x{:d}(0x{:x}) < x{:d}(0x{:x})? -> PC (0x{:x})",
+                      sc_core::sc_time_stamp().value(), regs->getPC(),
+                      rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), new_pc);
 
-	return true;
-}
+        return true;
+    }
 
-bool BASE_ISA::Exec_LHU() const {
-	std::uint32_t mem_addr;
-	int rd, rs1;
-	std::int32_t imm;
-	uint16_t data;
+    bool BASE_ISA::Exec_BGEU() const {
+        int rs1, rs2;
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	imm = get_imm_I();
+        rs1 = get_rs1();
+        rs2 = get_rs2();
 
-	mem_addr = imm + regs->getValue(rs1);
-	data = mem_intf->readDataMem(mem_addr, 2);
-	perf->dataMemoryRead();
+        if (static_cast<std::uint32_t>(regs->getValue(rs1)) >= static_cast<std::uint32_t>(regs->getValue(rs2))) {
+            std::uint32_t new_pc;
+            new_pc = static_cast<std::uint32_t>(regs->getPC() + get_imm_B());
 
-	regs->setValue(rd, data);
+            logger->debug("{} ns. PC: 0x{:x}. BGEU: x{:d}(0x{:x}) > x{:d}(0x{:x}) -> PC (0x{:x})",
+                          sc_core::sc_time_stamp().value(), regs->getPC(),
+                          rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), new_pc);
 
-    logger->debug("{} ns. PC: 0x{:x}. LHU: x{:d} + x{:d}(0x{:x}) -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, imm, mem_addr, rd);
+            regs->setPC(new_pc);
+        } else {
+            logger->debug("{} ns. PC: 0x{:x}. BGEU: x{:d}(0x{:x}) > x{:d}(0x{:x}) -> PC (0x{:x})",
+                          sc_core::sc_time_stamp().value(), regs->getPC(),
+                          rs1, regs->getValue(rs1), rs2, regs->getValue(rs2), regs->getPC() + 4);
+            regs->incPC();
+        }
 
-	return true;
-}
+        return true;
+    }
 
-bool BASE_ISA::Exec_SB() const {
-	std::uint32_t mem_addr;
-	int rs1, rs2;
-	std::int32_t imm;
-	std::uint32_t data;
+    bool BASE_ISA::Exec_LB() const {
+        std::uint32_t mem_addr;
+        int rd, rs1;
+        std::int32_t imm;
+        std::int8_t data;
 
-	rs1 = get_rs1();
-	rs2 = get_rs2();
-	imm = get_imm_S();
+        rd = get_rd();
+        rs1 = get_rs1();
+        imm = get_imm_I();
 
-	mem_addr = imm + regs->getValue(rs1);
-	data = regs->getValue(rs2);
+        mem_addr = imm + regs->getValue(rs1);
+        data = static_cast<std::int8_t>(mem_intf->readDataMem(mem_addr, 1));
+        perf->dataMemoryRead();
+        regs->setValue(rd, data);
 
-	mem_intf->writeDataMem(mem_addr, data, 1);
-	perf->dataMemoryWrite();
+        logger->debug("{} ns. PC: 0x{:x}. LB: x{:d} + x{:d}(0x{:x}) -> x{:d}", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs1, imm, mem_addr, rd);
 
-    logger->debug("{} ns. PC: 0x{:x}. SB: x{:d} -> x{:d} + 0x{:x}(@0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs2, rs1, imm, mem_addr);
+        return true;
+    }
 
-	return true;
-}
+    bool BASE_ISA::Exec_LH() const {
+        std::uint32_t mem_addr;
+        int rd, rs1;
+        std::int32_t imm;
+        int16_t data;
 
-bool BASE_ISA::Exec_SH() const {
-	std::uint32_t mem_addr;
-	int rs1, rs2;
-	std::int32_t imm;
-	std::uint32_t data;
+        rd = get_rd();
+        rs1 = get_rs1();
+        imm = get_imm_I();
 
-	rs1 = get_rs1();
-	rs2 = get_rs2();
-	imm = get_imm_S();
+        mem_addr = imm + regs->getValue(rs1);
+        data = static_cast<int16_t>(mem_intf->readDataMem(mem_addr, 2));
+        perf->dataMemoryRead();
+        regs->setValue(rd, data);
 
-	mem_addr = imm + regs->getValue(rs1);
-	data = regs->getValue(rs2);
+        logger->debug("{} ns. PC: 0x{:x}. LH: x{:d} + x{:d}(0x{:x}) -> x{:d}", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs1, imm, mem_addr, rd);
 
-	mem_intf->writeDataMem(mem_addr, data, 2);
-	perf->dataMemoryWrite();
+        return true;
+    }
 
-    logger->debug("{} ns. PC: 0x{:x}. SH: x{:d} -> x{:d} + 0x{:x}(@0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs2, rs1, imm, mem_addr);
+    bool BASE_ISA::Exec_LW() const {
+        std::uint32_t mem_addr;
+        int rd, rs1;
+        std::int32_t imm;
+        std::uint32_t data;
 
-	return true;
-}
+        rd = get_rd();
+        rs1 = get_rs1();
+        imm = get_imm_I();
 
-bool BASE_ISA::Exec_SW() const {
-	std::uint32_t mem_addr;
-	int rs1, rs2;
-	std::int32_t imm;
-	std::uint32_t data;
+        mem_addr = imm + regs->getValue(rs1);
+        data = mem_intf->readDataMem(mem_addr, 4);
+        perf->dataMemoryRead();
+        regs->setValue(rd, static_cast<std::int32_t>(data));
 
-	rs1 = get_rs1();
-	rs2 = get_rs2();
-	imm = get_imm_S();
+        logger->debug("{} ns. PC: 0x{:x}. LW: x{:d} + x{:d}(0x{:x}) -> x{:d}", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs1, imm, mem_addr, rd);
 
-	mem_addr = imm + regs->getValue(rs1);
-	data = regs->getValue(rs2);
+        return true;
+    }
 
-	mem_intf->writeDataMem(mem_addr, data, 4);
-	perf->dataMemoryWrite();
+    bool BASE_ISA::Exec_LBU() const {
+        std::uint32_t mem_addr;
+        int rd, rs1;
+        std::int32_t imm;
+        std::uint8_t data;
 
-    logger->debug("{} ns. PC: 0x{:x}. SW: x{:d} -> x{:d} + 0x{:x}(@0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs2, rs1, imm, mem_addr);
+        rd = get_rd();
+        rs1 = get_rs1();
+        imm = get_imm_I();
 
-	return true;
-}
+        mem_addr = imm + regs->getValue(rs1);
+        data = mem_intf->readDataMem(mem_addr, 1);
+        perf->dataMemoryRead();
+        regs->setValue(rd, static_cast<std::int32_t>(data));
 
-bool BASE_ISA::Exec_ADDI() const {
-	int rd, rs1;
-	std::int32_t imm;
-	std::int32_t calc;
+        logger->debug("{} ns. PC: 0x{:x}. LBU: x{:d} + x{:d}(0x{:x}) -> x{:d}", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs1, imm, mem_addr, rd);
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	imm = get_imm_I();
+        return true;
+    }
 
-	calc = static_cast<std::int32_t>(regs->getValue(rs1)) + imm;
-	regs->setValue(rd, calc);
+    bool BASE_ISA::Exec_LHU() const {
+        std::uint32_t mem_addr;
+        int rd, rs1;
+        std::int32_t imm;
+        uint16_t data;
 
-    logger->debug("{} ns. PC: 0x{:x}. ADDI: x{:d} + x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, imm, rd, calc);
+        rd = get_rd();
+        rs1 = get_rs1();
+        imm = get_imm_I();
 
-	return true;
-}
+        mem_addr = imm + regs->getValue(rs1);
+        data = mem_intf->readDataMem(mem_addr, 2);
+        perf->dataMemoryRead();
 
-bool BASE_ISA::Exec_SLTI() const {
-	int rd, rs1;
-	std::int32_t imm;
+        regs->setValue(rd, data);
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	imm = get_imm_I();
+        logger->debug("{} ns. PC: 0x{:x}. LHU: x{:d} + x{:d}(0x{:x}) -> x{:d}", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs1, imm, mem_addr, rd);
 
-	if (static_cast<std::int32_t>(regs->getValue(rs1)) < imm) {
-		regs->setValue(rd, 1);
+        return true;
+    }
 
-        logger->debug("{} ns. PC: 0x{:x}. SLTI: x{:d} < x{:d} => 1 -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+    bool BASE_ISA::Exec_SB() const {
+        std::uint32_t mem_addr;
+        int rs1, rs2;
+        std::int32_t imm;
+        std::uint32_t data;
+
+        rs1 = get_rs1();
+        rs2 = get_rs2();
+        imm = get_imm_S();
+
+        mem_addr = imm + regs->getValue(rs1);
+        data = regs->getValue(rs2);
+
+        mem_intf->writeDataMem(mem_addr, data, 1);
+        perf->dataMemoryWrite();
+
+        logger->debug("{} ns. PC: 0x{:x}. SB: x{:d} -> x{:d} + 0x{:x}(@0x{:x})", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs2, rs1, imm, mem_addr);
+
+        return true;
+    }
+
+    bool BASE_ISA::Exec_SH() const {
+        std::uint32_t mem_addr;
+        int rs1, rs2;
+        std::int32_t imm;
+        std::uint32_t data;
+
+        rs1 = get_rs1();
+        rs2 = get_rs2();
+        imm = get_imm_S();
+
+        mem_addr = imm + regs->getValue(rs1);
+        data = regs->getValue(rs2);
+
+        mem_intf->writeDataMem(mem_addr, data, 2);
+        perf->dataMemoryWrite();
+
+        logger->debug("{} ns. PC: 0x{:x}. SH: x{:d} -> x{:d} + 0x{:x}(@0x{:x})", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs2, rs1, imm, mem_addr);
+
+        return true;
+    }
+
+    bool BASE_ISA::Exec_SW() const {
+        std::uint32_t mem_addr;
+        int rs1, rs2;
+        std::int32_t imm;
+        std::uint32_t data;
+
+        rs1 = get_rs1();
+        rs2 = get_rs2();
+        imm = get_imm_S();
+
+        mem_addr = imm + regs->getValue(rs1);
+        data = regs->getValue(rs2);
+
+        mem_intf->writeDataMem(mem_addr, data, 4);
+        perf->dataMemoryWrite();
+
+        logger->debug("{} ns. PC: 0x{:x}. SW: x{:d} -> x{:d} + 0x{:x}(@0x{:x})", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs2, rs1, imm, mem_addr);
+
+        return true;
+    }
+
+    bool BASE_ISA::Exec_ADDI() const {
+        int rd, rs1;
+        std::int32_t imm;
+        std::int32_t calc;
+
+        rd = get_rd();
+        rs1 = get_rs1();
+        imm = get_imm_I();
+
+        calc = static_cast<std::int32_t>(regs->getValue(rs1)) + imm;
+        regs->setValue(rd, calc);
+
+        logger->debug("{} ns. PC: 0x{:x}. ADDI: x{:d} + x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs1, imm, rd, calc);
+
+        return true;
+    }
+
+    bool BASE_ISA::Exec_SLTI() const {
+        int rd, rs1;
+        std::int32_t imm;
+
+        rd = get_rd();
+        rs1 = get_rs1();
+        imm = get_imm_I();
+
+        if (static_cast<std::int32_t>(regs->getValue(rs1)) < imm) {
+            regs->setValue(rd, 1);
+
+            logger->debug("{} ns. PC: 0x{:x}. SLTI: x{:d} < x{:d} => 1 -> x{:d}", sc_core::sc_time_stamp().value(),
+                          regs->getPC(),
+                          rs1, imm, rd);
+        } else {
+            regs->setValue(rd, 0);
+            logger->debug("{} ns. PC: 0x{:x}. SLTI: x{:d} < x{:d} => 0 -> x{:d}", sc_core::sc_time_stamp().value(),
+                          regs->getPC(),
+                          rs1, imm, rd);
+        }
+
+        return true;
+    }
+
+    bool BASE_ISA::Exec_SLTIU() const {
+        int rd, rs1;
+        std::int32_t imm;
+
+        rd = get_rd();
+        rs1 = get_rs1();
+        imm = get_imm_I();
+
+        if (static_cast<std::uint32_t>(regs->getValue(rs1)) < static_cast<std::uint32_t>(imm)) {
+            regs->setValue(rd, 1);
+            logger->debug("{} ns. PC: 0x{:x}. SLTIU: x{:d} < x{:d} => 1 -> x{:d}", sc_core::sc_time_stamp().value(),
+                          regs->getPC(),
+                          rs1, imm, rd);
+        } else {
+            regs->setValue(rd, 0);
+            logger->debug("{} ns. PC: 0x{:x}. SLTIU: x{:d} < x{:d} => 0 -> x{:d}", sc_core::sc_time_stamp().value(),
+                          regs->getPC(),
+                          rs1, imm, rd);
+        }
+
+        return true;
+    }
+
+    bool BASE_ISA::Exec_XORI() const {
+        int rd, rs1;
+        std::int32_t imm;
+        std::uint32_t calc;
+
+        rd = get_rd();
+        rs1 = get_rs1();
+        imm = get_imm_I();
+
+        calc = regs->getValue(rs1) ^ imm;
+        regs->setValue(rd, static_cast<std::int32_t>(calc));
+
+        logger->debug("{} ns. PC: 0x{:x}. XORI: x{:d} XOR x{:d} -> x{:d}", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
                       rs1, imm, rd);
-	} else {
-		regs->setValue(rd, 0);
-        logger->debug("{} ns. PC: 0x{:x}. SLTI: x{:d} < x{:d} => 0 -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
+
+        return true;
+    }
+
+    bool BASE_ISA::Exec_ORI() const {
+        int rd, rs1;
+        std::int32_t imm;
+        std::uint32_t calc;
+
+        rd = get_rd();
+        rs1 = get_rs1();
+        imm = get_imm_I();
+
+        calc = regs->getValue(rs1) | imm;
+        regs->setValue(rd, static_cast<std::int32_t>(calc));
+
+        logger->debug("{} ns. PC: 0x{:x}. ORI: x{:d} OR x{:d} -> x{:d}", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
                       rs1, imm, rd);
-	}
 
-	return true;
-}
+        return true;
+    }
 
-bool BASE_ISA::Exec_SLTIU() const {
-	int rd, rs1;
-	std::int32_t imm;
+    bool BASE_ISA::Exec_ANDI() const {
+        int rd, rs1;
+        std::uint32_t imm;
+        std::uint32_t calc;
+        std::uint32_t aux;
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	imm = get_imm_I();
+        rd = get_rd();
+        rs1 = get_rs1();
+        imm = get_imm_I();
 
-	if (static_cast<std::uint32_t>(regs->getValue(rs1)) < static_cast<std::uint32_t>(imm)) {
-		regs->setValue(rd, 1);
-        logger->debug("{} ns. PC: 0x{:x}. SLTIU: x{:d} < x{:d} => 1 -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                      rs1, imm, rd);
-	} else {
-		regs->setValue(rd, 0);
-        logger->debug("{} ns. PC: 0x{:x}. SLTIU: x{:d} < x{:d} => 0 -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                      rs1, imm, rd);
-	}
+        aux = regs->getValue(rs1);
+        calc = aux & imm;
+        regs->setValue(rd, static_cast<std::int32_t>(calc));
 
-	return true;
-}
+        logger->debug("{} ns. PC: 0x{:x}. ANDI: x{:d}(0x{:x}) AND 0x{:x} -> x{:d}", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs1, aux, imm, rd);
 
-bool BASE_ISA::Exec_XORI() const {
-	int rd, rs1;
-	std::int32_t imm;
-	std::uint32_t calc;
+        return true;
+    }
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	imm = get_imm_I();
+    bool BASE_ISA::Exec_SLLI() {
+        int rd, rs1, rs2;
+        std::uint32_t shift;
+        std::uint32_t calc;
 
-	calc = regs->getValue(rs1) ^ imm;
-	regs->setValue(rd, static_cast<std::int32_t>(calc));
+        rd = get_rd();
+        rs1 = get_rs1();
+        rs2 = get_shamt();
 
-    logger->debug("{} ns. PC: 0x{:x}. XORI: x{:d} XOR x{:d} -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, imm, rd);
+        if (rs2 >= 0x20) {
+            std::cout << "ILEGAL INSTRUCTION, shamt[5] != 0" << "\n";
+            RaiseException(EXCEPTION_CAUSE_ILLEGAL_INSTRUCTION, m_instr);
 
-	return true;
-}
+            return false;
+        }
 
-bool BASE_ISA::Exec_ORI() const {
-	int rd, rs1;
-	std::int32_t imm;
-	std::uint32_t calc;
+        shift = rs2 & 0x1F;
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	imm = get_imm_I();
+        calc = static_cast<std::uint32_t>(regs->getValue(rs1)) << shift;
+        regs->setValue(rd, static_cast<std::int32_t>(calc));
 
-	calc = regs->getValue(rs1) | imm;
-	regs->setValue(rd, static_cast<std::int32_t>(calc));
+        logger->debug("{} ns. PC: 0x{:x}. SLLI: x{:d} << {:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs1, shift, rd, calc);
 
-    logger->debug("{} ns. PC: 0x{:x}. ORI: x{:d} OR x{:d} -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, imm, rd);
+        return true;
+    }
 
-	return true;
-}
+    bool BASE_ISA::Exec_SRLI() const {
+        int rd, rs1, rs2;
+        std::uint32_t shift;
+        std::uint32_t calc;
 
-bool BASE_ISA::Exec_ANDI() const {
-	int rd, rs1;
-	std::uint32_t imm;
-	std::uint32_t calc;
-	std::uint32_t aux;
+        rd = get_rd();
+        rs1 = get_rs1();
+        rs2 = get_rs2();
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	imm = get_imm_I();
+        shift = rs2 & 0x1F;
 
-	aux = regs->getValue(rs1);
-	calc = aux & imm;
-	regs->setValue(rd, static_cast<std::int32_t>(calc));
+        calc = static_cast<std::uint32_t>(regs->getValue(rs1)) >> shift;
+        regs->setValue(rd, static_cast<std::int32_t>(calc));
 
-    logger->debug("{} ns. PC: 0x{:x}. ANDI: x{:d}(0x{:x}) AND 0x{:x} -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, aux, imm, rd);
+        logger->debug("{} ns. PC: 0x{:x}. SRLI: x{:d} >> {:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs1, shift, rd, calc);
 
-	return true;
-}
+        return true;
+    }
 
-bool BASE_ISA::Exec_SLLI() {
-	int rd, rs1, rs2;
-	std::uint32_t shift;
-	std::uint32_t calc;
+    bool BASE_ISA::Exec_SRAI() const {
+        int rd, rs1, rs2;
+        std::uint32_t shift;
+        std::int32_t calc;
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	rs2 = get_shamt();
+        rd = get_rd();
+        rs1 = get_rs1();
+        rs2 = get_rs2();
 
-	if (rs2 >= 0x20) {
-		std::cout << "ILEGAL INSTRUCTION, shamt[5] != 0" << "\n";
-		RaiseException(EXCEPTION_CAUSE_ILLEGAL_INSTRUCTION, m_instr);
+        shift = rs2 & 0x1F;
 
-		return false;
-	}
+        calc = static_cast<std::int32_t>(regs->getValue(rs1)) >> shift;
+        regs->setValue(rd, calc);
 
-	shift = rs2 & 0x1F;
+        logger->debug("{} ns. PC: 0x{:x}. SRAI: x{:d} >> {:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs1, shift, rd, calc);
 
-	calc = static_cast<std::uint32_t>(regs->getValue(rs1)) << shift;
-	regs->setValue(rd, static_cast<std::int32_t>(calc));
+        return true;
+    }
 
-    logger->debug("{} ns. PC: 0x{:x}. SLLI: x{:d} << {:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, shift, rd, calc);
+    bool BASE_ISA::Exec_ADD() const {
+        int rd, rs1, rs2;
+        std::uint32_t calc;
+        rd = get_rd();
+        rs1 = get_rs1();
+        rs2 = get_rs2();
+
+        calc = regs->getValue(rs1) + regs->getValue(rs2);
+
+        regs->setValue(rd, static_cast<std::int32_t>(calc));
+
+        logger->debug("{} ns. PC: 0x{:x}. ADD: x{:d} + x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs1, rs2, rd, calc);
+
+        return true;
+    }
+
+    bool BASE_ISA::Exec_SUB() const {
+        int rd, rs1, rs2;
+        std::uint32_t calc;
+        rd = get_rd();
+        rs1 = get_rs1();
+        rs2 = get_rs2();
+
+        calc = regs->getValue(rs1) - regs->getValue(rs2);
+        regs->setValue(rd, static_cast<std::int32_t>(calc));
+
+        logger->debug("{} ns. PC: 0x{:x}. SUB: x{:d} - x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs1, rs2, rd, calc);
+
+        return true;
+    }
+
+    bool BASE_ISA::Exec_SLL() const {
+        int rd, rs1, rs2;
+        std::uint32_t shift;
+        std::uint32_t calc;
 
-	return true;
-}
+        rd = get_rd();
+        rs1 = get_rs1();
+        rs2 = get_rs2();
+
+        shift = regs->getValue(rs2) & 0x1F;
 
-bool BASE_ISA::Exec_SRLI() const {
-	int rd, rs1, rs2;
-	std::uint32_t shift;
-	std::uint32_t calc;
+        calc = static_cast<std::uint32_t>(regs->getValue(rs1)) << shift;
+        regs->setValue(rd, static_cast<std::int32_t>(calc));
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	rs2 = get_rs2();
+        logger->debug("{} ns. PC: 0x{:x}. SLL: x{:d} << x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs1, shift, rd, calc);
 
-	shift = rs2 & 0x1F;
+        return true;
+    }
 
-	calc = static_cast<std::uint32_t>(regs->getValue(rs1)) >> shift;
-	regs->setValue(rd, static_cast<std::int32_t>(calc));
+    bool BASE_ISA::Exec_SLT() const {
+        int rd, rs1, rs2;
 
-    logger->debug("{} ns. PC: 0x{:x}. SRLI: x{:d} >> {:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, shift, rd, calc);
+        rd = get_rd();
+        rs1 = get_rs1();
+        rs2 = get_rs2();
 
-	return true;
-}
+        if (regs->getValue(rs1) < regs->getValue(rs2)) {
+            regs->setValue(rd, 1);
+            logger->debug("{} ns. PC: 0x{:x}. SLT: x{:d} < x{:d} => 1 -> x{:d}", sc_core::sc_time_stamp().value(),
+                          regs->getPC(),
+                          rs1, rs2, rd);
+        } else {
+            regs->setValue(rd, 0);
+            logger->debug("{} ns. PC: 0x{:x}. SLT: x{:d} < x{:d} => 0 -> x{:d}", sc_core::sc_time_stamp().value(),
+                          regs->getPC(),
+                          rs1, rs2, rd);
+        }
 
-bool BASE_ISA::Exec_SRAI() const {
-	int rd, rs1, rs2;
-	std::uint32_t shift;
-	std::int32_t calc;
+        return true;
+    }
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	rs2 = get_rs2();
+    bool BASE_ISA::Exec_SLTU() const {
+        int rd, rs1, rs2;
 
-	shift = rs2 & 0x1F;
+        rd = get_rd();
+        rs1 = get_rs1();
+        rs2 = get_rs2();
 
-	calc = static_cast<std::int32_t>(regs->getValue(rs1)) >> shift;
-	regs->setValue(rd, calc);
+        if (static_cast<std::uint32_t>(regs->getValue(rs1)) < static_cast<std::uint32_t>(regs->getValue(rs2))) {
+            regs->setValue(rd, 1);
+            logger->debug("{} ns. PC: 0x{:x}. SLTU: x{:d} < x{:d} => 1 -> x{:d}", sc_core::sc_time_stamp().value(),
+                          regs->getPC(),
+                          rs1, rs2, rd);
+        } else {
+            regs->setValue(rd, 0);
+            logger->debug("{} ns. PC: 0x{:x}. SLTU: x{:d} < x{:d} => 0 -> x{:d}", sc_core::sc_time_stamp().value(),
+                          regs->getPC(),
+                          rs1, rs2, rd);
+        }
 
-    logger->debug("{} ns. PC: 0x{:x}. SRAI: x{:d} >> {:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, shift, rd, calc);
+        return true;
+    }
 
-	return true;
-}
+    bool BASE_ISA::Exec_XOR() const {
+        int rd, rs1, rs2;
+        std::uint32_t calc;
 
-bool BASE_ISA::Exec_ADD() const {
-	int rd, rs1, rs2;
-	std::uint32_t calc;
-	rd = get_rd();
-	rs1 = get_rs1();
-	rs2 = get_rs2();
+        rd = get_rd();
+        rs1 = get_rs1();
+        rs2 = get_rs2();
 
-	calc = regs->getValue(rs1) + regs->getValue(rs2);
+        calc = regs->getValue(rs1) ^ regs->getValue(rs2);
+        regs->setValue(rd, static_cast<std::int32_t>(calc));
 
-	regs->setValue(rd, static_cast<std::int32_t>(calc));
+        logger->debug("{} ns. PC: 0x{:x}. XOR: x{:d} XOR x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs1, rs2, rd, calc);
 
-    logger->debug("{} ns. PC: 0x{:x}. ADD: x{:d} + x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, rs2, rd, calc);
+        return true;
+    }
 
-	return true;
-}
+    bool BASE_ISA::Exec_SRL() const {
+        int rd, rs1, rs2;
+        std::uint32_t shift;
+        std::uint32_t calc;
 
-bool BASE_ISA::Exec_SUB() const {
-	int rd, rs1, rs2;
-	std::uint32_t calc;
-	rd = get_rd();
-	rs1 = get_rs1();
-	rs2 = get_rs2();
+        rd = get_rd();
+        rs1 = get_rs1();
+        rs2 = get_rs2();
 
-	calc = regs->getValue(rs1) - regs->getValue(rs2);
-	regs->setValue(rd, static_cast<std::int32_t>(calc));
+        shift = regs->getValue(rs2) & 0x1F;
 
-    logger->debug("{} ns. PC: 0x{:x}. SUB: x{:d} - x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, rs2, rd, calc);
+        calc = static_cast<std::uint32_t>(regs->getValue(rs1)) >> shift;
+        regs->setValue(rd, static_cast<std::int32_t>(calc));
 
-	return true;
-}
+        logger->debug("{} ns. PC: 0x{:x}. SRL: x{:d} >> {:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs1, shift, rd, calc);
 
-bool BASE_ISA::Exec_SLL() const {
-	int rd, rs1, rs2;
-	std::uint32_t shift;
-	std::uint32_t calc;
+        return true;
+    }
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	rs2 = get_rs2();
+    bool BASE_ISA::Exec_SRA() const {
+        int rd, rs1, rs2;
+        std::uint32_t shift;
+        std::int32_t calc;
 
-	shift = regs->getValue(rs2) & 0x1F;
+        rd = get_rd();
+        rs1 = get_rs1();
+        rs2 = get_rs2();
 
-	calc = static_cast<std::uint32_t>(regs->getValue(rs1)) << shift;
-	regs->setValue(rd, static_cast<std::int32_t>(calc));
+        shift = regs->getValue(rs2) & 0x1F;
 
-    logger->debug("{} ns. PC: 0x{:x}. SLL: x{:d} << x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, shift, rd, calc);
+        calc = static_cast<std::int32_t>(regs->getValue(rs1)) >> shift;
+        regs->setValue(rd, calc);
 
-	return true;
-}
+        logger->debug("{} ns. PC: 0x{:x}. SRA: x{:d} >> {:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs1, shift, rd, calc);
 
-bool BASE_ISA::Exec_SLT() const {
-	int rd, rs1, rs2;
+        return true;
+    }
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	rs2 = get_rs2();
+    bool BASE_ISA::Exec_OR() const {
+        int rd, rs1, rs2;
+        std::uint32_t calc;
 
-	if (regs->getValue(rs1) < regs->getValue(rs2)) {
-		regs->setValue(rd, 1);
-        logger->debug("{} ns. PC: 0x{:x}. SLT: x{:d} < x{:d} => 1 -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                      rs1, rs2, rd);
-	} else {
-		regs->setValue(rd, 0);
-        logger->debug("{} ns. PC: 0x{:x}. SLT: x{:d} < x{:d} => 0 -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                      rs1, rs2, rd);
-	}
+        rd = get_rd();
+        rs1 = get_rs1();
+        rs2 = get_rs2();
 
-	return true;
-}
+        calc = regs->getValue(rs1) | regs->getValue(rs2);
+        regs->setValue(rd, static_cast<std::int32_t>(calc));
 
-bool BASE_ISA::Exec_SLTU() const {
-	int rd, rs1, rs2;
+        logger->debug("{} ns. PC: 0x{:x}. OR: x{:d} OR x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs1, rs2, rd, calc);
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	rs2 = get_rs2();
+        return true;
+    }
 
-	if ( static_cast<std::uint32_t>(regs->getValue(rs1)) < static_cast<std::uint32_t>(regs->getValue(rs2)) ) {
-		regs->setValue(rd, 1);
-        logger->debug("{} ns. PC: 0x{:x}. SLTU: x{:d} < x{:d} => 1 -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                      rs1, rs2, rd);
-	} else {
-		regs->setValue(rd, 0);
-        logger->debug("{} ns. PC: 0x{:x}. SLTU: x{:d} < x{:d} => 0 -> x{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                      rs1, rs2, rd);
-	}
+    bool BASE_ISA::Exec_AND() const {
+        int rd, rs1, rs2;
+        std::uint32_t calc;
 
-	return true;
-}
+        rd = get_rd();
+        rs1 = get_rs1();
+        rs2 = get_rs2();
 
-bool BASE_ISA::Exec_XOR() const {
-	int rd, rs1, rs2;
-	std::uint32_t calc;
+        calc = regs->getValue(rs1) & regs->getValue(rs2);
+        regs->setValue(rd, static_cast<std::int32_t>(calc));
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	rs2 = get_rs2();
+        logger->debug("{} ns. PC: 0x{:x}. AND: x{:d} AND x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      rs1, rs2, rd, calc);
 
-	calc = regs->getValue(rs1) ^ regs->getValue(rs2);
-	regs->setValue(rd, static_cast<std::int32_t>(calc));
+        return true;
+    }
 
-    logger->debug("{} ns. PC: 0x{:x}. XOR: x{:d} XOR x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, rs2, rd, calc);
+    bool BASE_ISA::Exec_FENCE() const {
+        logger->debug("{} ns. PC: 0x{:x}. FENCE");
 
-	return true;
-}
+        return true;
+    }
 
-bool BASE_ISA::Exec_SRL() const {
-	int rd, rs1, rs2;
-	std::uint32_t shift;
-	std::uint32_t calc;
+    bool BASE_ISA::Exec_ECALL() {
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	rs2 = get_rs2();
+        logger->debug("{} ns. PC: 0x{:x}. ECALL");
 
-	shift = regs->getValue(rs2) & 0x1F;
-
-	calc = static_cast<std::uint32_t>(regs->getValue(rs1)) >> shift;
-	regs->setValue(rd, static_cast<std::int32_t>(calc));
-
-    logger->debug("{} ns. PC: 0x{:x}. SRL: x{:d} >> {:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, shift, rd, calc);
-
-	return true;
-}
-
-bool BASE_ISA::Exec_SRA() const {
-	int rd, rs1, rs2;
-	std::uint32_t shift;
-	std::int32_t calc;
-
-	rd = get_rd();
-	rs1 = get_rs1();
-	rs2 = get_rs2();
-
-	shift = regs->getValue(rs2) & 0x1F;
-
-	calc = static_cast<std::int32_t>(regs->getValue(rs1)) >> shift;
-	regs->setValue(rd, calc);
-
-    logger->debug("{} ns. PC: 0x{:x}. SRA: x{:d} >> {:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, shift, rd, calc);
-
-	return true;
-}
-
-bool BASE_ISA::Exec_OR() const {
-	int rd, rs1, rs2;
-	std::uint32_t calc;
-
-	rd = get_rd();
-	rs1 = get_rs1();
-	rs2 = get_rs2();
-
-	calc = regs->getValue(rs1) | regs->getValue(rs2);
-	regs->setValue(rd, static_cast<std::int32_t>(calc));
-
-    logger->debug("{} ns. PC: 0x{:x}. OR: x{:d} OR x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, rs2, rd, calc);
-
-	return true;
-}
-
-bool BASE_ISA::Exec_AND() const {
-	int rd, rs1, rs2;
-	std::uint32_t calc;
-
-	rd = get_rd();
-	rs1 = get_rs1();
-	rs2 = get_rs2();
-
-	calc = regs->getValue(rs1) & regs->getValue(rs2);
-	regs->setValue(rd, static_cast<std::int32_t>(calc));
-
-    logger->debug("{} ns. PC: 0x{:x}. AND: x{:d} AND x{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  rs1, rs2, rd, calc);
-
-	return true;
-}
-
-bool BASE_ISA::Exec_FENCE() const {
-    logger->debug("{} ns. PC: 0x{:x}. FENCE");
-
-	return true;
-}
-
-bool BASE_ISA::Exec_ECALL()  {
-
-    logger->debug("{} ns. PC: 0x{:x}. ECALL");
-
-	std::cout << std::endl << "ECALL Instruction called, stopping simulation"
-			<< std::endl;
-	regs->dump();
-	std::cout << "Simulation time " << sc_core::sc_time_stamp() << "\n";
-	perf->dump();
+        std::cout << std::endl << "ECALL Instruction called, stopping simulation"
+                  << std::endl;
+        regs->dump();
+        std::cout << "Simulation time " << sc_core::sc_time_stamp() << "\n";
+        perf->dump();
 
 #if 0
-	std::uint32_t gp_value = regs->getValue(Registers::gp);
-	if (gp_value == 1) {
-		std::cout << "GP value is 1, test result is OK" << "\n";
-	} else {
-		std::cout << "GP value is " << gp_value << "\n";
-	}
+        std::uint32_t gp_value = regs->getValue(Registers::gp);
+        if (gp_value == 1) {
+            std::cout << "GP value is 1, test result is OK" << "\n";
+        } else {
+            std::cout << "GP value is " << gp_value << "\n";
+        }
 
-	sc_core::sc_stop();
+        sc_core::sc_stop();
 #else
-    RaiseException(11, m_instr);
+        RaiseException(11, m_instr);
 #endif
-	return true;
-}
+        return true;
+    }
 
-bool BASE_ISA::Exec_EBREAK() {
+    bool BASE_ISA::Exec_EBREAK() {
 
-    logger->debug("{} ns. PC: 0x{:x}. EBREAK");
-	std::cout << std::endl << "EBRAK  Instruction called, dumping information"
-			<< std::endl;
-	regs->dump();
-	std::cout << "Simulation time " << sc_core::sc_time_stamp() << "\n";
-	perf->dump();
+        logger->debug("{} ns. PC: 0x{:x}. EBREAK");
+        std::cout << std::endl << "EBRAK  Instruction called, dumping information"
+                  << std::endl;
+        regs->dump();
+        std::cout << "Simulation time " << sc_core::sc_time_stamp() << "\n";
+        perf->dump();
 
-    RaiseException(11, m_instr);
+        RaiseException(11, m_instr);
 
-	return false;
-}
+        return false;
+    }
 
-bool BASE_ISA::Exec_CSRRW() const {
-	int rd, rs1;
-	int csr;
-	std::uint32_t aux;
+    bool BASE_ISA::Exec_CSRRW() const {
+        int rd, rs1;
+        int csr;
+        std::uint32_t aux;
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	csr = get_csr();
+        rd = get_rd();
+        rs1 = get_rs1();
+        csr = get_csr();
 
-	/* These operations must be atomical */
-	if (rd != 0) {
-		aux = regs->getCSR(csr);
-		regs->setValue(rd, static_cast<std::int32_t>(aux));
-	}
+        /* These operations must be atomical */
+        if (rd != 0) {
+            aux = regs->getCSR(csr);
+            regs->setValue(rd, static_cast<std::int32_t>(aux));
+        }
 
-	aux = regs->getValue(rs1);
-	regs->setCSR(csr, aux);
+        aux = regs->getValue(rs1);
+        regs->setCSR(csr, aux);
 
-    logger->debug("{} ns. PC: 0x{:x}. CSRRW: CSR #{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  csr, rd, aux);
+        logger->debug("{} ns. PC: 0x{:x}. CSRRW: CSR #{:d} -> x{:d}(0x{:x})", sc_core::sc_time_stamp().value(),
+                      regs->getPC(),
+                      csr, rd, aux);
 
-	return true;
-}
+        return true;
+    }
 
-bool BASE_ISA::Exec_CSRRS() const {
-	int rd, rs1;
-	int csr;
-	std::uint32_t bitmask, aux, aux2;
+    bool BASE_ISA::Exec_CSRRS() const {
+        int rd, rs1;
+        int csr;
+        std::uint32_t bitmask, aux, aux2;
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	csr = get_csr();
+        rd = get_rd();
+        rs1 = get_rs1();
+        csr = get_csr();
 
-	if (rd == 0) {
-        logger->debug("{} ns. PC: 0x{:x}. CSRRS with rd1 == 0, doing nothing.");
-		return false;
-	}
+        if (rd == 0) {
+            logger->debug("{} ns. PC: 0x{:x}. CSRRS with rd1 == 0, doing nothing.");
+            return false;
+        }
 
-	/* These operations must be atomical */
-	aux = regs->getCSR(csr);
-	bitmask = regs->getValue(rs1);
+        /* These operations must be atomical */
+        aux = regs->getCSR(csr);
+        bitmask = regs->getValue(rs1);
 
-	regs->setValue(rd, static_cast<std::int32_t>(aux));
+        regs->setValue(rd, static_cast<std::int32_t>(aux));
 
-	aux2 = aux | bitmask;
-	regs->setCSR(csr, aux2);
+        aux2 = aux | bitmask;
+        regs->setCSR(csr, aux2);
 
-    logger->debug("{} ns. PC: 0x{:x}. CSRRS: CSR #{:d}(0x{:x}) -> x{:d}(0x{:x}) & CSR #{:d} <- 0x{:x}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  csr, aux, rd, rs1, csr, aux2);
+        logger->debug("{} ns. PC: 0x{:x}. CSRRS: CSR #{:d}(0x{:x}) -> x{:d}(0x{:x}) & CSR #{:d} <- 0x{:x}",
+                      sc_core::sc_time_stamp().value(), regs->getPC(),
+                      csr, aux, rd, rs1, csr, aux2);
 
-	return true;
-}
+        return true;
+    }
 
-bool BASE_ISA::Exec_CSRRC() const {
-	int rd, rs1;
-	int csr;
-	std::uint32_t bitmask, aux, aux2;
+    bool BASE_ISA::Exec_CSRRC() const {
+        int rd, rs1;
+        int csr;
+        std::uint32_t bitmask, aux, aux2;
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	csr = get_csr();
+        rd = get_rd();
+        rs1 = get_rs1();
+        csr = get_csr();
 
-	if (rd == 0) {
-        logger->debug("{} ns. PC: 0x{:x}. CSRRC with rd1 == 0, doing nothing.");
-		return true;
-	}
+        if (rd == 0) {
+            logger->debug("{} ns. PC: 0x{:x}. CSRRC with rd1 == 0, doing nothing.");
+            return true;
+        }
 
-	/* These operations must be atomical */
-	aux = regs->getCSR(csr);
-	bitmask = regs->getValue(rs1);
+        /* These operations must be atomical */
+        aux = regs->getCSR(csr);
+        bitmask = regs->getValue(rs1);
 
-	regs->setValue(rd, static_cast<std::int32_t>(aux));
+        regs->setValue(rd, static_cast<std::int32_t>(aux));
 
-	aux2 = aux & ~bitmask;
-	regs->setCSR(csr, aux2);
+        aux2 = aux & ~bitmask;
+        regs->setCSR(csr, aux2);
 
-    logger->debug("{} ns. PC: 0x{:x}. CSRRC: CSR #{:d}(0x{:x}) -> x{:d}(0x{:x}) & CSR #{:d} <- 0x{:x}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  csr, aux, rd, rs1, csr, aux2);
+        logger->debug("{} ns. PC: 0x{:x}. CSRRC: CSR #{:d}(0x{:x}) -> x{:d}(0x{:x}) & CSR #{:d} <- 0x{:x}",
+                      sc_core::sc_time_stamp().value(), regs->getPC(),
+                      csr, aux, rd, rs1, csr, aux2);
 
-	return true;
-}
+        return true;
+    }
 
-bool BASE_ISA::Exec_CSRRWI() const {
-	int rd, rs1;
-	int csr;
-	std::uint32_t aux;
+    bool BASE_ISA::Exec_CSRRWI() const {
+        int rd, rs1;
+        int csr;
+        std::uint32_t aux;
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	csr = get_csr();
+        rd = get_rd();
+        rs1 = get_rs1();
+        csr = get_csr();
 
-	/* These operations must be atomical */
-	if (rd != 0) {
-		aux = regs->getCSR(csr);
-		regs->setValue(rd, static_cast<std::int32_t>(aux));
-	}
-	aux = rs1;
-	regs->setCSR(csr, aux);
+        /* These operations must be atomical */
+        if (rd != 0) {
+            aux = regs->getCSR(csr);
+            regs->setValue(rd, static_cast<std::int32_t>(aux));
+        }
+        aux = rs1;
+        regs->setCSR(csr, aux);
 
-    logger->debug("{} ns. PC: 0x{:x}. CSRRWI: CSR #{:d} -> x{:d}. x{:d} -> CSR #{:d}", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  csr, rd, rs1, csr);
+        logger->debug("{} ns. PC: 0x{:x}. CSRRWI: CSR #{:d} -> x{:d}. x{:d} -> CSR #{:d}",
+                      sc_core::sc_time_stamp().value(), regs->getPC(),
+                      csr, rd, rs1, csr);
 
-	return true;
-}
+        return true;
+    }
 
-bool BASE_ISA::Exec_CSRRSI() const {
-	int rd, rs1;
-	int csr;
-	std::uint32_t bitmask, aux;
+    bool BASE_ISA::Exec_CSRRSI() const {
+        int rd, rs1;
+        int csr;
+        std::uint32_t bitmask, aux;
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	csr = get_csr();
+        rd = get_rd();
+        rs1 = get_rs1();
+        csr = get_csr();
 
-	if (rs1 == 0) {
-		return true;
-	}
+        if (rs1 == 0) {
+            return true;
+        }
 
-	/* These operations must be atomical */
-	aux = regs->getCSR(csr);
-	regs->setValue(rd, static_cast<std::int32_t>(aux));
+        /* These operations must be atomical */
+        aux = regs->getCSR(csr);
+        regs->setValue(rd, static_cast<std::int32_t>(aux));
 
-	bitmask = rs1;
-	aux = aux | bitmask;
-	regs->setCSR(csr, aux);
+        bitmask = rs1;
+        aux = aux | bitmask;
+        regs->setCSR(csr, aux);
 
-    logger->debug("{} ns. PC: 0x{:x}. CSRRSI: CSR #{:d} -> x{:d}. x{:d} & CSR #{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  csr, rd, rs1, csr, aux);
+        logger->debug("{} ns. PC: 0x{:x}. CSRRSI: CSR #{:d} -> x{:d}. x{:d} & CSR #{:d}(0x{:x})",
+                      sc_core::sc_time_stamp().value(), regs->getPC(),
+                      csr, rd, rs1, csr, aux);
 
-	return true;
-}
+        return true;
+    }
 
-bool BASE_ISA::Exec_CSRRCI() const {
-	int rd, rs1;
-	int csr;
-	std::uint32_t bitmask, aux;
+    bool BASE_ISA::Exec_CSRRCI() const {
+        int rd, rs1;
+        int csr;
+        std::uint32_t bitmask, aux;
 
-	rd = get_rd();
-	rs1 = get_rs1();
-	csr = get_csr();
+        rd = get_rd();
+        rs1 = get_rs1();
+        csr = get_csr();
 
-	if (rs1 == 0) {
-		return true;
-	}
+        if (rs1 == 0) {
+            return true;
+        }
 
-	/* These operations must be atomical */
-	aux = regs->getCSR(csr);
-	regs->setValue(rd, static_cast<std::int32_t>(aux));
+        /* These operations must be atomical */
+        aux = regs->getCSR(csr);
+        regs->setValue(rd, static_cast<std::int32_t>(aux));
 
-	bitmask = rs1;
-	aux = aux & ~bitmask;
-	regs->setCSR(csr, aux);
+        bitmask = rs1;
+        aux = aux & ~bitmask;
+        regs->setCSR(csr, aux);
 
-    logger->debug("{} ns. PC: 0x{:x}. CSRRCI: CSR #{:d} -> x{:d}. x{:d} & CSR #{:d}(0x{:x})", sc_core::sc_time_stamp().value(), regs->getPC(),
-                  csr, rd, rs1, csr, aux);
+        logger->debug("{} ns. PC: 0x{:x}. CSRRCI: CSR #{:d} -> x{:d}. x{:d} & CSR #{:d}(0x{:x})",
+                      sc_core::sc_time_stamp().value(), regs->getPC(),
+                      csr, rd, rs1, csr, aux);
 
-	return true;
-}
+        return true;
+    }
 
 /*********************** Privileged Instructions ******************************/
 
-bool BASE_ISA::Exec_MRET() const {
-	std::uint32_t new_pc = 0;
+    bool BASE_ISA::Exec_MRET() const {
+        std::uint32_t new_pc = 0;
 
-	new_pc = regs->getCSR(CSR_MEPC);
-	regs->setPC(new_pc);
+        new_pc = regs->getCSR(CSR_MEPC);
+        regs->setPC(new_pc);
 
-    logger->debug("{} ns. PC: 0x{:x}. MRET: PC <- 0x{:x}", sc_core::sc_time_stamp().value(), regs->getPC(), new_pc);
+        logger->debug("{} ns. PC: 0x{:x}. MRET: PC <- 0x{:x}", sc_core::sc_time_stamp().value(), regs->getPC(), new_pc);
 
-	// update mstatus
-	std::uint32_t csr_temp;
-	csr_temp = regs->getCSR(CSR_MSTATUS);
-	if (csr_temp & MSTATUS_MPIE) {
-		csr_temp |= MSTATUS_MIE;
-	}
-	csr_temp |= MSTATUS_MPIE;
-	regs->setCSR(CSR_MSTATUS, csr_temp);
+        // update mstatus
+        std::uint32_t csr_temp;
+        csr_temp = regs->getCSR(CSR_MSTATUS);
+        if (csr_temp & MSTATUS_MPIE) {
+            csr_temp |= MSTATUS_MIE;
+        }
+        csr_temp |= MSTATUS_MPIE;
+        regs->setCSR(CSR_MSTATUS, csr_temp);
 
-	return true;
-}
+        return true;
+    }
 
-bool BASE_ISA::Exec_SRET() const {
-	std::uint32_t new_pc = 0;
+    bool BASE_ISA::Exec_SRET() const {
+        std::uint32_t new_pc = 0;
 
-	new_pc = regs->getCSR(CSR_SEPC);
-	regs->setPC(new_pc);
+        new_pc = regs->getCSR(CSR_SEPC);
+        regs->setPC(new_pc);
 
-    logger->debug("{} ns. PC: 0x{:x}. SRET: PC <- 0x{:x}", sc_core::sc_time_stamp().value(), regs->getPC());
-	return true;
-}
+        logger->debug("{} ns. PC: 0x{:x}. SRET: PC <- 0x{:x}", sc_core::sc_time_stamp().value(), regs->getPC());
+        return true;
+    }
 
-bool BASE_ISA::Exec_WFI() const {
-    logger->debug("{} ns. PC: 0x{:x}. WFI");
-	return true;
-}
+    bool BASE_ISA::Exec_WFI() const {
+        logger->debug("{} ns. PC: 0x{:x}. WFI");
+        return true;
+    }
 
-bool BASE_ISA::Exec_SFENCE() const {
-    logger->debug("{} ns. PC: 0x{:x}. SFENCE");
-	return true;
-}
+    bool BASE_ISA::Exec_SFENCE() const {
+        logger->debug("{} ns. PC: 0x{:x}. SFENCE");
+        return true;
+    }
 
-bool BASE_ISA::process_instruction(Instruction &inst, bool *breakpoint) {
-	bool PC_not_affected = true;
+    bool BASE_ISA::process_instruction(Instruction &inst, bool *breakpoint) {
+        bool PC_not_affected = true;
 
-	*breakpoint = false;
-	setInstr(inst.getInstr());
+        *breakpoint = false;
+        setInstr(inst.getInstr());
 
-	switch (decode()) {
-	case OP_LUI:
-		Exec_LUI();
-		break;
-	case OP_AUIPC:
-		Exec_AUIPC();
-		break;
-	case OP_JAL:
-		Exec_JAL();
-		PC_not_affected = false;
-		break;
-	case OP_JALR:
-		Exec_JALR();
-		PC_not_affected = false;
-		break;
-	case OP_BEQ:
-		Exec_BEQ();
-		PC_not_affected = false;
-		break;
-	case OP_BNE:
-		Exec_BNE();
-		PC_not_affected = false;
-		break;
-	case OP_BLT:
-		Exec_BLT();
-		PC_not_affected = false;
-		break;
-	case OP_BGE:
-		Exec_BGE();
-		PC_not_affected = false;
-		break;
-	case OP_BLTU:
-		Exec_BLTU();
-		PC_not_affected = false;
-		break;
-	case OP_BGEU:
-		Exec_BGEU();
-		PC_not_affected = false;
-		break;
-	case OP_LB:
-		Exec_LB();
-		break;
-	case OP_LH:
-		Exec_LH();
-		break;
-	case OP_LW:
-		Exec_LW();
-		break;
-	case OP_LBU:
-		Exec_LBU();
-		break;
-	case OP_LHU:
-		Exec_LHU();
-		break;
-	case OP_SB:
-		Exec_SB();
-		break;
-	case OP_SH:
-		Exec_SH();
-		break;
-	case OP_SW:
-		Exec_SW();
-		break;
-	case OP_ADDI:
-		Exec_ADDI();
-		break;
-	case OP_SLTI:
-		Exec_SLTI();
-		break;
-	case OP_SLTIU:
-		Exec_SLTIU();
-		break;
-	case OP_XORI:
-		Exec_XORI();
-		break;
-	case OP_ORI:
-		Exec_ORI();
-		break;
-	case OP_ANDI:
-		Exec_ANDI();
-		break;
-	case OP_SLLI:
-		PC_not_affected = Exec_SLLI();
-		break;
-	case OP_SRLI:
-		Exec_SRLI();
-		break;
-	case OP_SRAI:
-		Exec_SRAI();
-		break;
-	case OP_ADD:
-		Exec_ADD();
-		break;
-	case OP_SUB:
-		Exec_SUB();
-		break;
-	case OP_SLL:
-		Exec_SLL();
-		break;
-	case OP_SLT:
-		Exec_SLT();
-		break;
-	case OP_SLTU:
-		Exec_SLTU();
-		break;
-	case OP_XOR:
-		Exec_XOR();
-		break;
-	case OP_SRL:
-		Exec_SRL();
-		break;
-	case OP_SRA:
-		Exec_SRA();
-		break;
-	case OP_OR:
-		Exec_OR();
-		break;
-	case OP_AND:
-		Exec_AND();
-		break;
-	case OP_FENCE:
-		Exec_FENCE();
-		break;
-	case OP_ECALL:
-		Exec_ECALL();
-		*breakpoint = true;
-		std::cout << "ECALL" << std::endl;
-		break;
-	case OP_EBREAK:
-        PC_not_affected = Exec_EBREAK();
+        switch (decode()) {
+            case OP_LUI:
+                Exec_LUI();
+                break;
+            case OP_AUIPC:
+                Exec_AUIPC();
+                break;
+            case OP_JAL:
+                Exec_JAL();
+                PC_not_affected = false;
+                break;
+            case OP_JALR:
+                Exec_JALR();
+                PC_not_affected = false;
+                break;
+            case OP_BEQ:
+                Exec_BEQ();
+                PC_not_affected = false;
+                break;
+            case OP_BNE:
+                Exec_BNE();
+                PC_not_affected = false;
+                break;
+            case OP_BLT:
+                Exec_BLT();
+                PC_not_affected = false;
+                break;
+            case OP_BGE:
+                Exec_BGE();
+                PC_not_affected = false;
+                break;
+            case OP_BLTU:
+                Exec_BLTU();
+                PC_not_affected = false;
+                break;
+            case OP_BGEU:
+                Exec_BGEU();
+                PC_not_affected = false;
+                break;
+            case OP_LB:
+                Exec_LB();
+                break;
+            case OP_LH:
+                Exec_LH();
+                break;
+            case OP_LW:
+                Exec_LW();
+                break;
+            case OP_LBU:
+                Exec_LBU();
+                break;
+            case OP_LHU:
+                Exec_LHU();
+                break;
+            case OP_SB:
+                Exec_SB();
+                break;
+            case OP_SH:
+                Exec_SH();
+                break;
+            case OP_SW:
+                Exec_SW();
+                break;
+            case OP_ADDI:
+                Exec_ADDI();
+                break;
+            case OP_SLTI:
+                Exec_SLTI();
+                break;
+            case OP_SLTIU:
+                Exec_SLTIU();
+                break;
+            case OP_XORI:
+                Exec_XORI();
+                break;
+            case OP_ORI:
+                Exec_ORI();
+                break;
+            case OP_ANDI:
+                Exec_ANDI();
+                break;
+            case OP_SLLI:
+                PC_not_affected = Exec_SLLI();
+                break;
+            case OP_SRLI:
+                Exec_SRLI();
+                break;
+            case OP_SRAI:
+                Exec_SRAI();
+                break;
+            case OP_ADD:
+                Exec_ADD();
+                break;
+            case OP_SUB:
+                Exec_SUB();
+                break;
+            case OP_SLL:
+                Exec_SLL();
+                break;
+            case OP_SLT:
+                Exec_SLT();
+                break;
+            case OP_SLTU:
+                Exec_SLTU();
+                break;
+            case OP_XOR:
+                Exec_XOR();
+                break;
+            case OP_SRL:
+                Exec_SRL();
+                break;
+            case OP_SRA:
+                Exec_SRA();
+                break;
+            case OP_OR:
+                Exec_OR();
+                break;
+            case OP_AND:
+                Exec_AND();
+                break;
+            case OP_FENCE:
+                Exec_FENCE();
+                break;
+            case OP_ECALL:
+                Exec_ECALL();
+                *breakpoint = true;
+                std::cout << "ECALL" << std::endl;
+                break;
+            case OP_EBREAK:
+                PC_not_affected = Exec_EBREAK();
 //		*breakpoint = true;
-		break;
-	case OP_CSRRW:
-		Exec_CSRRW();
-		break;
-	case OP_CSRRS:
-		Exec_CSRRS();
-		break;
-	case OP_CSRRC:
-		Exec_CSRRC();
-		break;
-	case OP_CSRRWI:
-		Exec_CSRRWI();
-		break;
-	case OP_CSRRSI:
-		Exec_CSRRSI();
-		break;
-	case OP_CSRRCI:
-		Exec_CSRRCI();
-		break;
-	case OP_MRET:
-		Exec_MRET();
-		PC_not_affected = false;
-		break;
-	case OP_SRET:
-		Exec_SRET();
-		PC_not_affected = false;
-		break;
-	case OP_WFI:
-		Exec_WFI();
-		break;
-	case OP_SFENCE:
-		Exec_SFENCE();
-		break;
-	[[unlikely]] default:
-		std::cout << "Wrong instruction" << "\n";
-		inst.dump();
-		NOP();
-		//sc_stop();
-		break;
-	}
+                break;
+            case OP_CSRRW:
+                Exec_CSRRW();
+                break;
+            case OP_CSRRS:
+                Exec_CSRRS();
+                break;
+            case OP_CSRRC:
+                Exec_CSRRC();
+                break;
+            case OP_CSRRWI:
+                Exec_CSRRWI();
+                break;
+            case OP_CSRRSI:
+                Exec_CSRRSI();
+                break;
+            case OP_CSRRCI:
+                Exec_CSRRCI();
+                break;
+            case OP_MRET:
+                Exec_MRET();
+                PC_not_affected = false;
+                break;
+            case OP_SRET:
+                Exec_SRET();
+                PC_not_affected = false;
+                break;
+            case OP_WFI:
+                Exec_WFI();
+                break;
+            case OP_SFENCE:
+                Exec_SFENCE();
+                break;
+                [[unlikely]] default:
+                std::cout << "Wrong instruction" << "\n";
+                inst.dump();
+                NOP();
+                //sc_stop();
+                break;
+        }
 
-	return PC_not_affected;
-}
+        return PC_not_affected;
+    }
 
-opCodes BASE_ISA::decode() {
-	switch (opcode()) {
-	case LUI:
-		return OP_LUI;
-	case AUIPC:
-		return OP_AUIPC;
-	case JAL:
-		return OP_JAL;
-	case JALR:
-		return OP_JALR;
-	case BEQ:
-		switch (get_funct3()) {
-		case BEQ_F:
-			return OP_BEQ;
-		case BNE_F:
-			return OP_BNE;
-		case BLT_F:
-			return OP_BLT;
-		case BGE_F:
-			return OP_BGE;
-		case BLTU_F:
-			return OP_BLTU;
-		case BGEU_F:
-			return OP_BGEU;
-		}
-		return OP_ERROR;
-	case LB:
-		switch (get_funct3()) {
-		case LB_F:
-			return OP_LB;
-		case LH_F:
-			return OP_LH;
-		case LW_F:
-			return OP_LW;
-		case LBU_F:
-			return OP_LBU;
-		case LHU_F:
-			return OP_LHU;
-		}
-		return OP_ERROR;
-	case SB:
-		switch (get_funct3()) {
-		case SB_F:
-			return OP_SB;
-		case SH_F:
-			return OP_SH;
-		case SW_F:
-			return OP_SW;
-		}
-		return OP_ERROR;
-	case ADDI:
-		switch (get_funct3()) {
-		case ADDI_F:
-			return OP_ADDI;
-		case SLTI_F:
-			return OP_SLTI;
-		case SLTIU_F:
-			return OP_SLTIU;
-		case XORI_F:
-			return OP_XORI;
-		case ORI_F:
-			return OP_ORI;
-		case ANDI_F:
-			return OP_ANDI;
-		case SLLI_F:
-			return OP_SLLI;
-		case SRLI_F:
-			switch (get_funct7()) {
-			case SRLI_F7:
-				return OP_SRLI;
-			case SRAI_F7:
-				return OP_SRAI;
-			}
-			return OP_ERROR;
-		}
-		return OP_ERROR;
-	case ADD: {
-		switch (get_funct3()) {
-		case ADD_F:
-			switch (get_funct7()) {
-			case ADD_F7:
-				return OP_ADD;
-			case SUB_F7:
-				return OP_SUB;
-			default:
-				return OP_ADD;
-			}
-			break;
-		case SLL_F:
-			return OP_SLL;
-		case SLT_F:
-			return OP_SLT;
-		case SLTU_F:
-			return OP_SLTU;
-		case XOR_F:
-			return OP_XOR;
-		case SRL_F:
-			switch (get_funct7()) {
-			case SRL_F7:
-				return OP_SRL;
-			case SRA_F7:
-				return OP_SRA;
-			default:
-				return OP_ERROR;
-			}
-		case OR_F:
-			return OP_OR;
-		case AND_F:
-			return OP_AND;
-		default:
-			return OP_ERROR;
-		}
-	} /* ADD */
-	case FENCE:
-		return OP_FENCE;
-	case ECALL: {
-		switch (get_funct3()) {
-		case ECALL_F3:
-			switch (get_csr()) {
-			case ECALL_F:
-				return OP_ECALL;
-			case EBREAK_F:
-				return OP_EBREAK;
-			case URET_F:
-				return OP_URET;
-			case SRET_F:
-				return OP_SRET;
-			case MRET_F:
-				return OP_MRET;
-			case WFI_F:
-				return OP_WFI;
-			case SFENCE_F:
-				return OP_SFENCE;
-			}
-			if (m_instr.range(31, 25) == 0b0001001) {
-				return OP_SFENCE;
-			}
-			break;
-		case CSRRW:
-			return OP_CSRRW;
-			break;
-		case CSRRS:
-			return OP_CSRRS;
-			break;
-		case CSRRC:
-			return OP_CSRRC;
-			break;
-		case CSRRWI:
-			return OP_CSRRWI;
-			break;
-		case CSRRSI:
-			return OP_CSRRSI;
-			break;
-		case CSRRCI:
-			return OP_CSRRCI;
-			break;
-		}
-	}
-		break;
-	default:
-		return OP_ERROR;
-	}
+    opCodes BASE_ISA::decode() {
+        switch (opcode()) {
+            case LUI:
+                return OP_LUI;
+            case AUIPC:
+                return OP_AUIPC;
+            case JAL:
+                return OP_JAL;
+            case JALR:
+                return OP_JALR;
+            case BEQ:
+                switch (get_funct3()) {
+                    case BEQ_F:
+                        return OP_BEQ;
+                    case BNE_F:
+                        return OP_BNE;
+                    case BLT_F:
+                        return OP_BLT;
+                    case BGE_F:
+                        return OP_BGE;
+                    case BLTU_F:
+                        return OP_BLTU;
+                    case BGEU_F:
+                        return OP_BGEU;
+                }
+                return OP_ERROR;
+            case LB:
+                switch (get_funct3()) {
+                    case LB_F:
+                        return OP_LB;
+                    case LH_F:
+                        return OP_LH;
+                    case LW_F:
+                        return OP_LW;
+                    case LBU_F:
+                        return OP_LBU;
+                    case LHU_F:
+                        return OP_LHU;
+                }
+                return OP_ERROR;
+            case SB:
+                switch (get_funct3()) {
+                    case SB_F:
+                        return OP_SB;
+                    case SH_F:
+                        return OP_SH;
+                    case SW_F:
+                        return OP_SW;
+                }
+                return OP_ERROR;
+            case ADDI:
+                switch (get_funct3()) {
+                    case ADDI_F:
+                        return OP_ADDI;
+                    case SLTI_F:
+                        return OP_SLTI;
+                    case SLTIU_F:
+                        return OP_SLTIU;
+                    case XORI_F:
+                        return OP_XORI;
+                    case ORI_F:
+                        return OP_ORI;
+                    case ANDI_F:
+                        return OP_ANDI;
+                    case SLLI_F:
+                        return OP_SLLI;
+                    case SRLI_F:
+                        switch (get_funct7()) {
+                            case SRLI_F7:
+                                return OP_SRLI;
+                            case SRAI_F7:
+                                return OP_SRAI;
+                        }
+                        return OP_ERROR;
+                }
+                return OP_ERROR;
+            case ADD: {
+                switch (get_funct3()) {
+                    case ADD_F:
+                        switch (get_funct7()) {
+                            case ADD_F7:
+                                return OP_ADD;
+                            case SUB_F7:
+                                return OP_SUB;
+                            default:
+                                return OP_ADD;
+                        }
+                        break;
+                    case SLL_F:
+                        return OP_SLL;
+                    case SLT_F:
+                        return OP_SLT;
+                    case SLTU_F:
+                        return OP_SLTU;
+                    case XOR_F:
+                        return OP_XOR;
+                    case SRL_F:
+                        switch (get_funct7()) {
+                            case SRL_F7:
+                                return OP_SRL;
+                            case SRA_F7:
+                                return OP_SRA;
+                            default:
+                                return OP_ERROR;
+                        }
+                    case OR_F:
+                        return OP_OR;
+                    case AND_F:
+                        return OP_AND;
+                    default:
+                        return OP_ERROR;
+                }
+            } /* ADD */
+            case FENCE:
+                return OP_FENCE;
+            case ECALL: {
+                switch (get_funct3()) {
+                    case ECALL_F3:
+                        switch (get_csr()) {
+                            case ECALL_F:
+                                return OP_ECALL;
+                            case EBREAK_F:
+                                return OP_EBREAK;
+                            case URET_F:
+                                return OP_URET;
+                            case SRET_F:
+                                return OP_SRET;
+                            case MRET_F:
+                                return OP_MRET;
+                            case WFI_F:
+                                return OP_WFI;
+                            case SFENCE_F:
+                                return OP_SFENCE;
+                        }
+                        if (m_instr.range(31, 25) == 0b0001001) {
+                            return OP_SFENCE;
+                        }
+                        break;
+                    case CSRRW:
+                        return OP_CSRRW;
+                        break;
+                    case CSRRS:
+                        return OP_CSRRS;
+                        break;
+                    case CSRRC:
+                        return OP_CSRRC;
+                        break;
+                    case CSRRWI:
+                        return OP_CSRRWI;
+                        break;
+                    case CSRRSI:
+                        return OP_CSRRSI;
+                        break;
+                    case CSRRCI:
+                        return OP_CSRRCI;
+                        break;
+                }
+            }
+                break;
+            default:
+                return OP_ERROR;
+        }
 
-	return OP_ERROR;
+        return OP_ERROR;
+    }
 }
