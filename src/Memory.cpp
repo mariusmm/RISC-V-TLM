@@ -33,6 +33,7 @@ namespace riscv_tlm {
         socket.register_get_direct_mem_ptr(this, &Memory::get_direct_mem_ptr);
         socket.register_transport_dbg(this, &Memory::transport_dbg);
 
+	dmi_allowed = false;
         program_counter = 0;
 
         logger = spdlog::get("my_logger");
