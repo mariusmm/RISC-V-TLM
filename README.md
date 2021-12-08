@@ -195,8 +195,7 @@ This container has RISCV-TLM already build at /usr/src/riscv64/RISCV-TLM directo
 $ docker pull mariusmm/riscv-tlm
 $ docker run -v <path_to_RISCV-V-TLM>/:/tmp -u $UID -e DISPLAY=$DISPLAY --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"  -it mariusmm/riscv-tlm /bin/bash
 
-# cd /usr/src/riscv64/RISC-V-TLM/
-# ./RISCV_TLM /tmp/<your_hex_file>
+$ ./RISC-V-TLM/build/RISCV_TLM /tmp/<your_hex_file>
 ```
 
 or you can call binary inside docker image directly:
