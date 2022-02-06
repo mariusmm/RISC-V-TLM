@@ -126,7 +126,7 @@ namespace riscv_tlm {
 
         rd = get_rd();
         mem_addr = get_imm_J();
-        old_pc = static_cast<std::uint32_t>(regs->getPC());
+        old_pc = regs->getPC();
         new_pc = old_pc + mem_addr;
 
         regs->setPC(new_pc);
@@ -150,7 +150,7 @@ namespace riscv_tlm {
         rs1 = get_rs1();
         mem_addr = get_imm_I();
 
-        old_pc = static_cast<std::uint32_t>(regs->getPC());
+        old_pc = regs->getPC();
         regs->setValue(rd, old_pc + 4);
 
         new_pc = static_cast<std::uint32_t>((regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE);

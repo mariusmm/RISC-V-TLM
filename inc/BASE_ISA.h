@@ -92,13 +92,13 @@ namespace riscv_tlm {
 /**
  * @brief Risc_V execute module
  */
-    class BASE_ISA : public extension_base {
+    class BASE_ISA : public extension_base<std::uint32_t> {
     public:
 
         /**
          * @brief Constructor, same as base class
          */
-        using extension_base::extension_base;
+        using extension_base<std::uint32_t>::extension_base;
 
         /**
          * @brief Access to funct7 field

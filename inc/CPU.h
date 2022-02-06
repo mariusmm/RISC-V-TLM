@@ -67,10 +67,10 @@ namespace riscv_tlm {
         bool CPU_step();
 
 
-        Registers *getRegisterBank() { return register_bank; }
+        Registers<std::uint32_t> *getRegisterBank() { return register_bank; }
 
     private:
-        Registers *register_bank;
+        Registers<std::uint32_t> *register_bank;
         Performance *perf;
         std::shared_ptr<spdlog::logger> logger;
         C_extension *c_inst;

@@ -14,13 +14,13 @@ namespace riscv_tlm {
     CPU::CPU(sc_core::sc_module_name const &name, std::uint32_t PC, bool debug) :
             sc_module(name), instr_bus("instr_bus"), inst(0), default_time(10,
                                                                            sc_core::SC_NS), INSTR(0) {
-        register_bank = new Registers();
+        register_bank = new Registers<std::uint32_t>();
         mem_intf = new MemoryInterface();
 
         perf = Performance::getInstance();
 
         register_bank->setPC(PC);
-        register_bank->setValue(Registers::sp, (Memory::SIZE / 4) - 1);
+        register_bank->setValue(Registers<std::uint32_t>::sp, (Memory::SIZE / 4) - 1);
 
         irq_line_socket.register_b_transport(this, &CPU::call_interrupt);
         interrupt = false;

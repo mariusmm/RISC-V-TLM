@@ -28,19 +28,55 @@
 
 namespace riscv_tlm {
 
+    template<typename T>
     class extension_base {
 
     public:
-        extension_base(const sc_dt::sc_uint<32> &instr, Registers *register_bank,
-                       MemoryInterface *mem_interface);
+        extension_base(const T &instr, Registers<T> *register_bank,
+                       MemoryInterface *mem_interface) :
+            m_instr(instr), regs(register_bank), mem_intf(mem_interface) {
 
-        virtual ~extension_base() = 0;
+          perf = Performance::getInstance();
+          logger = spdlog::get("my_logger");
+        }
 
-        void setInstr(std::uint32_t p_instr);
+        virtual ~extension_base() = default;
 
-        void RaiseException(std::uint32_t cause, std::uint32_t inst);
+        void setInstr(std::uint32_t p_instr) {
+          m_instr = sc_dt::sc_uint<32>(p_instr);
+        }
 
-        bool NOP();
+        void RaiseException(std::uint32_t cause, std::uint32_t inst) {
+          std::uint32_t new_pc, current_pc, m_cause;
+
+          current_pc = regs->getPC();
+          m_cause = regs->getCSR(CSR_MSTATUS);
+          m_cause |= cause;
+
+          new_pc = regs->getCSR(CSR_MTVEC);
+
+          regs->setCSR(CSR_MEPC, current_pc);
+
+          if (cause == EXCEPTION_CAUSE_ILLEGAL_INSTRUCTION) {
+              regs->setCSR(CSR_MTVAL, inst);
+            } else {
+              regs->setCSR(CSR_MTVAL, current_pc);
+            }
+
+          regs->setCSR(CSR_MCAUSE, cause);
+          regs->setCSR(CSR_MSTATUS, m_cause);
+
+          regs->setPC(new_pc);
+
+          logger->debug("{} ns. PC: 0x{:x}. Exception! new PC 0x{:x} ", sc_core::sc_time_stamp().value(), regs->getPC(),
+                        new_pc);
+        }
+
+        bool NOP() {
+          logger->debug("{} ns. PC: 0x{:x}. NOP! new PC 0x{:x} ", sc_core::sc_time_stamp().value(), regs->getPC());
+          sc_core::sc_stop();
+          return true;
+        }
 
         /* pure virtual functions */
         virtual std::int32_t opcode() const = 0;
@@ -77,11 +113,13 @@ namespace riscv_tlm {
             m_instr.range(14, 12) = value;
         }
 
-        virtual void dump() const;
+        virtual void dump() const {
+          std::cout << std::hex << "0x" << m_instr << std::dec << std::endl;
+        }
 
     protected:
         sc_dt::sc_uint<32> m_instr;
-        Registers *regs;
+        Registers<T> *regs;
         Performance *perf;
         MemoryInterface *mem_intf;
         std::shared_ptr<spdlog::logger> logger;

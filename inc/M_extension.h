@@ -43,7 +43,7 @@ namespace riscv_tlm {
 /**
  * @brief Instruction decoding and fields access
  */
-    class M_extension : public extension_base {
+    class M_extension : public extension_base<std::uint32_t> {
     public:
 
         /**

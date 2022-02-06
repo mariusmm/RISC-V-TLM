@@ -77,7 +77,7 @@ namespace riscv_tlm {
     void Debug::handle_gdb_loop() {
         std::cout << "Handle_GDB_Loop\n";
 
-        Registers *register_bank = dbg_cpu->getRegisterBank();
+        Registers<std::uint32_t> *register_bank = dbg_cpu->getRegisterBank();
 
         while (true) {
             std::string msg = receive_packet();
