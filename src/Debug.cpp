@@ -47,20 +47,18 @@ namespace riscv_tlm {
         handle_gdb_loop();
     }
 
-    Debug::~Debug() {
+    Debug::~Debug() = default;
 
-    }
-
-    void Debug::send_packet(int conn, const std::string &msg) {
+    void Debug::send_packet(int m_conn, const std::string &msg) {
         std::string frame = "+$" + msg + "#" + compute_checksum_string(msg);
 
         memcpy(iobuf, frame.c_str(), frame.size());
 
-        ::send(conn, iobuf, frame.size(), 0);
+        ::send(m_conn, iobuf, frame.size(), 0);
     }
 
     std::string Debug::receive_packet() {
-        int nbytes = ::recv(conn, iobuf, bufsize, 0);
+        ssize_t nbytes = ::recv(conn, iobuf, bufsize, 0);
 
         if (nbytes == 0) {
             return "";
@@ -84,7 +82,7 @@ namespace riscv_tlm {
         while (true) {
             std::string msg = receive_packet();
 
-            if (msg.size() == 0) {
+            if (msg.empty() ) {
                 std::cout << "remote connection seems to be closed, terminating ..."
                           << std::endl;
                 break;
@@ -122,7 +120,7 @@ namespace riscv_tlm {
                 send_packet(conn, stream.str());
             } else if (boost::starts_with(msg, "p")) {
                 long n = strtol(msg.c_str() + 1, 0, 16);
-                int reg_value;
+                unsigned int reg_value;
                 if (n < 32) {
                     reg_value = register_bank->getValue(n);
                 } else if (n == 32) {
