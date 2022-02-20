@@ -12,8 +12,8 @@ namespace riscv_tlm {
     SC_HAS_PROCESS(CPU);
 
     CPU::CPU(sc_core::sc_module_name const &name, std::uint32_t PC, bool debug) :
-            sc_module(name), instr_bus("instr_bus"), inst(0), default_time(10,
-                                                                           sc_core::SC_NS), INSTR(0) {
+            sc_module(name), instr_bus("instr_bus"), inst(0),
+            default_time(10, sc_core::SC_NS), INSTR(0) {
         register_bank = new Registers<std::uint32_t>();
         mem_intf = new MemoryInterface();
 
@@ -32,10 +32,10 @@ namespace riscv_tlm {
         instr_bus.register_invalidate_direct_mem_ptr(this,
                                                      &CPU::invalidate_direct_mem_ptr);
 
-        exec = new BASE_ISA(0, register_bank, mem_intf);
-        c_inst = new C_extension(0, register_bank, mem_intf);
-        m_inst = new M_extension(0, register_bank, mem_intf);
-        a_inst = new A_extension(0, register_bank, mem_intf);
+        exec = new BASE_ISA<std::uint32_t>(0, register_bank, mem_intf);
+        c_inst = new C_extension<std::uint32_t>(0, register_bank, mem_intf);
+        m_inst = new M_extension<std::uint32_t>(0, register_bank, mem_intf);
+        a_inst = new A_extension<std::uint32_t>(0, register_bank, mem_intf);
 
         m_qk = new tlm_utils::tlm_quantumkeeper();
         m_qk->reset();

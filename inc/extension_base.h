@@ -34,87 +34,88 @@ namespace riscv_tlm {
     public:
         extension_base(const T &instr, Registers<T> *register_bank,
                        MemoryInterface *mem_interface) :
-            m_instr(instr), regs(register_bank), mem_intf(mem_interface) {
+                m_instr(instr), regs(register_bank), mem_intf(mem_interface) {
 
-          perf = Performance::getInstance();
-          logger = spdlog::get("my_logger");
+            perf = Performance::getInstance();
+            logger = spdlog::get("my_logger");
         }
 
         virtual ~extension_base() = default;
 
         void setInstr(std::uint32_t p_instr) {
-          m_instr = sc_dt::sc_uint<32>(p_instr);
+            m_instr = sc_dt::sc_uint<32>(p_instr);
         }
 
         void RaiseException(std::uint32_t cause, std::uint32_t inst) {
-          std::uint32_t new_pc, current_pc, m_cause;
+            std::uint32_t new_pc, current_pc, m_cause;
 
-          current_pc = regs->getPC();
-          m_cause = regs->getCSR(CSR_MSTATUS);
-          m_cause |= cause;
+            current_pc = regs->getPC();
+            m_cause = regs->getCSR(CSR_MSTATUS);
+            m_cause |= cause;
 
-          new_pc = regs->getCSR(CSR_MTVEC);
+            new_pc = regs->getCSR(CSR_MTVEC);
 
-          regs->setCSR(CSR_MEPC, current_pc);
+            regs->setCSR(CSR_MEPC, current_pc);
 
-          if (cause == EXCEPTION_CAUSE_ILLEGAL_INSTRUCTION) {
-              regs->setCSR(CSR_MTVAL, inst);
+            if (cause == EXCEPTION_CAUSE_ILLEGAL_INSTRUCTION) {
+                regs->setCSR(CSR_MTVAL, inst);
             } else {
-              regs->setCSR(CSR_MTVAL, current_pc);
+                regs->setCSR(CSR_MTVAL, current_pc);
             }
 
-          regs->setCSR(CSR_MCAUSE, cause);
-          regs->setCSR(CSR_MSTATUS, m_cause);
+            regs->setCSR(CSR_MCAUSE, cause);
+            regs->setCSR(CSR_MSTATUS, m_cause);
 
-          regs->setPC(new_pc);
+            regs->setPC(new_pc);
 
-          logger->debug("{} ns. PC: 0x{:x}. Exception! new PC 0x{:x} ", sc_core::sc_time_stamp().value(), regs->getPC(),
-                        new_pc);
+            logger->debug("{} ns. PC: 0x{:x}. Exception! new PC 0x{:x} ", sc_core::sc_time_stamp().value(),
+                          regs->getPC(),
+                          new_pc);
         }
 
         bool NOP() {
-          logger->debug("{} ns. PC: 0x{:x}. NOP! new PC 0x{:x} ", sc_core::sc_time_stamp().value(), regs->getPC());
-          sc_core::sc_stop();
-          return true;
+            logger->debug("{} ns. PC: 0x{:x}. NOP! new PC 0x{:x} ", sc_core::sc_time_stamp().value(), regs->getPC());
+            sc_core::sc_stop();
+            return true;
         }
 
         /* pure virtual functions */
-        virtual std::int32_t opcode() const = 0;
+        virtual T opcode() const = 0;
 
-        virtual std::int32_t get_rd() const {
+        virtual unsigned int get_rd() const {
             return m_instr.range(11, 7);
         }
 
-        virtual void set_rd(std::int32_t value) {
+        virtual void set_rd(unsigned int value) {
             m_instr.range(11, 7) = value;
         }
 
-        virtual std::int32_t get_rs1() const {
+        virtual unsigned int get_rs1() const {
             return m_instr.range(19, 15);
         }
 
-        virtual void set_rs1(std::int32_t value) {
+        virtual void set_rs1(unsigned int value) {
             m_instr.range(19, 15) = value;
         }
 
-        virtual std::int32_t get_rs2() const {
+        virtual unsigned int get_rs2() const {
             return m_instr.range(24, 20);
         }
 
-        virtual void set_rs2(std::int32_t value) {
+        virtual void set_rs2(unsigned int value) {
             m_instr.range(24, 20) = value;
         }
 
-        virtual std::int32_t get_funct3() const {
+        virtual unsigned int get_funct3() const {
             return m_instr.range(14, 12);
         }
 
-        virtual void set_funct3(std::int32_t value) {
+        virtual void set_funct3(unsigned int value) {
             m_instr.range(14, 12) = value;
         }
 
         virtual void dump() const {
-          std::cout << std::hex << "0x" << m_instr << std::dec << std::endl;
+            std::cout << std::hex << "0x" << m_instr << std::dec << std::endl;
         }
 
     protected:

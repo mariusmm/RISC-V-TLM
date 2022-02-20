@@ -73,10 +73,10 @@ namespace riscv_tlm {
         Registers<std::uint32_t> *register_bank;
         Performance *perf;
         std::shared_ptr<spdlog::logger> logger;
-        C_extension *c_inst;
-        M_extension *m_inst;
-        A_extension *a_inst;
-        BASE_ISA *exec;
+        C_extension<std::uint32_t> *c_inst;
+        M_extension<std::uint32_t> *m_inst;
+        A_extension<std::uint32_t> *a_inst;
+        BASE_ISA<std::uint32_t> *exec;
         tlm_utils::tlm_quantumkeeper *m_qk;
 
         Instruction inst;

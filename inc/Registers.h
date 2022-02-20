@@ -10,6 +10,7 @@
 #define REGISTERS_H
 
 #define SC_INCLUDE_DYNAMIC_PROCESSES
+
 #include <iomanip>
 #include <unordered_map>
 
@@ -188,11 +189,11 @@ namespace riscv_tlm {
          * Default constructor
          */
         Registers() {
-          perf = Performance::getInstance();
+            perf = Performance::getInstance();
 
-          initCSR();
-          register_bank[sp] = Memory::SIZE - 4; // default stack at the end of the memory
-          register_PC = 0x80000000;       // default _start address
+            initCSR();
+            register_bank[sp] = Memory::SIZE - 4; // default stack at the end of the memory
+            register_PC = 0x80000000;       // default _start address
         };
 
         /**
@@ -200,10 +201,10 @@ namespace riscv_tlm {
          * @param reg_num register number
          * @param value   register value
          */
-        void setValue(int reg_num, T value) {
-          if ((reg_num != 0) && (reg_num < 32)) {
-              register_bank[reg_num] = value;
-              perf->registerWrite();
+        void setValue(unsigned int reg_num, T value) {
+            if ((reg_num != 0) && (reg_num < 32)) {
+                register_bank[reg_num] = value;
+                perf->registerWrite();
             }
         }
 
@@ -212,13 +213,13 @@ namespace riscv_tlm {
          * @param  reg_num register number
          * @return         register value
          */
-        T getValue(int reg_num) const {
-          if ((reg_num >= 0) && (reg_num < 32)) {
-              perf->registerRead();
-              return register_bank[reg_num];
+        T getValue(unsigned int reg_num) const {
+            if (reg_num < 32) {
+                perf->registerRead();
+                return register_bank[reg_num];
             } else {
-              /* TODO Exten sign for any possible T type */
-              return static_cast<T>(0xFFFFFFFF);
+                /* Extend sign for any possible T type */
+                return static_cast<T>(std::numeric_limits<T>::max());
             }
         }
 
@@ -227,7 +228,7 @@ namespace riscv_tlm {
          * @return PC value
          */
         T getPC() const {
-          return register_PC;
+            return register_PC;
         }
 
         /**
@@ -235,7 +236,7 @@ namespace riscv_tlm {
          * @param new_pc new address to PC
          */
         void setPC(T new_pc) {
-          register_PC = new_pc;
+            register_PC = new_pc;
         }
 
         /**
@@ -255,40 +256,40 @@ namespace riscv_tlm {
          * @return CSR value
          */
         T getCSR(int csr) {
-          T ret_value;
+            T ret_value;
 
-          switch (csr) {
-              case CSR_CYCLE:
-              case CSR_MCYCLE:
-                ret_value = static_cast<std::uint64_t>(sc_core::sc_time(
-                    sc_core::sc_time_stamp()
-                    - sc_core::sc_time(sc_core::SC_ZERO_TIME)).to_double())
-                            & 0x00000000FFFFFFFF;
-              break;
-              case CSR_CYCLEH:
-              case CSR_MCYCLEH:
-                ret_value = static_cast<std::uint32_t>((std::uint64_t) (sc_core::sc_time(
-                    sc_core::sc_time_stamp()
-                    - sc_core::sc_time(sc_core::SC_ZERO_TIME)).to_double())
-                                                           >> 32 & 0x00000000FFFFFFFF);
-              break;
-              case CSR_TIME:
-                ret_value = static_cast<std::uint64_t>(sc_core::sc_time(
-                    sc_core::sc_time_stamp()
-                    - sc_core::sc_time(sc_core::SC_ZERO_TIME)).to_double())
-                            & 0x00000000FFFFFFFF;
-              break;
-              case CSR_TIMEH:
-                ret_value = static_cast<std::uint32_t>((std::uint64_t) (sc_core::sc_time(
-                    sc_core::sc_time_stamp()
-                    - sc_core::sc_time(sc_core::SC_ZERO_TIME)).to_double())
-                                                           >> 32 & 0x00000000FFFFFFFF);
-              break;
-              [[likely]] default:
-            ret_value = CSR[csr];
-              break;
+            switch (csr) {
+                case CSR_CYCLE:
+                case CSR_MCYCLE:
+                    ret_value = static_cast<std::uint64_t>(sc_core::sc_time(
+                            sc_core::sc_time_stamp()
+                            - sc_core::sc_time(sc_core::SC_ZERO_TIME)).to_double())
+                                & 0x00000000FFFFFFFF;
+                    break;
+                case CSR_CYCLEH:
+                case CSR_MCYCLEH:
+                    ret_value = static_cast<std::uint32_t>((std::uint64_t) (sc_core::sc_time(
+                            sc_core::sc_time_stamp()
+                            - sc_core::sc_time(sc_core::SC_ZERO_TIME)).to_double())
+                                                                   >> 32 & 0x00000000FFFFFFFF);
+                    break;
+                case CSR_TIME:
+                    ret_value = static_cast<std::uint64_t>(sc_core::sc_time(
+                            sc_core::sc_time_stamp()
+                            - sc_core::sc_time(sc_core::SC_ZERO_TIME)).to_double())
+                                & 0x00000000FFFFFFFF;
+                    break;
+                case CSR_TIMEH:
+                    ret_value = static_cast<std::uint32_t>((std::uint64_t) (sc_core::sc_time(
+                            sc_core::sc_time_stamp()
+                            - sc_core::sc_time(sc_core::SC_ZERO_TIME)).to_double())
+                                                                   >> 32 & 0x00000000FFFFFFFF);
+                    break;
+                    [[likely]] default:
+                    ret_value = CSR[csr];
+                    break;
             }
-          return ret_value;
+            return ret_value;
         }
 
         /**
@@ -297,11 +298,11 @@ namespace riscv_tlm {
          * @param value new value to register
          */
         void setCSR(int csr, T value) {
-         /* @FIXME: rv32mi-p-ma_fetch tests doesn't allow MISA to be writable,
-          * but Volume II: Privileged Architecture v1.10 says MISA is writable (?)
-          */
-          if (csr != CSR_MISA) {
-              CSR[csr] = value;
+            /* @FIXME: rv32mi-p-ma_fetch tests doesn't allow MISA to be writable,
+             * but Volume II: Privileged Architecture v1.10 says MISA is writable (?)
+             */
+            if (csr != CSR_MISA) {
+                CSR[csr] = value;
             }
         }
 
@@ -309,83 +310,83 @@ namespace riscv_tlm {
          * Dump register data to console
          */
         void dump() {
-          std::cout << "************************************" << std::endl;
-          std::cout << "Registers dump" << std::dec << std::endl;
-          std::cout << std::setfill('0') << std::uppercase;
-          std::cout << "x0 (zero):  0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[0];
-          std::cout << " x1 (ra):    0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[1];
-          std::cout << " x2 (sp):    0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[2];
-          std::cout << " x3 (gp):    0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[3] << std::endl;
+            std::cout << "************************************" << std::endl;
+            std::cout << "Registers dump" << std::dec << std::endl;
+            std::cout << std::setfill('0') << std::uppercase;
+            std::cout << "x0 (zero):  0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[0];
+            std::cout << " x1 (ra):    0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[1];
+            std::cout << " x2 (sp):    0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[2];
+            std::cout << " x3 (gp):    0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[3] << std::endl;
 
-          std::cout << "x4 (tp):    0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[4];
-          std::cout << " x5 (t0):    0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[5];
-          std::cout << " x6 (t1):    0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[6];
-          std::cout << " x7 (t2):    0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[7] << std::endl;
+            std::cout << "x4 (tp):    0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[4];
+            std::cout << " x5 (t0):    0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[5];
+            std::cout << " x6 (t1):    0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[6];
+            std::cout << " x7 (t2):    0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[7] << std::endl;
 
-          std::cout << "x8 (s0/fp): 0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[8];
-          std::cout << " x9 (s1):    0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[9];
-          std::cout << " x10 (a0):   0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[10];
-          std::cout << " x11 (a1):   0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[11] << std::endl;
+            std::cout << "x8 (s0/fp): 0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[8];
+            std::cout << " x9 (s1):    0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[9];
+            std::cout << " x10 (a0):   0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[10];
+            std::cout << " x11 (a1):   0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[11] << std::endl;
 
-          std::cout << "x12 (a2):   0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[12];
-          std::cout << " x13 (a3):   0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[13];
-          std::cout << " x14 (a4):   0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[14];
-          std::cout << " x15 (a5):   0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[15] << std::endl;
+            std::cout << "x12 (a2):   0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[12];
+            std::cout << " x13 (a3):   0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[13];
+            std::cout << " x14 (a4):   0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[14];
+            std::cout << " x15 (a5):   0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[15] << std::endl;
 
-          std::cout << "x16 (a6):   0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[16];
-          std::cout << " x17 (a7):   0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[17];
-          std::cout << " x18 (s2):   0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[18];
-          std::cout << " x19 (s3):   0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[19] << std::endl;
+            std::cout << "x16 (a6):   0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[16];
+            std::cout << " x17 (a7):   0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[17];
+            std::cout << " x18 (s2):   0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[18];
+            std::cout << " x19 (s3):   0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[19] << std::endl;
 
-          std::cout << "x20 (s4):   0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[20];
-          std::cout << " x21 (s5):   0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[21];
-          std::cout << " x22 (s6):   0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[22];
-          std::cout << " x23 (s7):   0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[23] << std::endl;
+            std::cout << "x20 (s4):   0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[20];
+            std::cout << " x21 (s5):   0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[21];
+            std::cout << " x22 (s6):   0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[22];
+            std::cout << " x23 (s7):   0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[23] << std::endl;
 
-          std::cout << "x24 (s8):   0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[24];
-          std::cout << " x25 (s9):   0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[25];
-          std::cout << " x26 (s10):  0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[26];
-          std::cout << " x27 (s11):  0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[27] << std::endl;
+            std::cout << "x24 (s8):   0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[24];
+            std::cout << " x25 (s9):   0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[25];
+            std::cout << " x26 (s10):  0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[26];
+            std::cout << " x27 (s11):  0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[27] << std::endl;
 
-          std::cout << "x28 (t3):   0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[28];
-          std::cout << " x29 (t4):   0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[29];
-          std::cout << " x30 (t5):   0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[30];
-          std::cout << " x31 (t6):   0x" << std::right << std::setw(8)
-                    << std::hex << register_bank[31] << std::endl;
+            std::cout << "x28 (t3):   0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[28];
+            std::cout << " x29 (t4):   0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[29];
+            std::cout << " x30 (t5):   0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[30];
+            std::cout << " x31 (t6):   0x" << std::right << std::setw(8)
+                      << std::hex << register_bank[31] << std::endl;
 
-          std::cout << "PC: 0x" << std::setw(8) << std::hex << register_PC << std::dec << std::endl;
-          std::cout << "************************************" << std::endl;
+            std::cout << "PC: 0x" << std::setw(8) << std::hex << register_PC << std::dec << std::endl;
+            std::cout << "************************************" << std::endl;
         }
 
     private:
@@ -407,9 +408,9 @@ namespace riscv_tlm {
         Performance *perf;
 
         void initCSR() {
-          CSR[CSR_MISA] = MISA_MXL | MISA_M_EXTENSION | MISA_C_EXTENSION
-                          | MISA_A_EXTENSION | MISA_I_BASE;
-          CSR[CSR_MSTATUS] = MISA_MXL;
+            CSR[CSR_MISA] = MISA_MXL | MISA_M_EXTENSION | MISA_C_EXTENSION
+                            | MISA_A_EXTENSION | MISA_I_BASE;
+            CSR[CSR_MSTATUS] = MISA_MXL;
         }
     };
 }
