@@ -10,6 +10,7 @@
 #define Execute_H
 
 #define SC_INCLUDE_DYNAMIC_PROCESSES
+#include <type_traits>
 
 #include "systemc"
 #include "tlm.h"
@@ -174,6 +175,12 @@ namespace riscv_tlm {
          * @brief Constructor, same as base class
          */
         using extension_base<T>::extension_base;
+
+        /**
+         * @brief Deduce signed type for T type
+         */
+        using signed_T = typename std::make_signed<T>::type;
+
 
         /**
          * @brief Access to funct7 field
@@ -348,7 +355,7 @@ namespace riscv_tlm {
 
             rd = this->get_rd();
             imm = get_imm_U() << 12;
-            this->regs->setValue(rd, static_cast<std::int32_t>(imm));
+            this->regs->setValue(rd, static_cast<signed_T>(imm));
 
             this->logger->debug("{} ns. PC: 0x{:x}. LUI: x{:d} <- 0x{:x}", sc_core::sc_time_stamp().value(),
                                 this->regs->getPC(),
@@ -360,11 +367,11 @@ namespace riscv_tlm {
         bool Exec_AUIPC() const {
             unsigned int rd;
             std::uint32_t imm;
-            std::uint32_t new_pc;
+            T new_pc;
 
             rd = this->get_rd();
             imm = get_imm_U() << 12;
-            new_pc = static_cast<std::uint32_t>(this->regs->getPC() + imm);
+            new_pc = static_cast<signed_T>(this->regs->getPC() + imm);
 
             this->regs->setValue(rd, new_pc);
 
@@ -379,7 +386,7 @@ namespace riscv_tlm {
         bool Exec_JAL() const {
             std::int32_t mem_addr;
             unsigned int rd;
-            std::uint32_t new_pc, old_pc;
+            T new_pc, old_pc;
 
             rd = this->get_rd();
             mem_addr = get_imm_J();
@@ -401,7 +408,7 @@ namespace riscv_tlm {
         bool Exec_JALR() {
             std::uint32_t mem_addr;
             unsigned int rd, rs1;
-            std::uint32_t new_pc, old_pc;
+            T new_pc, old_pc;
 
             rd = this->get_rd();
             rs1 = this->get_rs1();
