@@ -24,11 +24,15 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
 
+typedef enum {RV32, RV64} cpu_types_t;
+
 std::string filename;
 bool debug_session = false;
 bool mem_dump = false;
 uint32_t dump_addr_st = 0;
 uint32_t dump_addr_end = 0;
+
+cpu_types_t cpu_type_opt = RV32;
 
 /**
  * @class Simulator
@@ -45,13 +49,17 @@ public:
     riscv_tlm::peripherals::Trace *trace;
     riscv_tlm::peripherals::Timer *timer;
 
-	explicit Simulator(sc_core::sc_module_name const &name): sc_module(name) {
+	explicit Simulator(sc_core::sc_module_name const &name, cpu_types_t cpu_type): sc_module(name) {
 		std::uint32_t start_PC;
 
 		MainMemory = new riscv_tlm::Memory("Main_Memory", filename);
 		start_PC = MainMemory->getPCfromHEX();
 
-		cpu = new riscv_tlm::CPU("cpu", start_PC, debug_session);
+        if (cpu_type == RV32) {
+            cpu = new riscv_tlm::RV32("cpu", start_PC, debug_session);
+        } else {
+            cpu = new riscv_tlm::RV64("cpu", start_PC, debug_session);
+        }
 
 		Bus = new riscv_tlm::BusCtrl("BusCtrl");
 		trace = new riscv_tlm::peripherals::Trace("Trace");
@@ -67,7 +75,7 @@ public:
 		timer->irq_line.bind(cpu->irq_line_socket);
 
 		if (debug_session) {
-            riscv_tlm::Debug debug(cpu, MainMemory);
+            //riscv_tlm::Debug debug(cpu, MainMemory);
 		}
 	}
 
@@ -83,7 +91,7 @@ public:
 	}
 
 private:
-    void MemoryDump() {
+    void MemoryDump() const {
 	    std::cout << "********** MEMORY DUMP ***********\n";
         tlm::tlm_generic_payload trans;
         tlm::tlm_dmi dmi_data;
@@ -134,8 +142,9 @@ void process_arguments(int argc, char *argv[]) {
 	int debug_level;
 
 	debug_session = false;
+    cpu_type_opt = RV32;
 
-	while ((c = getopt(argc, argv, "DTE:B:L:f:?")) != -1) {
+	while ((c = getopt(argc, argv, "DTE:B:L:f:R:?")) != -1) {
 		switch (c) {
 		case 'D':
 			debug_session = true;
@@ -173,6 +182,13 @@ void process_arguments(int argc, char *argv[]) {
 		case 'f':
 			filename = std::string(optarg);
 			break;
+        case 'R':
+            if (strcmp(optarg, "RV32") == 0) {
+                cpu_type_opt = RV32;
+            } else {
+                cpu_type_opt = RV64;
+            }
+            break;
 		case '?':
 			std::cout << "Call ./RISCV_TLM -D -L <debuglevel> (0..3) filename.hex"
 					<< std::endl;
@@ -199,15 +215,15 @@ int sc_main(int argc, char *argv[]) {
 	/* SystemC time resolution set to 1 ns*/
 	sc_core::sc_set_time_resolution(1, sc_core::SC_NS);
 
-    spdlog::filename_t filename = SPDLOG_FILENAME_T("newlog.txt");
-    logger = spdlog::create<spdlog::sinks::basic_file_sink_mt>("my_logger", filename);
+    spdlog::filename_t log_filename = SPDLOG_FILENAME_T("newlog.txt");
+    logger = spdlog::create<spdlog::sinks::basic_file_sink_mt>("my_logger", log_filename);
     logger->set_pattern("%v");
     logger->set_level(spdlog::level::info);
 
 	/* Parse and process program arguments. -f is mandatory */
 	process_arguments(argc, argv);
 
-	top = new Simulator("top");
+	top = new Simulator("top", cpu_type_opt);
 
 	auto start = std::chrono::steady_clock::now();
 	sc_core::sc_start();

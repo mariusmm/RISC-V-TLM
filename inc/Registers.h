@@ -407,11 +407,14 @@ namespace riscv_tlm {
 
         Performance *perf;
 
+        void initCSR();
+        /*
         void initCSR() {
             CSR[CSR_MISA] = MISA_MXL | MISA_M_EXTENSION | MISA_C_EXTENSION
                             | MISA_A_EXTENSION | MISA_I_BASE;
             CSR[CSR_MSTATUS] = MISA_MXL;
         }
+         */
     };
 }
 #endif

@@ -28,12 +28,27 @@
 
 
 namespace riscv_tlm {
-/**
- * @brief ISC_V CPU model
- * @param name name of the module
- */
-    class CPU : sc_core::sc_module {
+
+    class CPU : sc_core::sc_module  {
     public:
+
+        /* Constructors */
+        explicit CPU(sc_core::sc_module_name const &name, bool debug);
+
+        CPU() noexcept = delete;
+        CPU(const CPU& other) noexcept = delete;
+        CPU(CPU && other) noexcept = delete;
+        CPU& operator=(const CPU& other) noexcept = delete;
+        CPU& operator=(CPU&& other) noexcept = delete;
+
+        /* Destructors */
+        ~CPU() override = default;
+
+        /**
+         * @brief Perform one instruction step
+         * @return Breackpoint found (TBD, always true)
+         */
+        virtual bool CPU_step() = 0;
 
         /**
          * @brief Instruction Memory bus socket
@@ -50,59 +65,86 @@ namespace riscv_tlm {
         tlm_utils::simple_target_socket<CPU> irq_line_socket;
 
         /**
+        * @brief DMI pointer is not longer valid
+        * @param start memory address region start
+        * @param end memory address region end
+        */
+        void invalidate_direct_mem_ptr(sc_dt::uint64 start, sc_dt::uint64 end);
+
+        /**
+        * @brief CPU main thread
+        */
+        [[noreturn]] void CPU_thread();
+
+        /**
+         * @brief Process and triggers IRQ if all conditions met
+         * @return true if IRQ is triggered, false otherwise
+         */
+        virtual bool cpu_process_IRQ() = 0;
+
+        /**
+         * @brief callback for IRQ simple socket
+         * @param trans transaction to perform (empty)
+         * @param delay time to annotate
+         *
+         * it triggers an IRQ when called
+         */
+        virtual void call_interrupt(tlm::tlm_generic_payload &trans,
+                            sc_core::sc_time &delay) = 0;
+    public:
+        MemoryInterface *mem_intf;
+    protected:
+        Performance *perf;
+        std::shared_ptr<spdlog::logger> logger;
+        tlm_utils::tlm_quantumkeeper *m_qk;
+        Instruction inst;
+        bool interrupt;
+        bool irq_already_down;
+        sc_core::sc_time default_time;
+        bool dmi_ptr_valid;
+        tlm::tlm_generic_payload trans;
+        unsigned char *dmi_ptr = nullptr;
+    };
+
+    /**
+     * @brief RISC_V CPU 32 bits model
+     * @param name name of the module
+     */
+    class RV32 : public CPU {
+    public:
+        using BaseType = std::uint32_t;
+
+        /**
          * @brief Constructor
          * @param name Module name
          * @param PC   Program Counter initialize value
          * @param debug To start debugging
          */
-        CPU(sc_core::sc_module_name const &name, std::uint32_t PC, bool debug);
+        RV32(sc_core::sc_module_name const &name, BaseType PC, bool debug);
 
         /**
          * @brief Destructor
          */
-        ~CPU() override;
+        ~RV32() override;
 
-        MemoryInterface *mem_intf;
-
-        bool CPU_step();
-
-
-        Registers<std::uint32_t> *getRegisterBank() { return register_bank; }
+        bool CPU_step() override;
+        Registers<BaseType> *getRegisterBank() { return register_bank; }
 
     private:
-        Registers<std::uint32_t> *register_bank;
-        Performance *perf;
-        std::shared_ptr<spdlog::logger> logger;
-        C_extension<std::uint32_t> *c_inst;
-        M_extension<std::uint32_t> *m_inst;
-        A_extension<std::uint32_t> *a_inst;
-        BASE_ISA<std::uint32_t> *exec;
-        tlm_utils::tlm_quantumkeeper *m_qk;
-
-        Instruction inst;
-        bool interrupt;
-        std::uint32_t int_cause;
-        bool irq_already_down;
-        sc_core::sc_time default_time;
-        bool dmi_ptr_valid;
-
-        tlm::tlm_generic_payload trans;
-        std::uint32_t INSTR;
-        unsigned char *dmi_ptr = nullptr;
-
+        Registers<BaseType> *register_bank;
+        C_extension<BaseType> *c_inst;
+        M_extension<BaseType> *m_inst;
+        A_extension<BaseType> *a_inst;
+        BASE_ISA<BaseType> *exec;
+        BaseType int_cause;
+        BaseType INSTR;
 
         /**
          *
          * @brief Process and triggers IRQ if all conditions met
          * @return true if IRQ is triggered, false otherwise
          */
-        bool cpu_process_IRQ();
-
-        /**
-         * main thread for CPU simulation
-         * @brief CPU mai thread
-         */
-        [[noreturn]] void CPU_thread();
+        bool cpu_process_IRQ() override;
 
         /**
          * @brief callback for IRQ simple socket
@@ -113,14 +155,58 @@ namespace riscv_tlm {
          */
         void call_interrupt(tlm::tlm_generic_payload &trans,
                             sc_core::sc_time &delay);
+    }; // RV32 class
+
+    /**
+     * @brief RISC_V CPU 64 bits model
+     * @param name name of the module
+     */
+    class RV64 : public CPU {
+    public:
+        using BaseType = std::uint64_t;
 
         /**
-         * DMI pointer is not longer valid
-         * @param start memory address region start
-         * @param end memory address region end
+         * @brief Constructor
+         * @param name Module name
+         * @param PC   Program Counter initialize value
+         * @param debug To start debugging
          */
-        void invalidate_direct_mem_ptr(sc_dt::uint64 start, sc_dt::uint64 end);
-    };
+        RV64(sc_core::sc_module_name const &name, BaseType PC, bool debug);
+
+        /**
+         * @brief Destructor
+         */
+        ~RV64() override;
+
+        bool CPU_step() override;
+        Registers<BaseType> *getRegisterBank() { return register_bank; }
+
+    private:
+        Registers<BaseType> *register_bank;
+        C_extension<BaseType> *c_inst;
+        M_extension<BaseType> *m_inst;
+        A_extension<BaseType> *a_inst;
+        BASE_ISA<BaseType> *exec;
+        BaseType int_cause;
+        BaseType INSTR;
+
+        /**
+         *
+         * @brief Process and triggers IRQ if all conditions met
+         * @return true if IRQ is triggered, false otherwise
+         */
+        bool cpu_process_IRQ() override;
+
+        /**
+         * @brief callback for IRQ simple socket
+         * @param trans transaction to perform (empty)
+         * @param delay time to annotate
+         *
+         * it triggers an IRQ when called
+         */
+        void call_interrupt(tlm::tlm_generic_payload &trans,
+                            sc_core::sc_time &delay);
+    }; // RV64 class
 
 }
 #endif

@@ -80,7 +80,7 @@ namespace riscv_tlm {
         }
 
         /* pure virtual functions */
-        virtual T opcode() const = 0;
+        virtual std::uint32_t opcode() const = 0;
 
         virtual unsigned int get_rd() const {
             return m_instr.range(11, 7);
