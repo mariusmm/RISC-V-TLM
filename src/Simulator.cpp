@@ -15,7 +15,6 @@
 #include <cstdint>
 
 #include "CPU.h"
-#include "Memory.h"
 #include "BusCtrl.h"
 #include "Trace.h"
 #include "Timer.h"
@@ -94,7 +93,6 @@ private:
     void MemoryDump() const {
 	    std::cout << "********** MEMORY DUMP ***********\n";
         tlm::tlm_generic_payload trans;
-        tlm::tlm_dmi dmi_data;
         sc_core::sc_time delay;
         std::uint32_t data[4];
 
@@ -139,7 +137,7 @@ void intHandler(int dummy) {
 void process_arguments(int argc, char *argv[]) {
 
 	int c;
-	int debug_level;
+	long int debug_level;
 
 	debug_session = false;
     cpu_type_opt = RV32;
@@ -153,13 +151,13 @@ void process_arguments(int argc, char *argv[]) {
             mem_dump = true;
             break;
         case 'B':
-            dump_addr_st = std::strtoul (optarg, 0, 16);
+            dump_addr_st = std::strtoul (optarg, nullptr, 16);
             break;
         case 'E':
-            dump_addr_end = std::strtoul(optarg, 0, 16);
+            dump_addr_end = std::strtoul(optarg, nullptr, 16);
             break;
 		case 'L':
-			debug_level = std::atoi(optarg);
+			debug_level = std::strtol(optarg, nullptr, 10);
 
 			switch (debug_level) {
 			case 3:
