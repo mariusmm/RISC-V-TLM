@@ -61,12 +61,15 @@ namespace riscv_tlm {
          */
         using extension_base<T>::extension_base;
 
+        using signed_T = typename std::make_signed<T>::type;
+        using unsigned_T = typename std::make_unsigned<T>::type;
+
         /**
          * @brief Access to opcode field
          * @return return opcode field
          */
-        inline std::uint32_t opcode() const override {
-            return static_cast<std::uint32_t>(this->m_instr.range(31, 27));
+        inline unsigned_T opcode() const override {
+            return static_cast<unsigned_T>(this->m_instr.range(31, 27));
         }
 
         /**

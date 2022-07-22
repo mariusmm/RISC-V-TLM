@@ -17,7 +17,7 @@ namespace riscv_tlm {
 
         m_qk = new tlm_utils::tlm_quantumkeeper();
         m_qk->reset();
-
+        mem_intf = nullptr;
         dmi_ptr_valid = false;
 
         irq_already_down = false;

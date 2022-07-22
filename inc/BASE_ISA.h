@@ -11,6 +11,7 @@
 
 #define SC_INCLUDE_DYNAMIC_PROCESSES
 #include <type_traits>
+#include <limits>
 
 #include "systemc"
 #include "tlm.h"
@@ -181,6 +182,10 @@ namespace riscv_tlm {
          */
         using signed_T = typename std::make_signed<T>::type;
 
+        /**
+         * @brief Deduce unsigned type for T type
+         */
+        using unsigned_T = typename std::make_unsigned<T>::type;
 
         /**
          * @brief Access to funct7 field
@@ -191,171 +196,72 @@ namespace riscv_tlm {
         }
 
         /**
-         * @brief Sets func7 field
-         * @param value desired func7 value
-         */
-        inline void set_func7(std::int32_t value) {
-            this->m_instr.range(31, 25) = value;
-        }
-
-        /**
          * @brief Gets immediate field value for I-type
          * @return immediate_I field
+         * @note Specialized
          */
-        inline std::int32_t get_imm_I() const {
-            std::uint32_t aux = 0;
-
-            aux = this->m_instr.range(31, 20);
-
-            /* sign extension (optimize) */
-            if (this->m_instr[31] == 1) {
-                aux |= (0b11111111111111111111) << 12;
-            }
-
-            return static_cast<std::int32_t>(aux);
-        }
-
-        /**
-         * @brief Sets immediate field for I-type
-         * @param value desired I value
-         */
-        inline void set_imm_I(std::int32_t value) {
-            this->m_instr.range(31, 20) = value;
-        }
+        signed_T get_imm_I() const;
 
         /**
          * @brief Gets immediate field value for S-type
          * @return immediate_S field
+         * @note Specialized
          */
-        inline std::int32_t get_imm_S() const {
-            std::uint32_t aux = 0;
-
-            aux = this->m_instr.range(31, 25) << 5;
-            aux |= this->m_instr.range(11, 7);
-
-            if (this->m_instr[31] == 1) {
-                aux |= (0b11111111111111111111) << 12;
-            }
-
-            return static_cast<std::int32_t>(aux);
-        }
+         signed_T get_imm_S() const;
 
         /**
          * @brief Gets immediate field value for U-type
          * @return immediate_U field
          */
-        inline std::int32_t get_imm_U() const {
-            return static_cast<std::int32_t>(this->m_instr.range(31, 12));
-        }
-
-        /**
-         * @brief Sets immediate field for U-type
-         * @param value desired U value
-         */
-        inline void set_imm_U(std::int32_t value) {
-            this->m_instr.range(31, 12) = (value << 12);
+        inline unsigned_T get_imm_U() const {
+            return this->m_instr.range(31, 12);
         }
 
         /**
          * @brief Gets immediate field value for B-type
          * @return immediate_B field
+         * @note Specialized
          */
-        inline std::int32_t get_imm_B() const {
-            std::int32_t aux = 0;
-
-            aux |= this->m_instr[7] << 11;
-            aux |= this->m_instr.range(30, 25) << 5;
-            aux |= this->m_instr[31] << 12;
-            aux |= this->m_instr.range(11, 8) << 1;
-
-            if (this->m_instr[31] == 1) {
-                aux |= (0b11111111111111111111) << 12;
-            }
-
-            return aux;
-        }
-
-        /**
-         * @brief Sets immediate field for B-type
-         * @param value desired B value
-         */
-        inline void set_imm_B(std::int32_t value) {
-            sc_dt::sc_uint<32> aux = value;
-
-            this->m_instr[31] = aux[12];
-            this->m_instr.range(30, 25) = aux.range(10, 5);
-            this->m_instr.range(11, 7) = aux.range(4, 1);
-            this->m_instr[6] = aux[11];
-        }
+        signed_T get_imm_B() const;
 
         /**
          * @brief Gets immediate field value for J-type
          * @return immediate_J field
+         * @note Specialized
          */
-        inline std::int32_t get_imm_J() const {
-            std::int32_t aux = 0;
-
-            aux = this->m_instr[31] << 20;
-            aux |= this->m_instr.range(19, 12) << 12;
-            aux |= this->m_instr[20] << 11;
-            aux |= this->m_instr.range(30, 21) << 1;
-
-            /* bit extension (better way to do that?) */
-            if (this->m_instr[31] == 1) {
-                aux |= (0b111111111111) << 20;
-            }
-
-            return aux;
-        }
-
-        /**
-         * @brief Sets immediate field for J-type
-         * @param value desired J value
-         */
-        inline void set_imm_J(std::int32_t value) {
-            sc_dt::sc_uint<32> aux = (value << 20);
-
-            this->m_instr[31] = aux[20];
-            this->m_instr.range(30, 21) = aux.range(10, 1);
-            this->m_instr[20] = aux[11];
-            this->m_instr.range(19, 12) = aux.range(19, 12);
-        }
+        signed_T get_imm_J() const;
 
         /**
          * @brief Returns shamt field for Shifts instructions
          * @return value corresponding to inst(25:20)
          */
-        inline std::int32_t get_shamt() const {
-            return static_cast<std::int32_t>(this->m_instr.range(25, 20));
+        inline unsigned_T get_shamt() const {
+            return this->m_instr.range(25, 20);
         }
 
         /**
          * @brief Returns CSR field for CSR instructions
          * @return value corresponding to instr(31:20)
          */
-        inline std::int32_t get_csr() const {
-            std::int32_t aux = 0;
-
-            aux = static_cast<std::int32_t>(this->m_instr.range(31, 20));
-
-            return aux;
+        inline unsigned_T get_csr() const {
+            return this->m_instr.range(31, 20);
         }
 
         /**
          * @brief Access to opcode field
          * @return return opcode field
          */
-        inline std::uint32_t opcode() const override {
-            return static_cast<std::uint32_t>(this->m_instr.range(6, 0));
+        inline unsigned_T opcode() const override {
+            return this->m_instr.range(6, 0);
         }
 
         bool Exec_LUI() const {
             unsigned int rd;
-            std::uint32_t imm;
+            unsigned_T imm;
 
             rd = this->get_rd();
             imm = get_imm_U() << 12;
-            this->regs->setValue(rd, static_cast<signed_T>(imm));
+            this->regs->setValue(rd, imm);
 
             this->logger->debug("{} ns. PC: 0x{:x}. LUI: x{:d} <- 0x{:x}", sc_core::sc_time_stamp().value(),
                                 this->regs->getPC(),
@@ -366,12 +272,12 @@ namespace riscv_tlm {
 
         bool Exec_AUIPC() const {
             unsigned int rd;
-            std::uint32_t imm;
-            T new_pc;
+            unsigned_T imm;
+            unsigned_T new_pc;
 
             rd = this->get_rd();
             imm = get_imm_U() << 12;
-            new_pc = static_cast<signed_T>(this->regs->getPC() + imm);
+            new_pc = this->regs->getPC() + imm;
 
             this->regs->setValue(rd, new_pc);
 
@@ -386,7 +292,7 @@ namespace riscv_tlm {
         bool Exec_JAL() const {
             std::int32_t mem_addr;
             unsigned int rd;
-            T new_pc, old_pc;
+            unsigned_T new_pc, old_pc;
 
             rd = this->get_rd();
             mem_addr = get_imm_J();
@@ -406,9 +312,9 @@ namespace riscv_tlm {
         }
 
         bool Exec_JALR() {
-            std::uint32_t mem_addr;
+            signed_T mem_addr;
             unsigned int rd, rs1;
-            T new_pc, old_pc;
+            unsigned_T new_pc, old_pc;
 
             rd = this->get_rd();
             rs1 = this->get_rs1();
@@ -417,7 +323,7 @@ namespace riscv_tlm {
             old_pc = this->regs->getPC();
             this->regs->setValue(rd, old_pc + 4);
 
-            new_pc = static_cast<std::uint32_t>((this->regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE);
+            new_pc = static_cast<unsigned_T>((this->regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE);
 
             if ((new_pc & 0x00000003) != 0) {
                 // not aligned
@@ -442,30 +348,7 @@ namespace riscv_tlm {
 
         bool Exec_BEQ() const {
             unsigned int rs1, rs2;
-            std::uint32_t new_pc;
-
-            rs1 = this->get_rs1();
-            rs2 = this->get_rs2();
-
-            if (this->regs->getValue(rs1) == this->regs->getValue(rs2)) {
-                new_pc = static_cast<std::uint32_t>(this->regs->getPC() + get_imm_B());
-                this->regs->setPC(new_pc);
-            } else {
-                this->regs->incPC();
-                new_pc = static_cast<std::uint32_t>(this->regs->getPC());
-            }
-
-            this->logger->debug("{} ns. PC: 0x{:x}. BEQ: x{:d}(0x{:x}) == x{:d}(0x{:x})? -> PC (0x{:x})",
-                                sc_core::sc_time_stamp().value(), this->regs->getPC(),
-                                rs1, this->regs->getValue(rs1), rs2, this->regs->getValue(rs2), new_pc);
-
-            return true;
-        }
-
-        bool Exec_BNE() const {
-            unsigned int rs1, rs2;
-            std::uint32_t new_pc;
-            std::uint32_t val1, val2;
+            unsigned_T val1, val2;
 
             rs1 = this->get_rs1();
             rs2 = this->get_rs2();
@@ -473,31 +356,59 @@ namespace riscv_tlm {
             val1 = this->regs->getValue(rs1);
             val2 = this->regs->getValue(rs2);
 
-            if (val1 != val2) {
-                new_pc = static_cast<std::uint32_t>(this->regs->getPC() + get_imm_B());
+            if (val1 == val2) {
+                unsigned_T new_pc;
+                new_pc = static_cast<unsigned_T>(this->regs->getPC() + get_imm_B());
                 this->regs->setPC(new_pc);
             } else {
                 this->regs->incPC();
-                new_pc = static_cast<std::uint32_t>(this->regs->getPC());
+            }
+
+            this->logger->debug("{} ns. PC: 0x{:x}. BEQ: x{:d}(0x{:x}) == x{:d}(0x{:x})? -> PC (0x{:x})",
+                                sc_core::sc_time_stamp().value(), this->regs->getPC(),
+                                rs1, this->regs->getValue(rs1), rs2, this->regs->getValue(rs2), this->regs->getPC());
+
+            return true;
+        }
+
+        bool Exec_BNE() const {
+            unsigned int rs1, rs2;
+            signed_T val1, val2;
+
+            rs1 = this->get_rs1();
+            rs2 = this->get_rs2();
+
+            val1 = static_cast<signed_T>(this->regs->getValue(rs1));
+            val2 = static_cast<signed_T>(this->regs->getValue(rs2));
+
+            if (val1 != val2) {
+                unsigned_T new_pc;
+                new_pc = static_cast<unsigned_T>(this->regs->getPC() + get_imm_B());
+                this->regs->setPC(new_pc);
+            } else {
+                this->regs->incPC();
             }
 
             this->logger->debug("{} ns. PC: 0x{:x}. BNE: x{:d}(0x{:x}) != x{:d}(0x{:x})? -> PC (0x{:x})",
                                 sc_core::sc_time_stamp().value(), this->regs->getPC(),
-                                rs1, val1, rs2, val2, new_pc);
+                                rs1, val1, rs2, val2, this->regs->getPC());
 
             return true;
         }
 
         bool Exec_BLT() const {
             unsigned int rs1, rs2;
-            std::uint32_t new_pc = 0;
+            signed_T val1, val2;
 
             rs1 = this->get_rs1();
             rs2 = this->get_rs2();
 
-            if (static_cast<std::int32_t>(this->regs->getValue(rs1))
-                < static_cast<std::int32_t>(this->regs->getValue(rs2))) {
-                new_pc = static_cast<std::uint32_t>(this->regs->getPC() + get_imm_B());
+            val1 = static_cast<signed_T>(this->regs->getValue(rs1));
+            val2 = static_cast<signed_T>(this->regs->getValue(rs2));
+
+            if (val1 < val2) {
+                unsigned_T new_pc;
+                new_pc = static_cast<unsigned_T>(this->regs->getPC() + get_imm_B());
                 this->regs->setPC(new_pc);
             } else {
                 this->regs->incPC();
@@ -505,21 +416,24 @@ namespace riscv_tlm {
 
             this->logger->debug("{} ns. PC: 0x{:x}. BLT: x{:d}(0x{:x}) < x{:d}(0x{:x})? -> PC (0x{:x})",
                                 sc_core::sc_time_stamp().value(), this->regs->getPC(),
-                                rs1, this->regs->getValue(rs1), rs2, this->regs->getValue(rs2), new_pc);
+                                rs1, this->regs->getValue(rs1), rs2, this->regs->getValue(rs2), this->regs->getPC());
 
             return true;
         }
 
         bool Exec_BGE() const {
             unsigned int rs1, rs2;
-            std::uint32_t new_pc = 0;
+            signed_T val1, val2;
 
             rs1 = this->get_rs1();
             rs2 = this->get_rs2();
 
-            if (static_cast<std::int32_t>(this->regs->getValue(rs1))
-                >= static_cast<std::int32_t>( this->regs->getValue(rs2))) {
-                new_pc = static_cast<std::uint32_t>(this->regs->getPC() + get_imm_B());
+            val1 = static_cast<signed_T>(this->regs->getValue(rs1));
+            val2 = static_cast<signed_T>(this->regs->getValue(rs2));
+
+            if (val1 >= val2) {
+                unsigned_T new_pc;
+                new_pc = static_cast<unsigned_T>(this->regs->getPC() + get_imm_B());
                 this->regs->setPC(new_pc);
             } else {
                 this->regs->incPC();
@@ -527,63 +441,63 @@ namespace riscv_tlm {
 
             this->logger->debug("{} ns. PC: 0x{:x}. BGE: x{:d}(0x{:x}) > x{:d}(0x{:x})? -> PC (0x{:x})",
                                 sc_core::sc_time_stamp().value(), this->regs->getPC(),
-                                rs1, this->regs->getValue(rs1), rs2, this->regs->getValue(rs2), new_pc);
+                                rs1, this->regs->getValue(rs1), rs2, this->regs->getValue(rs2), this->regs->getPC());
 
             return true;
         }
 
         bool Exec_BLTU() const {
             unsigned int rs1, rs2;
-            std::uint32_t new_pc;
+            unsigned_T val1, val2;
 
             rs1 = this->get_rs1();
             rs2 = this->get_rs2();
 
-            if (static_cast<std::uint32_t>(this->regs->getValue(rs1))
-                < static_cast<std::uint32_t>(this->regs->getValue(rs2))) {
-                new_pc = static_cast<std::uint32_t>(this->regs->getPC() + get_imm_B());
+            val1 = this->regs->getValue(rs1);
+            val2 = this->regs->getValue(rs2);
+
+            if (val1 < val2) {
+                unsigned_T new_pc;
+                new_pc = static_cast<unsigned_T>(this->regs->getPC() + get_imm_B());
                 this->regs->setPC(new_pc);
             } else {
                 this->regs->incPC();
-                new_pc = static_cast<std::uint32_t>(this->regs->getPC());
             }
 
             this->logger->debug("{} ns. PC: 0x{:x}. BLTU: x{:d}(0x{:x}) < x{:d}(0x{:x})? -> PC (0x{:x})",
                                 sc_core::sc_time_stamp().value(), this->regs->getPC(),
-                                rs1, this->regs->getValue(rs1), rs2, this->regs->getValue(rs2), new_pc);
+                                rs1, this->regs->getValue(rs1), rs2, this->regs->getValue(rs2), this->regs->getPC());
 
             return true;
         }
 
         bool Exec_BGEU() const {
             unsigned int rs1, rs2;
+            unsigned_T val1, val2;
 
             rs1 = this->get_rs1();
             rs2 = this->get_rs2();
 
-            if (static_cast<std::uint32_t>(this->regs->getValue(rs1))
-                >= static_cast<std::uint32_t>(this->regs->getValue(rs2))) {
-                std::uint32_t new_pc;
-                new_pc = static_cast<std::uint32_t>(this->regs->getPC() + get_imm_B());
+            val1 = this->regs->getValue(rs1);
+            val2 = this->regs->getValue(rs2);
 
-                this->logger->debug("{} ns. PC: 0x{:x}. BGEU: x{:d}(0x{:x}) > x{:d}(0x{:x}) -> PC (0x{:x})",
-                                    sc_core::sc_time_stamp().value(), this->regs->getPC(),
-                                    rs1, this->regs->getValue(rs1), rs2, this->regs->getValue(rs2), new_pc);
-
+            if (val1 >= val2) {
+                unsigned_T new_pc;
+                new_pc = static_cast<unsigned_T>(this->regs->getPC() + get_imm_B());
                 this->regs->setPC(new_pc);
             } else {
-                this->logger->debug("{} ns. PC: 0x{:x}. BGEU: x{:d}(0x{:x}) > x{:d}(0x{:x}) -> PC (0x{:x})",
-                                    sc_core::sc_time_stamp().value(), this->regs->getPC(),
-                                    rs1, this->regs->getValue(rs1), rs2, this->regs->getValue(rs2),
-                                    this->regs->getPC() + 4);
                 this->regs->incPC();
             }
+
+            this->logger->debug("{} ns. PC: 0x{:x}. BGEU: x{:d}(0x{:x}) > x{:d}(0x{:x}) -> PC (0x{:x})",
+                                sc_core::sc_time_stamp().value(), this->regs->getPC(),
+                                rs1, this->regs->getValue(rs1), rs2, this->regs->getValue(rs2), this->regs->getPC());
 
             return true;
         }
 
         bool Exec_LB() const {
-            std::uint32_t mem_addr;
+            unsigned_T mem_addr;
             unsigned int rd, rs1;
             std::int32_t imm;
             std::int8_t data;
@@ -606,7 +520,7 @@ namespace riscv_tlm {
         }
 
         bool Exec_LH() const {
-            std::uint32_t mem_addr;
+            unsigned_T mem_addr;
             unsigned int rd, rs1;
             std::int32_t imm;
             int16_t data;
@@ -629,7 +543,7 @@ namespace riscv_tlm {
         }
 
         bool Exec_LW() const {
-            std::uint32_t mem_addr;
+            unsigned_T mem_addr;
             unsigned int rd, rs1;
             std::int32_t imm;
             std::uint32_t data;
@@ -652,7 +566,7 @@ namespace riscv_tlm {
         }
 
         bool Exec_LBU() const {
-            std::uint32_t mem_addr;
+            unsigned_T mem_addr;
             unsigned int rd, rs1;
             std::int32_t imm;
             std::uint8_t data;
@@ -675,7 +589,7 @@ namespace riscv_tlm {
         }
 
         bool Exec_LHU() const {
-            std::uint32_t mem_addr;
+            unsigned_T mem_addr;
             unsigned int rd, rs1;
             std::int32_t imm;
             uint16_t data;
@@ -699,7 +613,7 @@ namespace riscv_tlm {
         }
 
         bool Exec_SB() const {
-            std::uint32_t mem_addr;
+            unsigned_T mem_addr;
             unsigned int rs1, rs2;
             std::int32_t imm;
             std::uint32_t data;
@@ -723,7 +637,7 @@ namespace riscv_tlm {
         }
 
         bool Exec_SH() const {
-            std::uint32_t mem_addr;
+            unsigned_T mem_addr;
             unsigned int rs1, rs2;
             std::int32_t imm;
             std::uint32_t data;
@@ -747,7 +661,7 @@ namespace riscv_tlm {
         }
 
         bool Exec_SW() const {
-            std::uint32_t mem_addr;
+            unsigned_T mem_addr;
             unsigned int rs1, rs2;
             std::int32_t imm;
             std::uint32_t data;
@@ -773,13 +687,13 @@ namespace riscv_tlm {
         bool Exec_ADDI() const {
             unsigned int rd, rs1;
             std::int32_t imm;
-            std::int32_t calc;
+            signed_T calc;
 
             rd = this->get_rd();
             rs1 = this->get_rs1();
             imm = get_imm_I();
 
-            calc = static_cast<std::int32_t>(this->regs->getValue(rs1)) + imm;
+            calc = static_cast<unsigned_T>(this->regs->getValue(rs1)) + imm;
             this->regs->setValue(rd, calc);
 
             this->logger->debug("{} ns. PC: 0x{:x}. ADDI: x{:d} + x{:d} -> x{:d}(0x{:x})",
@@ -793,14 +707,16 @@ namespace riscv_tlm {
         bool Exec_SLTI() const {
             unsigned int rd, rs1;
             std::int32_t imm;
+            signed_T val1;
 
             rd = this->get_rd();
             rs1 = this->get_rs1();
             imm = get_imm_I();
 
-            if (static_cast<std::int32_t>(this->regs->getValue(rs1)) < imm) {
-                this->regs->setValue(rd, 1);
+            val1 = static_cast<signed_T>(this->regs->getValue(rs1));
 
+            if (val1 < imm) {
+                this->regs->setValue(rd, 1);
                 this->logger->debug("{} ns. PC: 0x{:x}. SLTI: x{:d} < x{:d} => 1 -> x{:d}",
                                     sc_core::sc_time_stamp().value(),
                                     this->regs->getPC(),
@@ -818,13 +734,15 @@ namespace riscv_tlm {
 
         bool Exec_SLTIU() const {
             unsigned int rd, rs1;
-            std::int32_t imm;
+            unsigned_T imm;
+            unsigned_T val1;
 
             rd = this->get_rd();
             rs1 = this->get_rs1();
-            imm = get_imm_I();
+            imm = static_cast<unsigned_T>(get_imm_I());
+            val1 = static_cast<unsigned_T>(this->regs->getValue(rs1));
 
-            if (static_cast<std::uint32_t>(this->regs->getValue(rs1)) < static_cast<std::uint32_t>(imm)) {
+            if (val1 < imm) {
                 this->regs->setValue(rd, 1);
                 this->logger->debug("{} ns. PC: 0x{:x}. SLTIU: x{:d} < x{:d} => 1 -> x{:d}",
                                     sc_core::sc_time_stamp().value(),
@@ -843,15 +761,15 @@ namespace riscv_tlm {
 
         bool Exec_XORI() const {
             unsigned int rd, rs1;
-            std::int32_t imm;
-            std::uint32_t calc;
+            unsigned_T imm;
+            unsigned_T calc;
 
             rd = this->get_rd();
             rs1 = this->get_rs1();
             imm = get_imm_I();
 
             calc = this->regs->getValue(rs1) ^ imm;
-            this->regs->setValue(rd, static_cast<std::int32_t>(calc));
+            this->regs->setValue(rd, calc);
 
             this->logger->debug("{} ns. PC: 0x{:x}. XORI: x{:d} XOR x{:d} -> x{:d}", sc_core::sc_time_stamp().value(),
                                 this->regs->getPC(),
@@ -862,15 +780,15 @@ namespace riscv_tlm {
 
         bool Exec_ORI() const {
             unsigned int rd, rs1;
-            std::int32_t imm;
-            std::uint32_t calc;
+            unsigned_T imm;
+            unsigned_T calc;
 
             rd = this->get_rd();
             rs1 = this->get_rs1();
             imm = get_imm_I();
 
             calc = this->regs->getValue(rs1) | imm;
-            this->regs->setValue(rd, static_cast<std::int32_t>(calc));
+            this->regs->setValue(rd, calc);
 
             this->logger->debug("{} ns. PC: 0x{:x}. ORI: x{:d} OR x{:d} -> x{:d}", sc_core::sc_time_stamp().value(),
                                 this->regs->getPC(),
@@ -881,30 +799,28 @@ namespace riscv_tlm {
 
         bool Exec_ANDI() const {
             unsigned int rd, rs1;
-            std::uint32_t imm;
-            std::uint32_t calc;
-            std::uint32_t aux;
+            unsigned_T imm;
+            unsigned_T calc;
 
             rd = this->get_rd();
             rs1 = this->get_rs1();
             imm = get_imm_I();
 
-            aux = this->regs->getValue(rs1);
-            calc = aux & imm;
-            this->regs->setValue(rd, static_cast<std::int32_t>(calc));
+            calc = this->regs->getValue(rs1) & imm;
+            this->regs->setValue(rd, calc);
 
-            this->logger->debug("{} ns. PC: 0x{:x}. ANDI: x{:d}(0x{:x}) AND 0x{:x} -> x{:d}",
+            this->logger->debug("{} ns. PC: 0x{:x}. ANDI: x{:d} AND 0x{:x} -> x{:d}",
                                 sc_core::sc_time_stamp().value(),
                                 this->regs->getPC(),
-                                rs1, aux, imm, rd);
+                                rs1, imm, rd);
 
             return true;
         }
 
         bool Exec_SLLI() {
             unsigned int rd, rs1, rs2;
-            std::uint32_t shift;
-            std::uint32_t calc;
+            unsigned_T shift;
+            unsigned_T calc;
 
             rd = this->get_rd();
             rs1 = this->get_rs1();
@@ -919,8 +835,8 @@ namespace riscv_tlm {
 
             shift = rs2 & 0x1F;
 
-            calc = static_cast<std::uint32_t>(this->regs->getValue(rs1)) << shift;
-            this->regs->setValue(rd, static_cast<std::int32_t>(calc));
+            calc = static_cast<unsigned_T>(this->regs->getValue(rs1)) << shift;
+            this->regs->setValue(rd, calc);
 
             this->logger->debug("{} ns. PC: 0x{:x}. SLLI: x{:d} << {:d} -> x{:d}(0x{:x})",
                                 sc_core::sc_time_stamp().value(),
@@ -932,8 +848,8 @@ namespace riscv_tlm {
 
         bool Exec_SRLI() const {
             unsigned int rd, rs1, rs2;
-            std::uint32_t shift;
-            std::uint32_t calc;
+            unsigned_T shift;
+            unsigned_T calc;
 
             rd = this->get_rd();
             rs1 = this->get_rs1();
@@ -941,8 +857,8 @@ namespace riscv_tlm {
 
             shift = rs2 & 0x1F;
 
-            calc = static_cast<std::uint32_t>(this->regs->getValue(rs1)) >> shift;
-            this->regs->setValue(rd, static_cast<std::int32_t>(calc));
+            calc = static_cast<unsigned_T>(this->regs->getValue(rs1)) >> shift;
+            this->regs->setValue(rd, calc);
 
             this->logger->debug("{} ns. PC: 0x{:x}. SRLI: x{:d} >> {:d} -> x{:d}(0x{:x})",
                                 sc_core::sc_time_stamp().value(),
@@ -954,8 +870,8 @@ namespace riscv_tlm {
 
         bool Exec_SRAI() const {
             unsigned int rd, rs1, rs2;
-            std::uint32_t shift;
-            std::int32_t calc;
+            unsigned_T shift;
+            signed_T calc;
 
             rd = this->get_rd();
             rs1 = this->get_rs1();
@@ -963,7 +879,7 @@ namespace riscv_tlm {
 
             shift = rs2 & 0x1F;
 
-            calc = static_cast<std::int32_t>(this->regs->getValue(rs1)) >> shift;
+            calc = static_cast<signed_T>(this->regs->getValue(rs1)) >> shift;
             this->regs->setValue(rd, calc);
 
             this->logger->debug("{} ns. PC: 0x{:x}. SRAI: x{:d} >> {:d} -> x{:d}(0x{:x})",
@@ -976,14 +892,14 @@ namespace riscv_tlm {
 
         bool Exec_ADD() const {
             unsigned int rd, rs1, rs2;
-            std::uint32_t calc;
+            unsigned_T calc;
             rd = this->get_rd();
             rs1 = this->get_rs1();
             rs2 = this->get_rs2();
 
             calc = this->regs->getValue(rs1) + this->regs->getValue(rs2);
 
-            this->regs->setValue(rd, static_cast<std::int32_t>(calc));
+            this->regs->setValue(rd, calc);
 
             this->logger->debug("{} ns. PC: 0x{:x}. ADD: x{:d} + x{:d} -> x{:d}(0x{:x})",
                                 sc_core::sc_time_stamp().value(),
@@ -995,13 +911,13 @@ namespace riscv_tlm {
 
         bool Exec_SUB() const {
             unsigned int rd, rs1, rs2;
-            std::uint32_t calc;
+            unsigned_T calc;
             rd = this->get_rd();
             rs1 = this->get_rs1();
             rs2 = this->get_rs2();
 
             calc = this->regs->getValue(rs1) - this->regs->getValue(rs2);
-            this->regs->setValue(rd, static_cast<std::int32_t>(calc));
+            this->regs->setValue(rd, calc);
 
             this->logger->debug("{} ns. PC: 0x{:x}. SUB: x{:d} - x{:d} -> x{:d}(0x{:x})",
                                 sc_core::sc_time_stamp().value(),
@@ -1013,8 +929,8 @@ namespace riscv_tlm {
 
         bool Exec_SLL() const {
             unsigned int rd, rs1, rs2;
-            std::uint32_t shift;
-            std::uint32_t calc;
+            unsigned_T shift;
+            unsigned_T calc;
 
             rd = this->get_rd();
             rs1 = this->get_rs1();
@@ -1022,8 +938,8 @@ namespace riscv_tlm {
 
             shift = this->regs->getValue(rs2) & 0x1F;
 
-            calc = static_cast<std::uint32_t>(this->regs->getValue(rs1)) << shift;
-            this->regs->setValue(rd, static_cast<std::int32_t>(calc));
+            calc = this->regs->getValue(rs1) << shift;
+            this->regs->setValue(rd, calc);
 
             this->logger->debug("{} ns. PC: 0x{:x}. SLL: x{:d} << x{:d} -> x{:d}(0x{:x})",
                                 sc_core::sc_time_stamp().value(),
@@ -1035,12 +951,16 @@ namespace riscv_tlm {
 
         bool Exec_SLT() const {
             unsigned int rd, rs1, rs2;
+            signed_T val1, val2;
 
             rd = this->get_rd();
             rs1 = this->get_rs1();
             rs2 = this->get_rs2();
 
-            if (this->regs->getValue(rs1) < this->regs->getValue(rs2)) {
+            val1 = static_cast<signed_T>(this->regs->getValue(rs1));
+            val2 = static_cast<signed_T>(this->regs->getValue(rs2));
+
+            if (val1 < val2) {
                 this->regs->setValue(rd, 1);
                 this->logger->debug("{} ns. PC: 0x{:x}. SLT: x{:d} < x{:d} => 1 -> x{:d}",
                                     sc_core::sc_time_stamp().value(),
@@ -1059,13 +979,16 @@ namespace riscv_tlm {
 
         bool Exec_SLTU() const {
             unsigned int rd, rs1, rs2;
+            unsigned_T val1, val2;
 
             rd = this->get_rd();
             rs1 = this->get_rs1();
             rs2 = this->get_rs2();
 
-            if (static_cast<std::uint32_t>(this->regs->getValue(rs1))
-                < static_cast<std::uint32_t>(this->regs->getValue(rs2))) {
+            val1 = this->regs->getValue(rs1);
+            val2 = this->regs->getValue(rs2);
+
+            if (val1 < val2) {
                 this->regs->setValue(rd, 1);
                 this->logger->debug("{} ns. PC: 0x{:x}. SLTU: x{:d} < x{:d} => 1 -> x{:d}",
                                     sc_core::sc_time_stamp().value(),
@@ -1084,14 +1007,14 @@ namespace riscv_tlm {
 
         bool Exec_XOR() const {
             unsigned int rd, rs1, rs2;
-            std::uint32_t calc;
+            unsigned_T calc;
 
             rd = this->get_rd();
             rs1 = this->get_rs1();
             rs2 = this->get_rs2();
 
             calc = this->regs->getValue(rs1) ^ this->regs->getValue(rs2);
-            this->regs->setValue(rd, static_cast<std::int32_t>(calc));
+            this->regs->setValue(rd, calc);
 
             this->logger->debug("{} ns. PC: 0x{:x}. XOR: x{:d} XOR x{:d} -> x{:d}(0x{:x})",
                                 sc_core::sc_time_stamp().value(),
@@ -1103,17 +1026,17 @@ namespace riscv_tlm {
 
         bool Exec_SRL() const {
             unsigned int rd, rs1, rs2;
-            std::uint32_t shift;
-            std::uint32_t calc;
+            unsigned_T shift;
+            unsigned_T calc;
 
             rd = this->get_rd();
             rs1 = this->get_rs1();
             rs2 = this->get_rs2();
 
             shift = this->regs->getValue(rs2) & 0x1F;
+            calc = this->regs->getValue(rs1) >> shift;
 
-            calc = static_cast<std::uint32_t>(this->regs->getValue(rs1)) >> shift;
-            this->regs->setValue(rd, static_cast<std::int32_t>(calc));
+            this->regs->setValue(rd, calc);
 
             this->logger->debug("{} ns. PC: 0x{:x}. SRL: x{:d} >> {:d} -> x{:d}(0x{:x})",
                                 sc_core::sc_time_stamp().value(),
@@ -1125,16 +1048,15 @@ namespace riscv_tlm {
 
         bool Exec_SRA() const {
             unsigned int rd, rs1, rs2;
-            std::uint32_t shift;
-            std::int32_t calc;
+            unsigned_T shift;
+            signed_T calc;
 
             rd = this->get_rd();
             rs1 = this->get_rs1();
             rs2 = this->get_rs2();
 
             shift = this->regs->getValue(rs2) & 0x1F;
-
-            calc = static_cast<std::int32_t>(this->regs->getValue(rs1)) >> shift;
+            calc = static_cast<signed_T>(this->regs->getValue(rs1)) >> shift;
             this->regs->setValue(rd, calc);
 
             this->logger->debug("{} ns. PC: 0x{:x}. SRA: x{:d} >> {:d} -> x{:d}(0x{:x})",
@@ -1147,14 +1069,14 @@ namespace riscv_tlm {
 
         bool Exec_OR() const {
             unsigned int rd, rs1, rs2;
-            std::uint32_t calc;
+            unsigned_T calc;
 
             rd = this->get_rd();
             rs1 = this->get_rs1();
             rs2 = this->get_rs2();
 
             calc = this->regs->getValue(rs1) | this->regs->getValue(rs2);
-            this->regs->setValue(rd, static_cast<std::int32_t>(calc));
+            this->regs->setValue(rd, calc);
 
             this->logger->debug("{} ns. PC: 0x{:x}. OR: x{:d} OR x{:d} -> x{:d}(0x{:x})",
                                 sc_core::sc_time_stamp().value(),
@@ -1166,14 +1088,14 @@ namespace riscv_tlm {
 
         bool Exec_AND() const {
             unsigned int rd, rs1, rs2;
-            std::uint32_t calc;
+            unsigned_T calc;
 
             rd = this->get_rd();
             rs1 = this->get_rs1();
             rs2 = this->get_rs2();
 
             calc = this->regs->getValue(rs1) & this->regs->getValue(rs2);
-            this->regs->setValue(rd, static_cast<std::int32_t>(calc));
+            this->regs->setValue(rd, calc);
 
             this->logger->debug("{} ns. PC: 0x{:x}. AND: x{:d} AND x{:d} -> x{:d}(0x{:x})",
                                 sc_core::sc_time_stamp().value(),

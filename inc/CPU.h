@@ -154,7 +154,7 @@ namespace riscv_tlm {
          * it triggers an IRQ when called
          */
         void call_interrupt(tlm::tlm_generic_payload &trans,
-                            sc_core::sc_time &delay);
+                            sc_core::sc_time &delay) override;
     }; // RV32 class
 
     /**
@@ -205,7 +205,7 @@ namespace riscv_tlm {
          * it triggers an IRQ when called
          */
         void call_interrupt(tlm::tlm_generic_payload &trans,
-                            sc_core::sc_time &delay);
+                            sc_core::sc_time &delay) override;
     }; // RV64 class
 
 }

@@ -100,16 +100,19 @@ namespace riscv_tlm {
     public:
 
         /**
-         * @brief Constructor, same as base clase
+         * @brief Constructor, same as base class
          */
         using extension_base<T>::extension_base;
+
+        using signed_T = typename std::make_signed<T>::type;
+        using unsigned_T = typename std::make_unsigned<T>::type;
 
         /**
          * @brief Access to opcode field
          * @return return opcode field
          */
-        [[nodiscard]] inline std::uint32_t opcode() const override {
-            return static_cast<std::uint32_t>(this->m_instr.range(1, 0));
+        [[nodiscard]] inline unsigned_T opcode() const override {
+            return static_cast<unsigned_T>(this->m_instr.range(1, 0));
         }
 
         [[nodiscard]] inline std::uint32_t get_rdp() const {
@@ -507,6 +510,8 @@ namespace riscv_tlm {
                             break;
                         case C_FWWSP:
                             [[unlikely]]
+                            return OP_C_FSWSP;
+                            break;
                         default:
                             return OP_C_ERROR;
                             break;
