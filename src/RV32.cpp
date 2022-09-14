@@ -183,5 +183,11 @@ namespace riscv_tlm {
         delay = sc_core::SC_ZERO_TIME;
     }
 
+    std::uint64_t RV32::getStartDumpAddress() {
+        return register_bank->getValue(Registers<std::uint32_t>::t0);
+    }
 
+    std::uint64_t RV32::getEndDumpAddress() {
+        return register_bank->getValue(Registers<std::uint32_t>::t1);
+    }
 }
