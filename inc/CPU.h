@@ -91,6 +91,10 @@ namespace riscv_tlm {
          */
         virtual void call_interrupt(tlm::tlm_generic_payload &trans,
                             sc_core::sc_time &delay) = 0;
+
+        virtual std::uint64_t getStartDumpAddress() = 0;
+        virtual std::uint64_t getEndDumpAddress() = 0;
+
     public:
         MemoryInterface *mem_intf;
     protected:
@@ -155,6 +159,9 @@ namespace riscv_tlm {
          */
         void call_interrupt(tlm::tlm_generic_payload &trans,
                             sc_core::sc_time &delay) override;
+
+        std::uint64_t getStartDumpAddress() override;
+        std::uint64_t getEndDumpAddress() override;
     }; // RV32 class
 
     /**
@@ -206,6 +213,9 @@ namespace riscv_tlm {
          */
         void call_interrupt(tlm::tlm_generic_payload &trans,
                             sc_core::sc_time &delay) override;
+
+        std::uint64_t getStartDumpAddress() override;
+        std::uint64_t getEndDumpAddress() override;
     }; // RV64 class
 
 }
