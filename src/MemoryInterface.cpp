@@ -7,6 +7,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "MemoryInterface.h"
+#include <iostream>
+#include <sstream>
 
 namespace riscv_tlm {
 
@@ -36,8 +38,11 @@ namespace riscv_tlm {
         data_bus->b_transport(trans, delay);
 
         if (trans.is_response_error()) {
-            SC_REPORT_ERROR("Memory", "Read memory");
+            std::stringstream error_msg;
+            error_msg << "Read memory: 0x" << std::hex << addr;
+            SC_REPORT_ERROR("Memory", error_msg.str().c_str());
         }
+
         return data;
     }
 
@@ -62,5 +67,11 @@ namespace riscv_tlm {
         trans.set_address(addr);
 
         data_bus->b_transport(trans, delay);
+
+        if (trans.is_response_error()) {
+            std::stringstream error_msg;
+            error_msg << "Write memory: 0x" << std::hex << addr;
+            SC_REPORT_ERROR("Memory", error_msg.str().c_str());
+        }
     }
 }
