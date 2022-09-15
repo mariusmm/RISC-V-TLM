@@ -4,7 +4,7 @@
 
 
 This is another RISC-V ISA simulator, this is coded in SystemC + TLM-2.
-It supports RV32IMAC Instruction set by now.
+It supports RV32IMAC and RV64IMAC Instruction set.
 
 [![travis](https://api.travis-ci.com/mariusmm/RISC-V-TLM.svg?branch=master)](https://app.travis-ci.com/github/mariusmm/RISC-V-TLM)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0f7ccc8435f14ce2b241b3bfead772a2)](https://www.codacy.com/app/mariusmm/RISC-V-TLM?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mariusmm/RISC-V-TLM&amp;utm_campaign=Badge_Grade)
@@ -103,7 +103,7 @@ Task to do:
      - [x] riscv-test almost complete (see [Test](https://github.com/mariusmm/RISC-V-TLM/wiki/Tests))
      - [x] riscv-compliance 
 * [ ] Improve structure and modules hierarchy
-* [ ] Add 64 & 128 bits architecture (RV64I, RV128I)
+* [X] Add 64 architecture (RV64I)
 * [x] Debug capabilities
 
 ## Compile
@@ -150,6 +150,8 @@ make
 -f filename .hex filename to use
 
 -D Enter in Debug mode, simulator starts gdb server (Beta)
+
+-R 32 or 64 to choose 32-bit or 64-bit architecture
 
 ## Cross-compiler
 It is possible to use gcc as risc-v compiler. Follow the instructions (from https://github.com/riscv/riscv-gnu-toolchain):
@@ -205,6 +207,7 @@ $ docker run -v <path_to_RISCV-V-TLM>/:/tmp -u $UID -e DISPLAY=$DISPLAY --volume
 ```
 
 I'm using docker image [zmors/riscv_gcc](https://hub.docker.com/r/zmors/riscv_gcc) to have a cross-compiler,  I'm using both docker images this way:
+
 ```
 console1:
 $ docker run -v /tmp:/PRJ -it zmors/riscv_gcc:1  bash
@@ -289,7 +292,7 @@ I've published a paper describing the RISC-V simulator in [CARRV 2020](https://c
 
 ##  License
 
-Copyright (C) 2018, 2019, 2020 Màrius Montón ([\@mariusmonton](https://twitter.com/mariusmonton/))
+Copyright (C) 2018, 2019, 2020, 2021, 2022 Màrius Montón ([@mariusmonton](https://twitter.com/mariusmonton/))
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
