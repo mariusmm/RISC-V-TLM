@@ -78,6 +78,7 @@ namespace riscv_tlm {
 
         bool NOP() {
             logger->debug("{} ns. PC: 0x{:x}. NOP! new PC 0x{:x} ", sc_core::sc_time_stamp().value(), regs->getPC());
+            logger->flush();
             sc_core::sc_stop();
             return true;
         }
@@ -117,6 +118,10 @@ namespace riscv_tlm {
             m_instr.range(14, 12) = value;
         }
 
+        // For RV64 SLLI, SRLI & SRAI
+        virtual unsigned int get_shamt_slli() const {
+            return m_instr.range(25, 20);
+        }
         virtual void dump() const {
             std::cout << std::hex << "0x" << m_instr << std::dec << std::endl;
         }
