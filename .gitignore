@@ -45,3 +45,7 @@ doc/Drawings.odg
 doc/html
 env.sh
 gh-md-toc
+*.dump
+*.log
+.idea/
+.vscode/

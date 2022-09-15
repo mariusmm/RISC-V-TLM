@@ -10,6 +10,7 @@
 #define REGISTERS_H
 
 #define SC_INCLUDE_DYNAMIC_PROCESSES
+
 #include <iomanip>
 #include <unordered_map>
 
@@ -112,6 +113,7 @@ namespace riscv_tlm {
 /**
  * @brief Register file implementation
  */
+    template<typename T>
     class Registers {
     public:
 
@@ -186,33 +188,56 @@ namespace riscv_tlm {
         /**
          * Default constructor
          */
-        Registers();
+        Registers() {
+            perf = Performance::getInstance();
+
+            initCSR();
+            register_bank[sp] = Memory::SIZE - 4; // default stack at the end of the memory
+            register_PC = 0x80000000;       // default _start address
+        };
 
         /**
          * Set value for a register
          * @param reg_num register number
          * @param value   register value
          */
-        void setValue(int reg_num, std::int32_t value);
+        void setValue(unsigned int reg_num, T value) {
+            if ((reg_num != 0) && (reg_num < 32)) {
+                register_bank[reg_num] = value;
+                perf->registerWrite();
+            }
+        }
 
         /**
          * Returns register value
          * @param  reg_num register number
          * @return         register value
          */
-        std::uint32_t getValue(int reg_num) const;
+        T getValue(unsigned int reg_num) const {
+            if (reg_num < 32) {
+                perf->registerRead();
+                return register_bank[reg_num];
+            } else {
+                /* Extend sign for any possible T type */
+                return static_cast<T>(std::numeric_limits<T>::max());
+            }
+        }
 
         /**
          * Returns PC value
          * @return PC value
          */
-        std::uint32_t getPC() const;
+        T getPC() const {
+            return register_PC;
+        }
 
         /**
          * Sets arbitraty value to PC
          * @param new_pc new address to PC
          */
-        void setPC(std::uint32_t new_pc);
+        void setPC(T new_pc) {
+            register_PC = new_pc;
+        }
 
         /**
          * Increments PC couunter to next address
@@ -230,40 +255,88 @@ namespace riscv_tlm {
          * @param csr CSR number to access
          * @return CSR value
          */
-        std::uint32_t getCSR(int csr);
+        T getCSR(int csr) {
+            T ret_value;
+
+            switch (csr) {
+                case CSR_CYCLE:
+                case CSR_MCYCLE:
+                    ret_value = static_cast<std::uint64_t>(sc_core::sc_time(
+                            sc_core::sc_time_stamp()
+                            - sc_core::sc_time(sc_core::SC_ZERO_TIME)).to_double())
+                                & 0x00000000FFFFFFFF;
+                    break;
+                case CSR_CYCLEH:
+                case CSR_MCYCLEH:
+                    ret_value = static_cast<std::uint32_t>((std::uint64_t) (sc_core::sc_time(
+                            sc_core::sc_time_stamp()
+                            - sc_core::sc_time(sc_core::SC_ZERO_TIME)).to_double())
+                                                                   >> 32 & 0x00000000FFFFFFFF);
+                    break;
+                case CSR_TIME:
+                    ret_value = static_cast<std::uint64_t>(sc_core::sc_time(
+                            sc_core::sc_time_stamp()
+                            - sc_core::sc_time(sc_core::SC_ZERO_TIME)).to_double())
+                                & 0x00000000FFFFFFFF;
+                    break;
+                case CSR_TIMEH:
+                    ret_value = static_cast<std::uint32_t>((std::uint64_t) (sc_core::sc_time(
+                            sc_core::sc_time_stamp()
+                            - sc_core::sc_time(sc_core::SC_ZERO_TIME)).to_double())
+                                                                   >> 32 & 0x00000000FFFFFFFF);
+                    break;
+                    [[likely]] default:
+                    ret_value = CSR[csr];
+                    break;
+            }
+            return ret_value;
+        }
 
         /**
          * @brief Set CSR value
          * @param csr   CSR number to access
          * @param value new value to register
          */
-        void setCSR(int csr, std::uint32_t value);
+        void setCSR(int csr, T value) {
+            /* @FIXME: rv32mi-p-ma_fetch tests doesn't allow MISA to be writable,
+             * but Volume II: Privileged Architecture v1.10 says MISA is writable (?)
+             */
+            if (csr != CSR_MISA) {
+                CSR[csr] = value;
+            }
+        }
 
         /**
          * Dump register data to console
          */
-        void dump();
+        void dump() const;
 
     private:
         /**
          * bank of registers (32 regs of 32bits each)
          */
-        std::array<std::uint32_t, 32> register_bank = {{0}};
+        std::array<T, 32> register_bank = {{0}};
 
         /**
          * Program counter (32 bits width)
          */
-        std::uint32_t register_PC;
+        T register_PC;
 
         /**
          * CSR registers (4096 maximum)
          */
-        std::unordered_map<std::uint32_t, unsigned int> CSR;
-
+        std::unordered_map<T, unsigned int> CSR;
 
         Performance *perf;
 
         void initCSR();
+        /*
+        void initCSR() {
+            CSR[CSR_MISA] = MISA_MXL | MISA_M_EXTENSION | MISA_C_EXTENSION
+                            | MISA_A_EXTENSION | MISA_I_BASE;
+            CSR[CSR_MSTATUS] = MISA_MXL;
+        }
+         */
     };
 }
 #endif
