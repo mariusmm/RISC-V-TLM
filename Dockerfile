@@ -25,7 +25,7 @@ RUN mkdir -p /usr/src/riscv64 \
  && cmake .. -DCMAKE_CXX_STANDARD=17 \
  && make \
  && make install \
- && cd / \
+ && cd / 
  
 RUN rm -r /root/.ssh
 RUN mkdir -p /root/.ssh
