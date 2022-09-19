@@ -341,7 +341,7 @@ namespace riscv_tlm {
             return true;
         }
 
-        bool Exec_JALR() {
+        bool Exec_JALR() const {
             signed_T offset;
             unsigned int rd, rs1;
             unsigned_T new_pc, old_pc;
@@ -353,22 +353,10 @@ namespace riscv_tlm {
 
             new_pc = static_cast<unsigned_T>((this->regs->getValue(rs1) + offset) & ~1);
             this->regs->setValue(rd, old_pc + 4);
-
-            if ((new_pc & 0x00000003) != 0) {
-                // not aligned
-                this->logger->debug("{} ns. PC: 0x{:x}. JALR: x{:d} <- 0x{:x} PC <- 0x{:x} (0x{:x})",
-                                    sc_core::sc_time_stamp().value(),
-                                    old_pc,
-                                    rd, old_pc + 4, new_pc, offset);
-                this->logger->debug("{} ns. PC: 0x{:x}. JALR : Exception",
-                                    sc_core::sc_time_stamp().value(), old_pc);
-                this->RaiseException(EXCEPTION_CAUSE_LOAD_ADDR_MISALIGN, this->m_instr);
-            } else {
-                this->regs->setPC(new_pc);
-                this->logger->debug("{} ns. PC: 0x{:x}. JALR: x{:d} <- 0x{:x}. PC <- 0x{:x}",
+            this->regs->setPC(new_pc);
+            this->logger->debug("{} ns. PC: 0x{:x}. JALR: x{:d} <- 0x{:x}. PC <- 0x{:x}",
                                     sc_core::sc_time_stamp().value(),
                                     old_pc, rd, old_pc + 4, new_pc);
-            }
 
             return true;
         }
