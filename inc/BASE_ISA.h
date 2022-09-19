@@ -12,18 +12,10 @@
 #define SC_INCLUDE_DYNAMIC_PROCESSES
 #include <type_traits>
 #include <limits>
-
 #include "systemc"
-#include "tlm.h"
-#include "tlm_utils/simple_initiator_socket.h"
 
-#include "memory.h"
-#include "MemoryInterface.h"
-#include "Instruction.h"
-#include "C_extension.h"
-#include "M_extension.h"
-#include "A_extension.h"
-#include "Registers.h"
+#include "BASE_ISA.h"
+#include "extension_base.h"
 
 namespace riscv_tlm {
 

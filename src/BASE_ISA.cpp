@@ -7,6 +7,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "BASE_ISA.h"
+#include "tlm.h"
+#include "tlm_utils/simple_initiator_socket.h"
+
+#include "memory.h"
+#include "MemoryInterface.h"
+#include "Instruction.h"
+#include "C_extension.h"
+#include "M_extension.h"
+#include "A_extension.h"
+#include "Registers.h"
 
 namespace riscv_tlm {
 
@@ -54,7 +64,6 @@ namespace riscv_tlm {
 
         return static_cast<std::int32_t>(aux);
     }
-
 
     template<>
     std::int32_t BASE_ISA<std::uint32_t>::get_imm_J() const {
@@ -294,7 +303,6 @@ namespace riscv_tlm {
         return this->m_instr.range(31, 26);
     }
 
-    // PASS
     template<>
     bool BASE_ISA<std::uint64_t>::Exec_SLLI() {
         unsigned int rd, rs1, rs2;
@@ -326,7 +334,6 @@ namespace riscv_tlm {
         return true;
     }
 
-    // PASS
     template<>
     bool BASE_ISA<std::uint64_t>::Exec_SRLI() const {
         unsigned int rd, rs1, rs2;
@@ -350,7 +357,6 @@ namespace riscv_tlm {
         return true;
     }
 
-    // PASS
     template<>
     bool BASE_ISA<std::uint64_t>::Exec_SRAI() const {
         unsigned int rd, rs1, rs2;
@@ -374,7 +380,6 @@ namespace riscv_tlm {
         return true;
     }
 
-    // PASS
     template<>
     bool BASE_ISA<std::uint64_t>::Exec_SRL() const {
         unsigned int rd, rs1, rs2;
@@ -398,7 +403,6 @@ namespace riscv_tlm {
         return true;
     }
 
-    // PASS
     template<>
     bool BASE_ISA<std::uint64_t>::Exec_SRA() const {
         unsigned int rd, rs1, rs2;
@@ -421,7 +425,6 @@ namespace riscv_tlm {
         return true;
     }
 
-    // PASS
     template<>
     bool BASE_ISA<std::uint64_t>::Exec_SLL() const {
         unsigned int rd, rs1, rs2;
