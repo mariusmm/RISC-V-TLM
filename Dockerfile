@@ -28,7 +28,7 @@ RUN mkdir -p /usr/src/riscv64 \
  && cd / 
  
 #RUN rm -r /root/.ssh
-RUN mkdir -fp /root/.ssh
+RUN mkdir -p /root/.ssh
 RUN ssh-keyscan github.com > /root/.ssh/known_hosts
 RUN git config --global http.sslBackend "openssl"
 
