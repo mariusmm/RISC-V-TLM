@@ -182,7 +182,7 @@ namespace riscv_tlm {
             return aux;
         }
 
-        inline void set_imm_I(std::uint32_t value) {
+        inline void set_imm_I(std::uint32_t value) const {
             this->m_instr.range(31, 20) = value;
         }
 

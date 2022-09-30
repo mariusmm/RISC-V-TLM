@@ -1787,7 +1787,7 @@ namespace riscv_tlm {
          * @brief Decodes opcode of instruction
          * @return opcode of instruction
          */
-        opCodes decode() {
+        opCodes decode() const {
             switch (opcode()) {
                 case LUI:
                     return OP_LUI;
