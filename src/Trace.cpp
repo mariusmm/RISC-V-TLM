@@ -20,98 +20,96 @@
 
 #include "Trace.h"
 
-namespace riscv_tlm {
-    namespace peripherals {
+namespace riscv_tlm::peripherals {
 
-        void Trace::xtermLaunch(char *slaveName) const {
-            char *arg;
-            char *fin = &(slaveName[strlen(slaveName) - 2]);
+    void Trace::xtermLaunch(char *slaveName) const {
+        char *arg;
+        char *fin = &(slaveName[strlen(slaveName) - 2]);
 
-            if (nullptr == strchr(fin, '/')) {
-                arg = new char[2 + 1 + 1 + 20 + 1];
-                sprintf(arg, "-S%c%c%d", fin[0], fin[1], ptMaster);
-            } else {
-                char *slaveBase = ::basename(slaveName);
-                arg = new char[2 + strlen(slaveBase) + 1 + 20 + 1];
-                sprintf(arg, "-S%s/%d", slaveBase, ptMaster);
-            }
-
-            char *argv[3];
-            argv[0] = (char *) ("xterm");
-            argv[1] = arg;
-            argv[2] = nullptr;
-
-            execvp("xterm", argv);
+        if (nullptr == strchr(fin, '/')) {
+            arg = new char[2 + 1 + 1 + 20 + 1];
+            sprintf(arg, "-S%c%c%d", fin[0], fin[1], ptMaster);
+        } else {
+            char *slaveBase = ::basename(slaveName);
+            arg = new char[2 + strlen(slaveBase) + 1 + 20 + 1];
+            sprintf(arg, "-S%s/%d", slaveBase, ptMaster);
         }
 
-        void Trace::xtermKill() {
+        char *argv[3];
+        argv[0] = (char *) ("xterm");
+        argv[1] = arg;
+        argv[2] = nullptr;
 
-            if (-1 != ptSlave) {        // Close down the slave
-                close(ptSlave);            // Close the FD
-                ptSlave = -1;
-            }
+        execvp("xterm", argv);
+    }
 
-            if (-1 != ptMaster) {        // Close down the master
-                close(ptMaster);
-                ptMaster = -1;
-            }
+    void Trace::xtermKill() {
 
-            if (xtermPid > 0) {            // Kill the terminal
-                kill(xtermPid, SIGKILL);
-                waitpid(xtermPid, nullptr, 0);
-            }
+        if (-1 != ptSlave) {        // Close down the slave
+            close(ptSlave);            // Close the FD
+            ptSlave = -1;
         }
 
-        void Trace::xtermSetup() {
-            ptMaster = open("/dev/ptmx", O_RDWR);
+        if (-1 != ptMaster) {        // Close down the master
+            close(ptMaster);
+            ptMaster = -1;
+        }
 
-            if (ptMaster != -1) {
-                grantpt(ptMaster);
+        if (xtermPid > 0) {            // Kill the terminal
+            kill(xtermPid, SIGKILL);
+            waitpid(xtermPid, nullptr, 0);
+        }
+    }
 
-                unlockpt(ptMaster);
+    void Trace::xtermSetup() {
+        ptMaster = open("/dev/ptmx", O_RDWR);
 
-                char *ptSlaveName = ptsname(ptMaster);
-                ptSlave = open(ptSlaveName, O_RDWR);    // In and out are the same
+        if (ptMaster != -1) {
+            grantpt(ptMaster);
 
-                struct termios termInfo{};
-                tcgetattr(ptSlave, &termInfo);
+            unlockpt(ptMaster);
 
-                termInfo.c_lflag &= ~ECHO;
-                termInfo.c_lflag &= ~ICANON;
-                tcsetattr(ptSlave, TCSADRAIN, &termInfo);
+            char *ptSlaveName = ptsname(ptMaster);
+            ptSlave = open(ptSlaveName, O_RDWR);    // In and out are the same
 
-                xtermPid = fork();
+            struct termios termInfo{};
+            tcgetattr(ptSlave, &termInfo);
 
-                if (xtermPid == 0) {
-                    xtermLaunch(ptSlaveName);
-                }
+            termInfo.c_lflag &= ~ECHO;
+            termInfo.c_lflag &= ~ICANON;
+            tcsetattr(ptSlave, TCSADRAIN, &termInfo);
+
+            xtermPid = fork();
+
+            if (xtermPid == 0) {
+                xtermLaunch(ptSlaveName);
             }
         }
+    }
 
-        SC_HAS_PROCESS(Trace);
+    SC_HAS_PROCESS(Trace);
 
-        Trace::Trace(sc_core::sc_module_name const &name) :
-                sc_module(name), socket("socket") {
+    Trace::Trace(sc_core::sc_module_name const &name) :
+            sc_module(name), socket("socket") {
 
-            socket.register_b_transport(this, &Trace::b_transport);
+        socket.register_b_transport(this, &Trace::b_transport);
 
-            xtermSetup();
-        }
+        xtermSetup();
+    }
 
-        Trace::~Trace() {
-            xtermKill();
-        }
+    Trace::~Trace() {
+        xtermKill();
+    }
 
-        void Trace::b_transport(tlm::tlm_generic_payload &trans,
-                                sc_core::sc_time &delay) {
+    void Trace::b_transport(tlm::tlm_generic_payload &trans,
+                            sc_core::sc_time &delay) {
 
-            unsigned char *ptr = trans.get_data_ptr();
-            delay = sc_core::SC_ZERO_TIME;
+        unsigned char *ptr = trans.get_data_ptr();
+        delay = sc_core::SC_ZERO_TIME;
 
-            ssize_t a = write(ptSlave, ptr, 1);
-            (void) a;
+        ssize_t a = write(ptSlave, ptr, 1);
+        (void) a;
 
-            trans.set_response_status(tlm::TLM_OK_RESPONSE);
-        }
+        trans.set_response_status(tlm::TLM_OK_RESPONSE);
     }
 }
