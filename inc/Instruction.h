@@ -53,11 +53,11 @@ namespace riscv_tlm {
          * @brief return instruction
          * @return all instruction bits (31:0)
          */
-        std::uint32_t getInstr() {
+        std::uint32_t getInstr() const {
             return m_instr;
         }
 
-        inline void dump() {
+        inline void dump() const {
             std::cout << std::hex << "0x" << m_instr << std::dec << std::endl;
         }
 
