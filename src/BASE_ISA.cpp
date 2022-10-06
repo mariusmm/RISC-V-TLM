@@ -7,16 +7,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "BASE_ISA.h"
-#include "tlm.h"
-#include "tlm_utils/simple_initiator_socket.h"
-
-#include "memory.h"
-#include "MemoryInterface.h"
-#include "Instruction.h"
-#include "C_extension.h"
-#include "M_extension.h"
-#include "A_extension.h"
-#include "Registers.h"
 
 namespace riscv_tlm {
 
