@@ -105,6 +105,7 @@ Task to do:
 * [ ] Improve structure and modules hierarchy
 * [X] Add 64 architecture (RV64I)
 * [x] Debug capabilities
+* [ ] Add [Trace v2.0](https://github.com/riscv-non-isa/riscv-trace-spec) support 
 
 ## Compile
 In order to compile the project you need SystemC-2.3.2 installed in your system.
@@ -147,7 +148,7 @@ make
 ### Arguments
 -L loglevel: 3 for detailed (INFO) log, 0 to ERROR log level
 
--f filename .hex filename to use
+-f filename .hex binary filename to use
 
 -D Enter in Debug mode, simulator starts gdb server (Beta)
 
