@@ -14,6 +14,8 @@ It supports RV32IMAC and RV64IMAC Instruction set.
 ![commit activity](https://img.shields.io/github/commit-activity/w/Mariusmm/RISC-V-TLM)
 [![Docker](https://img.shields.io/docker/cloud/automated/mariusmm/riscv-tlm.svg?style=flat)](https://hub.docker.com/r/mariusmm/riscv-tlm)
 [![Twitter URL](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/mariusmonton)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7181526.svg)](https://doi.org/10.5281/zenodo.7181526)
+
 ---
 Table of Contents
 =================
