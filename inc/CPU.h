@@ -26,6 +26,9 @@
 
 namespace riscv_tlm {
 
+    typedef enum {RV32, RV64} cpu_types_t;
+
+
     class CPU : sc_core::sc_module  {
     public:
 
@@ -111,7 +114,7 @@ namespace riscv_tlm {
      * @brief RISC_V CPU 32 bits model
      * @param name name of the module
      */
-    class RV32 : public CPU {
+    class CPURV32 : public CPU {
     public:
         using BaseType = std::uint32_t;
 
@@ -121,12 +124,12 @@ namespace riscv_tlm {
          * @param PC   Program Counter initialize value
          * @param debug To start debugging
          */
-        RV32(sc_core::sc_module_name const &name, BaseType PC, bool debug);
+        CPURV32(sc_core::sc_module_name const &name, BaseType PC, bool debug);
 
         /**
          * @brief Destructor
          */
-        ~RV32() override;
+        ~CPURV32() override;
 
         bool CPU_step() override;
         Registers<BaseType> *getRegisterBank() { return register_bank; }
@@ -165,7 +168,7 @@ namespace riscv_tlm {
      * @brief RISC_V CPU 64 bits model
      * @param name name of the module
      */
-    class RV64 : public CPU {
+    class CPURV64 : public CPU {
     public:
         using BaseType = std::uint64_t;
 
@@ -175,12 +178,12 @@ namespace riscv_tlm {
          * @param PC   Program Counter initialize value
          * @param debug To start debugging
          */
-        RV64(sc_core::sc_module_name const &name, BaseType PC, bool debug);
+        CPURV64(sc_core::sc_module_name const &name, BaseType PC, bool debug);
 
         /**
          * @brief Destructor
          */
-        ~RV64() override;
+        ~CPURV64() override;
 
         bool CPU_step() override;
         Registers<BaseType> *getRegisterBank() { return register_bank; }

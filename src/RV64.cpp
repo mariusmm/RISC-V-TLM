@@ -9,7 +9,7 @@
 
 namespace riscv_tlm {
 
-    RV64::RV64(sc_core::sc_module_name const &name, BaseType PC, bool debug) :
+    CPURV64::CPURV64(sc_core::sc_module_name const &name, BaseType PC, bool debug) :
             CPU(name, debug), INSTR(0) {
 
         register_bank = new Registers<BaseType>();
@@ -20,7 +20,7 @@ namespace riscv_tlm {
         int_cause = 0;
 
         instr_bus.register_invalidate_direct_mem_ptr(this,
-                                                     &RV64::invalidate_direct_mem_ptr);
+                                                     &CPURV64::invalidate_direct_mem_ptr);
 
         exec = new BASE_ISA<BaseType>(0, register_bank, mem_intf);
         c_inst = new C_extension<BaseType>(0, register_bank, mem_intf);
@@ -29,11 +29,11 @@ namespace riscv_tlm {
 
         trans.set_data_ptr(reinterpret_cast<unsigned char *>(&INSTR));
 
-        logger->info("Created RV64 CPU");
-        std::cout << "Created RV64 CPU" << std::endl;
+        logger->info("Created CPURV64 CPU");
+        std::cout << "Created CPURV64 CPU" << std::endl;
     }
 
-    RV64::~RV64() {
+    CPURV64::~CPURV64() {
         delete register_bank;
         delete mem_intf;
         delete exec;
@@ -43,7 +43,7 @@ namespace riscv_tlm {
         delete m_qk;
     }
 
-    bool RV64::cpu_process_IRQ() {
+    bool CPURV64::cpu_process_IRQ() {
         BaseType csr_temp;
         bool ret_value = false;
 
@@ -100,7 +100,7 @@ namespace riscv_tlm {
         return ret_value;
     }
 
-    bool RV64::CPU_step() {
+    bool CPURV64::CPU_step() {
         bool PC_not_affected = false;
 
         /* Get new PC value */
@@ -171,7 +171,7 @@ namespace riscv_tlm {
         return breakpoint;
     }
 
-    void RV64::call_interrupt(tlm::tlm_generic_payload &m_trans,
+    void CPURV64::call_interrupt(tlm::tlm_generic_payload &m_trans,
                               sc_core::sc_time &delay) {
         interrupt = true;
         /* Socket caller send a cause (its id) */
@@ -179,11 +179,11 @@ namespace riscv_tlm {
         delay = sc_core::SC_ZERO_TIME;
     }
 
-    std::uint64_t RV64::getStartDumpAddress() {
+    std::uint64_t CPURV64::getStartDumpAddress() {
         return register_bank->getValue(Registers<std::uint32_t>::t0);
     }
 
-    std::uint64_t RV64::getEndDumpAddress() {
+    std::uint64_t CPURV64::getEndDumpAddress() {
         return register_bank->getValue(Registers<std::uint32_t>::t1);
     }
 }

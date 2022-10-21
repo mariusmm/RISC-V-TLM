@@ -25,7 +25,8 @@ namespace riscv_tlm {
     class Debug : sc_core::sc_module {
     public:
 
-        Debug(riscv_tlm::RV32 *cpu, Memory *mem);
+        Debug(riscv_tlm::CPURV32 *cpu, Memory *mem);
+        Debug(riscv_tlm::CPURV64 *cpu, Memory *mem);
 
         ~Debug() override;
 
@@ -41,11 +42,15 @@ namespace riscv_tlm {
         static constexpr size_t bufsize = 1024 * 8;
         char iobuf[bufsize]{};
         int conn;
-        riscv_tlm::RV32 *dbg_cpu;
+        riscv_tlm::CPURV32 *dbg_cpu32;
+        riscv_tlm::CPURV64 *dbg_cpu64;
+        Registers<std::uint32_t> *register_bank32;
+        Registers<std::uint64_t> *register_bank64;
         Memory *dbg_mem;
         tlm::tlm_generic_payload dbg_trans;
         unsigned char pyld_array[128]{};
         std::unordered_set<uint32_t> breakpoints;
+        riscv_tlm::cpu_types_t cpu_type;
     };
 }
 
