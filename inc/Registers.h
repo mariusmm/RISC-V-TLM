@@ -232,7 +232,7 @@ namespace riscv_tlm {
         }
 
         /**
-         * Sets arbitraty value to PC
+         * Sets arbitrary value to PC
          * @param new_pc new address to PC
          */
         void setPC(T new_pc) {
@@ -240,7 +240,7 @@ namespace riscv_tlm {
         }
 
         /**
-         * Increments PC couunter to next address
+         * Increments PC counter to next address
          */
         inline void incPC() {
             register_PC += 4;
@@ -330,13 +330,6 @@ namespace riscv_tlm {
         Performance *perf;
 
         void initCSR();
-        /*
-        void initCSR() {
-            CSR[CSR_MISA] = MISA_MXL | MISA_M_EXTENSION | MISA_C_EXTENSION
-                            | MISA_A_EXTENSION | MISA_I_BASE;
-            CSR[CSR_MSTATUS] = MISA_MXL;
-        }
-         */
     };
 }
 #endif
