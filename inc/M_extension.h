@@ -140,7 +140,7 @@ namespace riscv_tlm {
             rs1 = this->get_rs1();
             rs2 = this->get_rs2();
 
-            multiplier = static_cast<signed_T>(this->regs->getValue(rs1));
+            multiplier = static_cast<std::int64_t>(this->regs->getValue(rs1));
             multiplicand = static_cast<signed_T>(this->regs->getValue(rs2));
             result = static_cast<std::int64_t>(multiplier * multiplicand);
 
