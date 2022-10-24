@@ -25,6 +25,9 @@ namespace riscv_tlm {
 
     Debug::Debug(riscv_tlm::CPURV32 *cpu, Memory *mem) : sc_module(sc_core::sc_module_name("Debug")) {
         dbg_cpu32 = cpu;
+        dbg_cpu64 = nullptr;
+        register_bank32 = nullptr;
+        register_bank64 = nullptr;
         dbg_mem = mem;
         cpu_type = riscv_tlm::RV32;
 
@@ -34,7 +37,7 @@ namespace riscv_tlm {
         setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &optval,
                    sizeof(optval));
 
-        sockaddr_in addr;
+        sockaddr_in addr{};
         addr.sin_family = AF_INET;
         addr.sin_addr.s_addr = INADDR_ANY;
         addr.sin_port = htons(1234);
@@ -49,7 +52,10 @@ namespace riscv_tlm {
     }
 
     Debug::Debug(riscv_tlm::CPURV64 *cpu, Memory *mem) : sc_module(sc_core::sc_module_name("Debug")) {
+        dbg_cpu32 = nullptr;
         dbg_cpu64 = cpu;
+        register_bank32 = nullptr;
+        register_bank64 = nullptr;
         dbg_mem = mem;
         cpu_type = riscv_tlm::RV64;
 
@@ -59,7 +65,7 @@ namespace riscv_tlm {
         setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &optval,
                    sizeof(optval));
 
-        sockaddr_in addr;
+        sockaddr_in addr{};
         addr.sin_family = AF_INET;
         addr.sin_addr.s_addr = INADDR_ANY;
         addr.sin_port = htons(1234);
@@ -89,7 +95,7 @@ namespace riscv_tlm {
         if (nbytes == 0) {
             return "";
         } else if (nbytes == 1) {
-            return std::string("+");
+            return std::string{"+"};
         } else {
             char *start = strchr(iobuf, '$');
             char *end = strchr(iobuf, '#');
@@ -151,7 +157,7 @@ namespace riscv_tlm {
                 }
                 send_packet(conn, stream.str());
             } else if (boost::starts_with(msg, "p")) {
-                long n = strtol(msg.c_str() + 1, 0, 16);
+                long n = strtol(msg.c_str() + 1, nullptr, 16);
                 std::uint64_t reg_value = 0;
                 if (n < 32) {
                     if (cpu_type == riscv_tlm::RV32) {
@@ -185,7 +191,7 @@ namespace riscv_tlm {
             } else if (boost::starts_with(msg, "P")) {
                 char *pEnd;
                 long reg = strtol(msg.c_str() + 1, &pEnd, 16);
-                int val = strtol(pEnd + 1, 0, 16);
+                int val = strtol(pEnd + 1, nullptr, 16);
                 if (cpu_type == riscv_tlm::RV32) {
                     register_bank32->setValue(reg + 1, val);
                 } else {
@@ -194,7 +200,7 @@ namespace riscv_tlm {
                 send_packet(conn, "OK");
             } else if (boost::starts_with(msg, "m")) {
                 char *pEnd;
-                long addr = strtol(msg.c_str() + 1, &pEnd, 16);;
+                long addr = strtol(msg.c_str() + 1, &pEnd, 16);
                 int len = strtol(pEnd + 1, &pEnd, 16);
 
                 dbg_trans.set_data_ptr(pyld_array);
@@ -227,7 +233,7 @@ namespace riscv_tlm {
                 bool bkpt = false;
                 do {
                     std::uint64_t currentPC;
-                    //bkpt = dbg_cpu->CPU_step();
+
                     if (cpu_type == riscv_tlm::RV32) {
                         bkpt = dbg_cpu32->CPU_step();
                         currentPC = register_bank32->getPC();
@@ -278,23 +284,23 @@ namespace riscv_tlm {
                 break;
             } else if (boost::starts_with(msg, "Z1")) {
                 char *pEnd;
-                long addr = strtol(msg.c_str() + 3, &pEnd, 16);;
+                long addr = strtol(msg.c_str() + 3, &pEnd, 16);
                 breakpoints.insert(addr);
                 std::cout << "Breakpoint set to address 0x" << std::hex << addr << std::endl;
                 send_packet(conn, "OK");
             } else if (boost::starts_with(msg, "z1")) {
                 char *pEnd;
-                long addr = strtol(msg.c_str() + 3, &pEnd, 16);;
+                long addr = strtol(msg.c_str() + 3, &pEnd, 16);
                 breakpoints.erase(addr);
                 send_packet(conn, "OK");
             } else if (boost::starts_with(msg, "z0")) {
                 char *pEnd;
-                long addr = strtol(msg.c_str() + 3, &pEnd, 16);;
+                long addr = strtol(msg.c_str() + 3, &pEnd, 16);
                 breakpoints.erase(addr);
                 send_packet(conn, "");
             } else if (boost::starts_with(msg, "Z0")) {
                 char *pEnd;
-                long addr = strtol(msg.c_str() + 3, &pEnd, 16);;
+                long addr = strtol(msg.c_str() + 3, &pEnd, 16);
                 breakpoints.insert(addr);
                 std::cout << "Breakpoint set to address 0x" << std::hex << addr << std::endl;
                 send_packet(conn, "OK");

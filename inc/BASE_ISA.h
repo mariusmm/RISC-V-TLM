@@ -1311,7 +1311,7 @@ namespace riscv_tlm {
 
         bool Exec_ECALL() {
 
-            this->logger->debug("{} ns. PC: 0x{:x}. ECALL");
+            this->logger->debug("{} ns. PC: 0x{:x}. ECALL", sc_core::sc_time_stamp().value(), this->regs->getPC());
 
             std::cout << std::endl << "ECALL Instruction called, stopping simulation"
                       << std::endl;
