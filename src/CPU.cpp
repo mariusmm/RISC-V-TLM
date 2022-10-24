@@ -65,7 +65,7 @@ namespace riscv_tlm {
                 m_qk->sync();
             }
 #else
-            sc_core::wait(instr_time);
+            sc_core::wait(default_time);
 #endif
         } // while(1)
     } // CPU_thread
