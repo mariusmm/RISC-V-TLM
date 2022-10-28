@@ -177,6 +177,15 @@ void process_arguments(int argc, char *argv[]) {
 		case 'L':
 			debug_level = std::strtol(optarg, nullptr, 10);
 
+            if (debug_level >= 0) {
+                spdlog::filename_t log_filename = SPDLOG_FILENAME_T("newlog.txt");
+                logger = spdlog::create<spdlog::sinks::basic_file_sink_mt>("my_logger", log_filename, true);
+                logger->set_pattern("%v");
+                logger->set_level(spdlog::level::info);
+            } else {
+                logger = nullptr;
+            }
+
 			switch (debug_level) {
 			case 3:
                 logger->set_level(spdlog::level::info);
@@ -231,13 +240,15 @@ int sc_main(int argc, char *argv[]) {
 	/* SystemC time resolution set to 1 ns*/
 	sc_core::sc_set_time_resolution(1, sc_core::SC_NS);
 
-    spdlog::filename_t log_filename = SPDLOG_FILENAME_T("newlog.txt");
-    logger = spdlog::create<spdlog::sinks::basic_file_sink_mt>("my_logger", log_filename, true);
-    logger->set_pattern("%v");
-    logger->set_level(spdlog::level::info);
-
 	/* Parse and process program arguments. -f is mandatory */
 	process_arguments(argc, argv);
+
+    if (logger == nullptr) {
+        spdlog::filename_t log_filename = SPDLOG_FILENAME_T("/dev/null");
+        logger = spdlog::create<spdlog::sinks::basic_file_sink_mt>("my_logger", log_filename, true);
+        logger->set_pattern("%v");
+        logger->set_level(spdlog::level::info);
+    }
 
 	top = new Simulator("top", cpu_type_opt);
 
