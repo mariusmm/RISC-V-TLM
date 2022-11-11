@@ -101,7 +101,6 @@ namespace riscv_tlm {
     }
 
     bool CPURV64::CPU_step() {
-        bool PC_not_affected = false;
 
         /* Get new PC value */
         if (dmi_ptr_valid) {
@@ -134,7 +133,7 @@ namespace riscv_tlm {
         auto deco = base_inst->decode();
 
         if (deco != OP_ERROR) {
-            PC_not_affected = base_inst->process_instruction(inst, &breakpoint, deco);
+            auto PC_not_affected = base_inst->exec_instruction(inst, &breakpoint, deco);
             if (PC_not_affected) {
                 register_bank->incPC();
             }
@@ -143,7 +142,7 @@ namespace riscv_tlm {
             c_inst->setInstr(INSTR);
             auto c_deco = c_inst->decode();
             if (c_deco != OP_C_ERROR ) {
-                PC_not_affected = c_inst->process_instruction(inst, &breakpoint, c_deco);
+                auto PC_not_affected = c_inst->exec_instruction(inst, &breakpoint, c_deco);
                 if (PC_not_affected) {
                     register_bank->incPCby2();
                 }
@@ -151,7 +150,7 @@ namespace riscv_tlm {
                 m_inst->setInstr(INSTR);
                 auto m_deco = m_inst->decode();
                 if (m_deco != OP_M_ERROR) {
-                    PC_not_affected = m_inst->process_instruction(inst, m_deco);
+                    auto PC_not_affected = m_inst->exec_instruction(inst, m_deco);
                     if (PC_not_affected) {
                         register_bank->incPC();
                     }
@@ -159,7 +158,7 @@ namespace riscv_tlm {
                     a_inst->setInstr(INSTR);
                     auto a_deco = a_inst->decode();
                     if (a_deco != OP_A_ERROR) {
-                        PC_not_affected = a_inst->process_instruction(inst, a_deco);
+                        auto PC_not_affected = a_inst->exec_instruction(inst, a_deco);
                         if (PC_not_affected) {
                             register_bank->incPC();
                         }

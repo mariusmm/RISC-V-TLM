@@ -1304,7 +1304,7 @@ namespace riscv_tlm {
         }
 
         bool Exec_FENCE() const {
-            this->logger->debug("{} ns. PC: 0x{:x}. FENCE");
+            this->logger->debug("{} ns. PC: 0x{:x}. FENCE", sc_core::sc_time_stamp().value(), this->regs->getPC());
 
             return true;
         }
@@ -1566,7 +1566,7 @@ namespace riscv_tlm {
          * @param  inst instruction to execute
          * @return  true if PC is affected by instruction
          */
-        bool process_instruction(Instruction &inst, bool *breakpoint, opCodes code) {
+        bool exec_instruction(Instruction &inst, bool *breakpoint, opCodes code) {
             bool PC_not_affected = true;
 
             *breakpoint = false;

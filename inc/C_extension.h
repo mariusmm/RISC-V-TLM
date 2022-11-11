@@ -1292,7 +1292,7 @@ namespace riscv_tlm {
             return true;
         }
 
-        bool process_instruction(Instruction &inst, bool *breakpoint, op_C_Codes code) {
+        bool exec_instruction(Instruction &inst, bool *breakpoint, op_C_Codes code) {
             bool PC_not_affected = true;
 
             *breakpoint = false;

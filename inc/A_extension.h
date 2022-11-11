@@ -466,7 +466,7 @@ namespace riscv_tlm {
             }
         }
 
-        bool process_instruction(Instruction &inst, op_A_Codes code) {
+        bool exec_instruction(Instruction &inst, op_A_Codes code) {
             bool PC_not_affected = true;
 
             this->setInstr(inst.getInstr());

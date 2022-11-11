@@ -397,7 +397,7 @@ namespace riscv_tlm {
                                 rs1, dividend, rs2, divisor, rd, result);
         }
 
-        bool process_instruction(Instruction &inst, op_M_Codes code) {
+        bool exec_instruction(Instruction &inst, op_M_Codes code) {
             this->setInstr(inst.getInstr());
 
             switch (code) {
