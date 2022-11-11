@@ -103,7 +103,6 @@ namespace riscv_tlm {
     }
 
     bool CPURV32::CPU_step() {
-        bool PC_not_affected = false;
 
         /* Get new PC value */
         if (dmi_ptr_valid) {
