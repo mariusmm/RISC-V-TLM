@@ -46,8 +46,6 @@ namespace riscv_tlm {
 
     [[noreturn]] void CPU::CPU_thread() {
 
-        sc_core::sc_time instr_time = default_time;
-
         while (true) {
 
             /* Process one instruction */
