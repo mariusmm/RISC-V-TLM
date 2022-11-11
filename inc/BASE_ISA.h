@@ -1982,6 +1982,9 @@ namespace riscv_tlm {
                     }
                     break;
                 case ADDW:
+                    if ( (this->get_funct7() != 0) && (this->get_funct7() != 0b0100000) ) {
+                        return OP_ERROR;
+                    }
                     switch (this->get_funct3()) {
                         case ADDW_F:
                         switch (this->m_instr.to_uint() >> 26) {
