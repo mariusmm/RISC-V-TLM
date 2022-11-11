@@ -1872,6 +1872,9 @@ namespace riscv_tlm {
                     }
                     return OP_ERROR;
                 case ADD: {
+                    if ( (this->get_funct7() != 0) && (this->get_funct7() != 0b0100000) ) {
+                        return OP_ERROR;
+                    }
                     switch (this->get_funct3()) {
                         case ADD_F:
                             switch (this->get_funct7()) {
@@ -1880,7 +1883,7 @@ namespace riscv_tlm {
                                 case SUB_F7:
                                     return OP_SUB;
                                 default:
-                                    return OP_ADD;
+                                    return OP_ERROR;
                             }
                             break;
                         case SLL_F:
