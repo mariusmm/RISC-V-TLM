@@ -1292,14 +1292,14 @@ namespace riscv_tlm {
             return true;
         }
 
-        bool process_instruction(Instruction &inst, bool *breakpoint) {
+        bool process_instruction(Instruction &inst, bool *breakpoint, op_C_Codes code) {
             bool PC_not_affected = true;
 
             *breakpoint = false;
 
             this->setInstr(inst.getInstr());
 
-            switch (decode()) {
+            switch (code) {
                 case OP_C_ADDI4SPN:
                     PC_not_affected = Exec_C_ADDI4SPN();
                     break;

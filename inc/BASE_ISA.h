@@ -1566,13 +1566,13 @@ namespace riscv_tlm {
          * @param  inst instruction to execute
          * @return  true if PC is affected by instruction
          */
-        bool process_instruction(Instruction &inst, bool *breakpoint = nullptr) {
+        bool process_instruction(Instruction &inst, bool *breakpoint, opCodes code) {
             bool PC_not_affected = true;
 
             *breakpoint = false;
             this->setInstr(inst.getInstr());
 
-            switch (decode()) {
+            switch (code) {
                 case OP_LUI:
                     Exec_LUI();
                     break;

@@ -139,7 +139,7 @@ namespace riscv_tlm {
         C_extension<BaseType> *c_inst;
         M_extension<BaseType> *m_inst;
         A_extension<BaseType> *a_inst;
-        BASE_ISA<BaseType> *exec;
+        BASE_ISA<BaseType> *base_inst;
         BaseType int_cause;
         BaseType INSTR;
 
@@ -193,7 +193,7 @@ namespace riscv_tlm {
         C_extension<BaseType> *c_inst;
         M_extension<BaseType> *m_inst;
         A_extension<BaseType> *a_inst;
-        BASE_ISA<BaseType> *exec;
+        BASE_ISA<BaseType> *base_inst;
         BaseType int_cause;
         BaseType INSTR;
 

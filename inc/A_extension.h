@@ -466,12 +466,12 @@ namespace riscv_tlm {
             }
         }
 
-        bool process_instruction(Instruction &inst) {
+        bool process_instruction(Instruction &inst, op_A_Codes code) {
             bool PC_not_affected = true;
 
             this->setInstr(inst.getInstr());
 
-            switch (decode()) {
+            switch (code) {
                 case OP_A_LR:
                     Exec_A_LR();
                     break;

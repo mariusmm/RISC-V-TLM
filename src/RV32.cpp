@@ -24,7 +24,7 @@ namespace riscv_tlm {
         instr_bus.register_invalidate_direct_mem_ptr(this,
                                                      &CPURV32::invalidate_direct_mem_ptr);
 
-        exec = new BASE_ISA<BaseType>(0, register_bank, mem_intf);
+        base_inst = new BASE_ISA<BaseType>(0, register_bank, mem_intf);
         c_inst = new C_extension<BaseType>(0, register_bank, mem_intf);
         m_inst = new M_extension<BaseType>(0, register_bank, mem_intf);
         a_inst = new A_extension<BaseType>(0, register_bank, mem_intf);
@@ -38,7 +38,7 @@ namespace riscv_tlm {
     CPURV32::~CPURV32() {
         delete register_bank;
         delete mem_intf;
-        delete exec;
+        delete base_inst;
         delete c_inst;
         delete m_inst;
         delete a_inst;
@@ -132,36 +132,46 @@ namespace riscv_tlm {
         inst.setInstr(INSTR);
         bool breakpoint = false;
 
-        /* check what type of instruction is and execute it */
-        switch (inst.check_extension()) {
-            [[likely]] case BASE_EXTENSION:
-                PC_not_affected = exec->process_instruction(inst, &breakpoint);
-                if (PC_not_affected) {
-                    register_bank->incPC();
-                }
-                break;
-            case C_EXTENSION:
-                PC_not_affected = c_inst->process_instruction(inst, &breakpoint);
+        base_inst->setInstr(INSTR);
+        auto deco = base_inst->decode();
+
+        if (deco != OP_ERROR) {
+            PC_not_affected = base_inst->process_instruction(inst, &breakpoint, deco);
+            if (PC_not_affected) {
+                register_bank->incPC();
+            }
+
+        } else {
+            c_inst->setInstr(INSTR);
+            auto c_deco = c_inst->decode();
+            if (c_deco != OP_C_ERROR ) {
+                PC_not_affected = c_inst->process_instruction(inst, &breakpoint, c_deco);
                 if (PC_not_affected) {
                     register_bank->incPCby2();
                 }
-                break;
-            case M_EXTENSION:
-                PC_not_affected = m_inst->process_instruction(inst);
-                if (PC_not_affected) {
-                    register_bank->incPC();
+            } else {
+                m_inst->setInstr(INSTR);
+                auto m_deco = m_inst->decode();
+                if (m_deco != OP_M_ERROR) {
+                    PC_not_affected = m_inst->process_instruction(inst, m_deco);
+                    if (PC_not_affected) {
+                        register_bank->incPC();
+                    }
+                } else {
+                    a_inst->setInstr(INSTR);
+                    auto a_deco = a_inst->decode();
+                    if (a_deco != OP_A_ERROR) {
+                        PC_not_affected = a_inst->process_instruction(inst, a_deco);
+                        if (PC_not_affected) {
+                            register_bank->incPC();
+                        }
+                    } else {
+                        std::cout << "Extension not implemented yet" << std::endl;
+                        inst.dump();
+                        base_inst->NOP();
+                    }
                 }
-                break;
-            case A_EXTENSION:
-                PC_not_affected = a_inst->process_instruction(inst);
-                if (PC_not_affected) {
-                    register_bank->incPC();
-                }
-                break;
-                [[unlikely]] default:
-                std::cout << "Extension not implemented yet" << std::endl;
-                inst.dump();
-                exec->NOP();
+            }
         }
 
         if (breakpoint) {
