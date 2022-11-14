@@ -18,15 +18,18 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
 
-#define EXCEPTION_CAUSE_INSTRUCTION_MISALIGN  0
-#define EXCEPTION_CAUSE_INSTRUCTION_ACCESS    1
-#define EXCEPTION_CAUSE_ILLEGAL_INSTRUCTION   2
-#define EXCEPTION_CAUSE_BREAKPOINT            3
-#define EXCEPTION_CAUSE_BREAK                 3
-#define EXCEPTION_CAUSE_LOAD_ADDR_MISALIGN    4
-#define EXCEPTION_CAUSE_LOAD_ACCESS_FAULT     5
-
 namespace riscv_tlm {
+
+    typedef enum {
+        INSTRUCTION_MISALIGN = 0,
+        INSTRUCTION_ACCESS = 1,
+        ILLEGAL_INSTRUCTION = 2,
+        BREAKPOINT = 3,
+        BREAK = 3,
+        LOAD_ADDR_MISALIGN = 4,
+        LOAD_ACCESS_FAULT = 5,
+        CALL_FROM_M_MODE = 11,
+    } Exception_cause;
 
     template<typename T>
     class extension_base {
@@ -49,24 +52,24 @@ namespace riscv_tlm {
             m_instr = sc_dt::sc_uint<32>(p_instr);
         }
 
-        void RaiseException(std::uint32_t cause, std::uint32_t inst) {
+        void RaiseException(Exception_cause cause, std::uint32_t inst) {
             std::uint32_t new_pc, current_pc, m_cause;
 
             current_pc = regs->getPC();
             m_cause = regs->getCSR(CSR_MSTATUS);
-            m_cause |= cause;
+            m_cause |= static_cast<uint32_t>(cause);
 
             new_pc = regs->getCSR(CSR_MTVEC);
 
             regs->setCSR(CSR_MEPC, current_pc);
 
-            if (cause == EXCEPTION_CAUSE_ILLEGAL_INSTRUCTION) {
+            if (cause == Exception_cause::ILLEGAL_INSTRUCTION) {
                 regs->setCSR(CSR_MTVAL, inst);
             } else {
                 regs->setCSR(CSR_MTVAL, current_pc);
             }
 
-            regs->setCSR(CSR_MCAUSE, cause);
+            regs->setCSR(CSR_MCAUSE, static_cast<uint32_t>(cause));
             regs->setCSR(CSR_MSTATUS, m_cause);
 
             regs->setPC(new_pc);

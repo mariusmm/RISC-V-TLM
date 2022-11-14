@@ -682,7 +682,7 @@ namespace riscv_tlm {
             imm = static_cast<signed_T>(get_imm_ADDI4SPN());
 
             if (imm == 0) {
-                this->RaiseException(EXCEPTION_CAUSE_ILLEGAL_INSTRUCTION, this->m_instr);
+                this->RaiseException(Exception_cause::ILLEGAL_INSTRUCTION, this->m_instr);
                 return false;
             }
 
@@ -1287,7 +1287,7 @@ namespace riscv_tlm {
             std::cout << "Simulation time " << sc_core::sc_time_stamp() << "\n";
             this->perf->dump();
 
-            sc_core::sc_stop();
+            this->RaiseException(Exception_cause::BREAK, this->m_instr);
 
             return true;
         }

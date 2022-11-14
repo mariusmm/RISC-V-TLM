@@ -136,7 +136,7 @@ namespace riscv_tlm {
 
             if (rs2 != 0) {
                 std::cout << "ILEGAL INSTRUCTION, LR.W: rs2 != 0" << std::endl;
-                this->RaiseException(EXCEPTION_CAUSE_ILLEGAL_INSTRUCTION, this->m_instr);
+                this->RaiseException(Exception_cause::ILLEGAL_INSTRUCTION, this->m_instr);
 
                 return false;
             }
