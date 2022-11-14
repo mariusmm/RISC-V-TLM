@@ -1535,6 +1535,8 @@ namespace riscv_tlm {
             this->logger->debug("{} ns. PC: 0x{:x}. MRET: PC <- 0x{:x}", sc_core::sc_time_stamp().value(),
                                 this->regs->getPC(), new_pc);
 
+            this->regs->setPC(new_pc);
+
             // update mstatus
             unsigned_T csr_temp;
             csr_temp = this->regs->getCSR(CSR_MSTATUS);
@@ -1551,10 +1553,12 @@ namespace riscv_tlm {
             unsigned_T new_pc = 0;
 
             new_pc = this->regs->getCSR(CSR_SEPC);
-            this->regs->setPC(new_pc);
 
             this->logger->debug("{} ns. PC: 0x{:x}. SRET: PC <- 0x{:x}", sc_core::sc_time_stamp().value(),
-                                this->regs->getPC());
+                                this->regs->getPC(), new_pc);
+
+            this->regs->setPC(new_pc);
+
             return true;
         }
 
