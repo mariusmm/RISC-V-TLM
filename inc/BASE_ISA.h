@@ -389,12 +389,14 @@ namespace riscv_tlm {
         bool Exec_BNE() const {
             unsigned int rs1, rs2;
             unsigned_T val1, val2;
+            unsigned_T old_pc;
 
             rs1 = this->get_rs1();
             rs2 = this->get_rs2();
 
             val1 = this->regs->getValue(rs1);
             val2 = this->regs->getValue(rs2);
+            old_pc = static_cast<unsigned_T>(this->regs->getPC());
 
             if (val1 != val2) {
                 unsigned_T new_pc;
@@ -405,7 +407,7 @@ namespace riscv_tlm {
             }
 
             this->logger->debug("{} ns. PC: 0x{:x}. BNE: x{:d}(0x{:x}) != x{:d}(0x{:x})? -> PC (0x{:x})",
-                                sc_core::sc_time_stamp().value(), this->regs->getPC(),
+                                sc_core::sc_time_stamp().value(), old_pc,
                                 rs1, val1, rs2, val2, this->regs->getPC());
 
             return true;
@@ -414,7 +416,7 @@ namespace riscv_tlm {
         bool Exec_BLT() const {
             unsigned int rs1, rs2;
             signed_T val1, val2;
-            unsigned_T new_pc, old_pc;
+            unsigned_T old_pc;
 
             rs1 = this->get_rs1();
             rs2 = this->get_rs2();
@@ -424,6 +426,7 @@ namespace riscv_tlm {
             old_pc = static_cast<unsigned_T>(this->regs->getPC());
 
             if (val1 < val2) {
+                unsigned_T new_pc;
                 new_pc = static_cast<unsigned_T>(this->regs->getPC() + get_imm_B());
                 this->regs->setPC(new_pc);
             } else {
@@ -440,12 +443,14 @@ namespace riscv_tlm {
         bool Exec_BGE() const {
             unsigned int rs1, rs2;
             signed_T val1, val2;
+            unsigned_T old_pc;
 
             rs1 = this->get_rs1();
             rs2 = this->get_rs2();
 
             val1 = static_cast<signed_T>(this->regs->getValue(rs1));
             val2 = static_cast<signed_T>(this->regs->getValue(rs2));
+            old_pc = static_cast<unsigned_T>(this->regs->getPC());
 
             if (val1 >= val2) {
                 unsigned_T new_pc;
@@ -456,7 +461,7 @@ namespace riscv_tlm {
             }
 
             this->logger->debug("{} ns. PC: 0x{:x}. BGE: x{:d}(0x{:x}) > x{:d}(0x{:x})? -> PC (0x{:x})",
-                                sc_core::sc_time_stamp().value(), this->regs->getPC(),
+                                sc_core::sc_time_stamp().value(), old_pc,
                                 rs1, this->regs->getValue(rs1), rs2, this->regs->getValue(rs2), this->regs->getPC());
 
             return true;
@@ -465,17 +470,17 @@ namespace riscv_tlm {
         bool Exec_BLTU() const {
             unsigned int rs1, rs2;
             unsigned_T val1, val2;
-            unsigned_T new_pc, old_pc;
+            unsigned_T old_pc;
 
             rs1 = this->get_rs1();
             rs2 = this->get_rs2();
 
             val1 = this->regs->getValue(rs1);
             val2 = this->regs->getValue(rs2);
-
             old_pc = static_cast<unsigned_T>(this->regs->getPC());
 
             if (val1 < val2) {
+                unsigned_T new_pc;
                 new_pc = static_cast<unsigned_T>(old_pc + get_imm_B());
                 this->regs->setPC(new_pc);
             } else {
@@ -492,12 +497,14 @@ namespace riscv_tlm {
         bool Exec_BGEU() const {
             unsigned int rs1, rs2;
             unsigned_T val1, val2;
+            unsigned_T old_pc;
 
             rs1 = this->get_rs1();
             rs2 = this->get_rs2();
 
             val1 = this->regs->getValue(rs1);
             val2 = this->regs->getValue(rs2);
+            old_pc = static_cast<unsigned_T>(this->regs->getPC());
 
             if (val1 >= val2) {
                 unsigned_T new_pc;
@@ -508,7 +515,7 @@ namespace riscv_tlm {
             }
 
             this->logger->debug("{} ns. PC: 0x{:x}. BGEU: x{:d}(0x{:x}) > x{:d}(0x{:x}) -> PC (0x{:x})",
-                                sc_core::sc_time_stamp().value(), this->regs->getPC(),
+                                sc_core::sc_time_stamp().value(), old_pc,
                                 rs1, this->regs->getValue(rs1), rs2, this->regs->getValue(rs2), this->regs->getPC());
 
             return true;
@@ -1337,7 +1344,7 @@ namespace riscv_tlm {
 
         bool Exec_EBREAK() {
 
-            this->logger->debug("{} ns. PC: 0x{:x}. EBREAK");
+            this->logger->debug("{} ns. PC: 0x{:x}. EBREAK", sc_core::sc_time_stamp().value(), this->regs->getPC());
             std::cout << std::endl << "EBRAK  Instruction called, dumping information"
                       << std::endl;
             this->regs->dump();

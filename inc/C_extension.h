@@ -1278,11 +1278,11 @@ namespace riscv_tlm {
             return true;
         }
 
-        bool Exec_C_EBREAK() const {
+        bool Exec_C_EBREAK() {
 
-            this->logger->debug("C.EBREAK");
-            std::cout << "\n" << "C.EBRAK  Instruction called, dumping information"
-                      << "\n";
+            this->logger->debug("{} ns. PC: 0x{:x}. C.EBREAK", sc_core::sc_time_stamp().value(), this->regs->getPC());
+            std::cout << std::endl << "C.EBRAK  Instruction called, dumping information"
+                      << std::endl;
             this->regs->dump();
             std::cout << "Simulation time " << sc_core::sc_time_stamp() << "\n";
             this->perf->dump();
