@@ -1351,7 +1351,7 @@ namespace riscv_tlm {
             std::cout << "Simulation time " << sc_core::sc_time_stamp() << "\n";
             this->perf->dump();
 
-            this->RaiseException(Exception_cause::CALL_FROM_M_MODE, this->m_instr);
+            this->RaiseException(Exception_cause::BREAK, this->m_instr);
 
             return false;
         }
@@ -1359,20 +1359,20 @@ namespace riscv_tlm {
         bool Exec_CSRRW() const {
             unsigned int rd, rs1;
             int csr;
-            unsigned_T aux;
+            unsigned_T aux, aux2;
 
             rd = this->get_rd();
             rs1 = this->get_rs1();
             csr = get_csr();
 
-            /* These operations must be atomical */
+            aux = this->regs->getCSR(csr);
+            aux2 = this->regs->getValue(rs1);
+
             if (rd != 0) {
-                aux = this->regs->getCSR(csr);
                 this->regs->setValue(rd, aux);
             }
 
-            aux = this->regs->getValue(rs1);
-            this->regs->setCSR(csr, aux);
+            this->regs->setCSR(csr, aux2);
 
             this->logger->debug("{} ns. PC: 0x{:x}. CSRRW: CSR #{:d} -> x{:d}(0x{:x})",
                                 sc_core::sc_time_stamp().value(),

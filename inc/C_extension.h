@@ -1289,7 +1289,7 @@ namespace riscv_tlm {
 
             this->RaiseException(Exception_cause::BREAK, this->m_instr);
 
-            return true;
+            return false;
         }
 
         bool exec_instruction(Instruction &inst, bool *breakpoint, op_C_Codes code) {
@@ -1388,6 +1388,7 @@ namespace riscv_tlm {
                     Exec_C_EBREAK();
                     std::cout << "C_EBREAK" << std::endl;
                     *breakpoint = true;
+                    PC_not_affected = false;
                     break;
                 case OP_C_LD:
                     Exec_C_LD();
