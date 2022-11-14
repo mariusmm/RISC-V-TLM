@@ -1530,7 +1530,6 @@ namespace riscv_tlm {
             unsigned_T new_pc = 0;
 
             new_pc = this->regs->getCSR(CSR_MEPC);
-            this->regs->setPC(new_pc);
 
             this->logger->debug("{} ns. PC: 0x{:x}. MRET: PC <- 0x{:x}", sc_core::sc_time_stamp().value(),
                                 this->regs->getPC(), new_pc);
