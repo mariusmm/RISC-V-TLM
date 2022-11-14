@@ -583,10 +583,10 @@ namespace riscv_tlm {
             this->perf->dataMemoryRead();
             this->regs->setValue(rd, data);
 
-            this->logger->debug("{} ns. PC: 0x{:x}. LW: x{:d} + x{:d}(0x{:x}) -> x{:d}",
+            this->logger->debug("{} ns. PC: 0x{:x}. LW: x{:d} + x{:d}(0x{:x}) -> x{:d}(0x{:x})",
                                 sc_core::sc_time_stamp().value(),
                                 this->regs->getPC(),
-                                rs1, imm, mem_addr, rd);
+                                rs1, imm, mem_addr, rd, data);
 
             return true;
         }
@@ -607,10 +607,10 @@ namespace riscv_tlm {
             this->perf->dataMemoryRead();
             this->regs->setValue(rd, data);
 
-            this->logger->debug("{} ns. PC: 0x{:x}. LBU: x{:d} + x{:d}(0x{:x}) -> x{:d}",
+            this->logger->debug("{} ns. PC: 0x{:x}. LBU: x{:d} + x{:d}(0x{:x}) -> x{:d}(0x{:x})",
                                 sc_core::sc_time_stamp().value(),
                                 this->regs->getPC(),
-                                rs1, imm, mem_addr, rd);
+                                rs1, imm, mem_addr, rd, data);
 
             return true;
         }
@@ -631,10 +631,10 @@ namespace riscv_tlm {
             this->perf->dataMemoryRead();
             this->regs->setValue(rd, data);
 
-            this->logger->debug("{} ns. PC: 0x{:x}. LHU: x{:d} + x{:d}(0x{:x}) -> x{:d}",
+            this->logger->debug("{} ns. PC: 0x{:x}. LHU: x{:d} + x{:d}(0x{:x}) -> x{:d}(0x{:x})",
                                 sc_core::sc_time_stamp().value(),
                                 this->regs->getPC(),
-                                rs1, imm, mem_addr, rd);
+                                rs1, imm, mem_addr, rd, data);
 
             return true;
         }
@@ -655,10 +655,10 @@ namespace riscv_tlm {
             this->perf->dataMemoryRead();
             this->regs->setValue(rd, data);
 
-            this->logger->debug("{} ns. PC: 0x{:x}. LWU: x{:d} + x{:d}(0x{:x}) -> x{:d}",
+            this->logger->debug("{} ns. PC: 0x{:x}. LWU: x{:d} + x{:d}(0x{:x}) -> x{:d}(0x{:x})",
                                 sc_core::sc_time_stamp().value(),
                                 this->regs->getPC(),
-                                rs1, imm, mem_addr, rd);
+                                rs1, imm, mem_addr, rd, data);
 
             return true;
         }
@@ -785,10 +785,10 @@ namespace riscv_tlm {
             this->mem_intf->writeDataMem(mem_addr, data, 4);
             this->perf->dataMemoryWrite();
 
-            this->logger->debug("{} ns. PC: 0x{:x}. SW: x{:d} -> x{:d} + 0x{:x}(@0x{:x})",
+            this->logger->debug("{} ns. PC: 0x{:x}. SW: x{:d}(0x{:x}) -> x{:d} + 0x{:x}(@0x{:x})",
                                 sc_core::sc_time_stamp().value(),
                                 this->regs->getPC(),
-                                rs2, rs1, imm, mem_addr);
+                                rs2, data, rs1, imm, mem_addr);
 
             return true;
         }
