@@ -115,8 +115,8 @@ Using riscv-arch-test (commit #acf857c68f3e5a476da24cff653b51176ac14dbf)
 + Check remw-01                   ... OK 
 
 #### Privilege
-+ Check ebreak                    ... FAIL 
-+ Check ecall                     ... FAIL 
++ Check ebreak                    ... OK 
++ Check ecall                     ... OK 
 + Check misalign1-jalr-01         ... OK 
 + Check misalign2-jalr-01         ... OK 
 + Check misalign-beq-01           ... OK 
@@ -191,7 +191,7 @@ Using riscv-arch-test (commit #acf857c68f3e5a476da24cff653b51176ac14dbf)
 + Check candi-01                  ... OK 
 + Check cbeqz-01                  ... OK 
 + Check cbnez-01                  ... OK 
-+ Check cebreak-01                ... FAIL 
++ Check cebreak-01                ... OK 
 + Check cj-01                     ... OK 
 + Check cjal-01                   ... OK 
 + Check cjalr-01                  ... OK 
@@ -222,8 +222,8 @@ Using riscv-arch-test (commit #acf857c68f3e5a476da24cff653b51176ac14dbf)
 + Check remu-01                   ... OK 
 
 #### Privilage
-+ Check ebreak                    ... FAIL 
-+ Check ecall                     ... FAIL 
++ Check ebreak                    ... OK 
++ Check ecall                     ... OK 
 + Check misalign1-jalr-01         ... OK 
 + Check misalign2-jalr-01         ... OK 
 + Check misalign-beq-01           ... OK 
