@@ -16,6 +16,7 @@ int main(void) {
   sprintf(msg, "%i", 5);
   print(msg);
 
+  asm volatile ("fence");
   asm volatile ("ecall");
 
   return 0;

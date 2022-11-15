@@ -42,7 +42,7 @@ int main(void) {
   printf("x2 = %d\n", x2);
   printf("x3 = %d\n", x3);
 
-
+  asm volatile ("fence");
   asm volatile ("ecall");
 
   return 0;

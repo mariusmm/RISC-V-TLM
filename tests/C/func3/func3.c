@@ -37,6 +37,7 @@ int main(void) {
 
   memcpy(aux, aux2, 5);
 
+  asm volatile ("fence");
   asm volatile ("ecall");
 
   return 0;

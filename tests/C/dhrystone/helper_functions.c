@@ -23,6 +23,14 @@ int _isatty_r(struct _reent *ptr, int fd) {
     return 0;
 }
 
+int _getpid(void) {
+    return 0;
+}
+
+void _kill(int pid) {
+
+}
+
 int _write(int file, const char *ptr, int len) {
   int x;
 

@@ -16,7 +16,7 @@
  */
 #include "stdio.h"
 #include <stdlib.h>
-
+#include <stdint.h>
 /*
  ****************************************************************************
  *
@@ -434,8 +434,8 @@ typedef struct record
 #ifdef CONSTANT
 #define NUM_RUNS (CONSTANT)
 #else
-//#define NUM_RUNS (5000000)
 #define NUM_RUNS (10000)
+//#define NUM_RUNS (10)
 #endif
 #define DLX_FREQ 1  /* in MHz */
 #define PROC_6 0
@@ -444,7 +444,10 @@ void Ireport ( int c ) {
   // report(c);
 }
 
+#include <string.h>
+#if 0
 #ifndef strcpy
+#warning using custom strcpy
 char *strcpy (char *dst0, const char *src0)
 {
   char *s = dst0;
@@ -456,6 +459,7 @@ char *strcpy (char *dst0, const char *src0)
 #endif
 
 #ifndef strcmp
+#warning using custom strcmp
 int strcmp (const char *s1, const char *s2)
 {
   while (*s1 && *s2 && *s1 == *s2) {
@@ -464,6 +468,7 @@ int strcmp (const char *s1, const char *s2)
   }
   return (*(unsigned char *) s1) - (*(unsigned char *) s2);
 }
+#endif
 #endif
 
 #define DETECTNULL(X) (((X) - 0x01010101) & ~(X) & 0x80808080)
@@ -563,7 +568,7 @@ int main (int argc, char *argv[])
   Rec_Type		x, y;
 
   /* Initializations */
-
+  
   Next_Ptr_Glob = (Rec_Pointer) &x;
   Ptr_Glob = (Rec_Pointer) &y;
 
@@ -582,14 +587,13 @@ int main (int argc, char *argv[])
         /* overflow may occur for this array element.                   */
 
 /* Initalize Data and Instruction Cache */
-
-
-  printf (" %c", '\n');
-  printf ("Dhrystone Benchmark, Version 2.1 (Language: C)%c", '\n');
+  //printf (" %c", '\n');
+  printf("\n");
+  printf ("Dhrystone Benchmark, Version 2.1 (Language: C)\n");
   printf (" %c", '\n');
   if (Reg)
   {
-    printf ("Program compiled with 'register' attribute%c", '\n');
+    printf ("Program compiled with 'register' attribute\n");
     printf (" %c", '\n');
   }
   else
@@ -756,7 +760,7 @@ int main (int argc, char *argv[])
 
  Stop_Timer();
 
-  User_Time = End_Time - Begin_Time;
+  User_Time = (End_Time - Begin_Time) / 1000;
  /* microseconds */
 
   printf("Begin Time = %d\n",Begin_Time);
@@ -799,7 +803,8 @@ int main (int argc, char *argv[])
   void exit(int);
   exit(0);
 #endif
-  asm volatile ("EBREAK");
+  asm volatile ("FENCE");
+  asm volatile ("ECALL");
 
   return 0;
 }

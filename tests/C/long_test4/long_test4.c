@@ -32,8 +32,7 @@ int main(void) {
   }
   printf("OK!\n");	
 
-
-
+  asm volatile ("fence");
   asm volatile ("ecall");
 
   return 0;

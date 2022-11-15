@@ -27,6 +27,7 @@ int main(void) {
     print("ERROR\n");
   }
 
+  asm volatile ("fence");
   asm volatile ("ecall");
 
 }

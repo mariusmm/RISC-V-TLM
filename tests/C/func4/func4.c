@@ -46,6 +46,8 @@ int main(void) {
   }
 
   print("OK!\n");	
+  
+  asm volatile ("fence");
   asm volatile ("ecall");
 
   return 0;

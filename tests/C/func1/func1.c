@@ -22,6 +22,6 @@ int main(void) {
     TRACE = 'R';
     TRACE = '\n';
   }
-
+  asm volatile ("fence");
   asm volatile ("ecall");
 }

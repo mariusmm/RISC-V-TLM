@@ -25,7 +25,7 @@ int main(void) {
   printf("buffC: %p\n", (void *) buffC);
   
   if ( (buffA == NULL ) || (buffB == NULL) ) {
-	  printf("Error malloc\n");
+     printf("Error malloc\n");
   }
 
   for(int i=0;i<BUFFER_SIZE;i++) {
@@ -56,7 +56,8 @@ int main(void) {
   if (test_ok == true) {
     printf("Test were OK\n");
   }
-  
+
+  asm volatile ("fence");  
   asm volatile ("ecall");
 
   return 0;

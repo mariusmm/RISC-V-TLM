@@ -11,15 +11,6 @@ void print(char *msg) {
   }
 }
 
-int _write(int file, const char *ptr, int len) {
-  int x;
-
-  for (x = 0; x < len; x++) {
-    TRACE =  *ptr++;
-  }
-
-  return (len);
-}
 
 int func1(int a, int* b) {
   return a - (*b);
@@ -31,6 +22,8 @@ int main(void) {
   printf("Using printf!\n");
 
   print("Using custom print!\n");	
+
+  asm volatile ("fence");
   asm volatile ("ecall");
 
   return 0;
