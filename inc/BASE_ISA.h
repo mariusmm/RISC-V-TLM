@@ -1313,6 +1313,15 @@ namespace riscv_tlm {
         bool Exec_FENCE() const {
             this->logger->debug("{} ns. PC: 0x{:x}. FENCE", sc_core::sc_time_stamp().value(), this->regs->getPC());
 
+            // Check if next instruction is a FENCE, if so, stop simulation
+            uint32_t ant_pc = this->regs->getPC();
+            ant_pc = ant_pc + 4;
+            uint32_t ant_inst = this->mem_intf->readDataMem(ant_pc, 4);
+
+            if (ant_inst == 0x00000073) {
+                sc_core::sc_stop();
+            }
+
             return true;
         }
 
@@ -1326,20 +1335,9 @@ namespace riscv_tlm {
             std::cout << "Simulation time " << sc_core::sc_time_stamp() << "\n";
             this->perf->dump();
 
-#if 0
-            std::uint32_t gp_value = this->regs->getValue(Registers::gp);
-            if (gp_value == 1) {
-                std::cout << "GP value is 1, test result is OK" << "\n";
-            } else {
-                std::cout << "GP value is " << gp_value << "\n";
-            }
-
-            sc_core::sc_stop();
-#else
             this->RaiseException(Exception_cause::CALL_FROM_M_MODE, this->m_instr);
-            sc_core::sc_stop();
-#endif
-            return true;
+
+            return false;
         }
 
         bool Exec_EBREAK() {
@@ -1715,7 +1713,7 @@ namespace riscv_tlm {
                     Exec_FENCE();
                     break;
                 case OP_ECALL:
-                    Exec_ECALL();
+                    PC_not_affected = Exec_ECALL();
                     *breakpoint = true;
                     std::cout << "ECALL" << std::endl;
                     break;

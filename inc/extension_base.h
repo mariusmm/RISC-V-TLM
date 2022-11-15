@@ -65,8 +65,10 @@ namespace riscv_tlm {
 
             if (cause == Exception_cause::ILLEGAL_INSTRUCTION) {
                 regs->setCSR(CSR_MTVAL, inst);
-            } else {
+            } else if (cause == Exception_cause::BREAK) {
                 regs->setCSR(CSR_MTVAL, current_pc);
+            } else {
+                regs->setCSR(CSR_MTVAL, 0);
             }
 
             regs->setCSR(CSR_MCAUSE, static_cast<uint32_t>(cause));
