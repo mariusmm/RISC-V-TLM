@@ -94,11 +94,11 @@ namespace riscv_tlm::peripherals {
 
         socket.register_b_transport(this, &Trace::b_transport);
 
-        xtermSetup();
+        //xtermSetup();
     }
 
     Trace::~Trace() {
-        xtermKill();
+        //xtermKill();
     }
 
     void Trace::b_transport(tlm::tlm_generic_payload &trans,
@@ -107,8 +107,10 @@ namespace riscv_tlm::peripherals {
         unsigned char *ptr = trans.get_data_ptr();
         delay = sc_core::SC_ZERO_TIME;
 
-        ssize_t a = write(ptSlave, ptr, 1);
-        (void) a;
+        std::cout << ptr[0];
+
+        //ssize_t a = write(ptSlave, ptr, 1);
+        //(void) a;
 
         trans.set_response_status(tlm::TLM_OK_RESPONSE);
     }

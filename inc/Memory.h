@@ -17,10 +17,12 @@
 #include "systemc"
 
 #include "tlm.h"
-#include "tlm_utils/simple_target_socket.h"
+//#include "tlm_utils/tlm_target_socket.h"
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
+
+#include "pysc.h"
 
 namespace riscv_tlm {
 /**
@@ -29,7 +31,7 @@ namespace riscv_tlm {
     class Memory : sc_core::sc_module {
     public:
         // TLM-2 socket, defaults to 32-bits wide, base protocol
-        tlm_utils::simple_target_socket<Memory> socket;
+        tlm::tlm_target_socket<> socket;
 
         /* 16 MBytes */
         enum {
@@ -43,33 +45,24 @@ namespace riscv_tlm {
 
         ~Memory() override;
 
+        void trace(sc_core::sc_trace_file *tf);
+
         /**
          * @brief Returns Program Counter read from hexfile
          * @return Initial PC
          */
         virtual std::uint32_t getPCfromHEX();
-
-        // TLM-2 blocking transport method
-        virtual void b_transport(tlm::tlm_generic_payload &trans,
-                                 sc_core::sc_time &delay);
-
-        // *********************************************
-        // TLM-2 forward DMI method
-        // *********************************************
-        virtual bool get_direct_mem_ptr(tlm::tlm_generic_payload &trans,
-                                        tlm::tlm_dmi &dmi_data);
-
         // *********************************************
         // TLM-2 debug transport method
         // *********************************************
         virtual unsigned int transport_dbg(tlm::tlm_generic_payload &trans);
-
+    
     private:
-
+        py_module *py;
         /**
          * @brief Memory array in bytes
          */
-        std::array<uint8_t, Memory::SIZE> mem{};
+        //std::array<uint8_t, Memory::SIZE> mem{};
 
         /**
          * @brief Log class
@@ -86,11 +79,6 @@ namespace riscv_tlm {
          */
         bool dmi_allowed;
 
-        /**
-         * @brief Read Intel hex file
-         * @param filename file name to read
-         */
-        void readHexFile(const std::string &filename);
-    };
+   };
 }
 #endif /* __MEMORY_H__ */

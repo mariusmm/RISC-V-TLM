@@ -44,6 +44,8 @@ namespace riscv_tlm {
         /* Destructors */
         ~CPU() override = default;
 
+        void trace(sc_core::sc_trace_file *tf);
+
         /**
          * @brief Perform one instruction step
          * @return Breackpoint found (TBD, always true)
@@ -97,6 +99,7 @@ namespace riscv_tlm {
 
     public:
         MemoryInterface *mem_intf;
+        int pc;
     protected:
         Performance *perf;
         std::shared_ptr<spdlog::logger> logger;

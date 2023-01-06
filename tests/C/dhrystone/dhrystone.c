@@ -434,8 +434,8 @@ typedef struct record
 #ifdef CONSTANT
 #define NUM_RUNS (CONSTANT)
 #else
-#define NUM_RUNS (10000)
-//#define NUM_RUNS (10)
+//#define NUM_RUNS (10000)
+#define NUM_RUNS (10)
 #endif
 #define DLX_FREQ 1  /* in MHz */
 #define PROC_6 0
@@ -591,6 +591,7 @@ int main (int argc, char *argv[])
   printf("\n");
   printf ("Dhrystone Benchmark, Version 2.1 (Language: C)\n");
   printf (" %c", '\n');
+
   if (Reg)
   {
     printf ("Program compiled with 'register' attribute\n");

@@ -111,6 +111,7 @@ namespace riscv_tlm {
         } else {
             sc_core::sc_time delay = sc_core::SC_ZERO_TIME;
             tlm::tlm_dmi dmi_data;
+            pc = register_bank->getPC();
             trans.set_address(register_bank->getPC());
             instr_bus->b_transport(trans, delay);
 

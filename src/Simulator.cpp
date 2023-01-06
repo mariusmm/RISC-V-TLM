@@ -32,6 +32,8 @@ uint32_t dump_addr_end = 0;
 
 riscv_tlm::cpu_types_t cpu_type_opt = riscv_tlm::RV32;
 
+sc_core::sc_trace_file *tf;
+
 /**
  * @class Simulator
  * This class instantiates all necessary modules, connects its ports and starts
@@ -47,11 +49,14 @@ public:
     riscv_tlm::peripherals::Trace *trace;
     riscv_tlm::peripherals::Timer *timer;
 
+
 	explicit Simulator(sc_core::sc_module_name const &name, riscv_tlm::cpu_types_t cpu_type_m): sc_module(name) {
 		std::uint32_t start_PC;
 
+    
 		MainMemory = new riscv_tlm::Memory("Main_Memory", filename);
-		start_PC = MainMemory->getPCfromHEX();
+        MainMemory->trace(tf);
+ 		start_PC = 0x100c4;// MainMemory->getPCfromHEX();
 
         cpu_type = cpu_type_m;
 
@@ -60,6 +65,8 @@ public:
         } else {
             cpu = new riscv_tlm::CPURV64("cpu", start_PC, debug_session);
         }
+
+        cpu->trace(tf);
 
 		Bus = new riscv_tlm::BusCtrl("BusCtrl");
 		trace = new riscv_tlm::peripherals::Trace("Trace");
@@ -128,12 +135,13 @@ private:
         std::ofstream signature_file;
         signature_file.open(local_name);
 
-        for(unsigned int i = dump_addr_st; i < dump_addr_end; i = i+4) {
+        /*for(unsigned int i = dump_addr_st; i < dump_addr_end; i = i+4) {
             //trans.set_address(dump_addr + (i*4));
             trans.set_address(i);
             MainMemory->b_transport(trans, delay);
             signature_file << std::hex << std::setfill('0') << std::setw(8) << data[0] <<  "\n";
-        }
+        }*/
+        sc_core::sc_abort(); // Not implemented
 
         signature_file.close();
        }
@@ -230,15 +238,20 @@ void process_arguments(int argc, char *argv[]) {
 	std::cout << "file: " << filename << '\n';
 }
 
-int sc_main(int argc, char *argv[]) {
+bool rerun = false;
 
-  Performance *perf = Performance::getInstance();
+int sc_main(int argc, char *argv[]) {
+    tf = sc_core::sc_create_vcd_trace_file("trace");
+
+    Performance *perf = Performance::getInstance();
 
 	/* Capture Ctrl+C and finish the simulation */
 	signal(SIGINT, intHandler);
 
 	/* SystemC time resolution set to 1 ns*/
-	sc_core::sc_set_time_resolution(1, sc_core::SC_NS);
+    //if(!rerun){
+    sc_core::sc_set_time_resolution(1, sc_core::SC_NS);
+    
 
 	/* Parse and process program arguments. -f is mandatory */
 	process_arguments(argc, argv);
@@ -253,6 +266,7 @@ int sc_main(int argc, char *argv[]) {
 	top = new Simulator("top", cpu_type_opt);
 
 	auto start = std::chrono::steady_clock::now();
+	//sc_core::sc_elab_and_sim(0, NULL);
 	sc_core::sc_start();
 	auto end = std::chrono::steady_clock::now();
 
@@ -262,14 +276,20 @@ int sc_main(int argc, char *argv[]) {
 	std::cout << "Total elapsed time: " << elapsed_seconds.count() << "s" << std::endl;
 	std::cout << "Simulated " << int(std::round(instructions)) << " instr/sec" << std::endl;
 
-	if (!mem_dump)
-    {
-        std::cout << "Press Enter to finish" << std::endl;
-        std::cin.ignore();
-    }
+	//if (!mem_dump)
+    //{
+    //    std::cout << "Press Enter to finish" << std::endl;
+    //    std::cin.ignore();
+    //}
+
+    sc_core::sc_close_vcd_trace_file(tf);
 
 	// call all destructors, clean exit.
 	delete top;
 
+    rerun = true;
 	return 0;
 }
+
+#include "pysc.h"
+PYSC_SIM
