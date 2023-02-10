@@ -58,7 +58,7 @@ namespace riscv_tlm {
         virtual unsigned int transport_dbg(tlm::tlm_generic_payload &trans);
     
     private:
-        py_module *py;
+        py_module<Memory> py;
         /**
          * @brief Memory array in bytes
          */
