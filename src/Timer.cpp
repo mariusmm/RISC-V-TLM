@@ -7,6 +7,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "Timer.h"
+#define unlikely(x) __builtin_expect(!!(x), 0)
+
+using namespace sc_core;
 
 namespace riscv_tlm::peripherals {
 
@@ -69,8 +72,12 @@ namespace riscv_tlm::peripherals {
 
                     std::uint64_t notify_time;
                     // notify needs relative time, mtimecmp works in absolute time
-                    notify_time = m_mtimecmp - m_mtime;
-
+                    
+                    notify_time = m_mtimecmp.to_ulong() - m_mtime.to_ulong();
+                    // FIXed m_mtimecmp should be .gt. m_mtime
+                   if (  unlikely(  m_mtimecmp.to_ulong() < m_mtime.to_ulong() ) ) {
+                            m_mtimecmp.range(31, 0) = (0xFFFFFFFF&notify_time)-1;
+                    }
                     timer_event.notify(sc_core::sc_time(notify_time, sc_core::SC_NS));
                     break;
                 default:
