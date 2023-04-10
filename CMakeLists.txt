@@ -14,7 +14,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(CMAKE_PREFIX_PATH ../systemc-2.3.3/build/ ../spdlog/install/)
+set(CMAKE_PREFIX_PATH $ENV{BOOST_ROOT};$ENV{SYSTEMC_HOME};$ENV{SPDLOG_HOME})
 add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 
 add_compile_options(-O3 -g -Wall -Wextra -Wunused-function -Wpedantic)
@@ -26,9 +26,11 @@ find_package(SystemCLanguage CONFIG REQUIRED)
 set (CMAKE_CXX_STANDARD ${SystemC_CXX_STANDARD})
 
 find_package(spdlog CONFIG REQUIRED)
+find_package(Boost REQUIRED)
 add_executable(RISCV_TLM ${SRC} )
 target_link_libraries(RISCV_TLM SystemC::systemc)
 target_link_libraries(RISCV_TLM spdlog::spdlog)
+target_link_libraries(RISCV_TLM Boost::boost)
 
 option(BUILD_DOC "Build documentation" ON)
 find_package(Doxygen)
