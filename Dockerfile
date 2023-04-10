@@ -12,7 +12,7 @@ RUN apt-get update -q && apt-get install -qy --no-install-recommends \
       wget \
       g++-8 \
       xterm \
-      libboost-all-dev libspdlog-dev \
+      libboost-all-dev \
       && apt-get clean \
       && rm -rf /var/lib/apt/lists/*
  
@@ -32,24 +32,22 @@ RUN mkdir -p /root/.ssh
 RUN ssh-keyscan github.com > /root/.ssh/known_hosts
 RUN git config --global http.sslBackend "openssl"
 
+# Build Spdlog and RISC-V-TLM
 RUN cd /usr/src/riscv64 \
+ && chmod -R a+rw . \
  && git config --global http.sslVerify false \
- && git clone https://github.com/gabime/spdlog.git \
+ && git clone --recurse-submodules https://github.com/mariusmm/RISC-V-TLM.git \
+ && cd RISC-V-TLM \
  && cd spdlog \
  && cmake -H. -B_builds -DCMAKE_BUILD_TYPE=Release \
  && cmake --build _builds --config Release \
  && cmake -H. -B_builds -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release \
- && cmake --build _builds --target install 
-
-RUN cd /usr/src/riscv64 \
- && chmod -R a+rw . \
- && git config --global http.sslVerify false \
- && git clone https://github.com/mariusmm/RISC-V-TLM.git \
- && cd RISC-V-TLM \
+ && cmake --build _builds --target install \
+ && cd .. \
  && mkdir build \
  && cd build \ 
  && chmod a+rw . \
- && cmake .. \
+ && SPDLOG_HOME=$PWD/../spdlog/install cmake -DCMAKE_BUILD_TYPE=Release .. \
  && make
 
 WORKDIR /usr/src/riscv64
