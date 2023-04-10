@@ -82,7 +82,7 @@ namespace riscv_tlm {
         }
 
         bool NOP() {
-            logger->debug("{} ns. PC: 0x{:x}. NOP! new PC 0x{:x} ", sc_core::sc_time_stamp().value(), regs->getPC(), regs->getCSR(CSR_MTVEC));
+            logger->debug("{} ns. PC: 0x{:x}. NOP! new PC 0x{:x} ", sc_core::sc_time_stamp().value(), regs->getPC(), regs->getPC() + 4);
             logger->flush();
             sc_core::sc_stop();
             return true;
