@@ -47,7 +47,7 @@ RUN cd /usr/src/riscv64 \
  && mkdir build \
  && cd build \ 
  && chmod a+rw . \
- && SPDLOG_HOME=$PWD/../spdlog/install cmake .. \
+ && SPDLOG_HOME=$PWD/../spdlog/install cmake -DCMAKE_BUILD_TYPE=Release .. \
  && make
 
 WORKDIR /usr/src/riscv64
