@@ -110,36 +110,59 @@ Task to do:
 * [ ] Add [Trace v2.0](https://github.com/riscv-non-isa/riscv-trace-spec) support 
 
 ## Compile
-In order to compile the project you need SystemC-2.3.2 installed in your system.
-Just change SYSTEMC path in Makefile.
+In order to compile the project you need SystemC-2.3.3/4 installed in your system, and Boost Library Headers.
 
-```
-$ make
+```sh
+$ # Following Environment are needed to configure the project
+$ export SYSTEMC_HOME=<Path to SystemC Library Installation>
+# Check the SystemC Installation path for this setting
+$ export LD_LIBRARY_PATH=$SYSTEMC_HOME/lib-linux64
+$ # Optional BOOST_ROOT if not specified one should have Boost Header Package Installed
+$ export BOOST_ROOT=<Path to extracted boost library sources>
+$ # Clone the repo with submodules initialized
+$ git clone --recurse-submodules https://github.com/mariusmm/RISC-V-TLM.git
+
+$ # If already cloned one need to run the following command to initialize the git submodule from within the RISC-V-TLM cloned directory
+$ git submodule update --init --recursive
+$ # Configure, Build and deploy spdlog dependency
+$ cd spdlog
+$ # Configure spdlog submodule
+$ cmake -H. -B_builds -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release
+$ # Build spdlog
+$ cmake --build _builds --config Release
+$ # Install spdlog
+$ cmake --build _builds --target install
+$ cd ..
+$ # Setup SPDLOG_HOME to point to spdlog dependency installation path for the built library, here PWD is the RISC-V-TLM project cloned directory
+$ export SPDLOG_HOME=$PWD/spdlog/install
 ```
 
 Then, you need to modifiy your LD_LIBRARY_PATH environtment variable to add
 path systemc library. In my case:
-```
+```sh
 $ export LD_LIBRARY_PATH=/home/marius/Work/RiscV/code/systemc-2.3.2/lib-linux64
 ```
 
 And then you can execute the simulator:
-```
+```sh
 $ ./RISCV_TLM asm/BasicLoop.hex
 ```
 
 ### Using cmake
 
 It is possible to use cmake:
-```
-mkdir build
-cd build
-cmake ..
-make
+```sh
+$ # Create and cd into the build directory for RISC-V-TLM project
+$ mkdir build
+$ cd build
+$ # Configure the project using CMake
+$ cmake -DCMAKE_BUILD_TYPE=Release ..
+$ # For additional configuration one can refer the CMake documentation on additional configuration options.
+$ make
 ```
 
 note that SystemC must be compiled with cmake:
-```
+```sh
 cd <systemc directory>
 mkdir build
 cd build
@@ -158,7 +181,7 @@ make
 
 ## Cross-compiler
 It is possible to use gcc as risc-v compiler. Follow the instructions (from https://github.com/riscv/riscv-gnu-toolchain):
-~~~
+~~~sh
 $ git clone --recursive https://github.com/riscv/riscv-gnu-toolchain
 $ cd riscv-gnu-toolchain
 $ ./configure --prefix=/opt/riscv --with-arch=rv32gc --with-abi=ilp32
@@ -196,7 +219,7 @@ There is a Docker container available with the latest release at https://hub.doc
 This container has RISCV-TLM already build at /usr/src/riscv64/RISCV-TLM directory.
 
 ### How to use Docker
-```
+```sh
 $ docker pull mariusmm/riscv-tlm
 $ docker run -v <path_to_RISCV-V-TLM>/:/tmp -u $UID -e DISPLAY=$DISPLAY --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"  -it mariusmm/riscv-tlm /bin/bash
 
@@ -205,7 +228,7 @@ $ ./RISC-V-TLM/build/RISCV_TLM /tmp/<your_hex_file>
 
 or you can call binary inside docker image directly:
 
-```
+```sh
 $ docker run -v <path_to_RISCV-V-TLM>/:/tmp -u $UID -e DISPLAY=$DISPLAY --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"  -it mariusmm/riscv-tlm /usr/src/riscv64/RISC-V-TLM/RISCV_TLM /tmp/<your_hex_file>
 ```
 
@@ -242,7 +265,7 @@ See [Test page](Test) for more information.
 In the asm directory there are some basic assembly examples.
 
 I "compile" one file with the follwing command:
-```
+```sh
 $ cd asm
 $ riscv32-unknown-elf-as  EternalLoop.asm -o EternalLoop.o
 $ riscv32-unknown-elf-ld EternalLoop.o -o EternalLoop.elf
@@ -255,7 +278,7 @@ This example needs that you hit Ctr+C to stop execution.
 ### C code
 The C directory contains simple examples in C. Each directory contains
 an example, to compile it just:
-```
+```sh
 $ make
 ```
 and then execute the .hex file like the example before.
