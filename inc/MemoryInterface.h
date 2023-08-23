@@ -16,6 +16,7 @@
 #include "tlm_utils/tlm_quantumkeeper.h"
 
 #include "memory.h"
+#include <cstdint>
 
 namespace riscv_tlm {
 
