@@ -267,12 +267,12 @@ In the asm directory there are some basic assembly examples.
 
 I "compile" one file with the follwing command:
 ```sh
-$ cd asm
-$ riscv32-unknown-elf-as  EternalLoop.asm -o EternalLoop.o
-$ riscv32-unknown-elf-ld EternalLoop.o -o EternalLoop.elf
-$ riscv32-unknown-elf-objcopy -O ihex EternalLoop.elf EternalLoop.hex
-$ cd ..
-$ ./RISCV_SCTLM asm/EternalLoop.hex
+cd asm
+riscv32-unknown-elf-as  EternalLoop.asm -o EternalLoop.o
+riscv32-unknown-elf-ld EternalLoop.o -o EternalLoop.elf
+riscv32-unknown-elf-objcopy -O ihex EternalLoop.elf EternalLoop.hex
+cd ..
+./RISCV_SCTLM asm/EternalLoop.hex
 ```
 This example needs that you hit Ctr+C to stop execution.
 
@@ -280,7 +280,7 @@ This example needs that you hit Ctr+C to stop execution.
 The C directory contains simple examples in C. Each directory contains
 an example, to compile it just:
 ```sh
-$ make
+make
 ```
 and then execute the .hex file like the example before.
 
