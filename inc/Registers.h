@@ -34,6 +34,10 @@ namespace riscv_tlm {
 #define CSR_MIMPID (0xF13)
 #define CSR_MHARTID (0xF14)
 
+#define CSR_USTATUS (0x000)
+#define CSR_SSTATUS (0x100)
+#define CSR_SEDELEG (0x102)
+
 #define CSR_MSTATUS (0x300)
 #define CSR_MISA (0x301)
 #define CSR_MEDELEG (0x302)

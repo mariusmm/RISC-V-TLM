@@ -9,6 +9,7 @@
 #ifndef INC_MEMORYINTERFACE_H_
 #define INC_MEMORYINTERFACE_H_
 
+#include <cstdint>
 #include "systemc"
 
 #include "tlm.h"

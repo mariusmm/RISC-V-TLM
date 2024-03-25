@@ -31,6 +31,13 @@ namespace riscv_tlm {
         CALL_FROM_M_MODE = 11,
     } Exception_cause;
 
+    typedef enum {
+        User = 0,
+        Supervisor = 1,
+        Reserved = 2,
+        Machine = 3,
+    } PrivilegeMode;
+
     template<typename T>
     class extension_base {
 
@@ -65,7 +72,7 @@ namespace riscv_tlm {
 
             if (cause == Exception_cause::ILLEGAL_INSTRUCTION) {
                 regs->setCSR(CSR_MTVAL, inst);
-            } else if (cause == Exception_cause::BREAK) {
+            } else if ( (cause == Exception_cause::BREAK) || (cause == Exception_cause::LOAD_ADDR_MISALIGN) ) {
                 regs->setCSR(CSR_MTVAL, current_pc);
             } else {
                 regs->setCSR(CSR_MTVAL, 0);
@@ -73,12 +80,10 @@ namespace riscv_tlm {
 
             regs->setCSR(CSR_MCAUSE, static_cast<uint32_t>(cause));
             regs->setCSR(CSR_MSTATUS, m_cause);
-
             regs->setPC(new_pc);
 
             logger->debug("{} ns. PC: 0x{:x}. Exception! new PC 0x{:x} ", sc_core::sc_time_stamp().value(),
-                          regs->getPC(),
-                          new_pc);
+                          current_pc, new_pc);
         }
 
         bool NOP() {
@@ -137,6 +142,8 @@ namespace riscv_tlm {
         Performance *perf;
         MemoryInterface *mem_intf;
         std::shared_ptr<spdlog::logger> logger;
+
+        PrivilegeMode privilege_mode = PrivilegeMode::Supervisor;
     };
 }
 

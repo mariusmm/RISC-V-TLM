@@ -71,7 +71,8 @@ namespace riscv_tlm::peripherals {
                     // notify needs relative time, mtimecmp works in absolute time
                     notify_time = m_mtimecmp - m_mtime;
 
-                    timer_event.notify(sc_core::sc_time(notify_time, sc_core::SC_NS));
+                    //timer_event.notify(sc_core::sc_time(notify_time, sc_core::SC_NS));
+                    timer_event.notify(sc_core::sc_time::from_value(notify_time));
                     break;
                 default:
                     trans.set_response_status(tlm::TLM_ADDRESS_ERROR_RESPONSE);

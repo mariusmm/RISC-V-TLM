@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <cstdint>
 
 #define SC_INCLUDE_DYNAMIC_PROCESSES
 

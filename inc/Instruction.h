@@ -9,6 +9,7 @@
 #ifndef INSTRUCTION__H
 #define INSTRUCTION__H
 
+#include <cstdint>
 #include "systemc"
 #include "extension_base.h"
 
