@@ -12,6 +12,7 @@
 #include <cstdint>
 #include "systemc"
 #include "extension_base.h"
+#include <cstdint>
 
 namespace riscv_tlm {
 

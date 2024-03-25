@@ -7,6 +7,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "Timer.h"
+#include <cstdint>
 
 namespace riscv_tlm::peripherals {
 

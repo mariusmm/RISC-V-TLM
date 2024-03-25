@@ -110,36 +110,59 @@ Task to do:
 * [ ] Add [Trace v2.0](https://github.com/riscv-non-isa/riscv-trace-spec) support 
 
 ## Compile
-In order to compile the project you need SystemC-2.3.2 installed in your system.
-Just change SYSTEMC path in Makefile.
+In order to compile the project you need SystemC-2.3.3/4 installed in your system, and Boost Library Headers.
 
-```
-$ make
+```sh
+# Following Environment are needed to configure the project
+export SYSTEMC_HOME=<Path to SystemC Library Installation>
+# Check the SystemC Installation path for this setting
+export LD_LIBRARY_PATH=$SYSTEMC_HOME/lib-linux64
+# Optional BOOST_ROOT if not specified one should have Boost Header Package Installed
+export BOOST_ROOT=<Path to extracted boost library sources>
+# Clone the repo with submodules initialized
+git clone --recurse-submodules https://github.com/mariusmm/RISC-V-TLM.git
+
+# If already cloned one need to run the following command to initialize the git submodule from within the RISC-V-TLM cloned directory
+git submodule update --init --recursive
+# Configure, Build and deploy spdlog dependency
+cd spdlog
+# Configure spdlog submodule
+cmake -H. -B_builds -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release
+# Build spdlog
+cmake --build _builds --config Release
+# Install spdlog
+cmake --build _builds --target install
+cd ..
+# Setup SPDLOG_HOME to point to spdlog dependency installation path for the built library, here PWD is the RISC-V-TLM project cloned directory
+export SPDLOG_HOME=$PWD/spdlog/install
 ```
 
 Then, you need to modifiy your LD_LIBRARY_PATH environtment variable to add
 path systemc library. In my case:
-```
-$ export LD_LIBRARY_PATH=/home/marius/Work/RiscV/code/systemc-2.3.2/lib-linux64
+```sh
+export LD_LIBRARY_PATH=/home/marius/Work/RiscV/code/systemc-2.3.2/lib-linux64
 ```
 
 And then you can execute the simulator:
-```
-$ ./RISCV_TLM asm/BasicLoop.hex
+```sh
+./RISCV_TLM asm/BasicLoop.hex
 ```
 
 ### Using cmake
 
 It is possible to use cmake:
-```
+```sh
+# Create and cd into the build directory for RISC-V-TLM project
 mkdir build
 cd build
-cmake ..
+# Configure the project using CMake
+cmake -DCMAKE_BUILD_TYPE=Release ..
+# For additional configuration one can refer the CMake documentation on additional configuration options.
 make
 ```
 
 note that SystemC must be compiled with cmake:
-```
+```sh
 cd <systemc directory>
 mkdir build
 cd build
@@ -158,15 +181,15 @@ make
 
 ## Cross-compiler
 It is possible to use gcc as risc-v compiler. Follow the instructions (from https://github.com/riscv/riscv-gnu-toolchain):
-~~~
-$ git clone --recursive https://github.com/riscv/riscv-gnu-toolchain
-$ cd riscv-gnu-toolchain
-$ ./configure --prefix=/opt/riscv --with-arch=rv32gc --with-abi=ilp32
-$ make
-...
-wait for long time ...
-...
-$ export PATH=$PATH:/opt/riscv/bin
+~~~sh
+git clone --recursive https://github.com/riscv/riscv-gnu-toolchain
+cd riscv-gnu-toolchain
+./configure --prefix=/opt/riscv --with-arch=rv32gc --with-abi=ilp32
+make
+# ...
+# wait for long time ...
+# ...
+export PATH=$PATH:/opt/riscv/bin
 ~~~
 
 In test/C/long_test/ example there is a Makefile that compiles a project with any .c files and links them against new-lib nano. 
@@ -196,42 +219,43 @@ There is a Docker container available with the latest release at https://hub.doc
 This container has RISCV-TLM already build at /usr/src/riscv64/RISCV-TLM directory.
 
 ### How to use Docker
-```
-$ docker pull mariusmm/riscv-tlm
-$ docker run -v <path_to_RISCV-V-TLM>/:/tmp -u $UID -e DISPLAY=$DISPLAY --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"  -it mariusmm/riscv-tlm /bin/bash
+```sh
+docker pull mariusmm/riscv-tlm
+docker run -v <path_to_RISCV-V-TLM>/:/tmp -u $UID -e DISPLAY=$DISPLAY --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"  -it mariusmm/riscv-tlm /bin/bash
 
-$ ./RISC-V-TLM/build/RISCV_TLM /tmp/<your_hex_file>
+./RISC-V-TLM/build/RISCV_TLM /tmp/<your_hex_file>
 ```
 
 or you can call binary inside docker image directly:
 
-```
-$ docker run -v <path_to_RISCV-V-TLM>/:/tmp -u $UID -e DISPLAY=$DISPLAY --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"  -it mariusmm/riscv-tlm /usr/src/riscv64/RISC-V-TLM/RISCV_TLM /tmp/<your_hex_file>
+```sh
+docker run -v <path_to_RISCV-V-TLM>/:/tmp -u $UID -e DISPLAY=$DISPLAY --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"  -it mariusmm/riscv-tlm /usr/src/riscv64/RISC-V-TLM/RISCV_TLM /tmp/<your_hex_file>
 ```
 
 I'm using docker image [zmors/riscv_gcc](https://hub.docker.com/r/zmors/riscv_gcc) to have a cross-compiler,  I'm using both docker images this way:
 
-```
-console1:
-$ docker run -v /tmp:/PRJ -it zmors/riscv_gcc:1  bash
+```sh
+# console1:
+docker run -v /tmp:/PRJ -it zmors/riscv_gcc:1  bash
 
 # cd /PRJ/func3
 # make
 
-console2:
-$ docker run -v /tmp:/tmp -u $UID -e DISPLAY=$DISPLAY --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" -it mariusmm/riscv-tlm /bin/bash
+# console2:
+docker run -v /tmp:/tmp -u $UID -e DISPLAY=$DISPLAY --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" -it mariusmm/riscv-tlm /bin/bash
 
-# cd /usr/src/riscv64/RISC-V-TLM/ 
-# ./RISCV-TLM /tmp/file.hex
-...
+# Run following commands as root/su user
+cd /usr/src/riscv64/RISC-V-TLM/ 
+./RISCV-TLM /tmp/file.hex
+# ...
 ```
 
 or 
 
-```
-...
-console 2:
-$  docker run -v /tmp/tmp -it  mariusmm/riscv-tlm /usr/src/riscv64/RISC-V-TLM/RISCV_TLM /tmp/file.hex
+```sh
+# ...
+# console 2:
+docker run -v /tmp/tmp -it  mariusmm/riscv-tlm /usr/src/riscv64/RISC-V-TLM/RISCV_TLM /tmp/file.hex
 ```
 
 Performance is not affected by running the simulator inside the container
@@ -242,21 +266,21 @@ See [Test page](Test) for more information.
 In the asm directory there are some basic assembly examples.
 
 I "compile" one file with the follwing command:
-```
-$ cd asm
-$ riscv32-unknown-elf-as  EternalLoop.asm -o EternalLoop.o
-$ riscv32-unknown-elf-ld EternalLoop.o -o EternalLoop.elf
-$ riscv32-unknown-elf-objcopy -O ihex EternalLoop.elf EternalLoop.hex
-$ cd ..
-$ ./RISCV_SCTLM asm/EternalLoop.hex
+```sh
+cd asm
+riscv32-unknown-elf-as  EternalLoop.asm -o EternalLoop.o
+riscv32-unknown-elf-ld EternalLoop.o -o EternalLoop.elf
+riscv32-unknown-elf-objcopy -O ihex EternalLoop.elf EternalLoop.hex
+cd ..
+./RISCV_SCTLM asm/EternalLoop.hex
 ```
 This example needs that you hit Ctr+C to stop execution.
 
 ### C code
 The C directory contains simple examples in C. Each directory contains
 an example, to compile it just:
-```
-$ make
+```sh
+make
 ```
 and then execute the .hex file like the example before.
 
