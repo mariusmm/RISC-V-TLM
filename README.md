@@ -107,7 +107,8 @@ Task to do:
 * [ ] Improve structure and modules hierarchy
 * [X] Add 64 architecture (RV64I)
 * [x] Debug capabilities
-* [ ] Add [Trace v2.0](https://github.com/riscv-non-isa/riscv-trace-spec) support 
+* [ ] Add [Trace v2.0](https://github.com/riscv-non-isa/riscv-trace-spec) support
+* [ ] Support to SystemC 3.0.0
 
 ## Compile
 In order to compile the project you need SystemC-2.3.3/4 installed in your system, and Boost Library Headers.
