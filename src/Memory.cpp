@@ -33,7 +33,7 @@ namespace riscv_tlm {
         socket.register_get_direct_mem_ptr(this, &Memory::get_direct_mem_ptr);
         socket.register_transport_dbg(this, &Memory::transport_dbg);
 
-	dmi_allowed = false;
+	    dmi_allowed = false;
         program_counter = 0;
 
         logger = spdlog::get("my_logger");
@@ -47,7 +47,7 @@ namespace riscv_tlm {
 
     }
 
-    void Memory::b_transport(tlm::tlm_generic_payload &trans,
+    void Memory::b_transport([[maybe_unused]] int portNo, tlm::tlm_generic_payload &trans,
                              sc_core::sc_time &delay) {
         tlm::tlm_command cmd = trans.get_command();
         sc_dt::uint64 adr = trans.get_address();
@@ -94,7 +94,7 @@ namespace riscv_tlm {
         trans.set_response_status(tlm::TLM_OK_RESPONSE);
     }
 
-    bool Memory::get_direct_mem_ptr(tlm::tlm_generic_payload &trans,
+    bool Memory::get_direct_mem_ptr([[maybe_unused]] int portNo, tlm::tlm_generic_payload &trans,
                                     tlm::tlm_dmi &dmi_data) {
 
         (void) trans;
@@ -116,7 +116,7 @@ namespace riscv_tlm {
         return true;
     }
 
-    unsigned int Memory::transport_dbg(tlm::tlm_generic_payload &trans) {
+    unsigned int Memory::transport_dbg([[maybe_unused]] int portNo, tlm::tlm_generic_payload &trans) {
         tlm::tlm_command cmd = trans.get_command();
         sc_dt::uint64 adr = trans.get_address();
         unsigned char *ptr = trans.get_data_ptr();

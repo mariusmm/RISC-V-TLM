@@ -11,6 +11,9 @@
 
 #include <iostream>
 #include <fstream>
+#include <map>
+
+#include "addr_range.h"
 
 #define SC_INCLUDE_DYNAMIC_PROCESSES
 
@@ -34,6 +37,8 @@ namespace riscv_tlm {
 
 #define TO_HOST_ADDRESS 0x90000000
 
+#define NR_OF_PERIPHERALS (8)
+
 /**
  * @brief Simple bus controller
  *
@@ -55,20 +60,7 @@ namespace riscv_tlm {
          */
         tlm_utils::simple_target_socket<BusCtrl> cpu_data_socket;
 
-        /**
-         * @brief TLM initiator socket Main memory bus
-         */
-        tlm_utils::simple_initiator_socket<BusCtrl> memory_socket;
-
-        /**
-         * @brief TLM initiator socket Trace module
-         */
-        tlm_utils::simple_initiator_socket<BusCtrl> trace_socket;
-
-        /**
-         * @brief TLM initiator socket Trace module
-         */
-        tlm_utils::simple_initiator_socket<BusCtrl> timer_socket;
+        tlm_utils::simple_initiator_socket<BusCtrl> peripherals_sockets[NR_OF_PERIPHERALS];
 
         /**
          * @brief constructor
@@ -84,11 +76,21 @@ namespace riscv_tlm {
         virtual void b_transport(tlm::tlm_generic_payload &trans,
                                  sc_core::sc_time &delay);
 
+        unsigned int register_peripheral(sc_dt::uint64 start, sc_dt::uint64 end);
     private:
         bool instr_direct_mem_ptr(tlm::tlm_generic_payload &,
                                   tlm::tlm_dmi &dmi_data);
 
         void invalidate_direct_mem_ptr(sc_dt::uint64 start, sc_dt::uint64 end);
+
+        unsigned int encode(const sc_dt::uint64 st_address, const sc_dt::uint64 end_address);
+        unsigned int decode(const sc_dt::uint64 address);
+
+        std::map<address_range, unsigned int> peripherals_map;
+        unsigned int peripherals_count = 0; // we left port 0 for main memory (default)
     };
+
+
 }
+
 #endif

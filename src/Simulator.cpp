@@ -57,20 +57,32 @@ public:
 
         if (cpu_type == riscv_tlm::RV32) {
             cpu = new riscv_tlm::CPURV32("cpu", start_PC, debug_session);
+        } else if (cpu_type == riscv_tlm::RV32E20) {
+            start_PC = 0x100080;
+            cpu = new riscv_tlm::CPURV32("cpu", start_PC, debug_session);
         } else {
             cpu = new riscv_tlm::CPURV64("cpu", start_PC, debug_session);
         }
 
-		Bus = new riscv_tlm::BusCtrl("BusCtrl");
+        Bus = new riscv_tlm::BusCtrl("BusCtrl");
 		trace = new riscv_tlm::peripherals::Trace("Trace");
 		timer = new riscv_tlm::peripherals::Timer("Timer");
 
 		cpu->instr_bus.bind(Bus->cpu_instr_socket);
 		cpu->mem_intf->data_bus.bind(Bus->cpu_data_socket);
 
-		Bus->memory_socket.bind(MainMemory->socket);
-		Bus->trace_socket.bind(trace->socket);
-		Bus->timer_socket.bind(timer->socket);
+        // Map peripherals to memory map
+        auto port = Bus->register_peripheral(0x40000000, 0x40000000);
+        Bus->peripherals_sockets[port].bind(trace->socket);
+        port = Bus->register_peripheral(0x40004000, 0x4000400C);
+        Bus->peripherals_sockets[port].bind(timer->socket);
+
+        // All ports should be connected, if there is no peripheral, we map it to memory.
+        for (auto i = 0; i < NR_OF_PERIPHERALS; i++) {
+            if (Bus->peripherals_sockets[i].size() == 0) { 
+                Bus->peripherals_sockets[i].bind(MainMemory->socket);
+            }
+        }
 
 		timer->irq_line.bind(cpu->irq_line_socket);
 
@@ -131,7 +143,7 @@ private:
         for(unsigned int i = dump_addr_st; i < dump_addr_end; i = i+4) {
             //trans.set_address(dump_addr + (i*4));
             trans.set_address(i);
-            MainMemory->b_transport(trans, delay);
+            MainMemory->b_transport(0, trans, delay);
             signature_file << std::hex << std::setfill('0') << std::setw(8) << data[0] <<  "\n";
         }
 
@@ -210,6 +222,9 @@ void process_arguments(int argc, char *argv[]) {
         case 'R':
             if (strcmp(optarg, "32") == 0) {
                 cpu_type_opt = riscv_tlm::RV32;
+                std::cout << "RV32" << std::endl;
+            } else if (strcmp(optarg, "32E20") == 0) {
+                cpu_type_opt = riscv_tlm::RV32E20;
             } else {
                 cpu_type_opt = riscv_tlm::RV64;
             }

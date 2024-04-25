@@ -17,7 +17,7 @@
 #include "systemc"
 
 #include "tlm.h"
-#include "tlm_utils/simple_target_socket.h"
+#include "tlm_utils/multi_passthrough_target_socket.h"
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
@@ -29,7 +29,7 @@ namespace riscv_tlm {
     class Memory : sc_core::sc_module {
     public:
         // TLM-2 socket, defaults to 32-bits wide, base protocol
-        tlm_utils::simple_target_socket<Memory> socket;
+        tlm_utils::multi_passthrough_target_socket<Memory> socket;
 
         /* 16 MBytes */
         enum {
@@ -50,19 +50,19 @@ namespace riscv_tlm {
         virtual std::uint32_t getPCfromHEX();
 
         // TLM-2 blocking transport method
-        virtual void b_transport(tlm::tlm_generic_payload &trans,
+        virtual void b_transport(int portNo, tlm::tlm_generic_payload &trans,
                                  sc_core::sc_time &delay);
 
         // *********************************************
         // TLM-2 forward DMI method
         // *********************************************
-        virtual bool get_direct_mem_ptr(tlm::tlm_generic_payload &trans,
+        virtual bool get_direct_mem_ptr(int portNo, tlm::tlm_generic_payload &trans,
                                         tlm::tlm_dmi &dmi_data);
 
         // *********************************************
         // TLM-2 debug transport method
         // *********************************************
-        virtual unsigned int transport_dbg(tlm::tlm_generic_payload &trans);
+        virtual unsigned int transport_dbg(int portNo, tlm::tlm_generic_payload &trans);
 
     private:
 

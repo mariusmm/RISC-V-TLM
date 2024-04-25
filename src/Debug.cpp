@@ -207,7 +207,7 @@ namespace riscv_tlm {
                 dbg_trans.set_command(tlm::TLM_READ_COMMAND);
                 dbg_trans.set_address(addr);
                 dbg_trans.set_data_length(len);
-                dbg_mem->transport_dbg(dbg_trans);
+                dbg_mem->transport_dbg(0, dbg_trans);
 
                 std::stringstream stream;
                 stream << std::setfill('0') << std::hex;
