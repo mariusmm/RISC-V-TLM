@@ -107,8 +107,7 @@ namespace riscv_tlm::peripherals {
         unsigned char *ptr = trans.get_data_ptr();
         delay = sc_core::SC_ZERO_TIME;
 
-        ssize_t a = write(ptSlave, ptr, 1);
-        (void) a;
+        [[maybe_unused]] ssize_t a = write(ptSlave, ptr, 1);
 
         trans.set_response_status(tlm::TLM_OK_RESPONSE);
     }
