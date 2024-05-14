@@ -31,6 +31,9 @@ namespace riscv_tlm {
         CALL_FROM_M_MODE = 11,
     } Exception_cause;
 
+    /**
+     * @brief Base class for ISA extensions
+    */
     template<typename T>
     class extension_base {
 

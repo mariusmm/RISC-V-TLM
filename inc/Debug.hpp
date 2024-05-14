@@ -18,6 +18,9 @@
 
 namespace riscv_tlm {
 
+    /**
+     * @brief GDB connector
+    */
     class Debug : sc_core::sc_module {
     public:
 

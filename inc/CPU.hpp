@@ -26,6 +26,9 @@ namespace riscv_tlm {
 
     typedef enum {RV32, RV64} cpu_types_t;
 
+    /**
+     * @brief Main RISC-V base CPU class
+     */
     class CPU : sc_core::sc_module  {
     public:
 
