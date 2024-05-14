@@ -9,15 +9,9 @@
 #ifndef __TRACE_H__
 #define __TRACE_H__
 
-#include <iostream>
-#include <fstream>
-
-#define SC_INCLUDE_DYNAMIC_PROCESSES
-
-#include "systemc"
-
-#include "tlm.h"
-#include "tlm_utils/simple_target_socket.h"
+#include <systemc>
+#include <tlm>
+#include <tlm_utils/simple_target_socket.h>
 
 namespace riscv_tlm::peripherals {
     /**

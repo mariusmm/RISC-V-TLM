@@ -9,7 +9,7 @@
 #ifndef INC_EXTENSION_BASE_H_
 #define INC_EXTENSION_BASE_H_
 
-#include "systemc"
+#include <systemc>
 
 #include "Instruction.hpp"
 #include "Registers.hpp"

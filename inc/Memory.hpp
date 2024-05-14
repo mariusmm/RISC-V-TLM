@@ -9,15 +9,9 @@
 #ifndef __MEMORY_H__
 #define __MEMORY_H__
 
-#include <iostream>
-#include <fstream>
-
-#define SC_INCLUDE_DYNAMIC_PROCESSES
-
-#include "systemc"
-
-#include "tlm.h"
-#include "tlm_utils/simple_target_socket.h"
+#include <systemc>
+#include <tlm>
+#include <tlm_utils/simple_target_socket.h>
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"

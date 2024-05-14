@@ -9,12 +9,10 @@
 #ifndef CPU_BASE_H
 #define CPU_BASE_H
 
-#define SC_INCLUDE_DYNAMIC_PROCESSES
-
-#include "systemc"
-#include "tlm.h"
-#include "tlm_utils/simple_initiator_socket.h"
-#include "tlm_utils/simple_target_socket.h"
+#include <systemc>
+#include <tlm>
+#include <tlm_utils/simple_initiator_socket.h>
+#include <tlm_utils/simple_target_socket.h>
 
 #include "BASE_ISA.hpp"
 #include "C_extension.hpp"

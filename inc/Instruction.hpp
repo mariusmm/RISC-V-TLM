@@ -9,8 +9,10 @@
 #ifndef INSTRUCTION__H
 #define INSTRUCTION__H
 
-#include "systemc"
+#include <systemc>
+
 #include "extension_base.hpp"
+
 #include <cstdint>
 
 namespace riscv_tlm {

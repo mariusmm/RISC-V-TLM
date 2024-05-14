@@ -9,16 +9,14 @@
 #ifndef REGISTERS_H
 #define REGISTERS_H
 
-#define SC_INCLUDE_DYNAMIC_PROCESSES
-
-#include <iomanip>
-#include <unordered_map>
-
-#include "systemc"
-#include "tlm.h"
+#include <systemc>
+#include <tlm>
 
 #include "Performance.hpp"
 #include "Memory.hpp"
+
+#include <iomanip>
+#include <unordered_map>
 
 namespace riscv_tlm {
 

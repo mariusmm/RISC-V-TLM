@@ -5,9 +5,7 @@
  \date September 2018
  */
 
-#define SC_INCLUDE_DYNAMIC_PROCESSES
-
-#include "systemc"
+#include <systemc>
 
 #include <csignal>
 #include <unistd.h>

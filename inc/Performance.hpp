@@ -9,11 +9,8 @@
 #ifndef PERFORMANCE_H
 #define PERFORMANCE_H
 
-#define SC_INCLUDE_DYNAMIC_PROCESSES
-
-#include "systemc"
-
-#include "tlm.h"
+#include <systemc>
+#include <tlm>
 
 /**
  * @brief Performance indicators class

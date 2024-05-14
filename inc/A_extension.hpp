@@ -9,13 +9,13 @@
 #ifndef A_EXTENSION__H
 #define A_EXTENSION__H
 
-#include "systemc"
-
-#include <unordered_set>
+#include <systemc>
 
 #include "Registers.hpp"
 #include "MemoryInterface.hpp"
 #include "extension_base.hpp"
+
+#include <unordered_set>
 
 namespace riscv_tlm {
 

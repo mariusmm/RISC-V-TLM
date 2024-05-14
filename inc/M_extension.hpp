@@ -9,7 +9,7 @@
 #ifndef M_EXTENSION__H
 #define M_EXTENSION__H
 
-#include "systemc"
+#include <systemc>
 
 #include "extension_base.hpp"
 #include "Registers.hpp"

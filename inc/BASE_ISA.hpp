@@ -9,13 +9,13 @@
 #ifndef Execute_H
 #define Execute_H
 
-#define SC_INCLUDE_DYNAMIC_PROCESSES
-#include <type_traits>
-#include <limits>
-#include "systemc"
+#include <systemc>
 
 #include "BASE_ISA.hpp"
 #include "extension_base.hpp"
+
+#include <type_traits>
+#include <limits>
 
 namespace riscv_tlm {
 

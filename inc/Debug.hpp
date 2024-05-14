@@ -9,13 +9,9 @@
 #ifndef INC_DEBUG_H_
 #define INC_DEBUG_H_
 
-#define SC_INCLUDE_DYNAMIC_PROCESSES
-
-#include "systemc"
-
-#include "tlm.h"
-#include "tlm_utils/simple_initiator_socket.h"
-
+#include <systemc>
+#include <tlm>
+#include <tlm_utils/simple_initiator_socket.h>
 
 #include "CPU.hpp"
 #include "Memory.hpp"

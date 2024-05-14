@@ -9,14 +9,13 @@
 #ifndef INC_MEMORYINTERFACE_H_
 #define INC_MEMORYINTERFACE_H_
 
-#include "systemc"
-
-#include "tlm.h"
-#include "tlm_utils/simple_initiator_socket.h"
-#include "tlm_utils/tlm_quantumkeeper.h"
+#include <systemc>
+#include <tlm>
+#include <tlm_utils/simple_initiator_socket.h>
+#include <tlm_utils/tlm_quantumkeeper.h>
 
 #include "memory.h"
-#include <cstdint>
+
 
 namespace riscv_tlm {
 
