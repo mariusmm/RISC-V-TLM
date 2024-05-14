@@ -10,8 +10,6 @@
 
 namespace riscv_tlm {
 
-    SC_HAS_PROCESS(Memory);
-
     Memory::Memory(sc_core::sc_module_name const &name, std::string const &filename) :
             sc_module(name), socket("socket"), LATENCY(sc_core::SC_ZERO_TIME) {
         // Register callbacks for incoming interface method calls

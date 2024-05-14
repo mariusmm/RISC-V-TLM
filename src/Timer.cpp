@@ -11,8 +11,6 @@
 
 namespace riscv_tlm::peripherals {
 
-    SC_HAS_PROCESS(Timer);
-
     Timer::Timer(sc_core::sc_module_name const &name) :
             sc_module(name), socket("timer_socket"), m_mtime(0), m_mtimecmp(0) {
 

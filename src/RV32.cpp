@@ -9,8 +9,6 @@
 
 namespace riscv_tlm {
 
-    SC_HAS_PROCESS(CPURV32);
-
     CPURV32::CPURV32(sc_core::sc_module_name const &name, BaseType PC, bool debug) :
             CPU(name, debug), INSTR(0) {
 

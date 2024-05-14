@@ -87,8 +87,6 @@ namespace riscv_tlm::peripherals {
         }
     }
 
-    SC_HAS_PROCESS(Trace);
-
     Trace::Trace(sc_core::sc_module_name const &name) :
             sc_module(name), socket("socket") {
 
