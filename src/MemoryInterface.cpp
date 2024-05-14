@@ -21,7 +21,7 @@ namespace riscv_tlm {
  * @param size size of the data to read in bytes
  * @return data value read
  */
-    std::uint32_t MemoryInterface::readDataMem(std::uint32_t addr, int size) {
+    std::uint32_t MemoryInterface::readDataMem(std::uint64_t addr, int size) {
         std::uint32_t data;
         tlm::tlm_generic_payload trans;
         sc_core::sc_time delay = sc_core::SC_ZERO_TIME;
@@ -53,7 +53,7 @@ namespace riscv_tlm {
  * @param data data to write
  * @param size size of the data to write in bytes
  */
-    void MemoryInterface::writeDataMem(std::uint32_t addr, std::uint32_t data, int size) {
+    void MemoryInterface::writeDataMem(std::uint64_t addr, std::uint32_t data, int size) {
         tlm::tlm_generic_payload trans;
         sc_core::sc_time delay = sc_core::SC_ZERO_TIME;
 

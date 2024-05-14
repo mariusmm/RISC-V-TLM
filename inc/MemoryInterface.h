@@ -31,9 +31,9 @@ namespace riscv_tlm {
 
         MemoryInterface();
 
-        std::uint32_t readDataMem(std::uint32_t addr, int size);
+        std::uint32_t readDataMem(std::uint64_t addr, int size);
 
-        void writeDataMem(std::uint32_t addr, std::uint32_t data, int size);
+        void writeDataMem(std::uint64_t addr, std::uint32_t data, int size);
     };
 }
 #endif /* INC_MEMORYINTERFACE_H_ */
