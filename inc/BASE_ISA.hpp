@@ -193,13 +193,13 @@ namespace riscv_tlm::CPU {
  * @brief Risc_V execute module
  */
     template<typename T>
-    class BASE_ISA : public extension_base<T> {
+    class BASE_ISA : public extensions::extension_base<T> {
     public:
 
         /**
          * @brief Constructor, same as base class
          */
-        using extension_base<T>::extension_base;
+        using extensions::extension_base<T>::extension_base;
 
         /**
          * @brief Deduce signed type for T type
@@ -972,7 +972,7 @@ namespace riscv_tlm::CPU {
             if (rs2 >= 0x20) {
                 std::cout << "ILLEGAL INSTRUCTION, shamt[5] != 0" << "\n";
                 sc_core::sc_stop();
-                this->RaiseException(Exception_cause::ILLEGAL_INSTRUCTION, this->m_instr);
+                this->RaiseException(extensions::Exception_cause::ILLEGAL_INSTRUCTION, this->m_instr);
 
                 return false;
             }
@@ -1003,7 +1003,7 @@ namespace riscv_tlm::CPU {
             if (rs2 >= 0x20) {
                 std::cout << "ILLEGAL INSTRUCTION, shamt[5] != 0" << "\n";
                 sc_core::sc_stop();
-                this->RaiseException(Exception_cause::ILLEGAL_INSTRUCTION, this->m_instr);
+                this->RaiseException(extensions::Exception_cause::ILLEGAL_INSTRUCTION, this->m_instr);
 
                 return false;
             }
@@ -1335,7 +1335,7 @@ namespace riscv_tlm::CPU {
             std::cout << "Simulation time " << sc_core::sc_time_stamp() << "\n";
             this->perf->dump();
 
-            this->RaiseException(Exception_cause::CALL_FROM_M_MODE, this->m_instr);
+            this->RaiseException(extensions::Exception_cause::CALL_FROM_M_MODE, this->m_instr);
 
             return false;
         }
@@ -1349,7 +1349,7 @@ namespace riscv_tlm::CPU {
             std::cout << "Simulation time " << sc_core::sc_time_stamp() << "\n";
             this->perf->dump();
 
-            this->RaiseException(Exception_cause::BREAK, this->m_instr);
+            this->RaiseException(extensions::Exception_cause::BREAK, this->m_instr);
 
             return false;
         }

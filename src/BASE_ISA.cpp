@@ -91,7 +91,7 @@ namespace riscv_tlm::CPU {
         if (rs2 >= 0x20) {
             std::cout << "ILLEGAL INSTRUCTION, shamt[5] != 0" << "\n";
             sc_core::sc_stop();
-            this->RaiseException(Exception_cause::ILLEGAL_INSTRUCTION, this->m_instr);
+            this->RaiseException(extensions::Exception_cause::ILLEGAL_INSTRUCTION, this->m_instr);
 
             return false;
         }
@@ -306,7 +306,7 @@ namespace riscv_tlm::CPU {
         if (rs2 >= 0x40) {
             std::cout << "ILLEGAL INSTRUCTION, shamt[5] > 0x40" << "\n";
             sc_core::sc_stop();
-            this->RaiseException(Exception_cause::ILLEGAL_INSTRUCTION, this->m_instr);
+            this->RaiseException(extensions::Exception_cause::ILLEGAL_INSTRUCTION, this->m_instr);
 
             return false;
         }

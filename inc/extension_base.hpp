@@ -18,7 +18,7 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
 
-namespace riscv_tlm {
+namespace riscv_tlm::extensions {
 
     typedef enum {
         INSTRUCTION_MISALIGN = 0,
