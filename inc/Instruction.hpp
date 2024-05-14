@@ -15,6 +15,9 @@
 
 #include <cstdint>
 
+/**
+ * @brief RISC-V ISA CPU namespace
+*/
 namespace riscv_tlm::CPU {
 
     typedef enum {

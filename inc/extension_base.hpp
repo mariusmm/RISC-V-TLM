@@ -18,6 +18,9 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
 
+/**
+ * @brief RISC-V ISA Extensions namespace
+*/
 namespace riscv_tlm::extensions {
 
     typedef enum {

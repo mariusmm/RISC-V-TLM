@@ -15,6 +15,9 @@
 
 #include "BusCtrl.hpp"
 
+/**
+ * @brief Peripherals namespace
+*/
 namespace riscv_tlm::peripherals {
 /**
  * @brief Simple timer peripheral
