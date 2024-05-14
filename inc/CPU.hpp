@@ -1,5 +1,5 @@
 /*!
- \file CPU.h
+ \file CPU.hpp
  \brief Main CPU class
  \author Màrius Montón
  \date August 2018
@@ -25,7 +25,6 @@
 namespace riscv_tlm {
 
     typedef enum {RV32, RV64} cpu_types_t;
-
 
     class CPU : sc_core::sc_module  {
     public:
@@ -134,9 +133,9 @@ namespace riscv_tlm {
 
     private:
         Registers<BaseType> *register_bank;
-        C_extension<BaseType> *c_inst;
-        M_extension<BaseType> *m_inst;
-        A_extension<BaseType> *a_inst;
+        extensions::C_extension<BaseType> *c_inst;
+        extensions::M_extension<BaseType> *m_inst;
+        extensions::A_extension<BaseType> *a_inst;
         BASE_ISA<BaseType> *base_inst;
         BaseType int_cause;
         BaseType INSTR;
@@ -188,9 +187,9 @@ namespace riscv_tlm {
 
     private:
         Registers<BaseType> *register_bank;
-        C_extension<BaseType> *c_inst;
-        M_extension<BaseType> *m_inst;
-        A_extension<BaseType> *a_inst;
+        extensions::C_extension<BaseType> *c_inst;
+        extensions::M_extension<BaseType> *m_inst;
+        extensions::A_extension<BaseType> *a_inst;
         BASE_ISA<BaseType> *base_inst;
         BaseType int_cause;
         BaseType INSTR;

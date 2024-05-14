@@ -1,5 +1,5 @@
 /*!
- \file A_extension.h
+ \file A_extension.cpp
  \brief Implement A extensions part of the RISC-V
  \author Màrius Montón
  \date December 2018

@@ -1,5 +1,5 @@
 /*!
- \file Instruction.h
+ \file Instruction.hpp
  \brief Decode instructions part of the RISC-V
  \author Màrius Montón
  \date August 2018

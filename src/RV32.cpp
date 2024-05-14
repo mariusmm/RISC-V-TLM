@@ -1,6 +1,6 @@
 /*!
- \file CPU.cpp
- \brief Main CPU class
+ \file RV32.cpp
+ \brief CPU class for RV32
  \author Màrius Montón
  \date August 2018
  */
@@ -23,9 +23,9 @@ namespace riscv_tlm {
                                                      &CPURV32::invalidate_direct_mem_ptr);
 
         base_inst = new BASE_ISA<BaseType>(0, register_bank, mem_intf);
-        c_inst = new C_extension<BaseType>(0, register_bank, mem_intf);
-        m_inst = new M_extension<BaseType>(0, register_bank, mem_intf);
-        a_inst = new A_extension<BaseType>(0, register_bank, mem_intf);
+        c_inst = new extensions::C_extension<BaseType>(0, register_bank, mem_intf);
+        m_inst = new extensions::M_extension<BaseType>(0, register_bank, mem_intf);
+        a_inst = new extensions::A_extension<BaseType>(0, register_bank, mem_intf);
 
         trans.set_data_ptr(reinterpret_cast<unsigned char *>(&INSTR));
 
@@ -141,7 +141,7 @@ namespace riscv_tlm {
         } else {
             c_inst->setInstr(INSTR);
             auto c_deco = c_inst->decode();
-            if (c_deco != OP_C_ERROR ) {
+            if (c_deco != extensions::OP_C_ERROR ) {
                 auto PC_not_affected = c_inst->exec_instruction(inst, &breakpoint, c_deco);
                 if (PC_not_affected) {
                     register_bank->incPCby2();
@@ -149,7 +149,7 @@ namespace riscv_tlm {
             } else {
                 m_inst->setInstr(INSTR);
                 auto m_deco = m_inst->decode();
-                if (m_deco != OP_M_ERROR) {
+                if (m_deco != extensions::OP_M_ERROR) {
                     auto PC_not_affected = m_inst->exec_instruction(inst, m_deco);
                     if (PC_not_affected) {
                         register_bank->incPC();
@@ -157,7 +157,7 @@ namespace riscv_tlm {
                 } else {
                     a_inst->setInstr(INSTR);
                     auto a_deco = a_inst->decode();
-                    if (a_deco != OP_A_ERROR) {
+                    if (a_deco != extensions::OP_A_ERROR) {
                         auto PC_not_affected = a_inst->exec_instruction(inst, a_deco);
                         if (PC_not_affected) {
                             register_bank->incPC();

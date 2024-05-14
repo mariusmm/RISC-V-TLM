@@ -1,5 +1,5 @@
 /*!
- \file BASE_ISA.h
+ \file BASE_ISA.hpp
  \brief RISC-V ISA implementation
  \author Màrius Montón
  \date August 2018

@@ -1,5 +1,5 @@
 /*!
- \file M_extension.h
+ \file M_extension.hpp
  \brief Implement M extensions part of the RISC-V
  \author Màrius Montón
  \date November 2018
@@ -14,7 +14,7 @@
 #include "extension_base.hpp"
 #include "Registers.hpp"
 
-namespace riscv_tlm {
+namespace riscv_tlm::extensions {
 
     typedef enum {
         OP_M_MUL,

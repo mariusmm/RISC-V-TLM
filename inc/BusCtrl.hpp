@@ -1,5 +1,5 @@
 /**
- @file BusCtrl.h
+ @file BusCtrl.hpp
  @brief Basic TLM-2 Bus controller
  @author Màrius Montón
  @date September 2018

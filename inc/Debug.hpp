@@ -1,5 +1,5 @@
 /*!
- \file Debug.h
+ \file Debug.hpp
  \brief GDB connector
  \author Màrius Montón
  \date February 2021

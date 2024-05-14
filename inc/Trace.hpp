@@ -1,5 +1,5 @@
 /*!
- \file Trace.h
+ \file Trace.hpp
  \brief Basic TLM-2 Trace module
  \author Màrius Montón
  \date September 2018

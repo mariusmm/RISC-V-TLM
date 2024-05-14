@@ -1,5 +1,5 @@
 /*!
- \file M_extension.h
+ \file M_extension.cpp
  \brief Implement M extensions part of the RISC-V
  \author Màrius Montón
  \date November 2018
@@ -7,7 +7,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "M_extension.hpp"
-namespace riscv_tlm {
+namespace riscv_tlm::extensions {
     // RV32
     template<>
     void M_extension<std::uint32_t>::Exec_M_MULH() const {

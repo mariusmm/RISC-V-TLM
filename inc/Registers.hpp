@@ -1,5 +1,5 @@
 /*!
- \file Registers.h
+ \file Registers.hpp
  \brief Basic register file
  \author Màrius Montón
  \date August 2018

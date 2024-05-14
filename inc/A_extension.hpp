@@ -1,5 +1,5 @@
 /*!
- \file A_extension.h
+ \file A_extension.hpp
  \brief Implement A extensions part of the RISC-V
  \author Màrius Montón
  \date December 2018
@@ -17,7 +17,7 @@
 
 #include <unordered_set>
 
-namespace riscv_tlm {
+namespace riscv_tlm::extensions {
 
     typedef enum {
         OP_A_LR,

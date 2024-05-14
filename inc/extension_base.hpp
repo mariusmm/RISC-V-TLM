@@ -1,5 +1,5 @@
 /*!
- \file extension_base.h
+ \file extension_base.hpp
  \brief Base class for ISA extensions
  \author Màrius Montón
  \date May 2020

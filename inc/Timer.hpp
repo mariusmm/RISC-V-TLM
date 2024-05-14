@@ -1,5 +1,5 @@
 /*!
- \file Timer.h
+ \file Timer.hpp
  \brief Basic TLM-2 Timer module
  \author Màrius Montón
  \date January 2019

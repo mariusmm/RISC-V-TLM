@@ -1,5 +1,5 @@
 /*!
- \file Memory.h
+ \file Memory.hpp
  \brief Basic TLM-2 memory model
  \author Màrius Montón
  \date August 2018

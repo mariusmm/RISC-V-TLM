@@ -1,5 +1,5 @@
 /*!
- \file MemoryInterface.h
+ \file MemoryInterface.hpp
  \brief CPU to Memory Interface class
  \author Màrius Montón
  \date May 2020

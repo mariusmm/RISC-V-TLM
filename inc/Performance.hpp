@@ -1,5 +1,5 @@
 /*!
- \file Performance.h
+ \file Performance.hpp
  \brief Class to store performance of CPU
  \author Màrius Montón
  \date Aug 2018

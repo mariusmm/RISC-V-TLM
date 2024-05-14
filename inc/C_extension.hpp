@@ -1,5 +1,5 @@
 /*!
- \file C_extension.h
+ \file C_extension.hpp
  \brief Implement C extensions part of the RISC-V
  \author Màrius Montón
  \date August 2018
@@ -13,7 +13,7 @@
 
 #include "extension_base.hpp"
 
-namespace riscv_tlm {
+namespace riscv_tlm::extensions {
 
     typedef enum {
         OP_C_ADDI4SPN,
