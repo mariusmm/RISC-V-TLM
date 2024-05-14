@@ -42,11 +42,11 @@ namespace riscv_tlm {
         addr.sin_addr.s_addr = INADDR_ANY;
         addr.sin_port = htons(1234);
 
-        bind(sock, (struct sockaddr *) &addr, sizeof(addr));
+        bind(sock, reinterpret_cast<struct sockaddr *>(&addr), sizeof(addr));
         listen(sock, 1);
 
         socklen_t len = sizeof(addr);
-        conn = accept(sock, (struct sockaddr *) &addr, &len);
+        conn = accept(sock, reinterpret_cast<struct sockaddr *>(&addr), &len);
 
         handle_gdb_loop();
     }

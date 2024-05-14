@@ -36,7 +36,7 @@ namespace riscv_tlm::peripherals {
         }
 
         char *argv[3];
-        argv[0] = (char *) ("xterm");
+        argv[0] = const_cast<char *>("xterm");
         argv[1] = arg;
         argv[2] = nullptr;
 

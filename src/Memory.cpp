@@ -139,13 +139,13 @@ namespace riscv_tlm {
 
     void Memory::readHexFile(std::string const &filename) {
         std::ifstream hexfile;
-        std::string line;
         std::uint32_t memory_offset = 0;
 
         hexfile.open(filename);
 
         if (hexfile.is_open()) {
             std::uint32_t extended_address = 0;
+            std::string line;
 
             while (getline(hexfile, line)) {
                 if (line[0] == ':') {
