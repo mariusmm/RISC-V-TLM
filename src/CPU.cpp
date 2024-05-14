@@ -7,7 +7,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CPU.hpp"
 
-namespace riscv_tlm {
+namespace riscv_tlm::CPU {
 
     CPU::CPU(sc_core::sc_module_name const &name, bool debug) : sc_module(name), instr_bus("instr_bus"), inst(0), default_time(10, sc_core::SC_NS) {
         perf = Performance::getInstance();

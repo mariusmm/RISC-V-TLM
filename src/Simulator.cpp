@@ -28,7 +28,7 @@ bool mem_dump = false;
 uint32_t dump_addr_st = 0;
 uint32_t dump_addr_end = 0;
 
-riscv_tlm::cpu_types_t cpu_type_opt = riscv_tlm::RV32;
+riscv_tlm::CPU::cpu_types_t cpu_type_opt = riscv_tlm::CPU::RV32;
 
 /**
  * @class Simulator
@@ -39,24 +39,24 @@ riscv_tlm::cpu_types_t cpu_type_opt = riscv_tlm::RV32;
  */
 class Simulator : sc_core::sc_module {
 public:
-    riscv_tlm::CPU *cpu;
-	riscv_tlm::Memory *MainMemory;
+    riscv_tlm::CPU::CPU *cpu;
     riscv_tlm::BusCtrl *Bus;
+    riscv_tlm::peripherals::Memory *MainMemory;
     riscv_tlm::peripherals::Trace *trace;
     riscv_tlm::peripherals::Timer *timer;
 
-	explicit Simulator(sc_core::sc_module_name const &name, riscv_tlm::cpu_types_t cpu_type_m): sc_module(name) {
+	explicit Simulator(sc_core::sc_module_name const &name, riscv_tlm::CPU::cpu_types_t cpu_type_m): sc_module(name) {
 		std::uint32_t start_PC;
 
-		MainMemory = new riscv_tlm::Memory("Main_Memory", filename);
+		MainMemory = new riscv_tlm::peripherals::Memory("Main_Memory", filename);
 		start_PC = MainMemory->getPCfromHEX();
 
         cpu_type = cpu_type_m;
 
-        if (cpu_type == riscv_tlm::RV32) {
-            cpu = new riscv_tlm::CPURV32("cpu", start_PC, debug_session);
+        if (cpu_type == riscv_tlm::CPU::RV32) {
+            cpu = new riscv_tlm::CPU::CPURV32("cpu", start_PC, debug_session);
         } else {
-            cpu = new riscv_tlm::CPURV64("cpu", start_PC, debug_session);
+            cpu = new riscv_tlm::CPU::CPURV64("cpu", start_PC, debug_session);
         }
 
 		Bus = new riscv_tlm::BusCtrl("BusCtrl");
@@ -73,10 +73,10 @@ public:
 		timer->irq_line.bind(cpu->irq_line_socket);
 
 		if (debug_session) {
-            if (cpu_type == riscv_tlm::RV32) {
-                riscv_tlm::Debug Debug(dynamic_cast<riscv_tlm::CPURV32*>(cpu), MainMemory);
+            if (cpu_type == riscv_tlm::CPU::RV32) {
+                riscv_tlm::CPU::Debug Debug(dynamic_cast<riscv_tlm::CPU::CPURV32*>(cpu), MainMemory);
             } else {
-                riscv_tlm::Debug Debug(dynamic_cast<riscv_tlm::CPURV64*>(cpu), MainMemory);
+                riscv_tlm::CPU::Debug Debug(dynamic_cast<riscv_tlm::CPU::CPURV64*>(cpu), MainMemory);
             }
 		}
 	}
@@ -137,7 +137,7 @@ private:
        }
 
 private:
-    riscv_tlm::cpu_types_t cpu_type;
+    riscv_tlm::CPU::cpu_types_t cpu_type;
 };
 
 Simulator *top;
@@ -156,7 +156,7 @@ void process_arguments(int argc, char *argv[]) {
 	long int debug_level;
 
 	debug_session = false;
-    cpu_type_opt = riscv_tlm::RV32;
+    cpu_type_opt = riscv_tlm::CPU::RV32;
 
 	while ((c = getopt(argc, argv, "DTE:B:L:f:R:?")) != -1) {
 		switch (c) {
@@ -207,9 +207,9 @@ void process_arguments(int argc, char *argv[]) {
 			break;
         case 'R':
             if (strcmp(optarg, "32") == 0) {
-                cpu_type_opt = riscv_tlm::RV32;
+                cpu_type_opt = riscv_tlm::CPU::RV32;
             } else {
-                cpu_type_opt = riscv_tlm::RV64;
+                cpu_type_opt = riscv_tlm::CPU::RV64;
             }
             break;
 		case '?':

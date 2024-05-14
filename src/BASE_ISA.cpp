@@ -8,7 +8,7 @@
 
 #include "BASE_ISA.hpp"
 
-namespace riscv_tlm {
+namespace riscv_tlm::CPU {
 
     ///// RV32 Specialization
     template<>

@@ -397,7 +397,7 @@ namespace riscv_tlm::extensions {
                                 rs1, dividend, rs2, divisor, rd, result);
         }
 
-        bool exec_instruction(Instruction &inst, op_M_Codes code) {
+        bool exec_instruction(CPU::Instruction &inst, op_M_Codes code) {
             this->setInstr(inst.getInstr());
 
             switch (code) {

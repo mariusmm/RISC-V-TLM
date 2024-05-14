@@ -41,8 +41,8 @@ namespace riscv_tlm {
         using unsigned_T = typename std::make_unsigned<T>::type;
 
     public:
-        extension_base(const T &instr, Registers<T> *register_bank,
-                       MemoryInterface *mem_interface) :
+        extension_base(const T &instr, CPU::Registers<T> *register_bank,
+                       peripherals::MemoryInterface *mem_interface) :
                 m_instr(instr), regs(register_bank), mem_intf(mem_interface) {
 
             perf = Performance::getInstance();
@@ -136,9 +136,9 @@ namespace riscv_tlm {
 
     protected:
         sc_dt::sc_uint<32> m_instr;
-        Registers<T> *regs;
+        CPU::Registers<T> *regs;
         Performance *perf;
-        MemoryInterface *mem_intf;
+        peripherals::MemoryInterface *mem_intf;
         std::shared_ptr<spdlog::logger> logger;
     };
 }

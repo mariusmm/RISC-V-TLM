@@ -8,7 +8,7 @@
 
 #include "Instruction.hpp"
 
-namespace riscv_tlm {
+namespace riscv_tlm::CPU {
 
     Instruction::Instruction(std::uint32_t instr) {
         m_instr = instr;

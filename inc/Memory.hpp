@@ -16,7 +16,7 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
 
-namespace riscv_tlm {
+namespace riscv_tlm::peripherals {
 /**
  * @brief Basic TLM-2 memory
  */

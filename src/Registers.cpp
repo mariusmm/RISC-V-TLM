@@ -8,7 +8,7 @@
 
 #include "Registers.hpp"
 
-namespace riscv_tlm {
+namespace riscv_tlm::CPU {
     /* Specialization for each XLEN (RV32, RV64)*/
     template<>
     void Registers<std::uint32_t>::initCSR() {

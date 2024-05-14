@@ -18,7 +18,7 @@
 #include <iomanip>
 #include <unordered_map>
 
-namespace riscv_tlm {
+namespace riscv_tlm::CPU {
 
 #define MISA_A_EXTENSION (1 << 0)
 #define MISA_B_EXTENSION (1 << 1)
@@ -190,7 +190,7 @@ namespace riscv_tlm {
             perf = Performance::getInstance();
 
             initCSR();
-            register_bank[sp] = Memory::SIZE - 4; // default stack at the end of the memory
+            register_bank[sp] = peripherals::Memory::SIZE - 4; // default stack at the end of the memory
             register_PC = 0x80000000;       // default _start address
         };
 

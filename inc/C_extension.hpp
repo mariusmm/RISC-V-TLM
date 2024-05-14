@@ -1293,7 +1293,7 @@ namespace riscv_tlm::extensions {
             return false;
         }
 
-        bool exec_instruction(Instruction &inst, bool *breakpoint, op_C_Codes code) {
+        bool exec_instruction(CPU::Instruction &inst, bool *breakpoint, op_C_Codes code) {
             bool PC_not_affected = true;
 
             *breakpoint = false;

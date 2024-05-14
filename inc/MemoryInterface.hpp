@@ -17,7 +17,7 @@
 #include "memory.h"
 
 
-namespace riscv_tlm {
+namespace riscv_tlm::peripherals {
 
 /**
  * @brief Memory Interface

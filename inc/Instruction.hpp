@@ -15,7 +15,7 @@
 
 #include <cstdint>
 
-namespace riscv_tlm {
+namespace riscv_tlm::CPU {
 
     typedef enum {
         BASE_EXTENSION,

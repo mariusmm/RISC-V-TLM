@@ -17,7 +17,7 @@
 #include <type_traits>
 #include <limits>
 
-namespace riscv_tlm {
+namespace riscv_tlm::CPU {
 
     typedef enum {
         OP_LUI,
@@ -1572,6 +1572,8 @@ namespace riscv_tlm {
         /**
          * @brief Executes default ISA instruction
          * @param  inst instruction to execute
+         * @param[out]  breakpoint set to true if a breakpoint is hit
+         * @param  code opcode
          * @return  true if PC is affected by instruction
          */
         bool exec_instruction(Instruction &inst, bool *breakpoint, opCodes code) {

@@ -8,7 +8,7 @@
 
 #include "MemoryInterface.hpp"
 
-namespace riscv_tlm {
+namespace riscv_tlm::peripherals {
 
     MemoryInterface::MemoryInterface() :
             data_bus("data_bus") {}

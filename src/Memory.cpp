@@ -8,7 +8,7 @@
 
 #include "Memory.hpp"
 
-namespace riscv_tlm {
+namespace riscv_tlm::peripherals {
 
     Memory::Memory(sc_core::sc_module_name const &name, std::string const &filename) :
             sc_module(name), socket("socket"), LATENCY(sc_core::SC_ZERO_TIME) {

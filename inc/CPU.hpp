@@ -22,7 +22,7 @@
 #include "Performance.hpp"
 #include "Registers.hpp"
 
-namespace riscv_tlm {
+namespace riscv_tlm::CPU {
 
     typedef enum {RV32, RV64} cpu_types_t;
 
@@ -96,12 +96,12 @@ namespace riscv_tlm {
         virtual std::uint64_t getEndDumpAddress() = 0;
 
     public:
-        MemoryInterface *mem_intf;
+        peripherals::MemoryInterface *mem_intf;
     protected:
         Performance *perf;
         std::shared_ptr<spdlog::logger> logger;
         tlm_utils::tlm_quantumkeeper *m_qk;
-        Instruction inst;
+        riscv_tlm::CPU::Instruction inst;
         bool interrupt;
         bool irq_already_down;
         sc_core::sc_time default_time;

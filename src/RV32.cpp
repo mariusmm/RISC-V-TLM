@@ -7,15 +7,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CPU.hpp"
 
-namespace riscv_tlm {
+namespace riscv_tlm::CPU {
 
     CPURV32::CPURV32(sc_core::sc_module_name const &name, BaseType PC, bool debug) :
             CPU(name, debug), INSTR(0) {
 
         register_bank = new Registers<BaseType>();
-        mem_intf = new MemoryInterface();
+        mem_intf = new peripherals::MemoryInterface();
         register_bank->setPC(PC);
-        register_bank->setValue(Registers<BaseType>::sp, (Memory::SIZE / 4) - 1);
+        register_bank->setValue(Registers<BaseType>::sp, (peripherals::Memory::SIZE / 4) - 1);
 
         int_cause = 0;
 

@@ -18,18 +18,18 @@
 
 #include "Debug.hpp"
 
-namespace riscv_tlm {
+namespace riscv_tlm::CPU {
 
     constexpr char nibble_to_hex[16] = {'0', '1', '2', '3', '4', '5', '6', '7',
                                         '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
-    Debug::Debug(riscv_tlm::CPURV32 *cpu, Memory *mem) : sc_module(sc_core::sc_module_name("Debug")) {
+    Debug::Debug(riscv_tlm::CPU::CPURV32 *cpu, peripherals::Memory *mem) : sc_module(sc_core::sc_module_name("Debug")) {
         dbg_cpu32 = cpu;
         dbg_cpu64 = nullptr;
         register_bank32 = nullptr;
         register_bank64 = nullptr;
         dbg_mem = mem;
-        cpu_type = riscv_tlm::RV32;
+        cpu_type = riscv_tlm::CPU::RV32;
 
         int sock = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -51,13 +51,13 @@ namespace riscv_tlm {
         handle_gdb_loop();
     }
 
-    Debug::Debug(riscv_tlm::CPURV64 *cpu, Memory *mem) : sc_module(sc_core::sc_module_name("Debug")) {
+    Debug::Debug(riscv_tlm::CPU::CPURV64 *cpu, peripherals::Memory *mem) : sc_module(sc_core::sc_module_name("Debug")) {
         dbg_cpu32 = nullptr;
         dbg_cpu64 = cpu;
         register_bank32 = nullptr;
         register_bank64 = nullptr;
         dbg_mem = mem;
-        cpu_type = riscv_tlm::RV64;
+        cpu_type = riscv_tlm::CPU::RV64;
 
         int sock = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -151,7 +151,7 @@ namespace riscv_tlm {
                 std::stringstream stream;
                 stream << std::setfill('0') << std::hex;
                 for (int i = 1; i < 32; i++) {
-                    if (cpu_type == riscv_tlm::RV32) {
+                    if (cpu_type == riscv_tlm::CPU::RV32) {
                         stream << std::setw(8) << register_bank32->getValue(i);
                     }
                 }
@@ -160,13 +160,13 @@ namespace riscv_tlm {
                 long n = strtol(msg.c_str() + 1, nullptr, 16);
                 std::uint64_t reg_value = 0;
                 if (n < 32) {
-                    if (cpu_type == riscv_tlm::RV32) {
+                    if (cpu_type == riscv_tlm::CPU::RV32) {
                         reg_value = register_bank32->getValue(n);
                     } else {
                         reg_value = register_bank64->getValue(n);
                     }
                 } else if (n == 32) {
-                    if (cpu_type == riscv_tlm::RV32) {
+                    if (cpu_type == riscv_tlm::CPU::RV32) {
                         reg_value = register_bank32->getPC();
                     } else {
                         reg_value = register_bank64->getPC();
@@ -174,7 +174,7 @@ namespace riscv_tlm {
                 } else {
                     // see: https://github.com/riscv/riscv-gnu-toolchain/issues/217
                     // risc-v register 834
-                    if (cpu_type == riscv_tlm::RV32) {
+                    if (cpu_type == riscv_tlm::CPU::RV32) {
                         reg_value = register_bank32->getCSR(n - 65);
                     } else {
                         reg_value = register_bank64->getCSR(n - 65);
@@ -182,7 +182,7 @@ namespace riscv_tlm {
                 }
                 std::stringstream stream;
                 stream << std::setfill('0') << std::hex;
-                if (cpu_type == riscv_tlm::RV32) {
+                if (cpu_type == riscv_tlm::CPU::RV32) {
                     stream << std::setw(8) << htonl(reg_value);
                 } else {
                     stream << std::setw(16) << htonl(reg_value);
@@ -192,7 +192,7 @@ namespace riscv_tlm {
                 char *pEnd;
                 long reg = strtol(msg.c_str() + 1, &pEnd, 16);
                 int val = strtol(pEnd + 1, nullptr, 16);
-                if (cpu_type == riscv_tlm::RV32) {
+                if (cpu_type == riscv_tlm::CPU::RV32) {
                     register_bank32->setValue(reg + 1, val);
                 } else {
                     register_bank64->setValue(reg + 1, val);
@@ -234,7 +234,7 @@ namespace riscv_tlm {
                 do {
                     std::uint64_t currentPC;
 
-                    if (cpu_type == riscv_tlm::RV32) {
+                    if (cpu_type == riscv_tlm::CPU::RV32) {
                         bkpt = dbg_cpu32->CPU_step();
                         currentPC = register_bank32->getPC();
                     } else {
@@ -253,14 +253,14 @@ namespace riscv_tlm {
             } else if (msg == "s") {
 
                 bool breakpoint;
-                if (cpu_type == riscv_tlm::RV32) {
+                if (cpu_type == riscv_tlm::CPU::RV32) {
                     dbg_cpu32->CPU_step();
                 } else {
                     dbg_cpu64->CPU_step();
                 }
 
                 std::uint64_t currentPC;
-                if (cpu_type == riscv_tlm::RV32) {
+                if (cpu_type == riscv_tlm::CPU::RV32) {
                     currentPC = register_bank32->getPC();
                 } else {
                     currentPC = register_bank64->getPC();
