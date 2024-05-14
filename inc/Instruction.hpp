@@ -40,7 +40,7 @@ namespace riscv_tlm {
     class Instruction {
     public:
 
-        Instruction(std::uint32_t instr);
+        explicit Instruction(std::uint32_t instr);
 
         /**
          * @brief returns what instruction extension
