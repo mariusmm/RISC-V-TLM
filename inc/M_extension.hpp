@@ -11,8 +11,8 @@
 
 #include "systemc"
 
-#include "extension_base.h"
-#include "Registers.h"
+#include "extension_base.hpp"
+#include "Registers.hpp"
 
 namespace riscv_tlm {
 

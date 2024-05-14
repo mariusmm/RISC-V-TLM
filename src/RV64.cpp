@@ -5,7 +5,7 @@
  \date August 2018
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "CPU.h"
+#include "CPU.hpp"
 
 namespace riscv_tlm {
 

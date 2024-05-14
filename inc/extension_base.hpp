@@ -11,9 +11,9 @@
 
 #include "systemc"
 
-#include "Instruction.h"
-#include "Registers.h"
-#include "MemoryInterface.h"
+#include "Instruction.hpp"
+#include "Registers.hpp"
+#include "MemoryInterface.hpp"
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"

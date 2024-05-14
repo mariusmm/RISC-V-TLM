@@ -10,7 +10,7 @@
 #define INSTRUCTION__H
 
 #include "systemc"
-#include "extension_base.h"
+#include "extension_base.hpp"
 #include <cstdint>
 
 namespace riscv_tlm {

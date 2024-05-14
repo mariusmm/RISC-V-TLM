@@ -16,7 +16,7 @@
 #include <netinet/in.h>
 #include <boost/algorithm/string.hpp>
 
-#include "Debug.h"
+#include "Debug.hpp"
 
 namespace riscv_tlm {
 

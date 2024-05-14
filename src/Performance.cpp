@@ -6,7 +6,7 @@
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Performance.h"
+#include "Performance.hpp"
 
 Performance* Performance::getInstance() {
 	if (instance == nullptr) {

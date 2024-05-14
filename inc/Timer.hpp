@@ -19,7 +19,7 @@
 #include "tlm.h"
 #include "tlm_utils/simple_target_socket.h"
 
-#include "BusCtrl.h"
+#include "BusCtrl.hpp"
 
 namespace riscv_tlm::peripherals {
 /**

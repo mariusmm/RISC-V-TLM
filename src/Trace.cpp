@@ -18,7 +18,7 @@
 // Code partially taken from
 // https://github.com/embecosm/esp1-systemc-tlm/blob/master/sysc-models/simple-soc/TermSC.h
 
-#include "Trace.h"
+#include "Trace.hpp"
 
 namespace riscv_tlm::peripherals {
 

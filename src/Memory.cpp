@@ -6,7 +6,7 @@
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Memory.h"
+#include "Memory.hpp"
 
 namespace riscv_tlm {
 

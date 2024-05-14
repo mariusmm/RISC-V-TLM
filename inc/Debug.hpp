@@ -17,8 +17,8 @@
 #include "tlm_utils/simple_initiator_socket.h"
 
 
-#include "CPU.h"
-#include "Memory.h"
+#include "CPU.hpp"
+#include "Memory.hpp"
 
 namespace riscv_tlm {
 

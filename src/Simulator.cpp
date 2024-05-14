@@ -14,11 +14,11 @@
 #include <chrono>
 #include <cstdint>
 
-#include "CPU.h"
-#include "BusCtrl.h"
-#include "Trace.h"
-#include "Timer.h"
-#include "Debug.h"
+#include "CPU.hpp"
+#include "BusCtrl.hpp"
+#include "Trace.hpp"
+#include "Timer.hpp"
+#include "Debug.hpp"
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"

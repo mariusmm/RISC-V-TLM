@@ -13,9 +13,9 @@
 
 #include <unordered_set>
 
-#include "Registers.h"
-#include "MemoryInterface.h"
-#include "extension_base.h"
+#include "Registers.hpp"
+#include "MemoryInterface.hpp"
+#include "extension_base.hpp"
 
 namespace riscv_tlm {
 

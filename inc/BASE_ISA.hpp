@@ -14,8 +14,8 @@
 #include <limits>
 #include "systemc"
 
-#include "BASE_ISA.h"
-#include "extension_base.h"
+#include "BASE_ISA.hpp"
+#include "extension_base.hpp"
 
 namespace riscv_tlm {
 

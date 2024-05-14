@@ -16,13 +16,13 @@
 #include "tlm_utils/simple_initiator_socket.h"
 #include "tlm_utils/simple_target_socket.h"
 
-#include "BASE_ISA.h"
-#include "C_extension.h"
-#include "M_extension.h"
-#include "A_extension.h"
-#include "MemoryInterface.h"
-#include "Performance.h"
-#include "Registers.h"
+#include "BASE_ISA.hpp"
+#include "C_extension.hpp"
+#include "M_extension.hpp"
+#include "A_extension.hpp"
+#include "MemoryInterface.hpp"
+#include "Performance.hpp"
+#include "Registers.hpp"
 
 namespace riscv_tlm {
 

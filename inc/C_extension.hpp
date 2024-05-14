@@ -10,7 +10,7 @@
 #define C_EXTENSION__H
 
 #include "systemc"
-#include "extension_base.h"
+#include "extension_base.hpp"
 
 namespace riscv_tlm {
 

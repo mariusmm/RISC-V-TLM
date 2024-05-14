@@ -6,7 +6,7 @@
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Registers.h"
+#include "Registers.hpp"
 
 namespace riscv_tlm {
     /* Specialization for each XLEN (RV32, RV64)*/

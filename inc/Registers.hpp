@@ -17,8 +17,8 @@
 #include "systemc"
 #include "tlm.h"
 
-#include "Performance.h"
-#include "Memory.h"
+#include "Performance.hpp"
+#include "Memory.hpp"
 
 namespace riscv_tlm {
 

@@ -6,7 +6,7 @@
 */
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "M_extension.h"
+#include "M_extension.hpp"
 namespace riscv_tlm {
     // RV32
     template<>

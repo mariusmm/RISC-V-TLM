@@ -6,4 +6,4 @@
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "A_extension.h"
+#include "A_extension.hpp"

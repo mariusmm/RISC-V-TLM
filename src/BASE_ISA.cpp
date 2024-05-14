@@ -6,7 +6,7 @@
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "BASE_ISA.h"
+#include "BASE_ISA.hpp"
 
 namespace riscv_tlm {
 
