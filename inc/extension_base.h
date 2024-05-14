@@ -72,8 +72,10 @@ namespace riscv_tlm {
 
             if (cause == Exception_cause::ILLEGAL_INSTRUCTION) {
                 regs->setCSR(CSR_MTVAL, inst);
-            } else if ( (cause == Exception_cause::BREAK) || (cause == Exception_cause::LOAD_ADDR_MISALIGN) ) {
+            } else if (cause == Exception_cause::LOAD_ADDR_MISALIGN) {
                 regs->setCSR(CSR_MTVAL, current_pc);
+            } else if (cause == Exception_cause::BREAK) {
+                sc_core::sc_stop();
             } else {
                 regs->setCSR(CSR_MTVAL, 0);
             }
@@ -84,6 +86,7 @@ namespace riscv_tlm {
 
             logger->debug("{} ns. PC: 0x{:x}. Exception! new PC 0x{:x} ", sc_core::sc_time_stamp().value(),
                           current_pc, new_pc);
+
         }
 
         bool NOP() {
