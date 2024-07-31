@@ -70,9 +70,24 @@ i5-5200<span>@</span>2.2Ghz and about 4.500.000 instructions / sec in a Intel Co
 
 Trace perihperal creates a xterm window where it prints out all received data. 
 
+#### CVE2
+
+We are modelling [CVE2](https://github.com/openhwgroup/cve2) "small" configuration core with [Ibex Simple system](https://github.com/lowRISC/ibex-demo-system), see CVE2 branch.
+
+##### System Memory Map
+
+| Address             | Description                                                                                              |
+|---------------------|----------------------------------------------------------------------------------------------------------|
+| 0x80000000          | GPIO                                                                                                     |
+| 0x80001000          | UART (write ASCII characters here that will get output to the log file )                                 |
+| 0x80002000          | Timer                                                                                                    |
+| 0x80003000          | PWM                                                                                                      |
+| 0x80004000          | SPI                                                                                                      |
+| 0x20000             | Simulator Halt, write 1 here to halt the simulation                                                      |
+| 0x100000 – 0x10FFFF | 64 KiB memory for instruction and data. Execution starts at 0x100000, exception handler base is 0x100000 |
+
 ### Structure
 ![Modules' hierarchy](doc/Hierarchy.png)
-
 
 ### Memory map
 
@@ -104,7 +119,7 @@ Task to do:
 - [x] Test, test, test & test. I'm sure there are a ~~lot of~~ some bugs in the code
      - [x] riscv-test almost complete (see [Test](https://github.com/mariusmm/RISC-V-TLM/wiki/Tests))
      - [x] riscv-compliance 
-* [ ] Improve structure and modules hierarchy
+* [X] Improve structure and modules hierarchy
 * [X] Add 64 architecture (RV64I)
 * [x] Debug capabilities
 * [ ] Add [Trace v2.0](https://github.com/riscv-non-isa/riscv-trace-spec) support 
