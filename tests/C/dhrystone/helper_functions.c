@@ -1,8 +1,12 @@
 #include <string.h>
 #include <stdio.h>
 
-
+#ifdef CVE2
+#define TRACE (*(unsigned char *)0x80001000)
+#else
 #define TRACE (*(unsigned char *)0x40000000)
+#endif
+
 int _read(int file, char* ptr, int len) {
     return 0;
 }
