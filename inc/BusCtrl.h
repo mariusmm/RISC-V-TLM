@@ -77,6 +77,13 @@ namespace riscv_tlm {
                                  sc_core::sc_time &delay);
 
         unsigned int register_peripheral(sc_dt::uint64 start, sc_dt::uint64 end);
+
+        bool a(sc_dt::uint64 start, sc_dt::uint64 end, tlm_utils::simple_target_socket<sc_core::sc_module>& skt) {
+            auto port = register_peripheral(start, end);
+            peripherals_sockets[port].bind(skt);
+            return true;
+        }
+
     private:
         bool instr_direct_mem_ptr(tlm::tlm_generic_payload &,
                                   tlm::tlm_dmi &dmi_data);

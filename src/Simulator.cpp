@@ -19,6 +19,7 @@
 #include "Trace.h"
 #include "Timer.h"
 #include "Debug.h"
+#include "Uart.h"
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
@@ -46,13 +47,13 @@ public:
     riscv_tlm::BusCtrl *Bus;
     riscv_tlm::peripherals::Trace *trace;
     riscv_tlm::peripherals::Timer *timer;
+    riscv_tlm::peripherals::Uart *uart;
 
 	explicit Simulator(sc_core::sc_module_name const &name, riscv_tlm::cpu_types_t cpu_type_m): sc_module(name) {
 		std::uint32_t start_PC;
 
 		MainMemory = new riscv_tlm::Memory("Main_Memory", filename);
 		start_PC = MainMemory->getPCfromHEX();
-
         cpu_type = cpu_type_m;
 
         if (cpu_type == riscv_tlm::RV32) {
@@ -68,14 +69,32 @@ public:
 		trace = new riscv_tlm::peripherals::Trace("Trace");
 		timer = new riscv_tlm::peripherals::Timer("Timer");
 
+        if (cpu_type == riscv_tlm::RV32E20) {
+            uart = new riscv_tlm::peripherals::Uart("UART");
+        }
+
 		cpu->instr_bus.bind(Bus->cpu_instr_socket);
 		cpu->mem_intf->data_bus.bind(Bus->cpu_data_socket);
 
         // Map peripherals to memory map
-        auto port = Bus->register_peripheral(0x40000000, 0x40000000);
-        Bus->peripherals_sockets[port].bind(trace->socket);
-        port = Bus->register_peripheral(0x40004000, 0x4000400C);
-        Bus->peripherals_sockets[port].bind(timer->socket);
+        if (cpu_type == riscv_tlm::RV32E20) {
+            std::cout << "Creating a IBEX demo system SoC\n";
+            // IBEX Demo System (https://github.com/lowRISC/ibex-demo-system/tree/main)
+            auto port = Bus->register_peripheral(0x80001000, 0x80001FFF);
+            Bus->peripherals_sockets[port].bind(trace->socket);
+            port = Bus->register_peripheral(0x80002000, 0x80002FFF);
+            Bus->peripherals_sockets[port].bind(timer->socket);
+            port = Bus->register_peripheral(0x80003000, 0x80003FFF);
+            Bus->peripherals_sockets[port].bind(uart->socket);
+            // TODO: Implement multiple IRQ lines
+            //uart->irq_line.bind(cpu->irq_line_socket);
+        } else {
+            // Default memory map
+            auto port = Bus->register_peripheral(0x40000000, 0x40000000);
+            Bus->peripherals_sockets[port].bind(trace->socket);
+            port = Bus->register_peripheral(0x40004000, 0x4000400C);
+            Bus->peripherals_sockets[port].bind(timer->socket);
+        }
 
         // All ports should be connected, if there is no peripheral, we map it to memory.
         for (auto i = 0; i < NR_OF_PERIPHERALS; i++) {
@@ -141,7 +160,6 @@ private:
         signature_file.open(local_name);
 
         for(unsigned int i = dump_addr_st; i < dump_addr_end; i = i+4) {
-            //trans.set_address(dump_addr + (i*4));
             trans.set_address(i);
             MainMemory->b_transport(0, trans, delay);
             signature_file << std::hex << std::setfill('0') << std::setw(8) << data[0] <<  "\n";
