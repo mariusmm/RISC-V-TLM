@@ -133,7 +133,7 @@ namespace riscv_tlm {
         auto deco = base_inst->decode();
 
         if (deco != OP_ERROR) {
-            auto PC_not_affected = base_inst->exec_instruction(inst, &breakpoint, deco);
+            auto PC_not_affected = base_inst->exec_instruction(inst, breakpoint, deco);
             if (PC_not_affected) {
                 register_bank->incPC();
             }
@@ -142,7 +142,7 @@ namespace riscv_tlm {
             c_inst->setInstr(INSTR);
             auto c_deco = c_inst->decode();
             if (c_deco != OP_C_ERROR ) {
-                auto PC_not_affected = c_inst->exec_instruction(inst, &breakpoint, c_deco);
+                auto PC_not_affected = c_inst->exec_instruction(inst, breakpoint, c_deco);
                 if (PC_not_affected) {
                     register_bank->incPCby2();
                 }

@@ -1292,10 +1292,10 @@ namespace riscv_tlm {
             return false;
         }
 
-        bool exec_instruction(Instruction &inst, bool *breakpoint, op_C_Codes code) {
+        bool exec_instruction(Instruction &inst, bool &breakpoint, op_C_Codes code) {
             bool PC_not_affected = true;
 
-            *breakpoint = false;
+            breakpoint = false;
 
             this->setInstr(inst.getInstr());
 
@@ -1387,7 +1387,7 @@ namespace riscv_tlm {
                 case OP_C_EBREAK:
                     Exec_C_EBREAK();
                     std::cout << "C_EBREAK" << std::endl;
-                    *breakpoint = true;
+                    breakpoint = true;
                     PC_not_affected = false;
                     break;
                 case OP_C_LD:

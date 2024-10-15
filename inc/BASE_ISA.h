@@ -1571,13 +1571,15 @@ namespace riscv_tlm {
 
         /**
          * @brief Executes default ISA instruction
-         * @param  inst instruction to execute
+         * @param[in]  inst instruction to execute
+         * @param[out] breakpoint CPU hit a breakpoint (ECALL)
+         * @param[in] code 
          * @return  true if PC is affected by instruction
          */
-        bool exec_instruction(Instruction &inst, bool *breakpoint, opCodes code) {
+        bool exec_instruction(Instruction &inst, bool &breakpoint, opCodes code) {
             bool PC_not_affected = true;
 
-            *breakpoint = false;
+            breakpoint = false;
             this->setInstr(inst.getInstr());
 
             switch (code) {
@@ -1714,7 +1716,7 @@ namespace riscv_tlm {
                     break;
                 case OP_ECALL:
                     PC_not_affected = Exec_ECALL();
-                    *breakpoint = true;
+                    breakpoint = true;
                     std::cout << "ECALL" << std::endl;
                     break;
                 case OP_EBREAK:
