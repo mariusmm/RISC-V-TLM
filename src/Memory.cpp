@@ -12,7 +12,7 @@ namespace riscv_tlm {
 
     SC_HAS_PROCESS(Memory);
 
-    Memory::Memory(sc_core::sc_module_name const &name, std::string const &filename) :
+    Memory::Memory(sc_core::sc_module_name const &name, std::string const &filename) noexcept :
             sc_module(name), socket("socket"), LATENCY(sc_core::SC_ZERO_TIME) {
         // Register callbacks for incoming interface method calls
         socket.register_b_transport(this, &Memory::b_transport);
@@ -27,7 +27,7 @@ namespace riscv_tlm {
         logger->debug("Using file {}", filename);
     }
 
-    Memory::Memory(sc_core::sc_module_name const &name) :
+    Memory::Memory(sc_core::sc_module_name const &name) noexcept :
             sc_module(name), socket("socket"), LATENCY(sc_core::SC_ZERO_TIME) {
         socket.register_b_transport(this, &Memory::b_transport);
         socket.register_get_direct_mem_ptr(this, &Memory::get_direct_mem_ptr);
@@ -42,13 +42,13 @@ namespace riscv_tlm {
 
     Memory::~Memory() = default;
 
-    std::uint32_t Memory::getPCfromHEX() {
+    std::uint32_t Memory::getPCfromHEX() noexcept {
         return program_counter;
 
     }
 
     void Memory::b_transport([[maybe_unused]] int portNo, tlm::tlm_generic_payload &trans,
-                             sc_core::sc_time &delay) {
+                             sc_core::sc_time &delay) noexcept {
         tlm::tlm_command cmd = trans.get_command();
         sc_dt::uint64 adr = trans.get_address();
         unsigned char *ptr = trans.get_data_ptr();
@@ -95,7 +95,7 @@ namespace riscv_tlm {
     }
 
     bool Memory::get_direct_mem_ptr([[maybe_unused]] int portNo, tlm::tlm_generic_payload &trans,
-                                    tlm::tlm_dmi &dmi_data) {
+                                    tlm::tlm_dmi &dmi_data) noexcept {
 
         (void) trans;
 
@@ -116,7 +116,7 @@ namespace riscv_tlm {
         return true;
     }
 
-    unsigned int Memory::transport_dbg([[maybe_unused]] int portNo, tlm::tlm_generic_payload &trans) {
+    unsigned int Memory::transport_dbg([[maybe_unused]] int portNo, tlm::tlm_generic_payload &trans) noexcept {
         tlm::tlm_command cmd = trans.get_command();
         sc_dt::uint64 adr = trans.get_address();
         unsigned char *ptr = trans.get_data_ptr();
@@ -139,7 +139,7 @@ namespace riscv_tlm {
         return num_bytes;
     }
 
-    void Memory::readHexFile(std::string const &filename) {
+    void Memory::readHexFile(std::string const &filename) noexcept {
         std::ifstream hexfile;
         std::string line;
         std::uint32_t memory_offset = 0;

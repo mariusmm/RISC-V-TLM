@@ -26,7 +26,7 @@ namespace riscv_tlm {
 /**
  * @brief Basic TLM-2 memory
  */
-    class Memory : sc_core::sc_module {
+    class Memory : public sc_core::sc_module {
     public:
         // TLM-2 socket, defaults to 32-bits wide, base protocol
         tlm_utils::multi_passthrough_target_socket<Memory> socket;
@@ -37,32 +37,32 @@ namespace riscv_tlm {
         };
         const sc_core::sc_time LATENCY;
 
-        Memory(sc_core::sc_module_name const &name, std::string const &filename);
+        Memory(sc_core::sc_module_name const &name, std::string const &filename) noexcept;
 
-        explicit Memory(const sc_core::sc_module_name &name);
+        explicit Memory(const sc_core::sc_module_name &name) noexcept;
 
-        ~Memory() override;
+        ~Memory() noexcept override;
 
         /**
          * @brief Returns Program Counter read from hexfile
          * @return Initial PC
          */
-        virtual std::uint32_t getPCfromHEX();
+        virtual std::uint32_t getPCfromHEX() noexcept;
 
         // TLM-2 blocking transport method
         virtual void b_transport(int portNo, tlm::tlm_generic_payload &trans,
-                                 sc_core::sc_time &delay);
+                                 sc_core::sc_time &delay) noexcept;
 
         // *********************************************
         // TLM-2 forward DMI method
         // *********************************************
         virtual bool get_direct_mem_ptr(int portNo, tlm::tlm_generic_payload &trans,
-                                        tlm::tlm_dmi &dmi_data);
+                                        tlm::tlm_dmi &dmi_data) noexcept;
 
         // *********************************************
         // TLM-2 debug transport method
         // *********************************************
-        virtual unsigned int transport_dbg(int portNo, tlm::tlm_generic_payload &trans);
+        virtual unsigned int transport_dbg(int portNo, tlm::tlm_generic_payload &trans) noexcept;
 
     private:
 
@@ -90,7 +90,7 @@ namespace riscv_tlm {
          * @brief Read Intel hex file
          * @param filename file name to read
          */
-        void readHexFile(const std::string &filename);
+        void readHexFile(const std::string &filename) noexcept;
     };
 }
 #endif /* __MEMORY_H__ */

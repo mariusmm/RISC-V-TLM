@@ -28,7 +28,7 @@ namespace riscv_tlm::peripherals {
  * It runs a 1 ns (nanoseconds) pace
  *
  */
-    class Timer : sc_core::sc_module {
+    class Timer : public sc_core::sc_module {
     public:
         // TLM-2 socket, defaults to 32-bits wide, base protocol
         tlm_utils::simple_target_socket<Timer> socket;
@@ -40,7 +40,7 @@ namespace riscv_tlm::peripherals {
          * @brief Constructor
          * @param name module name
          */
-        explicit Timer(sc_core::sc_module_name const &name);
+        explicit Timer(sc_core::sc_module_name const &name) noexcept;
 
         /**
          * @brief Waits for event timer_event and triggers an IRQ
@@ -60,7 +60,7 @@ namespace riscv_tlm::peripherals {
          * @param delay transaction delay time
          */
         virtual void b_transport(tlm::tlm_generic_payload &trans,
-                                 sc_core::sc_time &delay);
+                                 sc_core::sc_time &delay) noexcept;
 
     private:
         sc_dt::sc_uint<64> m_mtime; /**< mtime register */

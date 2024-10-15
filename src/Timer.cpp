@@ -13,7 +13,7 @@ namespace riscv_tlm::peripherals {
 
     SC_HAS_PROCESS(Timer);
 
-    Timer::Timer(sc_core::sc_module_name const &name) :
+    Timer::Timer(sc_core::sc_module_name const &name) noexcept :
             sc_module(name), socket("timer_socket"), m_mtime(0), m_mtimecmp(0) {
 
         socket.register_b_transport(this, &Timer::b_transport);
@@ -42,7 +42,7 @@ namespace riscv_tlm::peripherals {
     }
 
     void Timer::b_transport(tlm::tlm_generic_payload &trans,
-                            sc_core::sc_time &delay) {
+                            sc_core::sc_time &delay) noexcept {
 
         tlm::tlm_command cmd = trans.get_command();
         sc_dt::uint64 addr = trans.get_address();
