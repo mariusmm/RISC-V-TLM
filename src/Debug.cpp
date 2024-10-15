@@ -14,7 +14,6 @@
 #include <iomanip>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <boost/algorithm/string.hpp>
 
 #include "Debug.h"
 
@@ -124,7 +123,7 @@ namespace riscv_tlm {
                 break;
             } else if (msg == "+") {
                 // NOTE: just ignore this message, nothing to do in this case
-            } else if (boost::starts_with(msg, "qSupported")) {
+            } else if (msg.rfind("qSupported", 0) == 0) {
                 send_packet(conn, "PacketSize=256;swbreak+;hwbreak+;vContSupported+;multiprocess-");
             } else if (msg == "vMustReplyEmpty") {
                 send_packet(conn, "");
@@ -138,7 +137,7 @@ namespace riscv_tlm {
                 send_packet(conn, "S05");
             } else if (msg == "qfThreadInfo") {
                 send_packet(conn, "");
-            } else if (boost::starts_with(msg, "qL")) {
+            } else if (msg.rfind("qL", 0) == 0) {
                 send_packet(conn, "");
             } else if (msg == "Hc-1") {
                 send_packet(conn, "OK");
@@ -156,7 +155,7 @@ namespace riscv_tlm {
                     }
                 }
                 send_packet(conn, stream.str());
-            } else if (boost::starts_with(msg, "p")) {
+            } else if (msg.rfind("p", 0) == 0) {
                 long n = strtol(msg.c_str() + 1, nullptr, 16);
                 std::uint64_t reg_value = 0;
                 if (n < 32) {
@@ -188,7 +187,7 @@ namespace riscv_tlm {
                     stream << std::setw(16) << htonl(reg_value);
                 }
                 send_packet(conn, stream.str());
-            } else if (boost::starts_with(msg, "P")) {
+            } else if (msg.rfind("P", 0) == 0) {
                 char *pEnd;
                 long reg = strtol(msg.c_str() + 1, &pEnd, 16);
                 int val = strtol(pEnd + 1, nullptr, 16);
@@ -198,7 +197,7 @@ namespace riscv_tlm {
                     register_bank64->setValue(reg + 1, val);
                 }
                 send_packet(conn, "OK");
-            } else if (boost::starts_with(msg, "m")) {
+            } else if (msg.rfind("m", 0) == 0) {
                 char *pEnd;
                 long addr = strtol(msg.c_str() + 1, &pEnd, 16);
                 int len = strtol(pEnd + 1, &pEnd, 16);
@@ -217,10 +216,10 @@ namespace riscv_tlm {
 
                 send_packet(conn, stream.str());
 
-            } else if (boost::starts_with(msg, "M")) {
+            } else if (msg.rfind("M", 0) == 0) {
                 printf("M TBD\n");
                 send_packet(conn, "OK");
-            } else if (boost::starts_with(msg, "X")) {
+            } else if (msg.rfind("X", 0) == 0) {
                 send_packet(conn, "");  // binary data unsupported
             } else if (msg == "qOffsets") {
                 send_packet(conn, "Text=0;Data=0;Bss=0");
@@ -279,26 +278,26 @@ namespace riscv_tlm {
                     send_packet(conn, "S05");
                 }
 
-            } else if (boost::starts_with(msg, "vKill")) {
+            } else if (msg.rfind("vKill", 0) == 0) {
                 send_packet(conn, "OK");
                 break;
-            } else if (boost::starts_with(msg, "Z1")) {
+            } else if (msg.rfind("Z1", 0) == 0) {
                 char *pEnd;
                 long addr = strtol(msg.c_str() + 3, &pEnd, 16);
                 breakpoints.insert(addr);
                 std::cout << "Breakpoint set to address 0x" << std::hex << addr << std::endl;
                 send_packet(conn, "OK");
-            } else if (boost::starts_with(msg, "z1")) {
+            } else if (msg.rfind("z1", 0) == 0) {
                 char *pEnd;
                 long addr = strtol(msg.c_str() + 3, &pEnd, 16);
                 breakpoints.erase(addr);
                 send_packet(conn, "OK");
-            } else if (boost::starts_with(msg, "z0")) {
+            } else if (msg.rfind("Z0", 0) == 0) {
                 char *pEnd;
                 long addr = strtol(msg.c_str() + 3, &pEnd, 16);
                 breakpoints.erase(addr);
                 send_packet(conn, "");
-            } else if (boost::starts_with(msg, "Z0")) {
+            } else if (msg.rfind("Z0", 0) == 0) {
                 char *pEnd;
                 long addr = strtol(msg.c_str() + 3, &pEnd, 16);
                 breakpoints.insert(addr);

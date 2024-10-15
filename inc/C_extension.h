@@ -1086,7 +1086,7 @@ namespace riscv_tlm {
             rd = 1;
             rs1 = get_rs1();
 
-            old_pc = static_cast<std::u int32_t>(this->regs->getPC());
+            old_pc = static_cast<std::uint32_t>(this->regs->getPC());
             new_pc = static_cast<std::int32_t>((this->regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE);
 
             this->regs->setValue(rd, old_pc + 2);
