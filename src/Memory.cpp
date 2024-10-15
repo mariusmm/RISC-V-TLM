@@ -10,8 +10,6 @@
 
 namespace riscv_tlm {
 
-    SC_HAS_PROCESS(Memory);
-
     Memory::Memory(sc_core::sc_module_name const &name, std::string const &filename) noexcept :
             sc_module(name), socket("socket"), LATENCY(sc_core::SC_ZERO_TIME) {
         // Register callbacks for incoming interface method calls
@@ -39,8 +37,6 @@ namespace riscv_tlm {
         logger = spdlog::get("my_logger");
         logger->debug("Memory instantiated wihtout file");
     }
-
-    Memory::~Memory() = default;
 
     std::uint32_t Memory::getPCfromHEX() noexcept {
         return program_counter;
@@ -167,28 +163,18 @@ namespace riscv_tlm {
                         /* Extended segment address */
                         extended_address = stol(line.substr(9, 4), nullptr, 16)
                                            * 16;
-                        std::cout << "02 extended address 0x" << std::hex
-                                  << extended_address << std::dec << std::endl;
                     } else if (line.substr(7, 2) == "03") {
                         /* Start segment address */
                         std::uint32_t code_segment;
                         code_segment = stol(line.substr(9, 4), nullptr, 16) * 16; /* ? */
                         program_counter = stol(line.substr(13, 4), nullptr, 16);
                         program_counter = program_counter + code_segment;
-                        std::cout << "03 PC set to 0x" << std::hex
-                                  << program_counter << std::dec << std::endl;
                     } else if (line.substr(7, 2) == "04") {
                         /* Start segment address */
                         memory_offset = stol(line.substr(9, 4), nullptr, 16) << 16;
                         extended_address = 0;
-                        std::cout << "04 address set to 0x" << std::hex
-                                  << extended_address << std::dec << std::endl;
-                        std::cout << "04 offset set to 0x" << std::hex
-                                  << memory_offset << std::dec << std::endl;
                     } else if (line.substr(7, 2) == "05") {
                         program_counter = stol(line.substr(9, 8), nullptr, 16);
-                        std::cout << "05 PC set to 0x" << std::hex
-                                  << program_counter << std::dec << std::endl;
                     }
                 }
             }

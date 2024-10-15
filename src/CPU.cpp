@@ -9,8 +9,6 @@
 
 namespace riscv_tlm {
 
-    SC_HAS_PROCESS(CPU);
-
     CPU::CPU(sc_core::sc_module_name const &name, bool debug) : sc_module(name), instr_bus("instr_bus"), inst(0), default_time(10, sc_core::SC_NS) {
         perf = Performance::getInstance();
         logger = spdlog::get("my_logger");

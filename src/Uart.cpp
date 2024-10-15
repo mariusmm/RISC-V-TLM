@@ -14,8 +14,6 @@ Based on https://github.com/lowRISC/ibex-demo-system/blob/main/rtl/system/uart.s
 
 namespace riscv_tlm::peripherals {
 
-    SC_HAS_PROCESS(Uart);
-
     Uart::Uart(sc_core::sc_module_name const &name) :
             sc_module(name), socket("uart_socket"), UartRxReg(0), UartTxReg(0), UartStatusReg(0) {
 

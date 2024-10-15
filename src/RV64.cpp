@@ -10,7 +10,7 @@
 namespace riscv_tlm {
 
     CPURV64::CPURV64(sc_core::sc_module_name const &name, BaseType PC, bool debug) :
-            CPU(name, debug), INSTR(0) {
+            CPU(name, debug) {
 
         register_bank = new Registers<BaseType>();
         mem_intf = new MemoryInterface();
