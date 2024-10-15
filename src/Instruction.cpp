@@ -14,22 +14,9 @@ namespace riscv_tlm {
         m_instr = instr;
     }
 
-    extension_t Instruction::check_extension() const {
-        if ((((m_instr & 0x0000007F) == 0b0110011) || ((m_instr & 0x0000007F) == 0b0111011))
-            && (((m_instr & 0x7F000000) >> 25) == 0b0000001)) {
-            return M_EXTENSION;
-        } else if ((m_instr & 0x0000007F) == 0b0101111) {
-            return A_EXTENSION;
-        } else if ((m_instr & 0x00000003) == 0b00) {
-            return C_EXTENSION;
-        } else if ((m_instr & 0x00000003) == 0b01) {
-            return C_EXTENSION;
-        } else if ((m_instr & 0x00000003) == 0b10) {
-            return C_EXTENSION;
-        } else {
-            return BASE_EXTENSION;
-        }
-    }
+
+
+   
 
 }
 
