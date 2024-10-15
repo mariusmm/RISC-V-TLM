@@ -8,16 +8,11 @@
 cmake_minimum_required(VERSION 3.10)
 project(RISCV_TLM)
 
-# specify the C++ standard
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CMAKE_C_STANDARD 17)
-set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_PREFIX_PATH $ENV{BOOST_ROOT};$ENV{SYSTEMC_HOME};$ENV{SPDLOG_HOME})
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_compile_options(-O3 -g -Wall -Wextra -Wunused-function -Wpedantic)
+add_compile_options(-O3 -g -Wall -Wextra -Wunused-function -Wpedantic -Werror)
 
 include_directories(./inc/)
 file(GLOB SRC "./src/*.cpp")
@@ -26,11 +21,20 @@ find_package(SystemCLanguage CONFIG REQUIRED)
 set (CMAKE_CXX_STANDARD ${SystemC_CXX_STANDARD})
 
 find_package(spdlog CONFIG REQUIRED)
+
+if(POLICY CMP0167)
+cmake_policy(SET CMP0167 NEW)
+endif()
+
 find_package(Boost REQUIRED)
 add_executable(RISCV_TLM ${SRC} )
 target_link_libraries(RISCV_TLM SystemC::systemc)
 target_link_libraries(RISCV_TLM spdlog::spdlog)
 target_link_libraries(RISCV_TLM Boost::boost)
+
+# specify the C++ standard
+target_compile_features(RISCV_TLM PUBLIC cxx_std_17)
+target_compile_features(RISCV_TLM PUBLIC c_std_17)
 
 option(BUILD_DOC "Build documentation" ON)
 find_package(Doxygen)
