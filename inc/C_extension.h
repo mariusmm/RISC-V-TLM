@@ -14,7 +14,7 @@
 
 namespace riscv_tlm {
 
-    typedef enum {
+    using op_C_Codes = enum {
         OP_C_ADDI4SPN,
         OP_C_FLD,
         OP_C_LW,
@@ -60,9 +60,9 @@ namespace riscv_tlm {
         OP_C_FSWSP,
         OP_C_SDSP,
         OP_C_ERROR
-    } op_C_Codes;
+    };
 
-    typedef enum {
+    using C_Codes = enum {
         C_ADDI4SPN = 0b000,
         C_FLD = 0b001,
         C_LW = 0b010,
@@ -96,11 +96,11 @@ namespace riscv_tlm {
         C_FDSP = 0b101,
         C_SWSP = 0b110,
         C_FWWSP = 0b111,
-    } C_Codes;
+    };
 
 /**
  * @brief Instruction decoding and fields access
- */
+ */ 
     template<typename T>
     class C_extension : public extension_base<T> {
     public:
@@ -110,8 +110,9 @@ namespace riscv_tlm {
          */
         using extension_base<T>::extension_base;
 
-        using signed_T = typename std::make_signed<T>::type;
-        using unsigned_T = typename std::make_unsigned<T>::type;
+        using signed_T = std::make_signed_t<T>;
+        using unsigned_T = std::make_unsigned_t<T>;
+
 
         /**
          * @brief Access to opcode field
@@ -1085,7 +1086,7 @@ namespace riscv_tlm {
             rd = 1;
             rs1 = get_rs1();
 
-            old_pc = static_cast<std::int32_t>(this->regs->getPC());
+            old_pc = static_cast<std::u int32_t>(this->regs->getPC());
             new_pc = static_cast<std::int32_t>((this->regs->getValue(rs1) + mem_addr) & 0xFFFFFFFE);
 
             this->regs->setValue(rd, old_pc + 2);

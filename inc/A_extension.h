@@ -19,7 +19,7 @@
 
 namespace riscv_tlm {
 
-    typedef enum {
+    using op_A_Codes = enum {
         OP_A_LR,
         OP_A_SC,
         OP_A_AMOSWAP,
@@ -31,11 +31,10 @@ namespace riscv_tlm {
         OP_A_AMOMAX,
         OP_A_AMOMINU,
         OP_A_AMOMAXU,
-
         OP_A_ERROR
-    } op_A_Codes;
+    };
 
-    typedef enum {
+    using A_Codes = enum {
         A_LR = 0b00010,
         A_SC = 0b00011,
         A_AMOSWAP = 0b00001,
@@ -47,7 +46,7 @@ namespace riscv_tlm {
         A_AMOMAX = 0b10100,
         A_AMOMINU = 0b11000,
         A_AMOMAXU = 0b11100,
-    } A_Codes;
+    };
 
 /**
  * @brief Instruction decoding and fields access
@@ -61,8 +60,8 @@ namespace riscv_tlm {
          */
         using extension_base<T>::extension_base;
 
-        using signed_T = typename std::make_signed<T>::type;
-        using unsigned_T = typename std::make_unsigned<T>::type;
+        using signed_T = std::make_signed_t<T>;
+        using unsigned_T = std::make_unsigned_t<T>;
 
         /**
          * @brief Access to opcode field

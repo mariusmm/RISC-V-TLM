@@ -41,7 +41,7 @@ namespace riscv_tlm {
 
         explicit Memory(const sc_core::sc_module_name &name) noexcept;
 
-        ~Memory() noexcept override;
+        ~Memory() noexcept override = default;
 
         /**
          * @brief Returns Program Counter read from hexfile

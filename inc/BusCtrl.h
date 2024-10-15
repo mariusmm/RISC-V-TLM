@@ -70,8 +70,8 @@ namespace riscv_tlm {
          */
         tlm_utils::simple_target_socket<BusCtrl> cpu_data_socket;
 
-        tlm_utils::simple_initiator_socket<BusCtrl> peripherals_sockets[NR_OF_PERIPHERALS];
-
+        std::array<tlm_utils::simple_initiator_socket<BusCtrl>, NR_OF_PERIPHERALS> peripherals_sockets;
+        
         /**
          * @brief constructor
          * @param name module's name

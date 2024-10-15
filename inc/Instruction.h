@@ -15,7 +15,7 @@
 
 namespace riscv_tlm {
 
-    typedef enum {
+    using extension_t = enum {
         BASE_EXTENSION,
         M_EXTENSION,
         A_EXTENSION,
@@ -30,7 +30,7 @@ namespace riscv_tlm {
         V_EXTENSION,
         N_EXTENSION,
         UNKNOWN_EXTENSION
-    } extension_t;
+    };
 
 /**
  * @brief Instruction decoding and fields access
@@ -44,7 +44,22 @@ namespace riscv_tlm {
          * @brief returns what instruction extension
          * @return extension
          */
-        extension_t check_extension() const;
+        extension_t check_extension() const {
+            if ((((m_instr & 0x0000007F) == 0b0110011) || ((m_instr & 0x0000007F) == 0b0111011))
+                && (((m_instr & 0x7F000000) >> 25) == 0b0000001)) {
+                return M_EXTENSION;
+            } else if ((m_instr & 0x0000007F) == 0b0101111) {
+                return A_EXTENSION;
+            } else if ((m_instr & 0x00000003) == 0b00) {
+                return C_EXTENSION;
+            } else if ((m_instr & 0x00000003) == 0b01) {
+                return C_EXTENSION;
+            } else if ((m_instr & 0x00000003) == 0b10) {
+                return C_EXTENSION;
+            } else {
+                return BASE_EXTENSION;
+            }
+        }
 
         void setInstr(std::uint32_t p_instr) {
             m_instr = p_instr;
@@ -61,6 +76,8 @@ namespace riscv_tlm {
         inline void dump() const {
             std::cout << std::hex << "0x" << m_instr << std::dec << std::endl;
         }
+
+
 
     private:
         std::uint32_t m_instr;

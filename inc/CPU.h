@@ -26,6 +26,7 @@
 
 namespace riscv_tlm {
 
+    //using cpu_types_t = enum {RV32, RV64, RV32E20};
     typedef enum {RV32, RV64, RV32E20} cpu_types_t;
 
 
@@ -141,7 +142,7 @@ namespace riscv_tlm {
         A_extension<BaseType> *a_inst;
         BASE_ISA<BaseType> *base_inst;
         BaseType int_cause;
-        BaseType INSTR;
+        BaseType INSTR{0};
 
         /**
          *
@@ -195,7 +196,7 @@ namespace riscv_tlm {
         A_extension<BaseType> *a_inst;
         BASE_ISA<BaseType> *base_inst;
         BaseType int_cause;
-        BaseType INSTR;
+        BaseType INSTR{0};
 
         /**
          *

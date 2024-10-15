@@ -20,7 +20,7 @@
 
 namespace riscv_tlm {
 
-    typedef enum {
+    using Exception_cause = enum {
         INSTRUCTION_MISALIGN = 0,
         INSTRUCTION_ACCESS = 1,
         ILLEGAL_INSTRUCTION = 2,
@@ -29,13 +29,13 @@ namespace riscv_tlm {
         LOAD_ADDR_MISALIGN = 4,
         LOAD_ACCESS_FAULT = 5,
         CALL_FROM_M_MODE = 11,
-    } Exception_cause;
+    };
 
     template<typename T>
     class extension_base {
 
-        using signed_T = typename std::make_signed<T>::type;
-        using unsigned_T = typename std::make_unsigned<T>::type;
+        using signed_T = std::make_signed_t<T>;
+        using unsigned_T = std::make_unsigned_t<T>;
 
     public:
         extension_base(const T &instr, Registers<T> *register_bank,

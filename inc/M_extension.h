@@ -16,7 +16,7 @@
 
 namespace riscv_tlm {
 
-    typedef enum {
+    using op_M_Codes = enum {
         OP_M_MUL,
         OP_M_MULH,
         OP_M_MULHSU,
@@ -27,13 +27,13 @@ namespace riscv_tlm {
         OP_M_REMU,
         OP_M_MULW,
         OP_M_DIVW,
-        OP_M_DIVUW,
+        OP_M_DIVUW,         
         OP_M_REMW,
         OP_M_REMUW,
         OP_M_ERROR
-    } op_M_Codes;
+    };
 
-    typedef enum {
+    using M_Codes = enum {
         M_MUL = 0b000,
         M_MULH = 0b001,
         M_MULHSU = 0b010,
@@ -47,7 +47,7 @@ namespace riscv_tlm {
         M_DIVUW = 0b101,
         M_REMW = 0b110,
         M_REMUW = 0b111,
-    } M_Codes;
+    };
 
 /**
  * @brief Instruction decoding and fields access
@@ -61,8 +61,8 @@ namespace riscv_tlm {
          */
         using extension_base<T>::extension_base;
 
-        using signed_T = typename std::make_signed<T>::type;
-        using unsigned_T = typename std::make_unsigned<T>::type;
+        using signed_T = std::make_signed_t<T>;
+        using unsigned_T = std::make_unsigned_t<T>;
 
         /**
          * @brief Decodes opcode of instruction

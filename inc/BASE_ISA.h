@@ -19,7 +19,7 @@
 
 namespace riscv_tlm {
 
-    typedef enum {
+    using opCodes = enum {
         OP_LUI,
         OP_AUIPC,
         OP_JAL,
@@ -95,7 +95,7 @@ namespace riscv_tlm {
         OP_SRAW,
 
         OP_ERROR
-    } opCodes;
+    };
 
     enum Codes {
         LUI = 0b0110111,
@@ -204,12 +204,12 @@ namespace riscv_tlm {
         /**
          * @brief Deduce signed type for T type
          */
-        using signed_T = typename std::make_signed<T>::type;
+        using signed_T = std::make_signed_t<T>;
 
         /**
          * @brief Deduce unsigned type for T type
          */
-        using unsigned_T = typename std::make_unsigned<T>::type;
+        using unsigned_T = std::make_unsigned_t<T>;
 
         /**
          * @brief Access to funct7 field
