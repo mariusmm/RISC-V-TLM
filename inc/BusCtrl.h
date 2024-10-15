@@ -35,6 +35,16 @@ namespace riscv_tlm {
 #define TIMERCMP_MEMORY_ADDRESS_LO 0x40004008
 #define TIMERCMP_MEMORY_ADDRESS_HI 0x4000400C
 
+/**
+ * Memory mapped UART peripheral address for IBEX SoC
+ * Work with base + offset
+ */
+#define IBEX_UART_MEMORY_ADDRESS 0x80001000
+#define IBEX_UART_RX_REG        0x00
+#define IBEX_UART_TX_REG        0x04
+#define IBEX_UART_STATUS_REG    0x08
+
+
 #define TO_HOST_ADDRESS 0x90000000
 
 #define NR_OF_PERIPHERALS (8)
@@ -48,7 +58,7 @@ namespace riscv_tlm {
  * It will be expanded with more ports when required (for DMA,
  * other peripherals, etc.)
  */
-    class BusCtrl : sc_core::sc_module {
+    class BusCtrl : public sc_core::sc_module {
     public:
         /**
          * @brief TLM target socket CPU instruction memory bus
@@ -76,10 +86,10 @@ namespace riscv_tlm {
         virtual void b_transport(tlm::tlm_generic_payload &trans,
                                  sc_core::sc_time &delay);
 
-        unsigned int register_peripheral(sc_dt::uint64 start, sc_dt::uint64 end);
+        unsigned int register_peripheral(const std::string name, sc_dt::uint64 start, sc_dt::uint64 end);
 
         bool a(sc_dt::uint64 start, sc_dt::uint64 end, tlm_utils::simple_target_socket<sc_core::sc_module>& skt) {
-            auto port = register_peripheral(start, end);
+            auto port = register_peripheral("test", start, end);
             peripherals_sockets[port].bind(skt);
             return true;
         }
@@ -90,7 +100,7 @@ namespace riscv_tlm {
 
         void invalidate_direct_mem_ptr(sc_dt::uint64 start, sc_dt::uint64 end);
 
-        unsigned int encode(const sc_dt::uint64 st_address, const sc_dt::uint64 end_address);
+        unsigned int encode(const std::string name, const sc_dt::uint64 st_address, const sc_dt::uint64 end_address);
         unsigned int decode(const sc_dt::uint64 address);
 
         std::map<address_range, unsigned int> peripherals_map;

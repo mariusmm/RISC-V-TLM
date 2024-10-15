@@ -80,19 +80,19 @@ public:
         if (cpu_type == riscv_tlm::RV32E20) {
             std::cout << "Creating a IBEX demo system SoC\n";
             // IBEX Demo System (https://github.com/lowRISC/ibex-demo-system/tree/main)
-            auto port = Bus->register_peripheral(0x80001000, 0x80001FFF);
+            auto port = Bus->register_peripheral(trace->basename(), 0x80001000, 0x80001FFF);
             Bus->peripherals_sockets[port].bind(trace->socket);
-            port = Bus->register_peripheral(0x80002000, 0x80002FFF);
+            port = Bus->register_peripheral(timer->basename(), 0x80002000, 0x80002FFF);
             Bus->peripherals_sockets[port].bind(timer->socket);
-            port = Bus->register_peripheral(0x80003000, 0x80003FFF);
+            port = Bus->register_peripheral(uart->basename(), 0x80003000, 0x80003FFF);
             Bus->peripherals_sockets[port].bind(uart->socket);
             // TODO: Implement multiple IRQ lines
             //uart->irq_line.bind(cpu->irq_line_socket);
         } else {
             // Default memory map
-            auto port = Bus->register_peripheral(0x40000000, 0x40000000);
+            auto port = Bus->register_peripheral(trace->basename(), 0x40000000, 0x40000004);
             Bus->peripherals_sockets[port].bind(trace->socket);
-            port = Bus->register_peripheral(0x40004000, 0x4000400C);
+            port = Bus->register_peripheral(timer->basename(), 0x40004000, 0x4000400C);
             Bus->peripherals_sockets[port].bind(timer->socket);
         }
 
@@ -199,7 +199,7 @@ void process_arguments(int argc, char *argv[]) {
             mem_dump = true;
             break;
         case 'B':
-            dump_addr_st = std::strtoul (optarg, nullptr, 16);
+            dump_addr_st = std::strtoul(optarg, nullptr, 16);
             break;
         case 'E':
             dump_addr_end = std::strtoul(optarg, nullptr, 16);
@@ -248,11 +248,10 @@ void process_arguments(int argc, char *argv[]) {
             }
             break;
 		case '?':
-			std::cout << "Call ./RISCV_TLM -D -L <debuglevel> (0..3) filename.hex"
+        default:
+			std::cout << "Call ./RISCV_TLM -D -R<64 / 32 / 32E20> -L <debuglevel> (0..3) filename.hex"
 					<< std::endl;
 			break;
-		default:
-			std::cout << "unknown" << std::endl;
 		}
 	}
 
