@@ -29,7 +29,7 @@ namespace riscv_tlm {
     typedef enum {RV32, RV64, RV32E20} cpu_types_t;
 
 
-    class CPU : sc_core::sc_module  {
+    class CPU : public sc_core::sc_module  {
     public:
 
         /* Constructors */
@@ -41,7 +41,7 @@ namespace riscv_tlm {
         CPU& operator=(const CPU& other) noexcept = delete;
         CPU& operator=(CPU&& other) noexcept = delete;
 
-        /* Destructors */
+        /* Destructors */   
         ~CPU() override = default;
 
         /**

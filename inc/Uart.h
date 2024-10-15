@@ -28,7 +28,7 @@ namespace riscv_tlm::peripherals {
  * It runs a 1 ns (nanoseconds) pace
  *
  */
-    class Uart : sc_core::sc_module {
+    class Uart : public sc_core::sc_module {
     public:
         // TLM-2 socket, defaults to 32-bits wide, base protocol
         tlm_utils::simple_target_socket<Uart> socket;
@@ -51,7 +51,7 @@ namespace riscv_tlm::peripherals {
          * line.
          *
          */
-       // [[noreturn]] void run();
+        // [[noreturn]] void run();
 
         /**
          *
@@ -63,11 +63,19 @@ namespace riscv_tlm::peripherals {
                                  sc_core::sc_time &delay);
 
     private:
-        sc_dt::sc_uint<32> UartRxReg; /**< mtime register */
-        sc_dt::sc_uint<32> UartTxReg; /**< mtimecmp register */
-        sc_dt::sc_uint<32> UartStatusReg;
 
-        sc_core::sc_event uart_event; /**< event */
+        enum State_t {
+            IDLE,
+            START,
+            PROC,
+            STOP
+        };
+
+        sc_dt::sc_uint<32> UartRxReg;       /**< Rx register */
+        sc_dt::sc_uint<32> UartTxReg;       /**< Tx register */
+        sc_dt::sc_uint<32> UartStatusReg;   /**< Status register */
+
+        sc_core::sc_event uart_event;       /**< event */
     };
 }
 #endif

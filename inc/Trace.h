@@ -25,7 +25,7 @@ namespace riscv_tlm::peripherals {
     *
     * This peripheral outputs to cout any character written to its unique register
     */
-    class Trace : sc_core::sc_module {
+    class Trace : public sc_core::sc_module {
     public:
 
         /**
