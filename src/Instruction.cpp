@@ -14,9 +14,5 @@ namespace riscv_tlm {
         m_instr = instr;
     }
 
-
-
-   
-
 }
 
