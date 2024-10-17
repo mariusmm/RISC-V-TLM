@@ -1,4 +1,4 @@
-TARGET   = dhrystone.cve2
+TARGET   = malloc_test.cve2
 
 TARGET_ARCH = riscv32
 

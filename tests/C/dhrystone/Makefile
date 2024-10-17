@@ -1,14 +1,14 @@
 TARGET   = dhrystone
 
-TARGET_ARCH = riscv32
+TARGET_ARCH = riscv
 
-CC       = riscv32-unknown-elf-gcc
+CC       = riscv-none-elf-gcc
 
 # compiling flags here
 CFLAGS = -Wall -I. -O0 -static -march=rv32imac -mabi=ilp32 --specs=nosys.specs -ggdb
 
 
-LINKER   = riscv32-unknown-elf-gcc
+LINKER   = riscv-none-elf-gcc
 # linking flags here
 LDFLAGS   = -I. -static -g
 LIBS   = $(EXTRA_LIBS)
@@ -31,8 +31,8 @@ rm       = rm -f
 
 $(BINDIR)/$(TARGET): $(OBJECTS)
 	$(LINKER) $(CFLAGS) $(LDFLAGS) $(LIBS) $(LIBDIR) $(OBJECTS) -o $@
-	riscv32-unknown-elf-objdump -d $@ > dump
-	riscv32-unknown-elf-objcopy -Oihex $@ $(TARGET).hex
+	riscv-none-elf-objdump -d $@ > dump
+	riscv-none-elf-objcopy -Oihex $@ $(TARGET).hex
 	@echo "Linking complete!"
 
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c

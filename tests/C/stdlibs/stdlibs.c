@@ -1,6 +1,10 @@
 #include <stdio.h>
 
+#ifdef CVE2
+#define TRACE (*(unsigned char *)0x80001000)
+#else
 #define TRACE (*(unsigned char *)0x40000000)
+#endif
 
 void print(char *msg) {
   int i = 0;

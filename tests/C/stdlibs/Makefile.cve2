@@ -1,4 +1,4 @@
-TARGET   = dhrystone.cve2
+TARGET   = stdlibs.cve2
 
 TARGET_ARCH = riscv32
 
