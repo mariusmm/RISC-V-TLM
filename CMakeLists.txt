@@ -6,8 +6,9 @@
 ## make
 
 cmake_minimum_required(VERSION 3.10)
-project(RISCV_TLM)
+project(RISCV_TLM LANGUAGES CXX C)
 
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_PREFIX_PATH $ENV{BOOST_ROOT};$ENV{SYSTEMC_HOME};$ENV{SPDLOG_HOME})
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -26,11 +27,9 @@ if(POLICY CMP0167)
 cmake_policy(SET CMP0167 NEW)
 endif()
 
-find_package(Boost REQUIRED)
 add_executable(RISCV_TLM ${SRC} )
 target_link_libraries(RISCV_TLM SystemC::systemc)
 target_link_libraries(RISCV_TLM spdlog::spdlog)
-target_link_libraries(RISCV_TLM Boost::boost)
 
 # specify the C++ standard
 target_compile_features(RISCV_TLM PUBLIC cxx_std_17)
