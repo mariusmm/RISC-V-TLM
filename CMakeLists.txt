@@ -26,11 +26,11 @@ if(POLICY CMP0167)
 cmake_policy(SET CMP0167 NEW)
 endif()
 
-find_package(Boost REQUIRED)
+#find_package(Boost REQUIRED)
 add_executable(RISCV_TLM ${SRC} )
 target_link_libraries(RISCV_TLM SystemC::systemc)
 target_link_libraries(RISCV_TLM spdlog::spdlog)
-target_link_libraries(RISCV_TLM Boost::boost)
+#target_link_libraries(RISCV_TLM Boost::boost)
 
 # specify the C++ standard
 target_compile_features(RISCV_TLM PUBLIC cxx_std_17)
