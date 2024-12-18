@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 wget https://github.com/accellera-official/systemc/archive/refs/tags/3.0.1.tar.gz
 tar zxfv 3.0.1.tar.gz
 cd systemc-3.0.1/
