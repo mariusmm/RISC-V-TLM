@@ -358,6 +358,7 @@ namespace riscv_tlm {
                                     sc_core::sc_time_stamp().value(),
                                     old_pc, rd, old_pc + 4, new_pc);
 
+	    sc_core::wait(50, sc_core::SC_NS);
             return true;
         }
 
