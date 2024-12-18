@@ -34,7 +34,7 @@ namespace riscv_tlm {
         if (!debug) {
             SC_THREAD(CPU_thread);
         }
-    };
+    }
 
     void CPU::invalidate_direct_mem_ptr(sc_dt::uint64 start, sc_dt::uint64 end) {
         (void) start;
