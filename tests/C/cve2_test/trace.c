@@ -1,5 +1,5 @@
 
-#define TRACE (*(unsigned char *)0x40000000)
+#define TRACE (*(unsigned char *)0x80001000)
 
 int main(void) {
   TRACE = 'H';
