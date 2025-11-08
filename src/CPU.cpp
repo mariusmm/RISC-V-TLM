@@ -44,6 +44,13 @@ namespace riscv_tlm {
         dmi_ptr_valid = false;
     }
 
+    CPU::~CPU() {
+        if (m_qk) {
+            delete m_qk;
+            m_qk = nullptr;
+        }
+    }
+
     [[noreturn]] void CPU::CPU_thread() {
 
         while (true) {

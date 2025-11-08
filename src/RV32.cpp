@@ -36,13 +36,31 @@ namespace riscv_tlm {
     }
 
     CPURV32::~CPURV32() {
-        delete register_bank;
-        delete mem_intf;
-        delete base_inst;
-        delete c_inst;
-        delete m_inst;
-        delete a_inst;
-        delete m_qk;
+        if (register_bank) {
+            delete register_bank;
+            register_bank = nullptr;
+        }
+        if (mem_intf) {
+            delete mem_intf;
+            mem_intf = nullptr;
+        }
+        if (base_inst) {
+            delete base_inst;
+            base_inst = nullptr;
+        }
+        if (c_inst) {
+            delete c_inst;
+            c_inst = nullptr;
+        }
+        if (m_inst) {
+            delete m_inst;
+            m_inst = nullptr;
+        }
+        if (a_inst) {
+            delete a_inst;
+            a_inst = nullptr;
+        }
+        // m_qk is handled by base class destructor
     }
 
     bool CPURV32::cpu_process_IRQ() {

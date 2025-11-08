@@ -42,7 +42,7 @@ namespace riscv_tlm {
         CPU& operator=(CPU&& other) noexcept = delete;
 
         /* Destructors */
-        ~CPU() override = default;
+        ~CPU() override;
 
         /**
          * @brief Perform one instruction step
